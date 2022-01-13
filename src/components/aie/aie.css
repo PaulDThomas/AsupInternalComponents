@@ -1,0 +1,61 @@
+.aie-holder {
+    border: 1px dashed rgb(190, 190, 189);
+    border-radius: 1px; 
+    display: inline-block;
+    position: relative;
+    min-width: 8px;
+}
+
+.aie-button-holder {
+    z-index: 1001;
+    position: absolute;
+    bottom: -30px;
+    height: 26px;
+    min-width: max-content;
+    overflow: auto;
+    left: 0;
+    margin: 0px;
+    border: 2px solid darkorange;
+    border-radius: 4px;
+    background-color: darkorange;
+    transition: all 250ms linear;
+  }
+
+.aie-button-holder.hidden {
+  visibility: hidden;
+}
+
+.aie-button-holder::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .aie-button-holder::-webkit-scrollbar-track {
+    background: darkorange;
+  }
+  
+  .aie-button-holder::-webkit-scrollbar-thumb {
+    background: burlywood;
+    border: none;
+  }
+  
+  .aie-button-holder::-webkit-scrollbar-thumb:hover {
+    background: orangered;
+  }
+
+.aie-button {
+    background-color: burlywood;
+    border: 0;
+    height: 24px;
+    border-radius: 4px;
+}
+
+.aie-button:not(:first-child) {
+    border-left: 2px solid darkorange;
+}
+
+.active {
+    background-color: orangered;
+    border: 0;
+    height: 24px;
+    border-radius: 4px;
+}
