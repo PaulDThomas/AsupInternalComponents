@@ -1,41 +1,42 @@
-import { AsupInternalEditor } from "../aie/AsupInternalEditor";
+import { useState, useEffect } from "react";
+import { AitRowGroup } from "./aitRowGroup";
 
 export const AitTableBody = ({
   initialData,
-  initialRows,
-  initialColumns,
-  maxRows,
-  maxColumns,
   returnData,
-  cellProperties,
-  rowGroupProperties,
-  columnGroupProperties,
 }) => {
 
-  // Update cell call
-  const updateCell = (r, n, e) => {
-    console.log(`Updating cell ${r}, ${n} with return: ${e}`);
-  }
+  const [rowGroups, setRowGroups] = useState(initialData.rowGroups ?? []);
+  const [options, setOptions] = useState(initialData.options ?? {});
+
+  // Send data up the tree
+  useEffect(() => {
+    const r = {
+      rowGroups: rowGroups,
+      options: options,
+    }
+    if (typeof (returnData) === "function") returnData(r);
+  }, [options, returnData, rowGroups])
+
+  // Update data from components
+  const updateRowGroup = (i, ret) => {
+    console.log(`Updating row group ${i} with data ${ret}`);
+    const newRowGroups = rowGroups;
+    newRowGroups[i] = ret;
+    setRowGroups(newRowGroups);
+  };
 
   return (
-    <tbody>
-      <tr>
-      <td>One</td>
-        <td>Two</td>
-        <td>Five</td>
-        <td>Six</td>
-      </tr>
-      <tr>
-        <td>Three</td>
-        <td>Four</td>
-        <td>Seven</td>
-        <td>
-          <AsupInternalEditor
-          initialText={"Eight"}
-          returnText={(e) => updateCell(1, 4, e)}
+    <>
+      {(rowGroups ?? []).map((rowGroup, i) => {
+        return (
+          <AitRowGroup
+            key={i}
+            initialData={rowGroup}
+            returnData={(ret) => updateRowGroup(i, ret)}
           />
-        </td>
-      </tr>
-    </tbody>
+        );
+      })}
+    </>
   );
 };

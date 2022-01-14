@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AitTableBody } from "./aitTableBody";
-import { AitTableHeader } from "./aitTableHeader";
+import { AitRowGroup } from "./aitRowGroup";
 import { AitOptionsWindow } from "./aitOptionsWindow";
 import './ait.css';
 import { useEffect } from "react/cjs/react.development";
@@ -18,6 +18,7 @@ export const AsupInteralTable = ({
 }) => {
   const [headerData, setHeaderData] = useState(initialData.headerData ?? {});
   const [bodyData, setBodyData] = useState(initialData.bodyData ?? {});
+  const [footerData, setFooterData] = useState(initialData.footerData ?? {});
   const [options, setOptions] = useState(initialData.options ?? []);
   const [optionsView, setOptionsView] = useState("hidden");
 
@@ -28,12 +29,13 @@ export const AsupInteralTable = ({
   // Collate and return data
   useEffect(() => {
     const r = {
-      headerData: headerData,
-      bodyData: bodyData,
-      options: options,
+      headerData: headerData ?? {},
+      bodyData: bodyData ?? {},
+      footerData: footerData ?? {},
+      options: options ?? [],
     };
     returnData(r);
-  }, [headerData, bodyData, options, returnData]);
+  }, [headerData, bodyData, options, returnData, footerData]);
 
   if (initialData.options) console.log(initialData.options);
 
@@ -46,19 +48,31 @@ export const AsupInteralTable = ({
       style={addStyle}
     >
       <table className="ait-table">
-        <AitTableHeader
-          initialData={initialData.headerData ?? {}}
-          returnData={setHeaderData}
-        />
-        <AitTableBody
-          initialData={initialData.bodyData ?? {}}
-          returnData={setBodyData}
-        />
+        <thead>
+          <AitRowGroup
+            initialData={initialData.headerData ?? {}}
+            returnData={setHeaderData}
+            type="header"
+          />
+        </thead>
+        <tbody>
+          <AitTableBody
+            initialData={initialData.bodyData ?? {}}
+            returnData={setBodyData}
+          />
+        </tbody>
+        <tfoot>
+          <AitRowGroup
+            initialData={initialData.footerData ?? {}}
+            returnData={setFooterData}
+            type="footer"
+          />
+        </tfoot>
       </table>
       <AitOptionsWindow
-          initialData={initialData.options ?? []}
-          returnData ={setOptions}
-        />
+        initialData={initialData.options ?? []}
+        returnData={setOptions}
+      />
     </div>
   );
 };
