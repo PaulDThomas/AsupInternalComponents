@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { EditorState, RichUtils, Editor, ContentState, convertToRaw, convertFromRaw, Modifier } from "draft-js";
+import { EditorState, RichUtils, Editor, ContentState, convertToRaw, convertFromRaw, Modifier, convertFromHTML } from "draft-js";
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 import 'draft-js/dist/Draft.css';
 import './aie.css';
-import { convertFromHTML } from "draft-js";
 
 export const AsupInternalEditor = ({
   initialText,
@@ -15,12 +14,6 @@ export const AsupInternalEditor = ({
   showStyleButtons = true,
   styleMap,
 }) => {
-  // Set up editor information
-  // const [editorState, setEditorState] = useState(
-  //   text !== undefined 
-  //     ? EditorState.createWithContent(convertFromRaw(text))
-  //     : EditorState.createEmpty()
-  // );
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [buttonState, setButtonState] = useState("hidden");
   const editor = useRef(null);
@@ -41,9 +34,9 @@ export const AsupInternalEditor = ({
     setEditorState(e);
     // Update outputs
     const raw = convertToRaw(e.getCurrentContent());
-    returnRaw(raw);
+    if (typeof(returnRaw) === "function") returnRaw(raw);
     // Get text by joining
-    returnText(raw.blocks.map(b => b.text).join("\n"));
+    if (typeof(returnText) === "function") returnText(raw.blocks.map(b => b.text).join("\n"));
 
     // Get HTML by exploding
     const htmlBlock = (b) => {
@@ -59,7 +52,7 @@ export const AsupInternalEditor = ({
       return `<p>${chars.join("")}</p>`;
     }
       
-    returnHtml(raw.blocks.map(b => htmlBlock(b)).join(""));
+    if (typeof(returnHtml) === "function") returnHtml(raw.blocks.map(b => htmlBlock(b)).join(""));
   }, [returnRaw, returnText, returnHtml, currentStyleMap]);
 
   // Set stylemap or use default

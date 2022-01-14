@@ -1,0 +1,6 @@
+.ait-table, .ait-table td, .ait-table th {
+    border: 1px dashed rgb(190, 190, 189);
+    border-radius: 1px; 
+    position: relative;
+    min-width: 8px;
+}
