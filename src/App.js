@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { JSONTree } from 'react-json-tree';
 import { AsupInteralTable } from './components/ait/AsupInternalTable';
 
 function App() {
@@ -68,11 +67,17 @@ function App() {
 
   return (
     <>
-      <AsupInteralTable
-        initialData={initialData}
-        returnData={setCurrentData}
-        addStyle={{ margin: "1rem" }}
-      />
+      <div style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+      }}>
+        <AsupInteralTable
+          initialData={initialData}
+          returnData={setCurrentData}
+          addStyle={{ margin: "1rem" }}
+        />
+      </div>
       <div style={{
         margin: "1rem",
         padding: "1rem",
@@ -98,14 +103,6 @@ function App() {
         </p>
 
       </div>
-      {/* <div style={{
-        margin: "1rem",
-        padding: "1rem",
-        border: "solid black 3px",
-        backgroundColor: "rgb(0, 43, 54)"
-      }}>
-        <JSONTree data={currentData} />
-      </div> */}
     </>
   );
 }
