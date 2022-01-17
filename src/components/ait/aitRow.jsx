@@ -1,11 +1,11 @@
-import { createRef, useRef, useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react/cjs/react.development";
 import { AitCell } from "./aitCell";
 
 export const AitRow = ({
   initialData,
   returnData,
-  type="body"
+  type = "body"
 }) => {
 
   // Set up data holders
@@ -25,7 +25,7 @@ export const AitRow = ({
       cells: cells,
       options: options ?? [],
     }
-    if (typeof(returnData) === "function") returnData(r);
+    if (typeof (returnData) === "function") returnData(r);
   }, [cells, options, returnData]);
 
   // Update data from components
@@ -42,11 +42,11 @@ export const AitRow = ({
       cells: cells,
       // options: options,
     }
-    if (typeof(returnData)==="function") returnData(r);
+    if (typeof (returnData) === "function") returnData(r);
   }, [cells, returnData])
 
   // Check initial data, this can render every time, does not need to be inside a function call
-  if (typeof(initialData) !== "object") return (
+  if (typeof (initialData) !== "object") return (
     <tr>
       <td>
         Bad initialData in AitRow
@@ -66,12 +66,13 @@ export const AitRow = ({
     <tr>
       {initialData.cells.map((c, i) => {
         return (
-          <AitCell 
+          <AitCell
+            addStyle={{ width: "80px" }}
             key={i}
-            type={type}
+            type={c.options !== undefined ? c.options.type ?? type : type}
             initialData={c}
             returnData={(ret) => updateCell(ret, i)}
-            />
+          />
         );
       })}
     </tr>

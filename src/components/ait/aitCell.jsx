@@ -13,6 +13,7 @@ export const AitCell = ({
   // Data holder
   const [text, setText] = useState(initialData.text);
   const [options, setOptions] = useState(initialData.options ?? {});
+  const [buttonState, setButtonState] = useState("hidden");
 
   // Updates to initial data
   useEffect(() => {
@@ -33,39 +34,34 @@ export const AitCell = ({
     if (typeof (returnData) === "function") returnData(r);
   }, [initialData, options, returnData, text]);
 
-  if (type === "header") {
-    return (
-      <th
-        colSpan={initialData.colSpan}
-        rowSpan={initialData.rowSpan}
-        style={addStyle}
-      >
-        <AsupInternalEditor
-          addStyle={{ width: "100%", border: "none" }}
-          showStyleButtons={false}
-          initialText={initialData.originalText}
-          textAlignment={"center"}
-          returnText={setText}
-          editable={editable}
-          highlightChanges={true}
-        />
-      </th>
-    );
-  } else {
-    return (
-      <td
-        rowSpan={initialData.rowSpan}
-        style={addStyle}
-      >
-        <AsupInternalEditor
-          addStyle={{ width: "100%", border: "none" }}
-          showStyleButtons={false}
-          initialText={initialData.originalText}
-          returnText={setText}
-          editable={editable}
-          highlightChanges={true}
-        />
-      </td>
-    );
-  }
+  // Show hide/buttons
+  // Show or hide style buttons
+  const aitShowButtons = () => { setButtonState(""); };
+  const aitHideButtons = () => { setButtonState("hidden"); };
+
+  // Render element
+  return (
+    <td
+      className={["ait-cell", (type === "header" ? "ait-header" : type === "rowHeader" ? "ait-row-header": null)].join(" ")}
+      colSpan={initialData.colSpan}
+      rowSpan={initialData.rowSpan}
+      style={addStyle}
+      onMouseOver={aitShowButtons}
+      onMouseLeave={aitHideButtons}
+    >
+      <AsupInternalEditor
+        addStyle={{ 
+          width: "100%", 
+          border: "none" 
+        }}
+        textAlignment={(type === "rowHeader" ? "left" : "center")}
+        showStyleButtons={false}
+        initialText={initialData.originalText}
+        returnText={setText}
+        editable={editable}
+        highlightChanges={true}
+      />
+      <div className="ait-options-button cell-options" onClick={(e) => { console.log(`Cell-Options-Click for cell ${e}`); }}></div>
+    </td>
+  );
 }

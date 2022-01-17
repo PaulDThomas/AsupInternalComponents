@@ -28,7 +28,11 @@ function App() {
           rows: [
             {
               cells: [
-                { text: "C0", originalText: "C0", rowSpan: 2 },
+                {
+                  text: "C0", originalText: "C0", rowSpan: 2, options: {
+                    type: "rowHeader"
+                  }
+                },
                 { text: "D0", originalText: "D0" },
                 { text: "E0", originalText: "E0" },
                 { text: "F0", originalText: "F0" },
@@ -49,7 +53,12 @@ function App() {
           rows: [
             {
               cells: [
-                { text: "C2", originalText: "C2" },
+                {
+                  text: "C2", originalText: "C2", 
+                  options: {
+                    type: "rowHeader"
+                  }
+                },
                 { text: "D2", originalText: "D2" },
                 { text: "E2", originalText: "E2" },
                 { text: "F2", originalText: "F2" },
@@ -65,16 +74,16 @@ function App() {
 
   const [currentData, setCurrentData] = useState({});
 
-  const updateCell = (cell) => { 
+  const updateCell = (cell) => {
     cell.originalText = cell.text;
     return cell;
   };
-  const updateRow = (row) => { 
+  const updateRow = (row) => {
     row.cells = row.cells.map((cell) => updateCell(cell));
     return row;
   };
-  const updateRowGroup = (rowGroup) => { 
-    rowGroup.rows = rowGroup.rows.map((row) => updateRow(row)); 
+  const updateRowGroup = (rowGroup) => {
+    rowGroup.rows = rowGroup.rows.map((row) => updateRow(row));
     return rowGroup;
   };
   const updateTable = (table) => {
@@ -121,9 +130,9 @@ function App() {
           Load
         </button>
         <button
-          onClick={() => { 
+          onClick={() => {
             const saved = updateTable(currentData);
-            ta.current.value = JSON.stringify(saved, null, 2); 
+            ta.current.value = JSON.stringify(saved, null, 2);
             window.localStorage.setItem('tableContent', JSON.stringify(saved, null, 2));
             setInitialData(saved);
           }}
