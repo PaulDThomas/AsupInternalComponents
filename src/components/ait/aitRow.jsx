@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { createRef, useRef, useState } from "react";
 import { useEffect } from "react/cjs/react.development";
 import { AitCell } from "./aitCell";
 
@@ -10,7 +10,13 @@ export const AitRow = ({
 
   // Set up data holders
   const [cells, setCells] = useState(initialData.cells ?? []);
-  const [options, setOptions] = useState(initialData.options ?? []);
+  const [options, setOptions] = useState(initialData.options ?? {});
+
+  // Updates to initial data
+  useEffect(() => {
+    setCells(initialData.cells ?? []);
+    setOptions(initialData.options ?? {});
+  }, [initialData])
 
   // Send data up the tree
   useEffect(() => {
@@ -20,7 +26,7 @@ export const AitRow = ({
       options: options ?? [],
     }
     if (typeof(returnData) === "function") returnData(r);
-  }, [cells, initialData.originalText, options, returnData]);
+  }, [cells, options, returnData]);
 
   // Update data from components
   const updateCell = (ret, i) => {

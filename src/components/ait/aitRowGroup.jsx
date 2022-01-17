@@ -11,7 +11,13 @@ export const AitRowGroup = ({
 }) => {
   // Data holder
   const [rows, setRows] = useState(initialData.rows ?? []);
-  const [options, setOptions] = useState(initialData.options ?? []);
+  const [options, setOptions] = useState(initialData.options ?? {});
+
+  // Update from initial data
+  useEffect(() => { 
+    setRows(initialData.rows ?? []) 
+    setOptions(initialData.options ?? {})
+  }, [initialData]);
 
   // Send data back
   useEffect(() => {
@@ -21,7 +27,7 @@ export const AitRowGroup = ({
       rows: rows ?? [],
     }
     if (typeof (returnData) === "function") returnData(r);
-  }, [initialData.originalText, options, returnData, rows]);
+  }, [options, returnData, rows]);
 
   // Check initial data, this can render every time, does not need to be inside a function call
   if (typeof (initialData) !== "object") return (

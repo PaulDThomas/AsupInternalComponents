@@ -9,6 +9,12 @@ export const AitTableBody = ({
   const [rowGroups, setRowGroups] = useState(initialData.rowGroups ?? []);
   const [options, setOptions] = useState(initialData.options ?? {});
 
+  // Update of initial data
+  useEffect(() => {
+    setRowGroups(initialData.rowGroups ?? []);
+    setOptions(initialData.options ?? {});
+  }, [initialData])
+
   // Send data up the tree
   useEffect(() => {
     const r = {

@@ -12,7 +12,13 @@ export const AitCell = ({
 }) => {
   // Data holder
   const [text, setText] = useState(initialData.text);
-  const [options, setOptions] = useState(initialData.options);
+  const [options, setOptions] = useState(initialData.options ?? {});
+
+  // Updates to initial data
+  useEffect(() => {
+    setText(initialData.text);
+    setOptions(initialData.options ?? {});
+  }, [initialData]);
 
   // Send data back
   useEffect(() => {
@@ -41,6 +47,7 @@ export const AitCell = ({
           textAlignment={"center"}
           returnText={setText}
           editable={editable}
+          highlightChanges={true}
         />
       </th>
     );
