@@ -65,6 +65,25 @@ function App() {
 
   const [currentData, setCurrentData] = useState({});
 
+  const updateCell = (cell) => { 
+    cell.originalText = cell.text;
+    return cell;
+  };
+  const updateRow = (row) => { 
+    row.cells = row.cells.map((cell) => updateCell(cell));
+    return row;
+  };
+  const updateRowGroup = (rowGroup) => { 
+    rowGroup.rows = rowGroup.rows.map((row) => updateRow(row)); 
+    return rowGroup;
+  };
+  const updateTable = (table) => {
+    table.headerData = updateRowGroup(table.headerData);
+    table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
+    table.footerData = updateRowGroup(table.footerData);
+    return table;
+  }
+
   return (
     <>
       <div style={{
@@ -86,13 +105,28 @@ function App() {
       }}>
         <button
           onClick={() => {
-            setInitialData(JSON.parse(ta.current.value));
+            try {
+              if (ta.current.value === "") {
+                ta.current.value = window.localStorage.getItem('tableContent');
+              }
+              const j = JSON.parse(ta.current.value);
+              setInitialData(j);
+            }
+            catch (e) {
+              console.log("JSON parse failed");
+              console.dir(e);
+            }
           }}
         >
           Load
         </button>
         <button
-          onClick={() => { ta.current.value = JSON.stringify(currentData, null, 2) }}
+          onClick={() => { 
+            const saved = updateTable(currentData);
+            ta.current.value = JSON.stringify(saved, null, 2); 
+            window.localStorage.setItem('tableContent', JSON.stringify(saved, null, 2));
+            setInitialData(saved);
+          }}
         >
           Save
         </button>
