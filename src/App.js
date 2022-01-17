@@ -54,7 +54,7 @@ function App() {
             {
               cells: [
                 {
-                  text: "C2", originalText: "C2", 
+                  text: "C2", originalText: "C2",
                   options: {
                     type: "rowHeader"
                   }
@@ -69,7 +69,6 @@ function App() {
         }
       ]
     },
-    footerData: {}
   });
 
   const [currentData, setCurrentData] = useState({});
@@ -89,7 +88,7 @@ function App() {
   const updateTable = (table) => {
     table.headerData = updateRowGroup(table.headerData);
     table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
-    table.footerData = updateRowGroup(table.footerData);
+    //table.footerData = updateRowGroup(table.footerData);
     return table;
   }
 
@@ -139,11 +138,9 @@ function App() {
         >
           Save
         </button>
-        <p>
-          <pre>
-            <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }}></textarea>
-          </pre>
-        </p>
+        <pre>
+          <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }}></textarea>
+        </pre>
 
       </div>
     </>

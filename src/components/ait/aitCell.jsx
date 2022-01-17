@@ -5,6 +5,7 @@ import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 
 export const AitCell = ({
   initialData = {},
+  location,
   addStyle,
   returnData,
   type,
@@ -36,14 +37,8 @@ export const AitCell = ({
 
   // Show hide/buttons
   // Show or hide style buttons
-  const aitShowButtons = () => {
-    setButtonState("");
-    console.log("Mouse over cell");
-  };
-  const aitHideButtons = () => {
-    setButtonState("hidden");
-    console.log("Mouse out cell");
-  };
+  const aitShowButtons = () => { setButtonState(""); };
+  const aitHideButtons = () => { setButtonState("hidden"); };
 
   // Render element
   return (
@@ -72,7 +67,7 @@ export const AitCell = ({
         />
         <div
           className={`ait-options-button ${buttonState === "hidden" ? "hidden" : ""}`}
-          onClick={(e) => { console.log(`Cell-Options-Click for cell ${e}`); }}
+          onClick={(e) => { console.log(`Cell-Options-Click for ${Object.keys(location).map((k) => `${k}:${location[k]}`).join(", ")}`); }}
         />
       </div>
     </td>

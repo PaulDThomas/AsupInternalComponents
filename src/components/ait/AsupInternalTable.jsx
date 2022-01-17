@@ -18,7 +18,7 @@ export const AsupInteralTable = ({
 }) => {
   const [headerData, setHeaderData] = useState(initialData.headerData ?? {});
   const [bodyData, setBodyData] = useState(initialData.bodyData ?? {});
-  const [footerData, setFooterData] = useState(initialData.footerData ?? {});
+  //const [footerData, setFooterData] = useState(initialData.footerData ?? {});
   const [options, setOptions] = useState(initialData.options ?? []);
   const [optionsView, setOptionsView] = useState("hidden");
 
@@ -31,13 +31,11 @@ export const AsupInteralTable = ({
     const r = {
       headerData: headerData ?? {},
       bodyData: bodyData ?? {},
-      footerData: footerData ?? {},
+      //footerData: footerData ?? {},
       options: options ?? [],
     };
     returnData(r);
-  }, [headerData, bodyData, options, returnData, footerData]);
-
-  if (initialData.options) console.log(initialData.options);
+  }, [headerData, bodyData, options, returnData]);
 
   // Print the table
   return (
@@ -50,6 +48,7 @@ export const AsupInteralTable = ({
       <table className="ait-table">
         <thead>
           <AitRowGroup
+            location={{tableSection:"header"}}
             initialData={initialData.headerData ?? {}}
             returnData={setHeaderData}
             type="header"
@@ -61,13 +60,13 @@ export const AsupInteralTable = ({
             returnData={setBodyData}
           />
         </tbody>
-        <tfoot>
+        {/* <tfoot>
           <AitRowGroup
             initialData={initialData.footerData ?? {}}
             returnData={setFooterData}
             type="footer"
           />
-        </tfoot>
+        </tfoot> */}
       </table>
       <AitOptionsWindow
         initialData={initialData.options ?? []}

@@ -3,6 +3,7 @@ import { useEffect } from "react/cjs/react.development";
 import { AitCell } from "./aitCell";
 
 export const AitRow = ({
+  location,
   initialData,
   returnData,
   type = "body"
@@ -30,7 +31,7 @@ export const AitRow = ({
 
   // Update data from components
   const updateCell = (ret, i) => {
-    console.log(`Updating cell ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
+    //console.log(`Updating cell ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newCells = cells;
     newCells[i] = ret;
     setCells(newCells);
@@ -67,6 +68,7 @@ export const AitRow = ({
       {initialData.cells.map((c, i) => {
         return (
           <AitCell
+            location={{...location, cell:i}}
             addStyle={{ width: "80px" }}
             key={i}
             type={c.options !== undefined ? c.options.type ?? type : type}

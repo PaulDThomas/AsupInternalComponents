@@ -6,6 +6,7 @@ export const AitRowGroup = ({
   initialData,
   returnData,
   type = "body",
+  location,
   maxRows,
   maxColumns,
 }) => {
@@ -40,7 +41,7 @@ export const AitRowGroup = ({
 
   // Send data back
   const updateRows = (ret, i) => {
-    console.log(`Updating row ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
+    //console.log(`Updating row ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newRows = rows;
     newRows[i] = ret;
     setRows(newRows);
@@ -53,6 +54,7 @@ export const AitRowGroup = ({
           <AitRow
             key={i}
             type={type}
+            location={{...location, row:i}}
             initialData={row}
             returnData={(ret) => updateRows(ret, i)}
           />
