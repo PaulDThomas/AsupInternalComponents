@@ -36,32 +36,45 @@ export const AitCell = ({
 
   // Show hide/buttons
   // Show or hide style buttons
-  const aitShowButtons = () => { setButtonState(""); };
-  const aitHideButtons = () => { setButtonState("hidden"); };
+  const aitShowButtons = () => {
+    setButtonState("");
+    console.log("Mouse over cell");
+  };
+  const aitHideButtons = () => {
+    setButtonState("hidden");
+    console.log("Mouse out cell");
+  };
 
   // Render element
   return (
     <td
-      className={["ait-cell", (type === "header" ? "ait-header" : type === "rowHeader" ? "ait-row-header": null)].join(" ")}
+      className={["ait-cell", (type === "header" ? "ait-header-cell" : type === "rowHeader" ? "ait-row-header-cell" : "ait-body-cell")].join(" ")}
       colSpan={initialData.colSpan}
       rowSpan={initialData.rowSpan}
-      style={addStyle}
       onMouseOver={aitShowButtons}
       onMouseLeave={aitHideButtons}
+      style={addStyle}
     >
-      <AsupInternalEditor
-        addStyle={{ 
-          width: "100%", 
-          border: "none" 
-        }}
-        textAlignment={(type === "rowHeader" ? "left" : "center")}
-        showStyleButtons={false}
-        initialText={initialData.originalText}
-        returnText={setText}
-        editable={editable}
-        highlightChanges={true}
-      />
-      <div className="ait-options-button cell-options" onClick={(e) => { console.log(`Cell-Options-Click for cell ${e}`); }}></div>
+      <div className="ait-aie-holder"
+      >
+        <AsupInternalEditor
+          addStyle={{
+            width: "100%",
+            height: "100%",
+            border: "none"
+          }}
+          textAlignment={(type === "rowHeader" ? "left" : "center")}
+          showStyleButtons={false}
+          initialText={initialData.originalText}
+          returnText={setText}
+          editable={editable}
+          highlightChanges={true}
+        />
+        <div
+          className={`ait-options-button ${buttonState === "hidden" ? "hidden" : ""}`}
+          onClick={(e) => { console.log(`Cell-Options-Click for cell ${e}`); }}
+        />
+      </div>
     </td>
   );
 }
