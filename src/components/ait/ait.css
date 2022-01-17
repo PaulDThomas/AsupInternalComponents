@@ -4,3 +4,7 @@
     position: relative;
     min-width: 8px;
 }
+
+.ait-holder {
+    width: max-content;
+}
