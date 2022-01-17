@@ -103,7 +103,7 @@ export const AsupInternalEditor = ({
       }
       // Load HTML fragrment (crude check)
       else if (typeof (initialText) === "string") {
-        const initialBlocks = convertFromHTML(initialText);
+        const initialBlocks = convertFromHTML(initialText.replace(/\n/g, "<br/>"));
         const state = ContentState.createFromBlockArray(
           initialBlocks.contentBlocks,
           initialBlocks.entityMap,
