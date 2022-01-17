@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { JSONTree } from 'react-json-tree';
 import { AsupInteralTable } from './components/ait/AsupInternalTable';
 
 function App() {
+  const ta = useRef();
   const [initialData, setInitialData] = useState({
     headerData: {
       rows: [
         {
           cells: [
-            { text: "A", originalText: "A" },
+            { text: "A", originalText: "A", rowSpan: 2 },
             { text: "B", originalText: "B", colSpan: 3 },
           ],
         },
@@ -17,7 +18,6 @@ function App() {
             { text: "C", originalText: "C" },
             { text: "E", originalText: "E" },
             { text: "D", originalText: "D" },
-            { text: "F", originalText: "F" },
           ]
         }
       ],
@@ -77,10 +77,35 @@ function App() {
         margin: "1rem",
         padding: "1rem",
         border: "solid black 3px",
+        backgroundColor: "rgb(240, 240, 240)"
+      }}>
+        <button
+          onClick={() => {
+            setInitialData(JSON.parse(ta.current.value));
+          }}
+        >
+          Load
+        </button>
+        <button
+          onClick={() => { ta.current.value = JSON.stringify(currentData, null, 2) }}
+        >
+          Save
+        </button>
+        <p>
+          <pre>
+            <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }}></textarea>
+          </pre>
+        </p>
+
+      </div>
+      {/* <div style={{
+        margin: "1rem",
+        padding: "1rem",
+        border: "solid black 3px",
         backgroundColor: "rgb(0, 43, 54)"
       }}>
         <JSONTree data={currentData} />
-      </div>
+      </div> */}
     </>
   );
 }

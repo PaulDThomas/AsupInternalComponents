@@ -34,7 +34,6 @@ export const AsupInternalEditor = ({
 
   // Update editorState, and feed back to holder
   const onChange = useCallback((e) => {
-    console.log(`Change in editor, new value ${e}`);
     setEditorState(e);
 
     // Update outputs
@@ -42,13 +41,21 @@ export const AsupInternalEditor = ({
     if (typeof (returnRaw) === "function") returnRaw(raw);
 
     // Get text by joining
-    if (typeof (returnText) === "function") returnText(raw.blocks.map(b => b.text).join("\n"));
+    if (typeof (returnText) === "function") returnText(
+      raw.blocks
+        .map(b => [...b.text]
+          // Swap out HTML characters for safety
+          .map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"))
+          .join("")
+        )
+        .join("\n")
+    );
 
     // Get HTML by exploding
     const htmlBlock = (b) => {
       // Explode string
       var chars = [...b.text];
-      // Remove any HTML 
+      // Swap out HTML characters for safety
       chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
       // Add inline style starts and ends
       for (const s of b.inlineStyleRanges) {
