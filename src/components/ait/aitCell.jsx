@@ -31,6 +31,7 @@ export const AitCell = ({
     return (
       <th
         colSpan={initialData.colSpan}
+        rowSpan={initialData.rowSpan}
         style={addStyle}
       >
         <AsupInternalEditor
@@ -55,6 +56,7 @@ export const AitCell = ({
           initialText={initialData.originalText}
           returnText={setText}
           editable={editable}
+          highlightChanges={true}
         />
       </td>
     );

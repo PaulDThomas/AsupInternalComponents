@@ -9,13 +9,16 @@ export const AsupInternalEditor = ({
   returnRaw,
   returnText,
   returnHtml,
-  addStyle,
-  textAlignment,
-  showStyleButtons = true,
   styleMap,
+  addStyle = {},
+  highlightChanges = false,
+  textAlignment = "left",
+  showStyleButtons = true,
 }) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [buttonState, setButtonState] = useState("hidden");
+  const [currentStyle, setCurrentStyle] = useState(addStyle);
+  const [changesMade, setChangesMade] = useState(false);
   const editor = useRef(null);
 
   // Add default style map
@@ -31,12 +34,15 @@ export const AsupInternalEditor = ({
 
   // Update editorState, and feed back to holder
   const onChange = useCallback((e) => {
+    console.log(`Change in editor, new value ${e}`);
     setEditorState(e);
+
     // Update outputs
     const raw = convertToRaw(e.getCurrentContent());
-    if (typeof(returnRaw) === "function") returnRaw(raw);
+    if (typeof (returnRaw) === "function") returnRaw(raw);
+
     // Get text by joining
-    if (typeof(returnText) === "function") returnText(raw.blocks.map(b => b.text).join("\n"));
+    if (typeof (returnText) === "function") returnText(raw.blocks.map(b => b.text).join("\n"));
 
     // Get HTML by exploding
     const htmlBlock = (b) => {
@@ -51,12 +57,27 @@ export const AsupInternalEditor = ({
       }
       return `<p>${chars.join("")}</p>`;
     }
-      
-    if (typeof(returnHtml) === "function") returnHtml(raw.blocks.map(b => htmlBlock(b)).join(""));
-  }, [returnRaw, returnText, returnHtml, currentStyleMap]);
+    if (typeof (returnHtml) === "function") returnHtml(raw.blocks.map(b => htmlBlock(b)).join(""));
+
+    // Update div holder to indicate if changes have been made
+    if (highlightChanges) {
+      setChangesMade(typeof (initialText) === "string" && initialText !== raw.blocks.map(b => b.text).join("\n"));
+    }
+
+  }, [returnRaw, returnText, returnHtml, highlightChanges, currentStyleMap, initialText]);
 
   // Set stylemap or use default
   useEffect(() => { if (styleMap) { setCurrentStyleMap(styleMap); } }, [styleMap]);
+
+  // Update change highlight
+  useEffect(() => {
+    var newStyle = { ...addStyle };
+    if (changesMade) {
+      newStyle.margin = "-3px";
+      newStyle.border = "3px dashed burlywood";
+    }
+    setCurrentStyle(newStyle);
+  }, [addStyle, changesMade, initialText]);
 
   // Initial Text loading/update
   useEffect(() => {
@@ -104,12 +125,13 @@ export const AsupInternalEditor = ({
     onChange(EditorState.createWithContent(nextContentState));
   }
 
+  // Render the component
   return (
     <div
       className="aie-holder"
       onMouseOver={aieShowButtons}
       onMouseLeave={aieHideButtons}
-      style={addStyle}
+      style={currentStyle}
     >
       <div className={`aie-button-holder aie-style-button-holder ${buttonState === "hidden" ? "hidden" : ""}`}>
         <AieStyleButtonRow

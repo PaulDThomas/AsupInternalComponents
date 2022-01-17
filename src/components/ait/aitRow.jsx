@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useEffect } from "react/cjs/react.development";
 import { AitCell } from "./aitCell";
 
@@ -23,8 +23,8 @@ export const AitRow = ({
   }, [cells, initialData.originalText, options, returnData]);
 
   // Update data from components
-  const updateCell = (i, ret) => {
-    console.log(`Updating cell ${i} with data ${ret}`);
+  const updateCell = (ret, i) => {
+    console.log(`Updating cell ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newCells = cells;
     newCells[i] = ret;
     setCells(newCells);
@@ -64,7 +64,7 @@ export const AitRow = ({
             key={i}
             type={type}
             initialData={c}
-            returnData={(ret) => updateCell(i, ret)}
+            returnData={(ret) => updateCell(ret, i)}
             />
         );
       })}

@@ -33,8 +33,8 @@ export const AitRowGroup = ({
   );
 
   // Send data back
-  const updateRows = (i, ret) => {
-    console.log(`Updating row group ${i} with return: ${ret}`);
+  const updateRows = (ret, i) => {
+    console.log(`Updating row ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newRows = rows;
     newRows[i] = ret;
     setRows(newRows);
@@ -48,7 +48,7 @@ export const AitRowGroup = ({
             key={i}
             type={type}
             initialData={row}
-            returnData={(ret) => updateRows(i, ret)}
+            returnData={(ret) => updateRows(ret, i)}
           />
         )
       })

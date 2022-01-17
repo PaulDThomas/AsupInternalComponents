@@ -19,8 +19,8 @@ export const AitTableBody = ({
   }, [options, returnData, rowGroups])
 
   // Update data from components
-  const updateRowGroup = (i, ret) => {
-    console.log(`Updating row group ${i} with data ${ret}`);
+  const updateRowGroup = (ret, i) => {
+    console.log(`Updating row group {i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newRowGroups = rowGroups;
     newRowGroups[i] = ret;
     setRowGroups(newRowGroups);
@@ -33,7 +33,7 @@ export const AitTableBody = ({
           <AitRowGroup
             key={i}
             initialData={rowGroup}
-            returnData={(ret) => updateRowGroup(i, ret)}
+            returnData={(ret) => updateRowGroup(ret, i)}
           />
         );
       })}
