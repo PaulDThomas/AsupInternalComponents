@@ -1,3 +1,4 @@
 ## Components for internal editbox
 
-React components exending draft.js 
+AsupInternalEditor - exends draft.js 
+AsupInternalTable - table with AIE cells
