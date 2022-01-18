@@ -141,9 +141,8 @@ export const TablePage = () => {
           Save
         </button>
         <pre>
-          <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }}></textarea>
+          <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
         </pre>
-
       </div>
     </>
   );

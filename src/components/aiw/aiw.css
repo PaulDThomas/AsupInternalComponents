@@ -1,0 +1,14 @@
+.aiw-holder {
+    border: 1px black solid;
+    border-radius: 8px;
+    margin: 0;
+    padding: 4px;
+    background-color: white;
+    height: 100%
+}
+
+.aiw-title {
+    border-bottom: 1px black dashed;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
+}

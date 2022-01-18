@@ -7,6 +7,7 @@ import {
 import { EditorPage } from './pages/EditorPage';
 import { TablePage } from './pages/TablePage';
 import "./pages/pages.css";
+import { WindowPage } from './pages/WindowPage';
 
 function App() {
 
@@ -43,7 +44,7 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<TablePage />} />
+          <Route path="/" element={<WindowPage />} />
           <Route path="/table" element={<TablePage />} />
           <Route path="/editor" element={<EditorPage />} />
         </Routes>

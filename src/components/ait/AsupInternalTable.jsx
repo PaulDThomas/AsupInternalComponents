@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AitTableBody } from "./aitTableBody";
 import { AitRowGroup } from "./aitRowGroup";
 import { AitOptionsWindow } from "./aitOptionsWindow";
 import './ait.css';
-import { useEffect } from "react/cjs/react.development";
 
 export const AsupInteralTable = ({
   initialData,
@@ -21,11 +20,11 @@ export const AsupInteralTable = ({
   const [bodyData, setBodyData] = useState(initialData.bodyData ?? {});
   //const [footerData, setFooterData] = useState(initialData.footerData ?? {});
   const [options, setOptions] = useState(initialData.options ?? []);
-  const [optionsView, setOptionsView] = useState("hidden");
+  // const [optionsView, setOptionsView] = useState("hidden");
 
   // Show or hide style buttons
-  const aitShowProperties = () => { if (showOptions) { setOptionsView(showOptions); } };
-  const aitHideProperties = () => { setOptionsView("hidden"); };
+  // const aitShowProperties = () => { if (showOptions) { setOptionsView(showOptions); } };
+  // const aitHideProperties = () => { setOptionsView("hidden"); };
 
   // Collate and return data
   useEffect(() => {
@@ -42,8 +41,8 @@ export const AsupInteralTable = ({
   return (
     <div
       className="ait-holder"
-      onMouseOver={aitShowProperties}
-      onMouseLeave={aitHideProperties}
+      // onMouseOver={aitShowProperties}
+      // onMouseLeave={aitHideProperties}
       style={addStyle}
     >
       <table 

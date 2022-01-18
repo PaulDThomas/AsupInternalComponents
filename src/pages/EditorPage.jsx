@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useEffect } from 'react/cjs/react.development';
 import { AsupInternalEditor } from '../components/aie/AsupInternalEditor';
 import { convertFromHTML } from 'draft-js';
 
@@ -7,16 +6,90 @@ export const EditorPage = () => {
   const [text, setText] = useState();
   const [raw, setRaw] = useState();
   const [html, setHtml] = useState();
+  // eslint-disable-next-line no-unused-vars
   const [text2, setText2] = useState();
-  const [initialText, setInitialText] = useState();
+  const [initialText, setInitialText] = useState(JSON.parse(`
+    {
+      "blocks": [
+        {
+          "key": "1i66t",
+          "text": "here there is a man",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [
+            {
+              "offset": 0,
+              "length": 19,
+              "style": "Notes"
+            }
+          ],
+          "entityRanges": [],
+          "data": {}
+        },
+        {
+          "key": "8qe70",
+          "text": "",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [],
+          "entityRanges": [],
+          "data": {}
+        },
+        {
+          "key": "avpaf",
+          "text": "<script>'destroy' \\"everything\\"</script>",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [
+            {
+              "offset": 0,
+              "length": 9,
+              "style": "Notes"
+            },
+            {
+              "offset": 30,
+              "length": 9,
+              "style": "Notes"
+            },
+            {
+              "offset": 9,
+              "length": 21,
+              "style": "Optional"
+            }
+          ],
+          "entityRanges": [],
+          "data": {}
+        },
+        {
+          "key": "5m427",
+          "text": "of many talents",
+          "type": "unstyled",
+          "depth": 0,
+          "inlineStyleRanges": [
+            {
+              "offset": 0,
+              "length": 3,
+              "style": "Notes"
+            },
+            {
+              "offset": 8,
+              "length": 7,
+              "style": "Notes"
+            },
+            {
+              "offset": 3,
+              "length": 5,
+              "style": "Editable"
+            }
+          ],
+          "entityRanges": [],
+          "data": {}
+        }
+      ],
+      "entityMap": {}
+    }`));
+  // eslint-disable-next-line no-unused-vars
   const [initialText2, setInitialText2] = useState();
-  const [firstLine, setFirstLine] = useState("Nothing");
-
-  useEffect(() => {
-    if (text !== undefined && text.blocks !== undefined) {
-      setFirstLine(setText);
-    }
-  }, [text])
 
   const dothing = () => {
     console.log("Update");
@@ -38,7 +111,12 @@ export const EditorPage = () => {
   }
 
   return (
-    <>
+    <div
+      style={{
+        margin: "1rem",
+        padding: "1rem",
+      }}
+    >
       <table style={{ padding: "1rem", border: "1px black solid" }}>
         <tbody>
           <tr>
@@ -63,15 +141,20 @@ export const EditorPage = () => {
         </tbody>
       </table>
       <div style={{
+        marginTop: "1rem",
         padding: "1rem",
         border: "solid black 3px"
       }}>
         <button onClick={dothing}>set</button>
         <button onClick={save}>save</button>
         <button onClick={load}>load</button>
+        <h5>Text</h5>
         <pre>{text}</pre>
-        <p dangerouslySetInnerHTML={{__html:html}}></p>
+        <h5>HTML</h5>
+        <p dangerouslySetInnerHTML={{ __html: html }}></p>
+        <h5>Raw</h5>
+        <pre>{JSON.stringify(raw, null, 2)}</pre>
       </div>
-    </>
+    </div>
   );
 }
