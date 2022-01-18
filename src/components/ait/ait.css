@@ -5,19 +5,19 @@ table.ait-table {
 }
 
 table.ait-table>tbody>tr:first-child>td.ait-cell {
-    border-top: 2px black solid;
+    border-top: 2px black solid !important;
 }
 
 table.ait-table>thead>tr:first-child>td.ait-cell {
-    border-top: 2px black solid;
+    border-top: 2px black solid !important;
 }
 
 table.ait-table>tbody>tr:first-child>td.ait-cell {
-    border-top: 2px black solid;
+    border-top: 2px black solid !important;
 }
 
 table.ait-table tbody tr:last-child td.ait-cell {
-    border-bottom: 2px black solid
+    border-bottom: 2px black solid  !important;
 }
 
 /* Table cell positioning */

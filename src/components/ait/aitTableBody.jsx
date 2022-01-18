@@ -4,6 +4,7 @@ import { AitRowGroup } from "./aitRowGroup";
 export const AitTableBody = ({
   initialData,
   returnData,
+  showCellBorders,
 }) => {
 
   const [rowGroups, setRowGroups] = useState(initialData.rowGroups ?? []);
@@ -41,6 +42,7 @@ export const AitTableBody = ({
             location={{tableSection:"body", rowGroup:i}}
             initialData={rowGroup}
             returnData={(ret) => updateRowGroup(ret, i)}
+            showCellBorders={showCellBorders}
           />
         );
       })}

@@ -103,6 +103,7 @@ function App() {
           initialData={initialData}
           returnData={setCurrentData}
           addStyle={{ margin: "1rem" }}
+          showCellBorders={true}
         />
       </div>
       <div style={{

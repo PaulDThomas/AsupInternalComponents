@@ -7,6 +7,7 @@ export const AitRowGroup = ({
   returnData,
   type = "body",
   location,
+  showCellBorders,
   maxRows,
   maxColumns,
 }) => {
@@ -55,6 +56,7 @@ export const AitRowGroup = ({
             key={i}
             type={type}
             location={{...location, row:i}}
+            showCellBorders={showCellBorders}
             initialData={row}
             returnData={(ret) => updateRows(ret, i)}
           />

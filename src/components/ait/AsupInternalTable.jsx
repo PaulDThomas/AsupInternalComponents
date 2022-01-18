@@ -14,6 +14,7 @@ export const AsupInteralTable = ({
   rowGroupProperties,
   columnGroupProperties,
   addStyle,
+  showCellBorders,
   showOptions = "dialog",
 }) => {
   const [headerData, setHeaderData] = useState(initialData.headerData ?? {});
@@ -45,19 +46,23 @@ export const AsupInteralTable = ({
       onMouseLeave={aitHideProperties}
       style={addStyle}
     >
-      <table className="ait-table">
+      <table 
+      className="ait-table"
+      >
         <thead>
           <AitRowGroup
             location={{tableSection:"header"}}
             initialData={initialData.headerData ?? {}}
             returnData={setHeaderData}
+            showCellBorders={showCellBorders}
             type="header"
-          />
+            />
         </thead>
         <tbody>
           <AitTableBody
             initialData={initialData.bodyData ?? {}}
             returnData={setBodyData}
+            showCellBorders={showCellBorders}
           />
         </tbody>
         {/* <tfoot>

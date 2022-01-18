@@ -6,18 +6,18 @@ export const AitRow = ({
   location,
   initialData,
   returnData,
+  showCellBorders,
   type = "body"
 }) => {
 
   // Set up data holders
   const [cells, setCells] = useState(initialData.cells ?? []);
   const [options, setOptions] = useState(initialData.options ?? {});
+  const [cellStyle, setCellStyle] = useState({});
 
   // Updates to initial data
-  useEffect(() => {
-    setCells(initialData.cells ?? []);
-    setOptions(initialData.options ?? {});
-  }, [initialData])
+  useEffect(() => { setCells(initialData.cells ?? []); }, [initialData.cells]);
+  useEffect(() => { setOptions(initialData.options ?? {}); }, [initialData.options]);
 
   // Send data up the tree
   useEffect(() => {
@@ -62,14 +62,24 @@ export const AitRow = ({
     </tr>
   );
 
+
+
   // Render the component
   return (
     <tr>
       {initialData.cells.map((c, i) => {
+
+        if (!c.options) c.options = {};
+
+        const cellStyle = {
+          width: c.options.width ?? "120px",
+          border: showCellBorders ? "1px dashed burlywood" : ""
+        };
+
         return (
           <AitCell
-            location={{...location, cell:i}}
-            addStyle={{ width: "80px" }}
+            location={{ ...location, cell: i }}
+            addStyle={cellStyle}
             key={i}
             type={c.options !== undefined ? c.options.type ?? type : type}
             initialData={c}
