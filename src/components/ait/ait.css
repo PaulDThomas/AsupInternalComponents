@@ -1,0 +1,64 @@
+
+/* Sort out table borders */
+table.ait-table {
+    border-collapse: collapse;
+}
+
+table.ait-table>tbody>tr:first-child>td.ait-cell {
+    border-top: 2px black solid !important;
+}
+
+table.ait-table>thead>tr:first-child>td.ait-cell {
+    border-top: 2px black solid !important;
+}
+
+table.ait-table>tbody>tr:first-child>td.ait-cell {
+    border-top: 2px black solid !important;
+}
+
+table.ait-table tbody tr:last-child td.ait-cell {
+    border-bottom: 2px black solid  !important;
+}
+
+/* Table cell positioning */
+.ait-cell {
+    position: relative;
+    min-width: 8px;
+    height: 100%;
+}    
+
+.ait-cell.ait-header-cell {
+    vertical-align: bottom;
+}    
+
+.ait-cell.ait-body-cell {
+    vertical-align: top;
+}    
+
+.ait-holder {
+    width: max-content;
+    position: relative;
+}
+
+.ait-options-button {
+    z-index: 1002;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin: 0 0 2px 2px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='darkorange' class='bi bi-info-circle-fill' viewBox='0 0 16 16'%3E%3Cpath d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z'/%3E%3C/svg%3E");
+}
+
+.ait-options-button {
+    top: 0;
+    right: -18px;
+}
+
+.ait-options-button.hidden {
+    visibility: hidden;
+}
+
+.ait-aie-holder {
+    height: 100%;
+    display: flex;
+}
