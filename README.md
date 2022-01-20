@@ -1,4 +1,4 @@
-## Components for internal editbox
+## Components for Asup Internal Components
 
 ### AsupInternalEditor
 Exends draft.js 
