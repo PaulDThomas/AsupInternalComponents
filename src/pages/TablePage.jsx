@@ -5,23 +5,38 @@ export const TablePage = () => {
 
   const ta = useRef();
   const [initialData, setInitialData] = useState({
+    options: [
+      { name: "tableType", label: "Type of table", value: "AmazeBalls" }
+    ],
     headerData: {
       rows: [
         {
           cells: [
-            { text: "A", originalText: "A", rowSpan: 2 },
+            {
+              text: "A", originalText: "A", rowSpan: 2, options: [
+                { name: "cellWidth", value: "150px" }
+              ]
+            },
             { text: "B", originalText: "B", colSpan: 3 },
           ],
+          options: [
+            { name: "headerRow1", value: "this is the header row option" }
+          ]
         },
         {
           cells: [
             { text: "C", originalText: "C" },
             { text: "E", originalText: "E" },
             { text: "D", originalText: "D" },
+          ],
+          options: [
+            { name: "headerRow2", value: "2nd row option" }
           ]
         }
       ],
-      options: []
+      options: [
+        { name: "header1", value: "this is the header row" }
+      ]
     },
     bodyData: {
       rowGroups: [
@@ -30,13 +45,16 @@ export const TablePage = () => {
             {
               cells: [
                 {
-                  text: "C0", originalText: "C0", rowSpan: 2, options: {
-                    type: "rowHeader"
-                  }
+                  text: "C0", originalText: "C0", rowSpan: 2, options: [
+                    { name: "cellType", value: "rowHeader" }
+                  ]
                 },
                 { text: "D0", originalText: "D0" },
                 { text: "E0", originalText: "E0" },
                 { text: "F0", originalText: "F0" },
+              ],
+              options: [
+                { name: "rowOptionA", value: "a value" }
               ]
             },
             {
@@ -45,10 +63,14 @@ export const TablePage = () => {
                 { text: "E1", originalText: "E1" },
                 { text: "F1", originalText: "F1" },
               ],
-              options: []
+              options: [
+                { name: "rowOptionA", value: "another value" }
+              ]
             },
           ],
-          options: []
+          options: [
+            { name: "rowGroupOption1", value: "first group" }
+          ]
         },
         {
           rows: [
@@ -56,17 +78,22 @@ export const TablePage = () => {
               cells: [
                 {
                   text: "C2", originalText: "C2",
-                  options: {
-                    type: "rowHeader"
-                  }
+                  options: [
+                    { name: "cellType", value: "rowHeader" }
+                  ]
                 },
                 { text: "D2", originalText: "D2" },
                 { text: "E2", originalText: "E2" },
                 { text: "F2", originalText: "F2" },
+              ],
+              options: [
+                { name: "rowOptionA", value: "first row in this group" }
               ]
             }
           ],
-          options: []
+          options: [
+            { name: "rowGroupOption1", value: "second group" }
+          ]
         }
       ]
     },

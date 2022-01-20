@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import "./ait.css";
 import { AitRow } from "./aitRow";
 
 export const AitRowGroup = ({

@@ -8,7 +8,22 @@
 }
 
 .aiw-title {
+    text-transform: capitalize;
     border-bottom: 1px black dashed;
     padding-bottom: 4px;
-    margin-bottom: 4px;
+    margin: 0 4px 4px 4px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.aiw-sub-title {
+    text-transform: capitalize;
+    margin: 6px 4px 0 4px;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.aiw-sub-title small {
+    width: 80px;
+    display: inline-block;
 }

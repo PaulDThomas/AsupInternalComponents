@@ -1,5 +1,3 @@
-import './ait.css';
-
 export const AitOption = ({ name, label, type, value, setValue, availableValues }) => {
 
   const renderSwitch = (type) => {

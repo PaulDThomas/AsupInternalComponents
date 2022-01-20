@@ -40,10 +40,10 @@ export const AitRow = ({
   useEffect(() => {
     const r = {
       cells: cells,
-      // options: options,
+      options: options,
     }
     if (typeof (returnData) === "function") returnData(r);
-  }, [cells, returnData])
+  }, [cells, options, returnData])
 
   // Check initial data, this can render every time, does not need to be inside a function call
   if (typeof (initialData) !== "object") return (
@@ -68,10 +68,10 @@ export const AitRow = ({
     <tr>
       {initialData.cells.map((c, i) => {
 
-        if (!c.options) c.options = {};
+        if (!c.options) c.options = [];
 
         const cellStyle = {
-          width: c.options.width ?? "120px",
+          width: c.options.reduce((cellWidth, o) => cellWidth ?? o.name === "cellWidth" ? o.value : null, null) ?? "120px",
           border: showCellBorders ? "1px dashed burlywood" : ""
         };
 
@@ -80,7 +80,7 @@ export const AitRow = ({
             location={{ ...location, cell: i }}
             addStyle={cellStyle}
             key={i}
-            type={c.options !== undefined ? c.options.type ?? type : type}
+            type={c.options.reduce((cellType, o) => cellType ?? o.name === "cellType" ? o.value : null, null) ?? type}
             initialData={c}
             returnData={(ret) => updateCell(ret, i)}
             onCellClick={"nowt"}

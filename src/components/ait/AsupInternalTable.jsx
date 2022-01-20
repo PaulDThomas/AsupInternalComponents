@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { AitTableBody } from "./aitTableBody";
 import { AitRowGroup } from "./aitRowGroup";
-import './ait.css';
+import { AitOptions } from "./aitOptions";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import './ait.css';
 
 // Taken from https://stackoverflow.com/questions/58886782/how-to-find-focused-react-component-like-document-activeelement
 // Handles change of active element
@@ -44,16 +45,17 @@ export const AsupInteralTable = ({
 
   const focusedElement = useActiveElement();
 
+  // const setCellOptions = (e) => { console.log("setCellOptions:"); console.dir(e); }
+
   useEffect(() => {
     if (focusedElement.closest(".ait-holder")) {
       const ds = focusedElement.closest("td").dataset;
-      setCurrentLocation(
-        Object.keys(ds)
-          .reduce((location, k) => {
-            location[k.substring(8)] = ds[k];
-            return location;
-          }, {})
-      );
+      const cl = Object.keys(ds)
+        .reduce((location, k) => {
+          location[k.substring(8)] = ds[k];
+          return location;
+        }, {});
+      setCurrentLocation(cl);
     }
     else {
       console.log("No table focus");
@@ -113,28 +115,50 @@ export const AsupInteralTable = ({
         </table>
       </div>
       <AsupInternalWindow
-        Title="Location"
+        Title="Options"
       >
-        <table>
-          <tbody>
-            <tr>
-              <td>Section</td>
-              <td>{currentLocation.TableSection ?? ""}</td>
-            </tr>
-            <tr>
-              <td>RowGroup</td>
-              <td>{currentLocation.RowGroup ?? ""}</td>
-            </tr>
-            <tr>
-              <td>Row</td>
-              <td>{currentLocation.Row ?? ""}</td>
-            </tr>
-            <tr>
-              <td>Cell</td>
-              <td>{currentLocation.Cell ?? ""}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div className='aiw-sub-title'><small>Table</small></div>
+        <AitOptions initialData={options} returnData={setOptions} />
+        <div className='aiw-sub-title'><small>Section: </small> {currentLocation.TableSection ?? ""}</div>
+        <div className='aiw-sub-title'><small>RowGroup: </small> {currentLocation.RowGroup ?? ""}</div>
+        <AitOptions
+          initialData={(
+            (!currentLocation)
+              ? null
+              : (currentLocation.TableSection === "body"
+                ? bodyData.rowGroups[currentLocation.RowGroup].options
+                : (currentLocation.TableSection === "header"
+                  ? headerData.options
+                  : null
+                )
+              )
+          )} />
+        <div className='aiw-sub-title'><small>Row: </small> {currentLocation.Row ?? ""}</div>
+        <AitOptions
+          initialData={(
+            (!currentLocation)
+              ? null
+              : (currentLocation.TableSection === "body"
+                ? bodyData.rowGroups[currentLocation.RowGroup].rows[currentLocation.Row].options
+                : (currentLocation.TableSection === "header"
+                  ? headerData.rows[currentLocation.Row].options
+                  : null
+                )
+              )
+          )} />
+        <div className='aiw-sub-title'><small>Cell: </small> {currentLocation.Cell ?? ""}</div>
+        <AitOptions
+          initialData={(
+            (!currentLocation)
+              ? null
+              : (currentLocation.TableSection === "body"
+                ? bodyData.rowGroups[currentLocation.RowGroup].rows[currentLocation.Row].cells[currentLocation.Cell].options
+                : (currentLocation.TableSection === "header"
+                  ? headerData.rows[currentLocation.Row].cells[currentLocation.Cell].options
+                  : null
+                )
+              )
+          )} />
       </AsupInternalWindow>
     </>
   );
