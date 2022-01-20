@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { AitTableBody } from "./aitTableBody";
 import { AitRowGroup } from "./aitRowGroup";
-import { AitOptionsWindow } from "./aitOptionsWindow";
 import './ait.css';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 
@@ -78,39 +77,41 @@ export const AsupInteralTable = ({
 
   // Print the table
   return (
-    <div
-      className="ait-holder"
-      // onMouseOver={aitShowProperties}
-      // onMouseLeave={aitHideProperties}
-      style={addStyle}
-    >
-      <table
-        className="ait-table"
+    <>
+      <div
+        className="ait-holder"
+        // onMouseOver={aitShowProperties}
+        // onMouseLeave={aitHideProperties}
+        style={addStyle}
       >
-        <thead>
+        <table
+          className="ait-table"
+        >
+          <thead>
+            <AitRowGroup
+              location={{ tableSection: "header", rowGroup: 0 }}
+              initialData={initialData.headerData ?? {}}
+              returnData={setHeaderData}
+              showCellBorders={showCellBorders}
+              type="header"
+            />
+          </thead>
+          <tbody>
+            <AitTableBody
+              initialData={initialData.bodyData ?? {}}
+              returnData={setBodyData}
+              showCellBorders={showCellBorders}
+            />
+          </tbody>
+          {/* <tfoot>
           <AitRowGroup
-            location={{ tableSection: "header", rowGroup: 0 }}
-            initialData={initialData.headerData ?? {}}
-            returnData={setHeaderData}
-            showCellBorders={showCellBorders}
-            type="header"
-          />
-        </thead>
-        <tbody>
-          <AitTableBody
-            initialData={initialData.bodyData ?? {}}
-            returnData={setBodyData}
-            showCellBorders={showCellBorders}
-          />
-        </tbody>
-        {/* <tfoot>
-          <AitRowGroup
-            initialData={initialData.footerData ?? {}}
-            returnData={setFooterData}
-            type="footer"
+          initialData={initialData.footerData ?? {}}
+          returnData={setFooterData}
+          type="footer"
           />
         </tfoot> */}
-      </table>
+        </table>
+      </div>
       <AsupInternalWindow
         Title="Location"
       >
@@ -135,6 +136,6 @@ export const AsupInteralTable = ({
           </tbody>
         </table>
       </AsupInternalWindow>
-    </div>
+    </>
   );
 };

@@ -1,4 +1,3 @@
-import React, { useRef, useCallback } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
 
@@ -9,21 +8,24 @@ export const AsupInternalWindow = ({
 }) => {
 
   return (
-    <Rnd
-      style={{
-        visibility: (Visible ? "visible" : "hidden"),
-      }}
-      bounds="window"
-      minWidth={"300px"}
-      minHeight={"150px"}
-      className={"aiw-holder"}
-      default={{x: 200, y:200}}
-    >
-      <div
+    <>
+      <Rnd
+        style={{
+          visibility: (Visible ? "visible" : "hidden"),
+          zIndex: 1001
+        }}
+        bounds="window"
+        minWidth={"300px"}
+        minHeight={"150px"}
+        className={"aiw-holder"}
+        default={{ x: window.innerHeight - 100, y: 100 }}
       >
-        <div className={"aiw-title"}>{Title}</div>
-        <div className={"aiw-body"}>{children}</div>
-      </div>
-    </Rnd>
+        <div
+        >
+          <div className={"aiw-title"}>{Title}</div>
+          <div className={"aiw-body"}>{children}</div>
+        </div>
+      </Rnd>
+    </>
   );
 }

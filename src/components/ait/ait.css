@@ -31,15 +31,16 @@ table.ait-table tbody tr:last-child td.ait-cell {
     vertical-align: bottom;
 }    
 
+.ait-cell.ait-row-header-cell {
+    vertical-align: top;
+}    
+
 .ait-cell.ait-body-cell {
     vertical-align: top;
 }    
 
-.ait-holder {
-    width: max-content;
-    position: relative;
-}
 
+/* Options button  */
 .ait-options-button {
     z-index: 1002;
     position: absolute;
@@ -58,6 +59,11 @@ table.ait-table tbody tr:last-child td.ait-cell {
     visibility: hidden;
 }
 
+/* Holders, positioning */
+.ait-holder {
+    width: max-content;
+    position: relative;
+}
 .ait-aie-holder {
     height: 100%;
     display: flex;
