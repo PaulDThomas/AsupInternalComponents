@@ -9,6 +9,7 @@ export const AitCell = ({
   returnData,
   type,
   editable = true,
+  onCellClick
 }) => {
   // Data holder
   const [text, setText] = useState(initialData.text);
@@ -36,7 +37,7 @@ export const AitCell = ({
 
   // Show hide/buttons
   // Show or hide style buttons
-  const aitShowButtons = () => { setButtonState(""); };
+  const aitShowButtons = () => { if (typeof(onCellClick) === "function") setButtonState(""); };
   const aitHideButtons = () => { setButtonState("hidden"); };
 
   // Render element
@@ -48,6 +49,10 @@ export const AitCell = ({
       onMouseOver={aitShowButtons}
       onMouseLeave={aitHideButtons}
       style={addStyle}
+      data-location-table-section={location.tableSection}
+      data-location-row-group={location.rowGroup}
+      data-location-row={location.row}
+      data-location-cell={location.cell}
     >
       <div className="ait-aie-holder"
       >
@@ -66,7 +71,7 @@ export const AitCell = ({
         />
         <div
           className={`ait-options-button ${buttonState === "hidden" ? "hidden" : ""}`}
-          onClick={(e) => { console.log(`Cell-Options-Click for ${Object.keys(location).map((k) => `${k}:${location[k]}`).join(", ")}`); }}
+          onClick={(e) => { onCellClick(e) }}
         />
       </div>
     </td>

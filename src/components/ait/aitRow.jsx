@@ -83,6 +83,7 @@ export const AitRow = ({
             type={c.options !== undefined ? c.options.type ?? type : type}
             initialData={c}
             returnData={(ret) => updateCell(ret, i)}
+            onCellClick={"nowt"}
           />
         );
       })}

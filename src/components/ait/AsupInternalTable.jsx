@@ -3,6 +3,26 @@ import { AitTableBody } from "./aitTableBody";
 import { AitRowGroup } from "./aitRowGroup";
 import { AitOptionsWindow } from "./aitOptionsWindow";
 import './ait.css';
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+
+// Taken from https://stackoverflow.com/questions/58886782/how-to-find-focused-react-component-like-document-activeelement
+// Handles change of active element
+const useActiveElement = () => {
+  const [active, setActive] = useState(document.activeElement);
+
+  const handleFocusIn = (e) => {
+    setActive(document.activeElement);
+  }
+
+  useEffect(() => {
+    document.addEventListener('focusin', handleFocusIn)
+    return () => {
+      document.removeEventListener('focusin', handleFocusIn)
+    };
+  }, [])
+
+  return active;
+}
 
 export const AsupInteralTable = ({
   initialData,
@@ -20,7 +40,26 @@ export const AsupInteralTable = ({
   const [bodyData, setBodyData] = useState(initialData.bodyData ?? {});
   //const [footerData, setFooterData] = useState(initialData.footerData ?? {});
   const [options, setOptions] = useState(initialData.options ?? []);
+  const [currentLocation, setCurrentLocation] = useState({});
   // const [optionsView, setOptionsView] = useState("hidden");
+
+  const focusedElement = useActiveElement();
+
+  useEffect(() => {
+    if (focusedElement.closest(".ait-holder")) {
+      const ds = focusedElement.closest("td").dataset;
+      setCurrentLocation(
+        Object.keys(ds)
+          .reduce((location, k) => {
+            location[k.substring(8)] = ds[k];
+            return location;
+          }, {})
+      );
+    }
+    else {
+      console.log("No table focus");
+    }
+  }, [focusedElement])
 
   // Show or hide style buttons
   // const aitShowProperties = () => { if (showOptions) { setOptionsView(showOptions); } };
@@ -45,17 +84,17 @@ export const AsupInteralTable = ({
       // onMouseLeave={aitHideProperties}
       style={addStyle}
     >
-      <table 
-      className="ait-table"
+      <table
+        className="ait-table"
       >
         <thead>
           <AitRowGroup
-            location={{tableSection:"header"}}
+            location={{ tableSection: "header", rowGroup: 0 }}
             initialData={initialData.headerData ?? {}}
             returnData={setHeaderData}
             showCellBorders={showCellBorders}
             type="header"
-            />
+          />
         </thead>
         <tbody>
           <AitTableBody
@@ -72,10 +111,30 @@ export const AsupInteralTable = ({
           />
         </tfoot> */}
       </table>
-      <AitOptionsWindow
-        initialData={initialData.options ?? []}
-        returnData={setOptions}
-      />
+      <AsupInternalWindow
+        Title="Location"
+      >
+        <table>
+          <tbody>
+            <tr>
+              <td>Section</td>
+              <td>{currentLocation.TableSection ?? ""}</td>
+            </tr>
+            <tr>
+              <td>RowGroup</td>
+              <td>{currentLocation.RowGroup ?? ""}</td>
+            </tr>
+            <tr>
+              <td>Row</td>
+              <td>{currentLocation.Row ?? ""}</td>
+            </tr>
+            <tr>
+              <td>Cell</td>
+              <td>{currentLocation.Cell ?? ""}</td>
+            </tr>
+          </tbody>
+        </table>
+      </AsupInternalWindow>
     </div>
   );
 };
