@@ -37,7 +37,7 @@ export const AitRowGroup = ({
     </tr>
   );
 
-  // Send data back
+  // Update held data
   const updateRows = (ret, i) => {
     //console.log(`Updating row ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
     const newRows = rows;

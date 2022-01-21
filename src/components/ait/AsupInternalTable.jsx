@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { AitTableBody } from "./aitTableBody";
 import { AitRowGroup } from "./aitRowGroup";
-import { AitOptions } from "./aitOptions";
+import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
 
@@ -118,10 +118,10 @@ export const AsupInteralTable = ({
         Title="Options"
       >
         <div className='aiw-sub-title'><small>Table</small></div>
-        <AitOptions initialData={options} returnData={setOptions} />
+        <AioOptionGroup initialData={options} returnData={setOptions} />
         <div className='aiw-sub-title'><small>Section: </small> {currentLocation.TableSection ?? ""}</div>
         <div className='aiw-sub-title'><small>RowGroup: </small> {currentLocation.RowGroup ?? ""}</div>
-        <AitOptions
+        <AioOptionGroup
           initialData={(
             (!currentLocation)
               ? null
@@ -134,7 +134,7 @@ export const AsupInteralTable = ({
               )
           )} />
         <div className='aiw-sub-title'><small>Row: </small> {currentLocation.Row ?? ""}</div>
-        <AitOptions
+        <AioOptionGroup
           initialData={(
             (!currentLocation)
               ? null
@@ -147,7 +147,7 @@ export const AsupInteralTable = ({
               )
           )} />
         <div className='aiw-sub-title'><small>Cell: </small> {currentLocation.Cell ?? ""}</div>
-        <AitOptions
+        <AioOptionGroup
           initialData={(
             (!currentLocation)
               ? null
