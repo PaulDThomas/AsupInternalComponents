@@ -12,7 +12,7 @@ export const AitRow = ({
 
   // Set up data holders
   const [cells, setCells] = useState(initialData.cells ?? []);
-  const [options, setOptions] = useState(initialData.options ?? {});
+  const [options, setOptions] = useState(initialData.options ?? []);
 
   // Updates to initial data
   useEffect(() => { setCells(initialData.cells ?? []); }, [initialData.cells]);

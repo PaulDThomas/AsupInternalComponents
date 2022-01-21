@@ -13,14 +13,12 @@ export const AitCell = ({
 }) => {
   // Data holder
   const [text, setText] = useState(initialData.text);
-  const [options, setOptions] = useState(initialData.options ?? {});
+  const [options, setOptions] = useState(initialData.options ?? []);
   const [buttonState, setButtonState] = useState("hidden");
 
   // Updates to initial data
-  useEffect(() => {
-    setText(initialData.text);
-    setOptions(initialData.options ?? {});
-  }, [initialData]);
+  useEffect(() => { setText(initialData.text);   }, [initialData.text]);
+  useEffect(() => { setOptions(initialData.options ?? []);   }, [initialData.options]);
 
   // Send data back
   useEffect(() => {

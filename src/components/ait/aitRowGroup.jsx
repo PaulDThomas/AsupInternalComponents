@@ -12,13 +12,11 @@ export const AitRowGroup = ({
 }) => {
   // Data holder
   const [rows, setRows] = useState(initialData.rows ?? []);
-  const [options, setOptions] = useState(initialData.options ?? {});
+  const [options, setOptions] = useState(initialData.options ?? []);
 
-  // Update from initial data
-  useEffect(() => { 
-    setRows(initialData.rows ?? []) 
-    setOptions(initialData.options ?? {})
-  }, [initialData]);
+  // Updates to initial data
+  useEffect(() => { setRows(initialData.rows ?? []); }, [initialData.rows]);
+  useEffect(() => { setOptions(initialData.options ?? {}); }, [initialData.options]);
 
   // Send data back
   useEffect(() => {
