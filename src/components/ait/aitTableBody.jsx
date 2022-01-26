@@ -26,7 +26,7 @@ export const AitTableBody = ({
 
   // Update data from components
   const updateRowGroup = (ret, i) => {
-    //console.log(`Updating row group {i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
+    console.log(`Updating row group ${i} in aitTableBody to... ${JSON.stringify(ret)}`);
     const newRowGroups = rowGroups;
     newRowGroups[i] = ret;
     setRowGroups(newRowGroups);

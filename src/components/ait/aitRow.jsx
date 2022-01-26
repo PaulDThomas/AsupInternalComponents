@@ -7,7 +7,9 @@ export const AitRow = ({
   initialData,
   returnData,
   showCellBorders,
-  type = "body"
+  type = "body",
+  rowGroupOptions,
+  setRowGroupOptions,
 }) => {
 
   // Set up data holders
@@ -20,6 +22,7 @@ export const AitRow = ({
 
   // Send data up the tree
   useEffect(() => {
+    console.log("returnData in aitRow");
     // All these parameters should be in the initial data
     const r = {
       cells: cells,
@@ -30,7 +33,7 @@ export const AitRow = ({
 
   // Update data from components
   const updateCell = (ret, i) => {
-    //console.log(`Updating cell ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
+    console.log(`Updating cell ${i} to... ${JSON.stringify(ret)}`);
     const newCells = cells;
     newCells[i] = ret;
     setCells(newCells);
@@ -70,20 +73,18 @@ export const AitRow = ({
 
         if (!c.options) c.options = [];
 
-        const cellStyle = {
-          width: c.options.reduce((cellWidth, o) => cellWidth ?? o.name === "cellWidth" ? o.value : null, null) ?? "120px",
-          border: showCellBorders ? "1px dashed burlywood" : ""
-        };
-
         return (
           <AitCell
-            location={{ ...location, cell: i }}
-            addStyle={cellStyle}
             key={i}
+            location={{ ...location, cell: i }}
             type={c.options.reduce((cellType, o) => cellType ?? o.name === "cellType" ? o.value : null, null) ?? type}
             initialData={c}
             returnData={(ret) => updateCell(ret, i)}
-            onCellClick={"nowt"}
+            rowGroupOptions={(i === 0 ? rowGroupOptions : null)}
+            setRowGroupOptions={(i === 0 ? setRowGroupOptions : null)}
+            rowOptions={(i === initialData.cells.length - 1 ? options : null)}
+            setRowOptions={(i === initialData.cells.length - 1 ? options : null)}
+            showCellBorders={showCellBorders}
           />
         );
       })}

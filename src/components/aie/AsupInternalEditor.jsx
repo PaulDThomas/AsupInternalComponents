@@ -59,7 +59,7 @@ export const AsupInternalEditor = ({
       chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
       // Add inline style starts and ends
       for (const s of b.inlineStyleRanges) {
-        chars[s.offset] = `<span class='${s.style}' style='${Object.entries(currentStyleMap[s.style]).map(([k, v]) => `${k}:${v}`).join(';')}'>${chars[s.offset]}`;
+        chars[s.offset] = `<span className='${s.style}' style='${Object.entries(currentStyleMap[s.style]).map(([k, v]) => `${k}:${v}`).join(';')}'>${chars[s.offset]}`;
         chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
       }
       return `<p>${chars.join("")}</p>`;

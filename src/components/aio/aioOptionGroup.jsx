@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import { AioOptionDefault } from "./aioOptionDefault";
 
-export const AioOptionGroup = ({ initialData, returnData }) => {
+export const AioOptionGroup = ({
+  initialData,
+  returnData
+}) => {
   // Data holder
-  const [options, setOptions] = useState(initialData ?? []);
-
-  // Updates to initial data
-  useEffect(() => { setOptions(initialData ?? []); }, [initialData]);
-
-  // Send data back
-  useEffect(() => {
-    if (typeof (returnData) === "function") returnData(options);
-  }, [options, returnData]);
+  const [options, setOptions] = useState(JSON.parse(JSON.stringify(initialData ?? [])));
 
   // Update current options from child object
   const updateOption = (ret, i) => {
@@ -42,6 +37,9 @@ export const AioOptionGroup = ({ initialData, returnData }) => {
           </div>
         );
       })}
+      <div style={{ width: "100%", textAlign: "center" }}>
+        <button className={"aio-option-update-button"} onClick={(e) => { returnData(options); }}>Update</button>
+      </div>
     </>
   );
 }

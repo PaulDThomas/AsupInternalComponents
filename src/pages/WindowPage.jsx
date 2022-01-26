@@ -18,17 +18,25 @@ export const WindowPage = (props) => {
               name="showWindowCheck"
               type="checkbox"
               checked={showWindow}
-              onChange={(e) => setShowWindow(e.target.checked)}
+              onChange={(e) => {
+                console.log(`Changing checkbox to ${e.target.checked}`);
+                setShowWindow(e.target.checked);
+              }}
             />
           </label>
+          <AsupInternalWindow
+            Visible={showWindow}
+            onClose={() => {
+              console.log(`Closing window in WindowPage`);
+              setShowWindow(false);
+            }
+            }
+            Title={"This is the window title"}
+          >
+            <p>Hello there!</p>
+          </AsupInternalWindow>
         </form>
       </div>
-      <AsupInternalWindow
-        Visible={showWindow}
-        Title={"This is the window title"}
-      >
-        <p>Hello there!</p>
-      </AsupInternalWindow>
     </>
   );
 }

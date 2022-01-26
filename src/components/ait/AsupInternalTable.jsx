@@ -34,21 +34,17 @@ export const AsupInteralTable = ({
   columnGroupProperties,
   addStyle,
   showCellBorders,
-  showOptions = "dialog",
 }) => {
   const [headerData, setHeaderData] = useState(initialData.headerData ?? {});
   const [bodyData, setBodyData] = useState(initialData.bodyData ?? {});
-  //const [footerData, setFooterData] = useState(initialData.footerData ?? {});
-  const [options, setOptions] = useState(initialData.options ?? []);
+  const [options, setOptions] = useState(initialData.options ?? {});
+  const [showOptions, setShowOptions] = useState(false);
   const [currentLocation, setCurrentLocation] = useState({});
-  // const [optionsView, setOptionsView] = useState("hidden");
 
   const focusedElement = useActiveElement();
 
-  // const setCellOptions = (e) => { console.log("setCellOptions:"); console.dir(e); }
-
   useEffect(() => {
-    if (focusedElement.closest(".ait-holder")) {
+    if (focusedElement.closest(".ait-holder td")) {
       const ds = focusedElement.closest("td").dataset;
       const cl = Object.keys(ds)
         .reduce((location, k) => {
@@ -68,14 +64,14 @@ export const AsupInteralTable = ({
 
   // Collate and return data
   useEffect(() => {
+    console.log("returnData in AsupInternalTable");
     const r = {
       headerData: headerData ?? {},
       bodyData: bodyData ?? {},
       //footerData: footerData ?? {},
-      options: options ?? [],
     };
     returnData(r);
-  }, [headerData, bodyData, options, returnData]);
+  }, [headerData, bodyData, returnData]);
 
   // Print the table
   return (
@@ -86,6 +82,13 @@ export const AsupInteralTable = ({
         // onMouseLeave={aitHideProperties}
         style={addStyle}
       >
+        <div style={{alignContent:"right"}}>
+          <div className='ait-table-options' style={{  }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-gear-fill" viewBox="0 0 16 16" onClick={(e) => { setShowOptions(true); }}>
+              <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+            </svg>
+          </div>
+        </div>
         <table
           className="ait-table"
         >
@@ -115,11 +118,12 @@ export const AsupInteralTable = ({
         </table>
       </div>
       <AsupInternalWindow
-        Title="Options"
+        Title={"Table options"}
+        Visible={showOptions}
       >
         <div className='aiw-sub-title'><small>Table</small></div>
         <AioOptionGroup initialData={options} returnData={setOptions} />
-        <div className='aiw-sub-title'><small>Section: </small> {currentLocation.TableSection ?? ""}</div>
+        {/* <div className='aiw-sub-title'><small>Section: </small> {currentLocation.TableSection ?? ""}</div>
         <div className='aiw-sub-title'><small>RowGroup: </small> {currentLocation.RowGroup ?? ""}</div>
         <AioOptionGroup
           initialData={(
@@ -132,7 +136,9 @@ export const AsupInteralTable = ({
                   : null
                 )
               )
-          )} />
+          )} 
+          returnData={(ret) => updateOptions(currentLocation, "rowGroup", ret)}
+          />
         <div className='aiw-sub-title'><small>Row: </small> {currentLocation.Row ?? ""}</div>
         <AioOptionGroup
           initialData={(
@@ -145,7 +151,9 @@ export const AsupInteralTable = ({
                   : null
                 )
               )
-          )} />
+          )}
+          returnData={(ret) => updateOptions(currentLocation, "row", ret)}
+        />
         <div className='aiw-sub-title'><small>Cell: </small> {currentLocation.Cell ?? ""}</div>
         <AioOptionGroup
           initialData={(
@@ -158,7 +166,9 @@ export const AsupInteralTable = ({
                   : null
                 )
               )
-          )} />
+          )}
+          returnData={(ret) => updateOptions(currentLocation, "cell", ret)}
+        /> */}
       </AsupInternalWindow>
     </>
   );

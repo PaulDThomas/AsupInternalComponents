@@ -39,7 +39,7 @@ export const AitRowGroup = ({
 
   // Update held data
   const updateRows = (ret, i) => {
-    //console.log(`Updating row ${i} to... ${Object.keys(ret).map((k) => `${k}:${ret[k]}`).join(", ")}`);
+    console.log(`Updating row ${i} to... ${JSON.stringify(ret)}`);
     const newRows = rows;
     newRows[i] = ret;
     setRows(newRows);
@@ -52,10 +52,12 @@ export const AitRowGroup = ({
           <AitRow
             key={i}
             type={type}
-            location={{...location, row:i}}
+            location={{ ...location, row: i }}
             showCellBorders={showCellBorders}
             initialData={row}
             returnData={(ret) => updateRows(ret, i)}
+            rowGroupOptions={(i === 0 ? options : null)}
+            setRowGroupOptions={(i === 0 ? setOptions : null)}
           />
         )
       })

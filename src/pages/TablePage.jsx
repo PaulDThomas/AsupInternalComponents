@@ -102,24 +102,28 @@ export const TablePage = () => {
   const [currentData, setCurrentData] = useState({});
 
   const updateCell = (cell) => {
+    console.log("updateCell in TablePage");
     cell.originalText = cell.text;
     return cell;
   };
   const updateRow = (row) => {
+    console.log("updateRow in TablePage");
     row.cells = row.cells.map((cell) => updateCell(cell));
     return row;
   };
   const updateRowGroup = (rowGroup) => {
+    console.log("updateRowGroup in TablePage");
     rowGroup.rows = rowGroup.rows.map((row) => updateRow(row));
     return rowGroup;
   };
   const updateTable = (table) => {
+    console.log("updateTable in TablePage");
     table.headerData = updateRowGroup(table.headerData);
     table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
     //table.footerData = updateRowGroup(table.footerData);
     return table;
   }
-
+  
   return (
     <>
       <div style={{

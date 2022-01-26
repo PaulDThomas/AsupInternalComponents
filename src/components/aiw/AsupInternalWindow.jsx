@@ -1,28 +1,45 @@
+import { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
 
 export const AsupInternalWindow = ({
   Title,
   Visible = true,
+  onClose,
   children,
 }) => {
+
+  const [showWindow, setShowWindow] = useState(Visible);
+  
+  // Update visibility
+  useEffect(() => { setShowWindow(Visible); }, [Visible]);
 
   return (
     <>
       <Rnd
         style={{
-          visibility: (Visible ? "visible" : "hidden"),
+          visibility: (showWindow ? "visible" : "hidden"),
           zIndex: 1001
         }}
         bounds="window"
-        minWidth={"300px"}
+        minWidth={"400px"}
         minHeight={"150px"}
         className={"aiw-holder"}
-        default={{ x: window.innerHeight - 100, y: 100 }}
+        dragHandleClassName="aiw-title"
       >
-        <div
+        <div style={{
+          overflow:"auto",
+          cursor:"default"
+        }}
         >
-          <div className={"aiw-title"}>{Title}</div>
+          <div className={"aiw-title"}>
+            <span>{Title}</span>
+            <span style={{float:"right"}} onClick={(e) => { 
+              setShowWindow(false); 
+              if (typeof(onClose) === "function") { onClose(); 
+              }
+            }}>x</span>
+          </div>
           <div className={"aiw-body"}>{children}</div>
         </div>
       </Rnd>
