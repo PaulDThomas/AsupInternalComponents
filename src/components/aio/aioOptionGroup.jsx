@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AioOptionDefault } from "./aioOptionDefault";
+import { useState } from "react";
+import { AioString } from "./aioString";
 
 export const AioOptionGroup = ({
   initialData,
@@ -16,24 +16,26 @@ export const AioOptionGroup = ({
     setOptions(newOptions);
   }
 
+  const getOptionType = (option, i) => {
+    switch (option.type) {
+      case ("string"): 
+      default:
+      return (
+        <AioString
+         Label={option.label ?? option.name}
+         Value={option.value}
+         SetValue={(ret) => updateOption(ret, i)}
+        />
+        )
+    }
+  }
+
   return (
     <>
       {options.map((k, i) => {
         return (
           <div key={i}>
-            <div>
-              <span className={"ait-option-label"}>{k.label ?? k.name}: </span>
-              <input
-                className={"aio-input"}
-                value={k.value}
-                onChange={(e) => updateOption(e.target.value, i)}
-              />
-            </div>
-            {/* <AioOptionDefault
-              key={i}
-              initialData={k}
-              returnData={(ret) => updateOption(ret, i)}
-            /> */}
+            {getOptionType(k, i)}
           </div>
         );
       })}

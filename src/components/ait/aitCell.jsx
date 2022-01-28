@@ -32,7 +32,7 @@ export const AitCell = ({
   useEffect(() => { setText(initialData.text); }, [initialData.text]);
   // Ensure all options are present
   useEffect(() => {
-    console.log("Setting intial options");
+    console.log(`Setting intial cell options, found ${initialData.options.length}`);
     const newOptions = [
       {
         name: "cellWidth",
