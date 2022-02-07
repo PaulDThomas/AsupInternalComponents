@@ -19,6 +19,24 @@ table.ait-table tbody tr:last-child td.ait-cell {
     border-bottom: 2px black solid !important;
 }
 
+.ait-table-options {
+    z-index: 1000;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    padding: 2px;
+    right: 0;
+    top: -20px;
+    background-repeat: no-repeat no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.ait-table-options.hidden {
+    visibility: hidden; 
+}
+
+
 /* Table cell positioning */
 .ait-cell {
     position: relative;
