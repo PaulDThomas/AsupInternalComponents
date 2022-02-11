@@ -22,7 +22,7 @@ export const AitRow = ({
 
   // Send data up the tree
   useEffect(() => {
-    console.log("returnData in aitRow");
+    //console.log("returnData in aitRow");
     // All these parameters should be in the initial data
     const r = {
       cells: cells,
@@ -33,7 +33,7 @@ export const AitRow = ({
 
   // Update data from components
   const updateCell = (ret, i) => {
-    console.log(`Updating cell ${i} to... ${JSON.stringify(ret)}`);
+    //console.log(`Updating cell ${i} to... ${JSON.stringify(ret)}`);
     const newCells = cells;
     newCells[i] = ret;
     setCells(newCells);

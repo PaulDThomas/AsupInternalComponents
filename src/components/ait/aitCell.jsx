@@ -1,8 +1,23 @@
-import { useState } from "react";
-import { useEffect } from "react/cjs/react.development";
+import { useState, useEffect } from "react";
 import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
+import { processOptions } from "../functions.js";
+
+const defaultOptions = [
+  {
+    name: "cellWidth",
+    label: "Minimum width",
+    value: "100px"
+  },
+];
+// {
+//   name: "originalText",
+//   label: "Original text",
+//   editable: false,
+//   value: initialData.originalText
+// },
+
 
 export const AitCell = ({
   initialData = {},
@@ -19,7 +34,8 @@ export const AitCell = ({
 }) => {
   // Data holder
   const [text, setText] = useState(initialData.text);
-  const [options, setOptions] = useState(initialData.options ?? []);
+  //const [options, setOptions] = useState(initialData.options ?? []);
+  const [options, setOptions] = useState(processOptions(initialData.options, defaultOptions));
   const [buttonState, setButtonState] = useState("hidden");
 
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
@@ -30,28 +46,27 @@ export const AitCell = ({
 
   // Updates to initial data
   useEffect(() => { setText(initialData.text); }, [initialData.text]);
-  // Ensure all options are present
   useEffect(() => {
-    console.log(`Setting intial cell options, found ${initialData.options.length}`);
+    //console.log(`Setting intial cell options update, found ${initialData.options.length}`);
     const newOptions = [
       {
         name: "cellWidth",
         label: "Minimum width",
         value: initialData.options.reduce((cellWidth, o) => cellWidth ?? (o.name === "cellWidth" ? o.value : null), null) ?? "120px"
       },
-      // {
-      //   name: "originalText",
-      //   label: "Original text",
-      //   editable: false,
-      //   value: initialData.originalText
-      // },
     ];
-    setOptions(newOptions);
-  }, [initialData.options, initialData.originalText]);
+    // const newOptions = [...initialData.options];
+    // for (let o of newOptions) {
+    //   if (initialData.options.find(i => i.name === o.name) !== undefined && initialData.options.find(i => i.name === o.name).value !== o.value) {
+    //     o.value = initialData.options.find(i => i.name === o.name).value;
+    //   }
+    // }
+    setOptions(newOptions); 
+  }, [initialData.options]);
 
   // Update cell style when options change
   useEffect(() => {
-    console.log("Setting cell style in aitCell");
+    //console.log("Setting cell style in aitCell");
     const style = {
       width: options.reduce((cellWidth, o) => cellWidth ?? (o.name === "cellWidth" ? o.value : null), null),
       border: showCellBorders ? "1px dashed burlywood" : ""
@@ -62,7 +77,7 @@ export const AitCell = ({
   // Send data back
   useEffect(() => {
     // All these parameters should be in the initial data
-    console.log("returnData in aitCell");
+    //console.log("returnData in aitCell");
     const r = {
       originalText: initialData.originalText,
       options: options ?? [],
@@ -73,14 +88,13 @@ export const AitCell = ({
     if (typeof (returnData) === "function") returnData(r);
   }, [initialData, options, returnData, text]);
 
-  // Show hide/buttons
-  // Show or hide style buttons
+  // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
   const aitHideButtons = () => { setButtonState("hidden"); };
 
   // Show windows
   const onShowOptionClick = (optionType) => {
-    console.log(`Show option click in aieCell for ${optionType}`);
+    // console.log(`Show option click in aieCell for ${optionType}`);
     switch (optionType) {
       case ("rowGroup"): setShowRowGroupOptions(true); break;
       case ("row"): setShowRowOptions(true); break;
@@ -90,7 +104,7 @@ export const AitCell = ({
   }
   // Hide windows
   const onCloseOption = (optionType) => {
-    console.log(`Hide option click in aieCell for ${optionType}`);
+    // console.log(`Hide option click in aieCell for ${optionType}`);
     switch (optionType) {
       case ("rowGroup"): setShowRowGroupOptions(false); break;
       case ("row"): setShowRowOptions(false); break;

@@ -39,7 +39,7 @@ export const AitRowGroup = ({
 
   // Update held data
   const updateRows = (ret, i) => {
-    console.log(`Updating row ${i} to... ${JSON.stringify(ret)}`);
+    //console.log(`Updating row ${i} to... ${JSON.stringify(ret)}`);
     const newRows = rows;
     newRows[i] = ret;
     setRows(newRows);

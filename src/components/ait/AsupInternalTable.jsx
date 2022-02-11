@@ -65,7 +65,7 @@ export const AsupInteralTable = ({
 
   // Collate and return data
   useEffect(() => {
-    console.log("returnData in AsupInternalTable");
+    //console.log("returnData in AsupInternalTable");
     const r = {
       headerData: headerData ?? {},
       bodyData: bodyData ?? {},
