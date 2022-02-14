@@ -3,6 +3,7 @@ import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { processOptions } from "../functions.js";
+import { AioExpander } from "../aio/aioExpander";
 
 const defaultOptions = [
   {
@@ -61,7 +62,7 @@ export const AitCell = ({
     //     o.value = initialData.options.find(i => i.name === o.name).value;
     //   }
     // }
-    setOptions(newOptions); 
+    setOptions(newOptions);
   }, [initialData.options]);
 
   // Update cell style when options change
@@ -164,10 +165,15 @@ export const AitCell = ({
         >
         </div>
         <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={(e) => { onCloseOption("cell"); }}>
-          <AioOptionGroup initialData={options} returnData={(ret) => {
-            console.log("Received cell options");
-            setOptions(ret);
-          }}
+          <div className="aiw-body-row">
+            <div className={"aio-label"}>Cell location: </div>
+            <div className={"aio-value"}><AioExpander inputObject={location}/></div>
+          </div>
+          <div className="aiw-body-row">
+            <div className={"aio-label"}>Original text: </div>
+            <div className={"aio-ro-value"}>{initialData.originalText}</div>
+          </div>
+          <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }}
           />
         </AsupInternalWindow>
 

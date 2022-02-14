@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AioString } from "./aioString";
+import "./aio.css";
 
 export const AioOptionGroup = ({
   initialData,
@@ -51,13 +52,13 @@ export const AioOptionGroup = ({
     <>
       {options.map((k, i) => {
         return (
-          <div key={i}>
+          <div className='aiw-body-row' key={i}>
             {getOptionType(k, i)}
           </div>
         );
       })}
       <div style={{ width: "100%", textAlign: "center" }}>
-        <button className={"aio-option-update-button"} onClick={(e) => { returnData(options); }}>Update</button>
+        <button className={"aio-update-button"} onClick={(e) => { returnData(options); }}>Update</button>
         {/* <button className={"aio-option-update-button"} onClick={returnF}>Update</button> */}
         {/* <button className={"aio-option-update-button"} onClick={(e) => { 
           console.log("Returning data from options group");

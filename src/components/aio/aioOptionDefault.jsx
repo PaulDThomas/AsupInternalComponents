@@ -9,9 +9,9 @@ export const AioOptionDefault = ({
   // Data holder
   const [currentValue, setCurrentValue] = useState(initialData.value ?? "");
 
-    // Updates to initial data
-    // useEffect(() => { setRows(initialData.rows ?? []); }, [initialData.rows]);
-    // useEffect(() => { setOptions(initialData.options ?? {}); }, [initialData.options]);
+  // Updates to initial data
+  // useEffect(() => { setRows(initialData.rows ?? []); }, [initialData.rows]);
+  // useEffect(() => { setOptions(initialData.options ?? {}); }, [initialData.options]);
 
   // Send data back
   useEffect(() => {
@@ -21,12 +21,14 @@ export const AioOptionDefault = ({
 
   return (
     <div>
-      <span className={"ait-option-label"}>{initialData.label ?? initialData.name}: </span>
-      <input
-        className={"aio-input"}
-        value={currentValue}
-        onChange={(e) => setCurrentValue(e.target.value)}
-      />
+      <span className={"aio-label"}>{initialData.label ?? initialData.name}: </span>
+      <div className={"aio-input-holder"}>
+        <input
+          className={"aio-input"}
+          value={currentValue}
+          onChange={(e) => setCurrentValue(e.target.value)}
+        />
+      </div>
     </div>
   );
 }

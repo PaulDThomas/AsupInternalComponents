@@ -102,10 +102,3 @@ table.ait-table tbody tr:last-child td.ait-cell {
     height: 100%;
     display: flex;
 }
-
-/* Options window */
-span.ait-option-label {
-    min-width: 125px;
-    padding-left: 1rem;
-    display: inline-block;
-}

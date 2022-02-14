@@ -7,13 +7,15 @@ export const AioString = (
 ) => {
 
   return (
-  <div>
-    <span className={"ait-option-label"}>{Label}: </span>
-    <input
-      className={"aio-input"}
-      value={Value}
-      onChange={(e) => SetValue(e.target.value)}
-    />
-  </div>
+    <div>
+      <div className={"aio-label"}>{Label}: </div>
+      <div className={"aio-input-holder"}>
+        <input
+          className={"aio-input"}
+          value={Value}
+          onChange={(e) => SetValue(e.target.value)}
+        />
+      </div>
+    </div>
   )
 }
