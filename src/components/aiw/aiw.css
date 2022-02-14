@@ -7,6 +7,13 @@
     height: 100%
 }
 
+.aiw-inner {
+    overflow-x: auto;
+    overflow-y: auto;
+    cursor: default;
+    flex-grow: 1;
+}
+
 .aiw-title {
     text-transform: capitalize;
     border-bottom: 1px black dashed;
@@ -14,6 +21,15 @@
     margin: 0 4px 4px 4px;
     font-size: 1.2rem;
     font-weight: 600;
+    flex-grow: 1;
+}
+
+.aiw-title-text {
+    display: inline-block;
+}
+
+.aiw-title-close {
+    float: right;
 }
 
 .aiw-sub-title {
@@ -26,4 +42,13 @@
 .aiw-sub-title small {
     width: 80px;
     display: inline-block;
+}
+
+.aiw-body {
+    overflow: none;
+}
+
+.aiw-body-row {
+    display: flex;
+    align-items: flex-start;
 }

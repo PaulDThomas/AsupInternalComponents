@@ -33,7 +33,19 @@ export const WindowPage = (props) => {
             }
             Title={"This is the window title"}
           >
-            <p>Hello there!</p>
+            <div style={{
+              border: "black solid 1px",
+              minHeight: "250px",
+              width: "500px",
+              padding: "-2px -2px -2px -2px",
+              zIndex: "500",
+              backgroundColor: "white",
+              borderRadius: "8px",
+            }}>
+              <p style={{ padding: "0 1rem" }}>Internal Child 1</p>
+              <p style={{ padding: "0 1rem" }}>Internal Child 2</p>
+              <p style={{ padding: "0 1rem" }}>Internal Child 3</p>
+            </div>
           </AsupInternalWindow>
         </form>
       </div>

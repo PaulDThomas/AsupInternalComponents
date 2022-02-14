@@ -19,7 +19,8 @@ export const AsupInternalWindow = ({
       <Rnd
         style={{
           visibility: (showWindow ? "visible" : "hidden"),
-          zIndex: 1001
+          zIndex: 1001,
+          display:"flex"
         }}
         bounds="window"
         minWidth={"400px"}
@@ -27,18 +28,14 @@ export const AsupInternalWindow = ({
         className={"aiw-holder"}
         dragHandleClassName="aiw-title"
       >
-        <div style={{
-          overflow:"auto",
-          cursor:"default"
-        }}
-        >
+        <div className="aiw-inner">
           <div className={"aiw-title"}>
-            <span>{Title}</span>
-            <span style={{float:"right"}} onClick={(e) => { 
+            <div className={"aiw-title-text"}>{Title}</div>
+            <div className={"aiw-title-close"} onClick={(e) => { 
               setShowWindow(false); 
               if (typeof(onClose) === "function") { onClose(); 
               }
-            }}>x</span>
+            }}>x</div>
           </div>
           <div className={"aiw-body"}>{children}</div>
         </div>
