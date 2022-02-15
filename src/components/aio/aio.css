@@ -61,3 +61,8 @@
     min-width: 80px;
     padding-left: 0.75rem;
 }
+
+/* Update button */
+.aio-update-button {
+    margin-top: 0.5rem;
+}

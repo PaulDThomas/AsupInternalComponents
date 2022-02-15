@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { AioString } from "./aioString";
+import { getOptionType } from "./getOptionType";
+
 import "./aio.css";
+
 
 export const AioOptionGroup = ({
   initialData,
@@ -34,26 +36,12 @@ export const AioOptionGroup = ({
     setOptions(newOptions);
   };
 
-  const getOptionType = (option, i) => {
-    switch (option.type) {
-      case ("string"):
-      default:
-        return (
-          <AioString
-            Label={option.label ?? option.name}
-            Value={option.value}
-            SetValue={(ret) => updateOption(ret, i)}
-          />
-        )
-    }
-  }
-
   return (
     <>
       {options.map((k, i) => {
         return (
           <div className='aiw-body-row' key={i}>
-            {getOptionType(k, i)}
+            {getOptionType(k, (ret) => { updateOption(ret, i) })}
           </div>
         );
       })}
