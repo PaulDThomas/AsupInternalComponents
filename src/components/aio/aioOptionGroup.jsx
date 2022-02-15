@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getOptionType } from "./getOptionType";
+import { AioPrintOption } from "./aioPrintOption.tsx";
 
 import "./aio.css";
 
@@ -41,7 +41,7 @@ export const AioOptionGroup = ({
       {options.map((k, i) => {
         return (
           <div className='aiw-body-row' key={i}>
-            {getOptionType(k, (ret) => { updateOption(ret, i) })}
+            {AioPrintOption(k, (ret) => { updateOption(ret, i) })}
           </div>
         );
       })}
