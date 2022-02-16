@@ -8,6 +8,7 @@ import { EditorPage } from './pages/EditorPage';
 import { TablePage } from './pages/TablePage';
 import "./pages/pages.css";
 import { WindowPage } from './pages/WindowPage';
+import { ExpanderPage } from 'pages/ExpanderPage';
 
 function App() {
 
@@ -40,9 +41,10 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<TablePage />} />
+          <Route path="/" element={<ExpanderPage />} />
           <Route path="/table" element={<TablePage />} />
           <Route path="/editor" element={<EditorPage />} />
+          <Route path="/expander" element={<ExpanderPage />} />
           <Route path="/window" element={<WindowPage />} />
         </Routes>
       </div>
