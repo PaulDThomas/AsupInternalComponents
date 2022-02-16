@@ -1,5 +1,5 @@
 {
-  "name": "AsupInternalComponents",
+  "name": "@asup/internal-components",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

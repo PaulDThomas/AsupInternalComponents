@@ -19,14 +19,14 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
 
   if (!isExpanded) {
     return (
-      <div className="aio-row">
+      <>
         <AioLabel label={props.label} />
         <div className="aio-input-holder">
           <span className="aiox closed">
             <div className="aiox-button" onClick={(e) => setIsExpanded(true)} />
             <span className="aiox-value">{
               Array.isArray(props.inputObject) ?
-                Object.values(props.inputObject).filter(el => typeof (el) === "object").length > 0 
+                Object.values(props.inputObject).filter(el => typeof (el) === "object").length > 0
                   ? `${props.inputObject.length} item${props.inputObject.length !== 1 ? "s" : ""}`
                   : Object.values(props.inputObject).join(", ")
                 : Object.keys(props.inputObject)
@@ -35,12 +35,12 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
             }</span>
           </span>
         </div>
-      </div>
+      </>
     );
   }
   else {
     return (
-      <div className="aio-row">
+      <>
         <AioLabel label={props.label} />
         <div className="aio-input-holder">
           <span className="aiox open">
@@ -49,26 +49,29 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
               Array.isArray(props.inputObject) ?
                 <AioArraySortable
                   inputArray={props.inputObject}
-                  updateArray={props.updateObject} 
-                  />
-                : Object.keys(props.inputObject).map((k: string) => {
+                  updateArray={props.updateObject}
+                />
+                : Object.keys(props.inputObject).map((k: string, i: number) => {
                   return (
                     <AioPrintItem
                       key={k}
+                      id={k}
                       label={k}
                       value={props.inputObject[k]}
-                      setValue={(ret) => {
-                        const newObject = { ...props.inputObject };
-                        newObject[k] = ret;
-                        if (props.updateObject) props.updateObject(newObject);
-                      }}
+                      setValue={
+                        (props.updateObject) ? (ret) => {
+                          const newObject = { ...props.inputObject };
+                          newObject[k] = ret;
+                          if (props.updateObject) props.updateObject(newObject);
+                        } : undefined
+                      }
                     />
                   );
                 })
             }</div>
           </span>
         </div>
-      </div>
+      </>
     );
   }
 }

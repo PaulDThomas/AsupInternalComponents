@@ -5,14 +5,22 @@ interface AioLabelProps {
 }
 
 export const AioLabel = (props: AioLabelProps): JSX.Element => {
-  if (props.label === undefined) 
+  if (props.label === undefined)
     return (<></>);
 
   return (
     <div className={"aio-label"}>{
-      props.label !== "!!grip!!"
-        ? `${props.label}${props.label ? ":" : ""}`
-        : <button className="aiox-button aiox-list"></button>
+      // props.label === "!!grip!!"
+      //   ? <button className="aiox-button aiox-list"></button>
+      //   : props.label === "!!updown!!"
+      //     ? (
+      //       <div className="aiox-button-stack">
+      //         <button className="aiox-button aiox-up"></button>
+      //         <button className="aiox-button aiox-down"></button>
+      //       </div>
+      //     )
+      //     : 
+      `${props.label}${props.label ? ":" : ""}`
     }</div>
   );
 }

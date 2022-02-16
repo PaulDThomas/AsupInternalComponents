@@ -13,6 +13,7 @@ export const ExpanderPage = () => {
     stringList: [
       "This",
       "is",
+      "is",
       "a",
       "string list"
     ],

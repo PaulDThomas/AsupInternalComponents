@@ -2,14 +2,14 @@ import * as React from "react";
 import { AioLabel } from "./aioLabel";
 
 interface AioNumberProps {
-  label: string,
   value: number,
+  label?: string,
   setValue?: (value: number) => void,
 }
 
 export const AioNumber = (props: AioNumberProps): JSX.Element => {
   return (
-    <div className='aio-row'>
+    <>
       <AioLabel label={props.label} />
       <div className={"aio-input-holder"}>
         {(typeof (props.setValue) !== "function")
@@ -29,6 +29,6 @@ export const AioNumber = (props: AioNumberProps): JSX.Element => {
           />
         }
       </div>
-    </div>
+    </>
   );
 }

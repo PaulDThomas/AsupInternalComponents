@@ -4,55 +4,50 @@ import { AioNumber } from "./aioNumber";
 import { AioString } from "./aioString";
 
 interface AioPrintItemProps {
-  label: string,
+  id: string,
   value: any,
+  label?: string,
   setValue?: (value: any) => void,
+  moveUp?: () => void,
+  moveDown?: () => void,
+  addItem?: () => void,
+  removeItem?: () => void,
 };
 
-export const AioPrintItem = (props: AioPrintItemProps): JSX.Element => {
+const renderLineItem = (value: any, label?: string, setValue?: (value: any) => void) => {
 
-  // Undefined or missing
-  if (props.value === undefined || props.value === null) {
-    return (
-      <AioString
-        label={props.label}
-        value={props.value}
-        setValue={(typeof (props.setValue) === "function")
-          ?
-          (ret: string) => { if (props.setValue) props.setValue(ret); }
-          :
-          undefined
-        } />
-    );
-  }
+  // Treat undefined or null as a string
+  if (value === undefined || value === null) value = "";
 
-  switch (typeof (props.value)) {
+  switch (typeof (value)) {
     // Object, need another expander
     case ("object"):
       return (
         <AioExpander
-          label={props.label}
-          inputObject={props.value}
-          updateObject={(typeof (props.setValue) === "function")
-          ?
-          (ret: object) => { if (props.setValue) props.setValue(ret); }
-          :
-          undefined
-          }/>
+          label={label}
+          inputObject={value}
+          updateObject={(typeof (setValue) === "function")
+            ?
+            (ret: object) => { if (setValue) setValue(ret); }
+            :
+            undefined
+          }
+        />
       );
 
     // Number
     case ("number"):
       return (
         <AioNumber
-          label={props.label}
-          value={props.value}
-          setValue={(typeof (props.setValue) === "function")
+          label={label}
+          value={value}
+          setValue={(typeof (setValue) === "function")
             ?
-            (ret: number) => { if (props.setValue) props.setValue(ret); }
+            (ret: number) => { if (setValue) setValue(ret); }
             :
             undefined
-          } />
+          }
+        />
       );
 
     // String or default
@@ -60,14 +55,34 @@ export const AioPrintItem = (props: AioPrintItemProps): JSX.Element => {
     default:
       return (
         <AioString
-          label={props.label}
-          value={props.value}
-          setValue={(typeof (props.setValue) === "function")
+          label={label}
+          value={value}
+          setValue={(typeof (setValue) === "function")
             ?
-            (ret: string) => { if (props.setValue) props.setValue(ret); }
+            (ret: string) => { if (setValue) setValue(ret); }
             :
             undefined
-          } />
+          }
+        />
       );
   }
+}
+
+export const AioPrintItem = (props: AioPrintItemProps): JSX.Element => {
+  return (
+    <div className="aio-row">
+      <div className="aiox-button-holder">
+        {typeof (props.moveUp) === "function"
+          ? <div className="aiox-button aiox-up" onClick={props.moveUp} />
+          : typeof (props.moveDown) === "function"
+            ? <div className="aiox-button" style={{ margin: 0 }} />
+            : <></>
+        }
+        {typeof (props.addItem) === "function" ? <div className="aiox-button aiox-plus" onClick={props.addItem} /> : <></>}
+        {typeof (props.removeItem) === "function" ? <div className="aiox-button aiox-minus" onClick={props.removeItem} /> : <></>}
+        {typeof (props.moveDown) === "function" ? <div className="aiox-button aiox-down" onClick={props.moveDown} /> : ""}
+      </div>
+      {renderLineItem(props.value, props.label, props.setValue)}
+    </div>
+  );
 }
