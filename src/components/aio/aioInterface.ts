@@ -1,7 +1,8 @@
-
 export interface Option {
-    name: string,
-    label: string,
-    type: string,
-    value: any,
-  }
+  type: string,
+  name: string,
+  value: any,
+  label?: string,
+}
+
+export interface OptionGroup extends Array<Option> {};

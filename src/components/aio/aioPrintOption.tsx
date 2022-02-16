@@ -1,21 +1,28 @@
 import * as React from "react";
-import { AioString } from "./aioString.jsx";
+import { AioString } from "./aioString";
 import { Option } from "./aioInterface.js";
 
-export const AioPrintOption = (option: Option, updateOption: () => void): JSX.Element => {
-    if (!option) {
-      return (<></>);
-    }
+interface AioPrintOptionProps {
+  option: Option, 
+  updateOption?: (value: any) => void,
+};
 
-    switch (option.type) {
-      case ("string"):
-      default:
-        return (
-          <AioString
-            Label={option.label ?? option.name}
-            Value={option.value}
-            SetValue={updateOption}
-          />
-        )
-    }
+export const AioPrintOption = ( props: AioPrintOptionProps ): JSX.Element => {
+  if (!props.option) {
+    console.log("Returning notihng from AioPrintOption");
+    console.log(JSON.stringify(props));
+    return (<></>);
   }
+
+  switch (props.option.type) {
+    case ("string"):
+    default:
+      return (
+        <AioString
+          label={props.option.label ?? props.option.name}
+          value={props.option.value}
+          setValue={(ret:string) => { if (props.updateOption) props.updateOption(ret); } }
+        />
+      )
+  }
+}

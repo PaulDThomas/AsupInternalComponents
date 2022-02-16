@@ -19,13 +19,12 @@
 .aiox {
     padding: 0;
 }
-.aiox, .aiox .aiox-table {
+.aiox {
     display: inline-flex;
     align-items: flex-start;
 }
 
 .aiox-table {
-    transition: max-width 200ms ease-in;
     padding: 0;
     margin: 0;
     display: table;
@@ -33,7 +32,15 @@
     width: 100%;
 }
 
-.aiox-table td {
+.aiox-table .aio-row {
+    display: table-row;
+}
+
+.aiox-table .aio-label, .aiox-table .aio-input-holder {
+    display: table-cell;
+}
+
+.aiox-table .aio-label, .aiox-table .aio-input-holder {
     border: 1px dotted burlywood;
     padding: 0 8px 0 8px;
 }
