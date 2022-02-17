@@ -18,8 +18,8 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
     default:
       return (
         <AioPrintItem
-          id={props.option.optionName}
-          label={props.option.label ?? props.option.optionName}
+          id={props.option.optionName as string}
+          label={(props.option.label ?? props.option.optionName) as string}
           value={props.option.value}
           setValue={(ret: string) => { if (props.updateOption) props.updateOption(ret); }}
         />
