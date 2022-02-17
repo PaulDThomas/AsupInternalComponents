@@ -3,27 +3,27 @@ import { useState, useEffect } from "react";
 import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
-import { processOptions } from "../functions.js";
+import { processOptions } from "../functions";
 import { AioExpander } from "../aio/aioExpander";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
-import { Option, OptionGroup, OptionType, CellOptionNames } from "components/aio/aioInterface";
+import { OptionGroup, OptionType, AitCellOptionNames } from "components/aio/aioInterface";
 
 interface AitCellProps {
   initialData: AitCellData,
   location: AitLocation,
   returnData: (ret: AitCellData) => void,
-  showCellBorders: boolean,
+  showCellBorders?: boolean,
   type: AitCellType,
   editable: boolean,
-  rowGroupOptions: OptionGroup,
-  setRowGroupOptions: (ret: OptionGroup) => void,
-  rowOptions: OptionGroup,
-  setRowOptions: (ret: OptionGroup) => void,
+  rowGroupOptions?: OptionGroup,
+  setRowGroupOptions?: (ret: OptionGroup) => void,
+  rowOptions?: OptionGroup,
+  setRowOptions?: (ret: OptionGroup) => void,
 };
 
 const defaultOptions: OptionGroup = [
   {
-    optionName: CellOptionNames.cellWidth,
+    optionName: AitCellOptionNames.cellWidth,
     label: "Minimum width",
     value: "100px",
     type: OptionType.string,
@@ -47,19 +47,16 @@ export const AitCell = (props: AitCellProps) => {
   useEffect(() => { setText(props.initialData.text); }, [props.initialData.text]);
   useEffect(() => {
     //console.log(`Setting intial cell options update, found ${initialData.options.length}`);
-    const newOptions = [
+    const newOptions: OptionGroup = [
       {
-        optionName: "cellWidth",
+        optionName: AitCellOptionNames.cellWidth,
         label: "Minimum width",
-        value: props.initialData.options.reduce((cellWidth, o) => cellWidth ?? (o.optionName === "cellWidth" ? o.value : null), null) ?? "120px"
+        type: OptionType.string,
+        value: props.initialData.options.find(o => o.optionName === AitCellOptionNames.cellWidth) !== undefined
+          ? props.initialData.options.find(o => o.optionName === AitCellOptionNames.cellWidth)!.value
+          : "120px"
       },
     ];
-    // const newOptions = [...initialData.options];
-    // for (let o of newOptions) {
-    //   if (initialData.options.find(i => i.name === o.optionName) !== undefined && initialData.options.find(i => i.name === o.optionName).value !== o.value) {
-    //     o.value = initialData.options.find(i => i.name === o.optionName).value;
-    //   }
-    // }
     setOptions(newOptions);
   }, [props.initialData.options]);
 
@@ -67,11 +64,14 @@ export const AitCell = (props: AitCellProps) => {
   useEffect(() => {
     //console.log("Setting cell style in aitCell");
     const style = {
-      width: options.reduce((cellWidth: string, o: Option) => cellWidth ?? (o.optionName === "cellWidth" ? o.value : null), null),
+      width: options.find(o => o.optionName === AitCellOptionNames.cellWidth) !== undefined
+        ? options.find(o => o.optionName === AitCellOptionNames.cellWidth)!.value
+        : undefined,
       border: props.showCellBorders ? "1px dashed burlywood" : ""
     }
     setCellStyle(style);
   }, [options, props.showCellBorders]);
+
 
   // Send data back
   useEffect(() => {

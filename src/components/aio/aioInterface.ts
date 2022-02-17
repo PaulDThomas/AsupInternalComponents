@@ -1,11 +1,11 @@
 export interface Option {
   type: OptionType,
-  optionName: CellOptionNames | RowOptionNames | RowGroupOptionNames | TableOptionNames ,
+  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames,
   value: any,
   label?: string,
 }
 
-export interface OptionGroup extends Array<Option> {};
+export interface OptionGroup extends Array<Option> { };
 
 export enum OptionType {
   string = "string",
@@ -14,9 +14,9 @@ export enum OptionType {
   object = "object",
 }
 
-export enum CellOptionNames {
+export enum AitCellOptionNames {
   cellWidth = "cellWidth",
 };
-export enum RowOptionNames {};
-export enum RowGroupOptionNames {};
-export enum TableOptionNames {};
+export enum AitRowOptionNames { };
+export enum AitRowGroupOptionNames { };
+export enum AitTableOptionNames { };

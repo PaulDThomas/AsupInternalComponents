@@ -7,10 +7,10 @@ import "./aio.css";
 
 interface AioOptionGroupProps {
   initialData: OptionGroup,
-  returnData: (ret: OptionGroup) => void,
+  returnData?: (ret: OptionGroup) => void,
 }
 
-export const AioOptionGroup = ( props: AioOptionGroupProps): JSX.Element => {
+export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
 
   // Data holder
   const [options, setOptions] = useState((props.initialData ?? []).map(a => { return { ...a } }));
@@ -50,7 +50,7 @@ export const AioOptionGroup = ( props: AioOptionGroupProps): JSX.Element => {
         );
       })}
       <div style={{ width: "100%", textAlign: "center" }}>
-        <button className={"aio-update-button"} onClick={(e: React.MouseEvent<Element, MouseEvent>) => { props.returnData(options); }}>Update</button>
+        <button className={"aio-update-button"} onClick={(e: React.MouseEvent<Element, MouseEvent>) => { if (typeof (props.returnData) === "function") props.returnData(options); }}>Update</button>
       </div>
     </>
   );
