@@ -77,7 +77,7 @@ export const AitRow = ({
           <AitCell
             key={i}
             location={{ ...location, cell: i }}
-            type={c.options.reduce((cellType, o) => cellType ?? o.name === "cellType" ? o.value : null, null) ?? type}
+            type={c.options.reduce((cellType, o) => cellType ?? o.optionName === "cellType" ? o.value : null, null) ?? type}
             initialData={c}
             returnData={(ret) => updateCell(ret, i)}
             rowGroupOptions={(i === 0 ? rowGroupOptions : null)}

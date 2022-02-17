@@ -1,6 +1,6 @@
 export interface Option {
   type: string,
-  name: string,
+  optionName: string,
   value: any,
   label?: string,
 }

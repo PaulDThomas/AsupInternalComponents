@@ -41,7 +41,7 @@ function App() {
         </nav>
 
         <Routes>
-          <Route path="/" element={<ExpanderPage />} />
+          <Route path="/" element={<TablePage />} />
           <Route path="/table" element={<TablePage />} />
           <Route path="/editor" element={<EditorPage />} />
           <Route path="/expander" element={<ExpanderPage />} />

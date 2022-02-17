@@ -1,6 +1,6 @@
 // Set default options, name, label & available choices
 // const defaultOptions = [
-//     { name: "tableType", label: "Type of table", availableChoices: [ 
+//     { optionName: "tableType", label: "Type of table", availableChoices: [ 
 //       {"value": "Amazeballs", "label": "Amazing table"},
 //       {"value": "Summary", "label": "Summary table"},
 //       {"value": "TTE", "label": "Time to event table"},
@@ -12,7 +12,7 @@
   
     // Get each value, or add blank
     for(let o of newOptions) {
-      o.value = ((initialOptions ?? []).find((i) => { return i.name === o.name; }) !== undefined) ? initialOptions.find((i) => { return i.name === o.name; }).value : o.value;
+      o.value = ((initialOptions ?? []).find((i) => { return i.optionName === o.optionName; }) !== undefined) ? initialOptions.find((i) => { return i.optionName === o.optionName; }).value : o.value;
     }
     return newOptions;
     //return initialOptions ?? [];

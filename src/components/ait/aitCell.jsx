@@ -7,13 +7,13 @@ import { AioExpander } from "../aio/aioExpander";
 
 const defaultOptions = [
   {
-    name: "cellWidth",
+    optionName: "cellWidth",
     label: "Minimum width",
     value: "100px"
   },
 ];
 // {
-//   name: "originalText",
+//   optionName: "originalText",
 //   label: "Original text",
 //   editable: false,
 //   value: initialData.originalText
@@ -51,15 +51,15 @@ export const AitCell = ({
     //console.log(`Setting intial cell options update, found ${initialData.options.length}`);
     const newOptions = [
       {
-        name: "cellWidth",
+        optionName: "cellWidth",
         label: "Minimum width",
-        value: initialData.options.reduce((cellWidth, o) => cellWidth ?? (o.name === "cellWidth" ? o.value : null), null) ?? "120px"
+        value: initialData.options.reduce((cellWidth, o) => cellWidth ?? (o.optionName === "cellWidth" ? o.value : null), null) ?? "120px"
       },
     ];
     // const newOptions = [...initialData.options];
     // for (let o of newOptions) {
-    //   if (initialData.options.find(i => i.name === o.name) !== undefined && initialData.options.find(i => i.name === o.name).value !== o.value) {
-    //     o.value = initialData.options.find(i => i.name === o.name).value;
+    //   if (initialData.options.find(i => i.name === o.optionName) !== undefined && initialData.options.find(i => i.name === o.optionName).value !== o.value) {
+    //     o.value = initialData.options.find(i => i.name === o.optionName).value;
     //   }
     // }
     setOptions(newOptions);
@@ -69,7 +69,7 @@ export const AitCell = ({
   useEffect(() => {
     //console.log("Setting cell style in aitCell");
     const style = {
-      width: options.reduce((cellWidth, o) => cellWidth ?? (o.name === "cellWidth" ? o.value : null), null),
+      width: options.reduce((cellWidth, o) => cellWidth ?? (o.optionName === "cellWidth" ? o.value : null), null),
       border: showCellBorders ? "1px dashed burlywood" : ""
     }
     setCellStyle(style);
