@@ -1,18 +1,21 @@
+import * as React from "react";
 import { useState, useEffect } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
 
-export const AsupInternalWindow = ({
-  Title,
-  Visible = true,
-  onClose,
-  children,
-}) => {
+interface AsupInternalWindowProps {
+  Title: string,
+  Visible: boolean,
+  onClose: () => void,
+  children?: | React.ReactChild | React.ReactChild[],
+}
 
-  const [showWindow, setShowWindow] = useState(Visible);
+export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
+
+  const [showWindow, setShowWindow] = useState(props.Visible);
   
   // Update visibility
-  useEffect(() => { setShowWindow(Visible); }, [Visible]);
+  useEffect(() => { setShowWindow(props.Visible); }, [props.Visible]);
 
   return (
     <>
@@ -30,14 +33,14 @@ export const AsupInternalWindow = ({
       >
         <div className="aiw-inner">
           <div className={"aiw-title"}>
-            <div className={"aiw-title-text"}>{Title}</div>
+            <div className={"aiw-title-text"}>{props.Title}</div>
             <div className={"aiw-title-close"} onClick={(e) => { 
               setShowWindow(false); 
-              if (typeof(onClose) === "function") { onClose(); 
+              if (typeof(props.onClose) === "function") { props.onClose(); 
               }
             }}>x</div>
           </div>
-          <div className={"aiw-body"}>{children}</div>
+          <div className={"aiw-body"}>{props.children}</div>
         </div>
       </Rnd>
     </>
