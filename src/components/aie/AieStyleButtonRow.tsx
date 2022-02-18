@@ -6,6 +6,7 @@ interface AieStyleButtonRowProps {
   styleList: string[], 
   currentStyle: Draft.DraftModel.ImmutableData.DraftInlineStyle, 
   applyStyleFunction: (styleName: string) => void,
+  disabled?: boolean
 }
 
 export const AieStyleButtonRow = (props:AieStyleButtonRowProps):JSX.Element => {
@@ -17,6 +18,7 @@ export const AieStyleButtonRow = (props:AieStyleButtonRowProps):JSX.Element => {
         styleName={style}
         currentStyle={props.currentStyle}
         applyStyleFunction={props.applyStyleFunction}
+        disabled={props.disabled}
       />
     );
   }

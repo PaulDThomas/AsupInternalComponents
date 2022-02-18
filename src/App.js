@@ -10,6 +10,8 @@ import "./pages/pages.css";
 import { WindowPage } from './pages/WindowPage';
 import { ExpanderPage } from 'pages/ExpanderPage';
 
+const activeClass = ({ isActive }) => (isActive ? 'active' : 'inactive');
+
 function App() {
 
   return (
@@ -17,35 +19,19 @@ function App() {
       <div>
         <nav>
           <ul>
-            <li>
-              <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-                Current
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/table" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-                Table
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/editor" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-                Editor
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/window" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-                Window
-              </NavLink>
-            </li>
+            <li><NavLink to="/"       className={activeClass}>Current</NavLink></li>
+            <li><NavLink to="/table"  className={activeClass}>Table  </NavLink></li>
+            <li><NavLink to="/editor" className={activeClass}>Editor </NavLink></li>
+            <li><NavLink to="/window" className={activeClass}>Window </NavLink></li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/" element={<EditorPage />} />
-          <Route path="/table" element={<TablePage />} />
-          <Route path="/editor" element={<EditorPage />} />
+          <Route path="/"         element={<TablePage />   } />
+          <Route path="/table"    element={<TablePage />   } />
+          <Route path="/editor"   element={<EditorPage />  } />
           <Route path="/expander" element={<ExpanderPage />} />
-          <Route path="/window" element={<WindowPage />} />
+          <Route path="/window"   element={<WindowPage />  } />
         </Routes>
       </div>
     </BrowserRouter>

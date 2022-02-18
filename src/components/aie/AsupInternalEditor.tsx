@@ -1,20 +1,36 @@
 import * as React from 'react';
 import { useState, useRef, useEffect, useCallback } from "react";
-import { EditorState, RichUtils, Editor, ContentState, convertToRaw, convertFromRaw, Modifier, convertFromHTML, DraftStyleMap, RawDraftContentBlock, RawDraftContentState, ContentBlock } from "draft-js";
+import { EditorState, Editor, ContentState, convertToRaw, convertFromRaw, Modifier, convertFromHTML, DraftStyleMap, RawDraftContentBlock, RawDraftContentState, ContentBlock } from "draft-js";
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 import 'draft-js/dist/Draft.css';
 import './aie.css';
 
-export interface AieStyleMap extends DraftStyleMap { [styleName: string]: { color: string, aieExclude: string[] } };
 interface RawContentBlocks { contentBlocks: Array<ContentBlock>, entityMap: any };
+export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
+interface AieStyleExcludeMap { [styleName: string]: string[] };
+
+const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
+  console.log("Building style map");
+  let d: DraftStyleMap = {};
+  if (styleMap !== undefined)
+    for (let s of Object.keys(styleMap!)) {
+      d[s] = styleMap![s].css;
+    }
+  return d;
+}
+const styleMapToExclude = (styleMap?: AieStyleMap): AieStyleExcludeMap => {
+  let e: AieStyleExcludeMap = {};
+  if (styleMap !== undefined) for (let s of Object.keys(styleMap!)) e[s] = styleMap![s].aieExclude;
+  return e;
+}
 
 interface AsupInternalEditorProps {
   initialText: string | RawDraftContentState | RawContentBlocks,
   returnRaw?: (ret: RawDraftContentState) => void,
   returnText: (ret: string) => void,
   returnHtml?: (ret: string) => void,
-  styleMap?: AieStyleMap,
   addStyle: React.CSSProperties,
+  styleMap?: AieStyleMap,
   highlightChanges: boolean,
   textAlignment: Draft.DraftComponent.Base.DraftTextAlignment,
   showStyleButtons: boolean,
@@ -32,11 +48,8 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
   const editor = useRef(null);
 
   // Add default style map
-  const [currentStyleMap, setCurrentStyleMap] = useState<AieStyleMap>({
-    Editable: { color: "red", aieExclude: ["Optional", "Notes"] },
-    Optional: { color: "green", aieExclude: ["Editable", "Notes"] },
-    Notes: { color: "blue", aieExclude: ["Editable", "Optional"] },
-  });
+  const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(props.styleMap));
+  const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(props.styleMap));
 
   // Show or hide style buttons
   const aieShowButtons = () => { if (props.showStyleButtons) { setButtonState(""); } };
@@ -69,7 +82,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
       chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
       // Add inline style starts and ends
       for (const s of b.inlineStyleRanges) {
-        chars[s.offset] = `<span className='${s.style}' style='${Object.entries(currentStyleMap[s.style]).map(([k, v]) => `${k}:${v}`).join(';')}'>${chars[s.offset]}`;
+        chars[s.offset] = `<span className='${s.style}' style='${Object.entries(currentStyleMap.current[s.style]).map(([k, v]) => `${k}:${v}`).join(';')}'>${chars[s.offset]}`;
         chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
       }
       return `<p>${chars.join("")}</p>`;
@@ -83,9 +96,6 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.initialText, props.returnRaw, props.returnText, props.returnHtml, props.highlightChanges, currentStyleMap]);
-
-  // Set stylemap or use default
-  useEffect(() => { if (props.styleMap) { setCurrentStyleMap(props.styleMap); } }, [props.styleMap]);
 
   // Update change highlight
   useEffect(() => {
@@ -129,14 +139,23 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
   const aieApplyStyle = (style: string) => {
     // Get current selection
     var selection = editorState.getSelection();
-    // Toggle current style
-    var nextEditorState: EditorState = RichUtils.toggleInlineStyle(editorState, style);
-    // Get new content
-    var nextContentState = nextEditorState.getCurrentContent();
-    // Remove any excluded styles
-    for (let s of currentStyleMap[style].aieExclude) nextContentState = Modifier.removeInlineStyle(nextContentState, selection, s);
+    // Get current content
+    var nextContentState = editorState.getCurrentContent();
+    var currentStyles = editorState.getCurrentInlineStyle();
+    // Remove all excluded styles from selection
+    for (let s of styleMapExclude.current[style]) nextContentState = Modifier.removeInlineStyle(nextContentState, selection, s);
+    // Add or remove target style
+    if (currentStyles.has(style)) {
+      nextContentState = Modifier.removeInlineStyle(nextContentState, selection, style);
+    }
+    else {
+      nextContentState = Modifier.applyInlineStyle(nextContentState, selection, style);
+    }
+    var nextEditorState = EditorState.createWithContent(nextContentState);
+    // Put selection back
+    nextEditorState = EditorState.acceptSelection(nextEditorState, selection);
     // Update editor
-    onChange(EditorState.createWithContent(nextContentState));
+    onChange(nextEditorState);
   }
 
   // Render the component
@@ -149,14 +168,15 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
     >
       <div className={`aie-button-holder aie-style-button-holder ${buttonState === "hidden" ? "hidden" : ""}`}>
         <AieStyleButtonRow
-          styleList={Object.keys(currentStyleMap)}
+          styleList={Object.keys(currentStyleMap.current)}
           currentStyle={editorState.getCurrentInlineStyle()}
           applyStyleFunction={aieApplyStyle}
+          disabled={editorState.getSelection().isCollapsed()}
         />
       </div>
       <Editor
         ref={editor}
-        customStyleMap={currentStyleMap}
+        customStyleMap={currentStyleMap.current}
         editorState={editorState}
         onChange={onChange}
         textAlignment={props.textAlignment}

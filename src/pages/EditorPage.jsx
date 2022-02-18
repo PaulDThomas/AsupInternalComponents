@@ -110,6 +110,12 @@ export const EditorPage = () => {
     setInitialText(saved);
   }
 
+  const thisStyleMap = {
+    Editable: { css: { color: "red", fontFamily: "courier", fontSize: "16pt" }, aieExclude:["Optional", "Notes"] },
+    Optional: { css: { color: "green", fontWeight: "100", fontFamily: "serif", fontSize: "16pt" },aieExclude:["Editable", "Notes"] },
+    Notes: { css: { color: "blue", fontSize: "16pt" },aieExclude:["Editable", "Notes"] },
+  };
+
   return (
     <div
       style={{
@@ -129,12 +135,14 @@ export const EditorPage = () => {
                 showStyleButtons={true}
                 addStyle={{ width: "298px", height: "100%" }}
                 textAlignment={"left"}
+                styleMap={thisStyleMap}
               />
               <AsupInternalEditor
                 initialText={initialText2}
                 returnText={setText2}
                 addStyle={{ width: "98px" }}
                 showStyleButtons={true}
+                styleMap={thisStyleMap}
               />
             </td>
           </tr>
