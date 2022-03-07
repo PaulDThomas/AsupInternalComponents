@@ -19,15 +19,16 @@ function App() {
       <div>
         <nav>
           <ul>
-            <li><NavLink to="/"       className={activeClass}>Current</NavLink></li>
-            <li><NavLink to="/table"  className={activeClass}>Table  </NavLink></li>
-            <li><NavLink to="/editor" className={activeClass}>Editor </NavLink></li>
-            <li><NavLink to="/window" className={activeClass}>Window </NavLink></li>
+            <li><NavLink to="/"         className={activeClass}>Current </NavLink></li>
+            <li><NavLink to="/table"    className={activeClass}>Table   </NavLink></li>
+            <li><NavLink to="/expander" className={activeClass}>Expander</NavLink></li>
+            <li><NavLink to="/editor"   className={activeClass}>Editor  </NavLink></li>
+            <li><NavLink to="/window"   className={activeClass}>Window  </NavLink></li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/"         element={<TablePage />   } />
+          <Route path="/"         element={<ExpanderPage />   } />
           <Route path="/table"    element={<TablePage />   } />
           <Route path="/editor"   element={<EditorPage />  } />
           <Route path="/expander" element={<ExpanderPage />} />

@@ -36,8 +36,7 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
             <div className={"aiw-title-text"}>{props.Title}</div>
             <div className={"aiw-title-close"} onClick={(e) => { 
               setShowWindow(false); 
-              if (typeof(props.onClose) === "function") { props.onClose(); 
-              }
+              if (typeof(props.onClose) === "function") { props.onClose(); }
             }}>x</div>
           </div>
           <div className={"aiw-body"}>{props.children}</div>

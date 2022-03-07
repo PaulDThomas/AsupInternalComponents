@@ -10,7 +10,6 @@ export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, 
 interface AieStyleExcludeMap { [styleName: string]: string[] };
 
 const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
-  console.log("Building style map");
   let d: DraftStyleMap = {};
   if (styleMap !== undefined)
     for (let s of Object.keys(styleMap!)) {

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
+// import { AioString } from "../aio/aioString";
 import { processOptions } from "../functions";
 import { AioExpander } from "../aio/aioExpander";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
@@ -170,8 +171,10 @@ export const AitCell = (props: AitCellProps) => {
             <div className={"aio-label"}>Original text: </div>
             <div className={"aio-ro-value"}>{props.initialData.originalText}</div>
           </div>
-          <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }}
-          />
+          {/* <div className="aiw-body-row">
+            <AioString label="Current text:" value={text} setValue={(ret) => { console.log(ret); setText(ret);}} />
+          </div> */}
+          <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }} />
         </AsupInternalWindow>
 
         <AsupInternalEditor

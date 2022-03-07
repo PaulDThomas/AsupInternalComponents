@@ -44,7 +44,7 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
     <>
       {options.map((k, i) => {
         return (
-          <div className='aiw-body-row' key={i}>
+          <div className='aio-body-row' key={i}>
             <AioPrintOption option={k} updateOption={(ret) => { updateOption(ret, i) }} />
           </div>
         );

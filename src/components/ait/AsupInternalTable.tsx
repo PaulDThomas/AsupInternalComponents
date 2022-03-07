@@ -5,6 +5,8 @@ import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
 import { AitLocation, AitRowType, AitTableData } from "./aitInterface";
+import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
+import { processOptions } from "components/functions";
 
 interface AsupInteralTableProps {
   initialData: AitTableData,
@@ -32,32 +34,43 @@ const useActiveElement = () => {
   return active;
 }
 
+const defaultTableOptions: OptionGroup = [
+  { optionName: AitTableOptionNames.tableName, label: "Table name", type: OptionType.string, value: "New table" },
+  { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: OptionType.string, value: "New table" },
+  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: OptionType.number, value: 1 },
+  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: "Column selection" },
+  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: OptionType.object, value: "New list" },
+];
+
 export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const [headerData, setHeaderData] = useState(props.initialData.headerData ?? {});
   const [bodyData, setBodyData] = useState(props.initialData.bodyData ?? {});
-  const [options, setOptions] = useState(props.initialData.options ?? {});
+  const [options, setOptions] = useState(processOptions(props.initialData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState<AitLocation>();
 
-  const focusedElement = useActiveElement();
-
-  useEffect(() => {
-    if (focusedElement && focusedElement.closest(".ait-holder td")) {
-      const ds = focusedElement!.closest("td")!.dataset;
-      console.log("Current dataset for location: " + JSON.stringify(ds));
-      const cl: AitLocation = {
-        tableSection: ds.locationTableSection ?? "body",
-        rowGroup: parseInt(ds.locationRowGroup ?? "0"),
-        row: parseInt(ds.locationRow ?? "0"),
-        cell: parseInt(ds.locationCell ?? "0"),
-      };
-      setCurrentLocation(cl);
-    }
-    else {
-      console.log("No table focus");
-    }
-  }, [focusedElement]);
+  /* 
+  Leave this code in, but commented out for now... 
+  it could be useful later to be able to be able to identify the cell that is active
+  */
+  // const [currentLocation, setCurrentLocation] = useState<AitLocation>();
+  // const focusedElement = useActiveElement();
+  // useEffect(() => {
+  //   if (focusedElement && focusedElement.closest(".ait-holder td")) {
+  //     const ds = focusedElement!.closest("td")!.dataset;
+  //     console.log("Current dataset for location: " + JSON.stringify(ds));
+  //     const cl: AitLocation = {
+  //       tableSection: ds.locationTableSection ?? "body",
+  //       rowGroup: parseInt(ds.locationRowGroup ?? "0"),
+  //       row: parseInt(ds.locationRow ?? "0"),
+  //       cell: parseInt(ds.locationCell ?? "0"),
+  //     };
+  //     setCurrentLocation(cl);
+  //   }
+  //   else {
+  //     console.log("No table focus");
+  //   }
+  // }, [focusedElement]);
 
   // Show or hide style buttons
   const aitShowProperties = () => { setShowOptionsButton(true); };
@@ -86,7 +99,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         style={props.addStyle}
       >
         <div>
-          <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={(e) => { console.log('click show optins'); setShowOptions(true); }} />
+          <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={(e) => { setShowOptions(true); }} />
         </div>
         <table
           className="ait-table"
@@ -121,7 +134,6 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         Visible={showOptions}
         onClose={() => { setShowOptions(false); }}
       >
-        <div className='aiw-sub-title'><small>Table</small></div>
         <AioOptionGroup initialData={options} returnData={setOptions} />
       </AsupInternalWindow>
     </>

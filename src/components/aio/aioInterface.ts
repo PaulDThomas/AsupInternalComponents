@@ -16,7 +16,19 @@ export enum OptionType {
 
 export enum AitCellOptionNames {
   cellWidth = "cellWidth",
+  cellStatistic = "cellStatisic",
+  cellText = "cellText",
 };
-export enum AitRowOptionNames { };
-export enum AitRowGroupOptionNames { };
-export enum AitTableOptionNames { };
+export enum AitRowOptionNames {
+
+};
+export enum AitRowGroupOptionNames {
+
+};
+export enum AitTableOptionNames {
+  tableName = "tableName",
+  tableDescription = "tableDescription",
+  rowHeaderColumns = "rowHeaderColumns",
+  repeatingColumns = "repeatingColumns",
+  columnRepeatList = "columnRepeatList",
+};
