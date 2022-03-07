@@ -17,7 +17,6 @@ export const AioString = (props: AioStringProps): JSX.Element => {
           <span>{props.value}</span>
           :
           <input
-            readOnly={typeof props.setValue !== "function"}
             className={"aio-input"}
             value={props.value ?? ""}
             type="text"

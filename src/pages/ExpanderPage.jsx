@@ -24,6 +24,7 @@ export const ExpanderPage = () => {
       undefined,
       3.1416,
       0,
+      [1,2,3],
       0,
       -34,
       "0"
@@ -132,6 +133,9 @@ export const ExpanderPage = () => {
         <AioExpander
           inputObject={currentData}
           updateObject={(ret) => { setCurrentData(ret) ; }}
+          canAddItems={true}
+          canRemoveItems={true}
+          canMoveItems={true}
         />
       </div>
       <div style={{

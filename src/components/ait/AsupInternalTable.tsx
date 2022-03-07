@@ -4,6 +4,7 @@ import { AitRowGroup } from "./aitRowGroup";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { AitLocation, AitRowType, AitTableData } from "./aitInterface";
 import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
 import { processOptions } from "components/functions";
@@ -22,6 +23,7 @@ interface AsupInteralTableProps {
 
 // Taken from https://stackoverflow.com/questions/58886782/how-to-find-focused-react-component-like-document-activeelement
 // Handles change of active element
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useActiveElement = () => {
   const [active, setActive] = useState(document.activeElement);
   const handleFocusIn = () => { setActive(document.activeElement); }
@@ -38,8 +40,8 @@ const defaultTableOptions: OptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: OptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: OptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: OptionType.number, value: 1 },
-  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: "Column selection" },
-  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: OptionType.object, value: "New list" },
+  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: {start:"First column", end:"Last column"} },
+  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: OptionType.array, value: ["New list"] },
 ];
 
 export const AsupInteralTable = (props: AsupInteralTableProps) => {

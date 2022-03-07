@@ -7,6 +7,7 @@ interface AsupInternalWindowProps {
   Title: string,
   Visible: boolean,
   onClose: () => void,
+  style?: React.CSSProperties,
   children?: | React.ReactChild | React.ReactChild[],
 }
 
@@ -23,11 +24,12 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
         style={{
           visibility: (showWindow ? "visible" : "hidden"),
           zIndex: 1001,
-          display:"flex"
+          display:"flex",
+          ...props.style
         }}
         bounds="window"
-        minWidth={"400px"}
-        minHeight={"150px"}
+        minWidth={(props.style && props.style.minWidth) ?? "400px"}
+        minHeight={(props.style && props.style.minHeight) ?? "150px"}
         className={"aiw-holder"}
         dragHandleClassName="aiw-title"
       >

@@ -1,8 +1,9 @@
 export interface Option {
   type: OptionType,
-  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames,
+  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
   value: any,
   label?: string,
+  availableValues?: Array<string>,
 }
 
 export interface OptionGroup extends Array<Option> { };
@@ -12,6 +13,7 @@ export enum OptionType {
   number = "number",
   array = "array",
   object = "object",
+  select = "select"
 }
 
 export enum AitCellOptionNames {
@@ -32,3 +34,8 @@ export enum AitTableOptionNames {
   repeatingColumns = "repeatingColumns",
   columnRepeatList = "columnRepeatList",
 };
+
+export enum AioNewItem {
+  newKey = "newKey",
+  newType = "newType",
+}

@@ -8,6 +8,7 @@ import "./aio.css";
 interface AioOptionGroupProps {
   initialData: OptionGroup,
   returnData?: (ret: OptionGroup) => void,
+  buttonText?: string,
 }
 
 export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
@@ -15,6 +16,8 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
   // Data holder
   const [options, setOptions] = useState((props.initialData ?? []).map(a => { return { ...a } }));
   const originalOptions = useRef((props.initialData ?? []).map(a => { return { ...a } }));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [buttonText, setButtonText] = useState(props.buttonText ?? "Update");
 
   // Update on a load...
   useEffect(() => {
@@ -50,7 +53,7 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
         );
       })}
       <div style={{ width: "100%", textAlign: "center" }}>
-        <button className={"aio-update-button"} onClick={(e: React.MouseEvent<Element, MouseEvent>) => { if (typeof (props.returnData) === "function") props.returnData(options); }}>Update</button>
+        <button className={"aio-update-button"} onClick={(e: React.MouseEvent<Element, MouseEvent>) => { if (typeof (props.returnData) === "function") props.returnData(options); }}>{buttonText}</button>
       </div>
     </>
   );
