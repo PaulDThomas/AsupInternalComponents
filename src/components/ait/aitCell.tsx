@@ -23,12 +23,9 @@ interface AitCellProps {
 };
 
 const defaultOptions: OptionGroup = [
-  {
-    optionName: AitCellOptionNames.cellWidth,
-    label: "Minimum width",
-    value: "100px",
-    type: OptionType.string,
-  },
+  { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: OptionType.string, },
+  { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: OptionType.number, readOnly:true },
+  { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: OptionType.number, readOnly:true },
 ];
 
 export const AitCell = (props: AitCellProps) => {
@@ -46,28 +43,14 @@ export const AitCell = (props: AitCellProps) => {
 
   // Updates to initial data
   useEffect(() => { setText(props.initialData.text); }, [props.initialData.text]);
-  useEffect(() => {
-    //console.log(`Setting intial cell options update, found ${initialData.options.length}`);
-    const newOptions: OptionGroup = [
-      {
-        optionName: AitCellOptionNames.cellWidth,
-        label: "Minimum width",
-        type: OptionType.string,
-        value: props.initialData.options.find(o => o.optionName === AitCellOptionNames.cellWidth) !== undefined
-          ? props.initialData.options.find(o => o.optionName === AitCellOptionNames.cellWidth)!.value
-          : "120px"
-      },
-    ];
-    setOptions(newOptions);
-  }, [props.initialData.options]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { const newOptions = processOptions(props.initialData.options, options); setOptions(newOptions); }, [props.initialData.options]);
 
   // Update cell style when options change
   useEffect(() => {
     //console.log("Setting cell style in aitCell");
     const style = {
-      width: options.find(o => o.optionName === AitCellOptionNames.cellWidth) !== undefined
-        ? options.find(o => o.optionName === AitCellOptionNames.cellWidth)!.value
-        : undefined,
+      width: options.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value,
       border: props.showCellBorders ? "1px dashed burlywood" : ""
     }
     setCellStyle(style);
@@ -82,8 +65,6 @@ export const AitCell = (props: AitCellProps) => {
       originalText: props.initialData.originalText,
       options: options ?? [],
       text: text ?? "",
-      colSpan: props.initialData.colSpan ?? 1,
-      rowSpan: props.initialData.rowSpan ?? 1,
     }
     if (typeof (props.returnData) === "function") props.returnData(r);
   }, [props, options, text]);
@@ -119,8 +100,8 @@ export const AitCell = (props: AitCellProps) => {
       className={["ait-cell",
         (props.type === AitCellType.header ? "ait-header-cell" : props.type === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell")
       ].join(" ")}
-      colSpan={props.initialData.colSpan}
-      rowSpan={props.initialData.rowSpan}
+      colSpan={options.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
+      rowSpan={options.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
       onMouseOver={aitShowButtons}
       onMouseLeave={aitHideButtons}
       style={cellStyle}
@@ -178,11 +159,7 @@ export const AitCell = (props: AitCellProps) => {
         </AsupInternalWindow>
 
         <AsupInternalEditor
-          addStyle={{
-            width: "100%",
-            height: "100%",
-            border: "none"
-          }}
+          addStyle={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(props.type === AitCellType.rowHeader ? "left" : "center")}
           showStyleButtons={false}
           initialText={props.initialData.originalText}

@@ -4,6 +4,7 @@ export interface Option {
   value: any,
   label?: string,
   availableValues?: Array<string>,
+  readOnly?: boolean,
 }
 
 export interface OptionGroup extends Array<Option> { };
@@ -20,6 +21,8 @@ export enum AitCellOptionNames {
   cellWidth = "cellWidth",
   cellStatistic = "cellStatisic",
   cellText = "cellText",
+  colSpan = "colSpan",
+  rowSpan = "rowSpan",
 };
 export enum AitRowOptionNames {
 

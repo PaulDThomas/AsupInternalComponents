@@ -13,14 +13,19 @@ export const TablePage = () => {
         {
           cells: [
             {
-              text: "A", originalText: "A", rowSpan: 2, options: [
-                { optionName: "cellWidth", value: "150px" }
+              text: "A", originalText: "A", options: [
+                { optionName: "cellWidth", value: "150px" },
+                { optionName: "rowSpan", value: 2 }
               ]
             },
-            { text: "B", originalText: "B", colSpan: 3 },
+            {
+              text: "B", originalText: "B", options: [
+                { optionName: "colSpan", value: 3 }
+              ]
+            },
           ],
           options: [
-            { optionName: "headerRow1", value: "this is the header row option" }
+            { optionName: "headerRow1", value: "this is the header row option" },
           ]
         },
         {
@@ -45,8 +50,9 @@ export const TablePage = () => {
             {
               cells: [
                 {
-                  text: "C0", originalText: "C0", rowSpan: 2, options: [
-                    { optionName: "cellType", value: "rowHeader" }
+                  text: "C0", originalText: "C0", options: [
+                    { optionName: "cellType", value: "rowHeader" },
+                    { optionName: "rowSpan", value: 2 }
                   ]
                 },
                 { text: "D0", originalText: "D0" },
@@ -123,7 +129,7 @@ export const TablePage = () => {
     //table.footerData = updateRowGroup(table.footerData);
     return table;
   }
-  
+
   return (
     <>
       <div style={{

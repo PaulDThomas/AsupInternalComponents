@@ -4,8 +4,6 @@ export interface AitCellData {
   text: string,
   originalText: string,
   options: OptionGroup
-  rowSpan?: number,
-  colSpan?: number,
 };
 
 export interface AitRowData {
