@@ -106,12 +106,53 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                       </div>
                     );
                   })}
+                  {(Object.keys(props.inputObject).length === 0) && <div className="aio-body-row"><div className="aio-label"><em>Empty</em></div></div>}
                   {(props.canAddItems && props.updateObject)
                     ?
                     <div className="aio-body-row" key={"n"}>
-                      <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }} />
                       <div className="aio-label" />
-                      <div className="aio-input-holder" />
+                      <div className="aio-input-holder" style={{borderLeft:"0"}} />
+                      <div className="aiox-button-holder">
+                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }}>
+                          <AsupInternalWindow
+                            Title={"Add item"}
+                            Visible={showNewItemWindow}
+                            onClose={() => setShowNewItemWindow(false)}
+                            style={{ minHeight: "120px" }}
+                          >
+                            <AioOptionGroup
+                              initialData={newItem}
+                              returnData={
+                                (ret) => {
+                                  // Check value is ok
+                                  if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
+                                    console.log(`Adding new key: ${ret[0].value}`);
+                                    let newItem;
+                                    switch (ret[1].value) {
+                                      case ("number"):
+                                        newItem = 0;
+                                        break;
+                                      case ("array"):
+                                        newItem = [];
+                                        break;
+                                      case ("object"):
+                                        newItem = {};
+                                        break;
+                                      case ("string"):
+                                      default:
+                                        newItem = "";
+                                    }
+                                    const newObject = { ...props.inputObject };
+                                    newObject[ret[0].value] = newItem;
+                                    props.updateObject(newObject);
+                                    setShowNewItemWindow(false);
+                                  }
+                                }
+                              }
+                              buttonText="Add" />
+                          </AsupInternalWindow>
+                        </div>
+                      </div>
                     </div>
                     :
                     undefined
@@ -121,43 +162,6 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
             </div>
           </span>
         </div >
-        <AsupInternalWindow
-          Title={"Add item"}
-          Visible={showNewItemWindow}
-          onClose={() => setShowNewItemWindow(false)}
-          style={{ minHeight: "120px" }}
-        >
-          <AioOptionGroup
-            initialData={newItem}
-            returnData={
-              (ret) => {
-                // Check value is ok
-                if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
-                  console.log(`Adding new key: ${ret[0].value}`);
-                  let newItem;
-                  switch (ret[1].value) {
-                    case ("number"):
-                      newItem = 0;
-                      break;
-                    case ("array"):
-                      newItem = [];
-                      break;
-                    case ("object"):
-                      newItem = {};
-                      break;
-                    case ("string"):
-                    default:
-                      newItem = "";
-                  }
-                  const newObject = { ...props.inputObject };
-                  newObject[ret[0].value] = newItem;
-                  props.updateObject(newObject);
-                  setShowNewItemWindow(false);
-                }
-              }
-            }
-            buttonText="Add" />
-        </AsupInternalWindow>
       </>
     );
   }

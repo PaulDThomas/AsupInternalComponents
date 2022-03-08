@@ -41,10 +41,13 @@
   display: table-row;
 }
 
-.aiox-table>.aio-body-row>.aio-label, .aiox-table>.aio-body-row>.aio-input-holder {
-  border-left: 1px dotted burlywood;
+.aiox-table>.aio-body-row>.aio-label, .aiox-table>.aio-body-row>.aio-input-holder, .aiox-table>.aio-body-row>.aiox-button-holder {
   border-top: 1px dotted burlywood;
   padding: 0 8px 0 8px;
+}
+
+.aiox-table>.aio-body-row>.aio-label, .aiox-table>.aio-body-row>.aio-input-holder {
+  border-left: 1px dotted burlywood;
 }
 
 .aiox-button {

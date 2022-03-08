@@ -18,6 +18,7 @@ interface AioPrintItemProps {
   moveDown?: () => void,
   addItem?: () => void,
   removeItem?: () => void,
+  children?: | React.ReactChild | React.ReactChild[],
 };
 
 interface RenderLineItemProps {
@@ -105,17 +106,6 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
 export const AioPrintItem = (props: AioPrintItemProps): JSX.Element => {
   return (
     <>
-      <div className="aiox-button-holder">
-        {typeof (props.moveUp) === "function"
-          ? <div className="aiox-button aiox-up" onClick={props.moveUp} />
-          : typeof (props.moveDown) === "function"
-            ? <div className="aiox-button" style={{ margin: 0 }} />
-            : <></>
-        }
-        {typeof (props.addItem) === "function" ? <div className="aiox-button aiox-plus" onClick={props.addItem} /> : <></>}
-        {typeof (props.removeItem) === "function" ? <div className="aiox-button aiox-minus" onClick={props.removeItem} /> : <></>}
-        {typeof (props.moveDown) === "function" ? <div className="aiox-button aiox-down" onClick={props.moveDown} /> : ""}
-      </div>
       <RenderLineItem
         value={props.value}
         label={props.label}
@@ -126,6 +116,17 @@ export const AioPrintItem = (props: AioPrintItemProps): JSX.Element => {
         canMoveItems={props.canMoveItems}
         canRemoveItems={props.canRemoveItems}
       />
+      <div className="aiox-button-holder">
+        {typeof (props.moveUp) === "function"
+          ? <div className="aiox-button aiox-up" onClick={props.moveUp} />
+          : typeof (props.moveDown) === "function"
+            ? <div className="aiox-button" style={{ margin: 0 }} />
+            : <></>
+        }
+        {typeof (props.addItem) === "function" ? <div className="aiox-button aiox-plus" onClick={props.addItem}>{props.children}</div> : <></>}
+        {typeof (props.removeItem) === "function" ? <div className="aiox-button aiox-minus" onClick={props.removeItem} /> : <></>}
+        {typeof (props.moveDown) === "function" ? <div className="aiox-button aiox-down" onClick={props.moveDown} /> : ""}
+      </div>
     </>
   );
 }

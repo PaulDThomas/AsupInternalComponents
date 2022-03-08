@@ -40,7 +40,7 @@ const defaultTableOptions: OptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: OptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: OptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: OptionType.number, value: 1 },
-  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: {start:"First column", end:"Last column"} },
+  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: { start: "First column", end: "Last column" } },
   { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: OptionType.array, value: ["New list"] },
 ];
 
@@ -101,7 +101,11 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         style={props.addStyle}
       >
         <div>
-          <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={(e) => { setShowOptions(true); }} />
+          <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={() => { setShowOptions(true); }}>
+          </div>
+          <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+            <AioOptionGroup initialData={options} returnData={setOptions} />
+          </AsupInternalWindow>
         </div>
         <table
           className="ait-table"
@@ -131,13 +135,6 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         </tfoot> */}
         </table>
       </div>
-      <AsupInternalWindow
-        Title={"Table options"}
-        Visible={showOptions}
-        onClose={() => { setShowOptions(false); }}
-      >
-        <AioOptionGroup initialData={options} returnData={setOptions} />
-      </AsupInternalWindow>
     </>
   );
 };

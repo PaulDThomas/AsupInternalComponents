@@ -9,18 +9,6 @@ export const AioLabel = (props: AioLabelProps): JSX.Element => {
     return (<></>);
 
   return (
-    <div className={"aio-label"}>{
-      // props.label === "!!grip!!"
-      //   ? <button className="aiox-button aiox-list"></button>
-      //   : props.label === "!!updown!!"
-      //     ? (
-      //       <div className="aiox-button-stack">
-      //         <button className="aiox-button aiox-up"></button>
-      //         <button className="aiox-button aiox-down"></button>
-      //       </div>
-      //     )
-      //     : 
-      `${props.label}${props.label ? ":" : ""}`
-    }</div>
+    <div className={"aio-label"}>{`${props.label}${props.label ? ":" : ""}`}</div>
   );
 }

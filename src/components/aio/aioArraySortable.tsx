@@ -24,7 +24,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
     { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
   ]);
 
-  function addWindow(i: number) {
+  function addWindow(i: number): JSX.Element {
     return <AsupInternalWindow
       Title={"Add item"}
       Visible={showWindows[i]}
@@ -123,22 +123,29 @@ export function AioArraySortable(props: AioArraySortableProps) {
                     :
                     undefined
                 }
-              />
-              {props.canAddItems && addWindow(i)}
+                canAddItems={props.canAddItems}
+                canMoveItems={props.canMoveItems}
+                canRemoveItems={props.canRemoveItems}
+              >
+                {props.canAddItems ? addWindow(i) : <></>}
+              </AioPrintItem>
             </div>
           );
         })
       }
       {props.canAddItems &&
         <div className="aio-body-row" key={props.inputArray.length}>
-          {props.canMoveItems && <div className="aiox-button" style={{ margin: 0 }} />}
-          <div className="aiox-button aiox-plus" onClick={() => {
-            const newShowWindows = [...showWindows];
-            newShowWindows[props.inputArray.length] = true;
-            setShowWindows(newShowWindows);
-          }} />
           <div className="aio-input-holder" />
-          {addWindow(props.inputArray.length)}
+          <div className="aiox-button-holder">
+            {props.canMoveItems && <div className="aiox-button" style={{ margin: 0 }} />}
+            <div className="aiox-button aiox-plus" onClick={() => {
+              const newShowWindows = [...showWindows];
+              newShowWindows[props.inputArray.length] = true;
+              setShowWindows(newShowWindows);
+            }}>
+              {addWindow(props.inputArray.length)}
+            </div>
+          </div>
         </div>
       }
     </>
