@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from "react";
-import { AitRowGroupData, AitRowType, AitTableBodyData } from './aitInterface';
+import { AitCellType, AitRowGroupData, AitRowType, AitTableBodyData } from './aitInterface';
 import { AitRowGroup } from "./aitRowGroup";
 
 interface AitTableBodyProps {
@@ -42,7 +42,7 @@ export const AitTableBody = (props: AitTableBodyProps): JSX.Element => {
         return (
           <AitRowGroup
             key={i}
-            location={{ tableSection: "body", rowGroup: i }}
+            location={{ tableSection: AitCellType.body, rowGroup: i, row:-1, cell:-1 }}
             initialData={rowGroup}
             returnData={(ret) => updateRowGroup(ret, i)}
             type={AitRowType.body}

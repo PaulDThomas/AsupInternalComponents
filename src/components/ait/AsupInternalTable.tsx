@@ -1,13 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { AitTableBody } from "./aitTableBody";
-import { AitRowGroup } from "./aitRowGroup";
+import React, { useState, useEffect, useCallback } from "react";
+import { AitCell } from "./aitCell";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import './ait.css';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AitLocation, AitRowType, AitTableData } from "./aitInterface";
+import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, uuidv4, AitCellData, AitCellType } from "./aitInterface";
 import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
 import { processOptions } from "components/functions";
+import './ait.css';
 
 interface AsupInteralTableProps {
   initialData: AitTableData,
@@ -45,9 +43,9 @@ const defaultTableOptions: OptionGroup = [
 ];
 
 export const AsupInteralTable = (props: AsupInteralTableProps) => {
-  const [headerData, setHeaderData] = useState(props.initialData.headerData ?? {});
-  const [bodyData, setBodyData] = useState(props.initialData.bodyData ?? {});
-  const [options, setOptions] = useState(processOptions(props.initialData.options, defaultTableOptions));
+  const [headerData, setHeaderData] = useState<AitRowGroupData>(props.initialData.headerData);
+  const [bodyData, setBodyData] = useState<AitTableBodyData>(props.initialData.bodyData);
+  const [options, setOptions] = useState<OptionGroup>(processOptions(props.initialData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
 
@@ -90,6 +88,18 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [headerData, bodyData, options, props.returnData]);
 
+  const updateCell = useCallback((ret: AitCellData, location: AitLocation) => {
+    if ( location.tableSection === AitCellType.header ) {
+      let newHeader = {rows:headerData.rows, options:headerData.options};
+      newHeader.rows[location.row].cells[location.cell] = ret;
+      setHeaderData(newHeader);
+    }
+    else {
+      let newBody = {rowGroups:bodyData.rowGroups, options: bodyData.options};
+      newBody.rowGroups[location.rowGroup].rows[location.row].cells[location.cell] = ret;
+      setBodyData(newBody);
+    }
+  }, [bodyData.options, bodyData.rowGroups, headerData.options, headerData.rows]);
 
   // Print the table
   return (
@@ -111,28 +121,63 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
           className="ait-table"
         >
           <thead>
-            <AitRowGroup
-              location={{ tableSection: "header", rowGroup: 0 }}
-              initialData={props.initialData.headerData ?? {}}
-              returnData={setHeaderData}
-              showCellBorders={props.showCellBorders}
-              type={AitRowType.header}
-            />
+            {
+              headerData?.rows.map((row, ri): JSX.Element =>
+                <tr key={ri} >
+                  {row.cells.map((cell, ci): JSX.Element => {
+                    // cell.aitid = cell.aitid ?? uuidv4();
+                    let location = { tableSection: AitCellType.header, rowGroup: 0, row: ri, cell: ci } as AitLocation;
+                    return (
+                      <AitCell
+                        key={ci}
+                        location={location}
+                        type={AitCellType.header}
+                        editable={true}
+                        initialData={cell}
+                        returnData={(ret) => updateCell(ret, location)}
+                        //rowGroupOptions={(i === 0 ? props.rowGroupOptions : undefined)}
+                        //addRowGroup={props.addRowGroup}
+                        //setRowGroupOptions={(i === 0 ? props.setRowGroupOptions : undefined)}
+                        //rowOptions={(i === props.data.cells.length - 1 ? options : undefined)}
+                        //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
+                        showCellBorders={props.showCellBorders}
+                      />
+                    );
+                  })}
+                </tr>
+              )
+            }
           </thead>
           <tbody>
-            <AitTableBody
-              initialData={props.initialData.bodyData ?? {}}
-              returnData={setBodyData}
-              showCellBorders={props.showCellBorders}
-            />
+            {
+              bodyData.rowGroups?.map((rowGroup, rgi) => 
+                rowGroup.rows.map((row, ri): JSX.Element =>
+                  <tr key={ri} >
+                    {row.cells.map((cell, ci): JSX.Element => {
+                      // cell.aitid = cell.aitid ?? uuidv4();
+                      let location = { tableSection: AitCellType.body, rowGroup: rgi, row: ri, cell: ci } as AitLocation;
+                      return (
+                        <AitCell
+                          key={ci}
+                          location={location}
+                          type={AitCellType.body}
+                          editable={true}
+                          initialData={cell}
+                          returnData={(ret) => updateCell(ret, location)}
+                          //rowGroupOptions={(i === 0 ? props.rowGroupOptions : undefined)}
+                          //addRowGroup={props.addRowGroup}
+                          //setRowGroupOptions={(i === 0 ? props.setRowGroupOptions : undefined)}
+                          //rowOptions={(i === props.data.cells.length - 1 ? options : undefined)}
+                          //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
+                          showCellBorders={props.showCellBorders}
+                        />
+                      );
+                    })}
+                  </tr>
+                )
+              )
+            }
           </tbody>
-          {/* <tfoot>
-          <AitRowGroup
-          initialData={initialData.footerData ?? {}}
-          returnData={setFooterData}
-          type="footer"
-          />
-        </tfoot> */}
         </table>
       </div>
     </>

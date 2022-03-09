@@ -6,7 +6,7 @@ import { AioOptionGroup } from "../aio/aioOptionGroup";
 // import { AioString } from "../aio/aioString";
 import { processOptions } from "../functions";
 import { AioExpander } from "../aio/aioExpander";
-import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
+import { AitCellData, AitLocation, AitCellType, AitOptionLocation, uuidv4 } from "./aitInterface";
 import { OptionGroup, OptionType, AitCellOptionNames } from "components/aio/aioInterface";
 
 interface AitCellProps {
@@ -17,6 +17,7 @@ interface AitCellProps {
   type: AitCellType,
   editable: boolean,
   rowGroupOptions?: OptionGroup,
+  addRowGroup?: (i: number) => void,
   setRowGroupOptions?: (ret: OptionGroup) => void,
   rowOptions?: OptionGroup,
   setRowOptions?: (ret: OptionGroup) => void,
@@ -24,16 +25,18 @@ interface AitCellProps {
 
 const defaultOptions: OptionGroup = [
   { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: OptionType.string, },
-  { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: OptionType.number, readOnly:true },
-  { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: OptionType.number, readOnly:true },
+  { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: OptionType.number, readOnly: true },
+  { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: OptionType.number, readOnly: true },
 ];
 
 export const AitCell = (props: AitCellProps) => {
   // Data holder
+  const [aitid] = useState(props.initialData.aitid ?? uuidv4());
   const [text, setText] = useState(props.initialData.text);
   //const [options, setOptions] = useState(initialData.options ?? []);
   const [options, setOptions] = useState(processOptions(props.initialData.options, defaultOptions));
   const [buttonState, setButtonState] = useState("hidden");
+  const [lastSend, setLastSend] = useState(JSON.stringify(props.initialData));
 
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
@@ -59,15 +62,20 @@ export const AitCell = (props: AitCellProps) => {
 
   // Send data back
   useEffect(() => {
+    if (typeof(props.returnData) !== "function") return;
     // All these parameters should be in the initial data
     //console.log("returnData in aitCell");
     const r: AitCellData = {
+      aitid: aitid,
       originalText: props.initialData.originalText,
       options: options ?? [],
       text: text ?? "",
     }
-    if (typeof (props.returnData) === "function") props.returnData(r);
-  }, [props, options, text]);
+    if (JSON.stringify(r) !== lastSend) {
+      props.returnData(r);
+      setLastSend(JSON.stringify(r));
+    } 
+  }, [props, options, text, aitid, lastSend]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -93,6 +101,16 @@ export const AitCell = (props: AitCellProps) => {
       default: break;
     }
   }
+  // Add buttons
+  const onAddClick = (optionType: AitOptionLocation) => {
+    setButtonState("hidden"); 
+    switch (optionType) {
+      case (AitOptionLocation.rowGroup): props.addRowGroup!(props.location.rowGroup!); break;
+      // case (AitOptionLocation.row): setShowRowOptions(true); break;
+      // case (AitOptionLocation.cell): setShowCellOptions(true); break;
+      default: break;
+    }
+  }
 
   // Render element
   return (
@@ -113,16 +131,29 @@ export const AitCell = (props: AitCellProps) => {
       <div className="ait-aie-holder">
         {
           (props.rowGroupOptions)
-            ? (<>
-              <div
-                className={`ait-options-button ait-options-button-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
-                onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
-              />
-              <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
-                <AioOptionGroup initialData={props.rowGroupOptions} returnData={props.setRowGroupOptions} />
-              </AsupInternalWindow>
-            </>)
-            : null
+            ?
+            (
+              <>
+                {typeof (props.addRowGroup) === "function"
+                  ?
+                  <div
+                    className={`ait-options-button ait-options-button-add-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
+                    onClick={(e) => { onAddClick(AitOptionLocation.rowGroup) }}
+                  />
+                  :
+                  <></>
+                }
+                <div
+                  className={`ait-options-button ait-options-button-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
+                  onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
+                />
+                <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+                  <AioOptionGroup initialData={props.rowGroupOptions} returnData={props.setRowGroupOptions} />
+                </AsupInternalWindow>
+              </>
+            )
+            :
+            null
         }
         {
           (props.rowOptions)
@@ -152,12 +183,8 @@ export const AitCell = (props: AitCellProps) => {
             <div className={"aio-label"}>Original text: </div>
             <div className={"aio-ro-value"}>{props.initialData.originalText}</div>
           </div>
-          {/* <div className="aiw-body-row">
-            <AioString label="Current text:" value={text} setValue={(ret) => { console.log(ret); setText(ret);}} />
-          </div> */}
           <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }} />
         </AsupInternalWindow>
-
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(props.type === AitCellType.rowHeader ? "left" : "center")}
