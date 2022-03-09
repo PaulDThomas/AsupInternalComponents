@@ -19,10 +19,6 @@ interface AioArraySortableProps {
 export function AioArraySortable(props: AioArraySortableProps) {
 
   const [showWindows, setShowWindows] = useState<Array<boolean>>(new Array(props.inputArray.length + 1).fill(false));
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [newItem, setNewItem] = useState<OptionGroup>([
-    { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
-  ]);
 
   function addWindow(i: number): JSX.Element {
     return <AsupInternalWindow
@@ -36,7 +32,15 @@ export function AioArraySortable(props: AioArraySortableProps) {
       style={{ minHeight: "100px" }}
     >
       <AioOptionGroup
-        initialData={newItem}
+        initialData={[
+          {
+            type: OptionType.select,
+            optionName: AioNewItem.newType,
+            value: "",
+            label: "New type",
+            availableValues: ["string", "number", "array", "object"]
+          },
+        ]}
         returnData={(ret) => {
           // Check value is ok
           let newItem;
