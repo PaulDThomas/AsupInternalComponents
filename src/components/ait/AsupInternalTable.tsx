@@ -48,6 +48,10 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const [options, setOptions] = useState<OptionGroup>(processOptions(props.initialData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
+  const [lastSend, setLastSend] = useState<string>(JSON.stringify(props.initialData));
+
+  useEffect(() => setHeaderData(props.initialData.headerData), [props.initialData.headerData]);
+  useEffect(() => setBodyData(props.initialData.bodyData), [props.initialData.bodyData]);
 
   /* 
   Leave this code in, but commented out for now... 
@@ -78,15 +82,20 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
   // Collate and return data
   useEffect(() => {
+    if (typeof(props.returnData) !== "function") return;
+
     const r = {
       headerData: headerData,
       bodyData: bodyData,
       //footerData: footerData ?? {},
       options: options,
     };
-    if (props.returnData) props.returnData(r);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [headerData, bodyData, options, props.returnData]);
+
+    if (JSON.stringify(r) !== lastSend) {
+      props.returnData(r);
+      setLastSend(JSON.stringify(r));
+    } 
+  }, [headerData, bodyData, options, lastSend, props]);
 
   const updateCell = useCallback((ret: AitCellData, location: AitLocation) => {
     if ( location.tableSection === AitCellType.header ) {
@@ -135,10 +144,10 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                         editable={true}
                         initialData={cell}
                         returnData={(ret) => updateCell(ret, location)}
-                        //rowGroupOptions={(i === 0 ? props.rowGroupOptions : undefined)}
+                        rowGroupOptions={(ci === 0 ? headerData.options : undefined)}
                         //addRowGroup={props.addRowGroup}
                         //setRowGroupOptions={(i === 0 ? props.setRowGroupOptions : undefined)}
-                        //rowOptions={(i === props.data.cells.length - 1 ? options : undefined)}
+                        rowOptions={(ci === row.cells.length-1 ? row.options : undefined)}
                         //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
                         showCellBorders={props.showCellBorders}
                       />
@@ -164,10 +173,10 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                           editable={true}
                           initialData={cell}
                           returnData={(ret) => updateCell(ret, location)}
-                          //rowGroupOptions={(i === 0 ? props.rowGroupOptions : undefined)}
+                          rowGroupOptions={(ci === 0 ? rowGroup.options : undefined)}
                           //addRowGroup={props.addRowGroup}
-                          //setRowGroupOptions={(i === 0 ? props.setRowGroupOptions : undefined)}
-                          //rowOptions={(i === props.data.cells.length - 1 ? options : undefined)}
+                          //setRowGroupOptions={(ci === 0 ? props.setRowGroupOptions : undefined)}
+                          rowOptions={(ci === row.cells.length-1 ? cell.options : undefined)}
                           //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
                           showCellBorders={props.showCellBorders}
                         />

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { AsupInteralTable } from '../components/ait/AsupInternalTable';
 
 export const TablePage = () => {
@@ -105,82 +105,77 @@ export const TablePage = () => {
     },
   });
 
-  const [currentData, setCurrentData] = useState({});
-
-  const updateCell = (cell) => {
-    console.log("updateCell in TablePage");
+  const updateCell = useCallback((cell) => {
     cell.originalText = cell.text;
     return cell;
-  };
-  const updateRow = (row) => {
-    console.log("updateRow in TablePage");
+  }, []);
+  const updateRow = useCallback((row) => {
     row.cells = row.cells.map((cell) => updateCell(cell));
     return row;
-  };
-  const updateRowGroup = (rowGroup) => {
-    console.log("updateRowGroup in TablePage");
+  }, [updateCell]);
+  const updateRowGroup = useCallback((rowGroup) => {
     rowGroup.rows = rowGroup.rows.map((row) => updateRow(row));
     return rowGroup;
-  };
-  const updateTable = (table) => {
-    console.log("updateTable in TablePage");
+  }, [updateRow]);
+  const updateTable = useCallback((table) => {
     table.headerData = updateRowGroup(table.headerData);
     table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
-    //table.footerData = updateRowGroup(table.footerData);
     return table;
-  }
+  }, [updateRowGroup]);
 
-  return (
-    <>
-      <div style={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-      }}>
-        <AsupInteralTable
-          initialData={initialData}
-          returnData={setCurrentData}
-          addStyle={{ margin: "1rem" }}
-          showCellBorders={true}
-        />
-      </div>
-      <div style={{
-        margin: "1rem",
-        padding: "1rem",
-        border: "solid black 3px",
-        backgroundColor: "rgb(240, 240, 240)"
-      }}>
-        <button
-          onClick={() => {
-            try {
-              if (ta.current.value === "") {
-                ta.current.value = window.localStorage.getItem('tableContent');
-              }
-              const j = JSON.parse(ta.current.value);
-              setInitialData(j);
-            }
-            catch (e) {
-              console.log("JSON parse failed");
-              console.dir(e);
-            }
-          }}
-        >
-          Load
-        </button>
-        <button
-          onClick={() => {
-            const saved = updateTable(currentData);
-            ta.current.value = JSON.stringify(saved, null, 2);
-            window.localStorage.setItem('tableContent', JSON.stringify(saved, null, 2));
-            setInitialData(saved);
-          }}
-        >
-          Save
-        </button>
-        <pre>
-          <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
-        </pre>
-      </div>
-    </>
-  );
+  const loadData = useCallback(() => {
+    try {
+      if (ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem('tableContent');
+      }
+      const j = updateTable(JSON.parse(ta.current.value));
+      ta.current.value = JSON.stringify(j, null, 2);
+      setInitialData(j);
+    }
+    catch (e) {
+      console.log("JSON parse failed");
+      console.dir(e);
+    }
+  }, [updateTable]);
+
+return (
+  <>
+    <div style={{
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+    }}>
+      <AsupInteralTable
+        initialData={initialData}
+        returnData={setInitialData}
+        addStyle={{ margin: "1rem" }}
+        showCellBorders={true}
+      />
+    </div>
+    <div style={{
+      margin: "1rem",
+      padding: "1rem",
+      border: "solid black 3px",
+      backgroundColor: "rgb(240, 240, 240)"
+    }}>
+      <button
+        onClick={loadData}>
+        Load
+      </button>
+      <button
+        onClick={() => {
+          // Show intented data
+          ta.current.value = JSON.stringify(initialData, null, 2);
+          // Save string
+          window.localStorage.setItem('tableContent', JSON.stringify(initialData));
+        }}
+      >
+        Save
+      </button>
+      <pre>
+        <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
+      </pre>
+    </div>
+  </>
+);
 }
