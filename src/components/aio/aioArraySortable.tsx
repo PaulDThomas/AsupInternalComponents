@@ -14,8 +14,6 @@ interface AioArraySortableProps {
   canMoveItems?: boolean,
 };
 
-
-
 export function AioArraySortable(props: AioArraySortableProps) {
 
   const [showWindows, setShowWindows] = useState<Array<boolean>>(new Array(props.inputArray.length + 1).fill(false));

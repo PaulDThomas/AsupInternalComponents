@@ -16,8 +16,9 @@ interface AitCellProps {
   showCellBorders?: boolean,
   type: AitCellType,
   editable: boolean,
-  addRowGroup?: (i: number) => void,
+  addRowGroup?: (rgi: number) => void,
   rowGroupOptions?: [OptionGroup, (ret: OptionGroup, location: AitLocation) => void],
+  removeRowGroup?: (rgi: number) => void,
   rowOptions?: [OptionGroup, (ret: OptionGroup, location: AitLocation) => void],
 };
 
@@ -48,7 +49,6 @@ export const AitCell = (props: AitCellProps) => {
 
   // Update cell style when options change
   useEffect(() => {
-    //console.log("Setting cell style in aitCell");
     const style = {
       width: options.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value,
       border: props.showCellBorders ? "1px dashed burlywood" : ""
@@ -61,8 +61,8 @@ export const AitCell = (props: AitCellProps) => {
   useEffect(() => {
     if (typeof (props.returnData) !== "function") return;
     // All these parameters should be in the initial data
-    //console.log("returnData in aitCell");
     const r: AitCellData = {
+      aitid: props.initialData.aitid,
       originalText: props.initialData.originalText,
       options: options ?? [],
       text: text ?? "",
@@ -97,11 +97,21 @@ export const AitCell = (props: AitCellProps) => {
       default: break;
     }
   }
-  // Add buttons
+  // Add group button
   const onAddClick = (optionType: AitOptionLocation) => {
     setButtonState("hidden");
     switch (optionType) {
       case (AitOptionLocation.rowGroup): props.addRowGroup!(props.location.rowGroup!); break;
+      // case (AitOptionLocation.row): setShowRowOptions(true); break;
+      // case (AitOptionLocation.cell): setShowCellOptions(true); break;
+      default: break;
+    }
+  }
+  // Remove group button
+  const onRemoveClick = (optionType: AitOptionLocation) => {
+    setButtonState("hidden");
+    switch (optionType) {
+      case (AitOptionLocation.rowGroup): props.removeRowGroup!(props.location.rowGroup!); break;
       // case (AitOptionLocation.row): setShowRowOptions(true); break;
       // case (AitOptionLocation.cell): setShowCellOptions(true); break;
       default: break;
@@ -139,6 +149,15 @@ export const AitCell = (props: AitCellProps) => {
                   :
                   <></>
                 }
+                {typeof (props.removeRowGroup) === "function"
+                  ?
+                  <div
+                    className={`ait-options-button ait-options-button-remove-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
+                    onClick={(e) => { onRemoveClick(AitOptionLocation.rowGroup) }}
+                  />
+                  :
+                  <></>
+                }
                 <div
                   className={`ait-options-button ait-options-button-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                   onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
@@ -166,13 +185,13 @@ export const AitCell = (props: AitCellProps) => {
                 onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
               />
               <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
-                <AioOptionGroup 
-                initialData={props.rowOptions[0]} 
-                returnData={(ret) => {
-                  if (!props.rowOptions) return;
-                  let rl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: props.location.row, cell: -1 } as AitLocation;
-                  props.rowOptions[1](ret, rl);
-                }}
+                <AioOptionGroup
+                  initialData={props.rowOptions[0]}
+                  returnData={(ret) => {
+                    if (!props.rowOptions) return;
+                    let rl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: props.location.row, cell: -1 } as AitLocation;
+                    props.rowOptions[1](ret, rl);
+                  }}
                 />
               </AsupInternalWindow>
             </>)

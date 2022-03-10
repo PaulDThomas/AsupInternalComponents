@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AitCell } from "./aitCell";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType } from "./aitInterface";
+import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitRowData } from "./aitInterface";
 import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
 import { processOptions } from "components/functions";
+import { v4 as uuidv4 } from 'uuid';
 import './ait.css';
 
 interface AsupInteralTableProps {
@@ -31,6 +32,24 @@ const useActiveElement = () => {
   return active;
 }
 
+// Add required aitids
+const addAitIdToRowGroup = (rg: AitRowGroupData): AitRowGroupData => {
+  if (!rg.aitid) rg.aitid = uuidv4();
+  rg.rows = rg.rows.map(r => {
+    if (!r.aitid) r.aitid = uuidv4();
+    r.cells = r.cells.map(c => {
+      if (!c.aitid) c.aitid = uuidv4();
+      return c;
+    });
+    return r;
+  });
+  return rg;
+};
+const addAitIdToBody = (b: AitTableBodyData): AitTableBodyData => {
+  b.rowGroups = b.rowGroups.map(rg => addAitIdToRowGroup(rg));
+  return b;
+};
+
 const defaultTableOptions: OptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: OptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: OptionType.string, value: "New table" },
@@ -40,8 +59,8 @@ const defaultTableOptions: OptionGroup = [
 ];
 
 export const AsupInteralTable = (props: AsupInteralTableProps) => {
-  const [headerData, setHeaderData] = useState<AitRowGroupData>(props.initialData.headerData);
-  const [bodyData, setBodyData] = useState<AitTableBodyData>(props.initialData.bodyData);
+  const [headerData, setHeaderData] = useState<AitRowGroupData>(addAitIdToRowGroup(props.initialData.headerData));
+  const [bodyData, setBodyData] = useState<AitTableBodyData>(addAitIdToBody(props.initialData.bodyData));
   const [options, setOptions] = useState<OptionGroup>(processOptions(props.initialData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
@@ -142,6 +161,22 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
     }
   }, [headerData.options, headerData.rows, bodyData.options, bodyData.rowGroups]);
 
+  // Add a new row group to the table body
+  const addRowGroup = useCallback((rgi: number) => {
+    let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newRowGroup = { options: [], rows: [{ aitid: uuidv4(), options: [], cells: new Array(4).fill({ text: "", originalText: "" }) }] } as AitRowGroupData;
+    newRowGroup.rows[0].cells = newRowGroup.rows[0].cells.map(c => { c.aitid = uuidv4(); return c });
+    newBody.rowGroups.splice(rgi+1, 0, newRowGroup);
+    // newRowGroup = { rows:[{cells:new Array(4).fill(text:"", originalText:"")}], options: []} as AitRowGroupData;
+    setBodyData(newBody);
+  }, [bodyData.options, bodyData.rowGroups]);
+
+  // Remove a row group from the table body
+  const removeRowGroup = useCallback((rgi: number) => {
+    let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    newBody.rowGroups.splice(rgi, 1);
+    setBodyData(newBody);
+  }, [bodyData.options, bodyData.rowGroups]);
 
   // Print the table
   return (
@@ -164,53 +199,58 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         >
           <thead>
             {
-              headerData?.rows.map((row, ri): JSX.Element =>
-                <tr key={ri} >
-                  {row.cells.map((cell, ci): JSX.Element => {
-                    // cell.aitid = cell.aitid ?? uuidv4();
-                    let location = { tableSection: AitCellType.header, rowGroup: 0, row: ri, cell: ci } as AitLocation;
-                    return (
-                      <AitCell
-                        key={ci}
-                        location={location}
-                        showCellBorders={props.showCellBorders}
-                        type={AitCellType.header}
-                        editable={true}
-                        initialData={cell}
-                        returnData={(ret) => updateCell(ret, location)}
-                        rowGroupOptions={(ci === 0 ? [headerData.options, updateOptions] : undefined)}
-                        rowOptions={(ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined)}
-                      //addRowGroup={props.addRowGroup}
-                      />
-                    );
-                  })}
-                </tr>
+              headerData?.rows.map((row, ri): JSX.Element => {
+                return (
+                  <tr key={row.aitid} >
+                    {row.cells.map((cell, ci): JSX.Element => {
+                      let location = { tableSection: AitCellType.header, rowGroup: 0, row: ri, cell: ci } as AitLocation;
+                      return (
+                        <AitCell
+                          key={cell.aitid}
+                          location={location}
+                          showCellBorders={props.showCellBorders}
+                          type={AitCellType.header}
+                          editable={true}
+                          initialData={cell}
+                          returnData={(ret) => updateCell(ret, location)}
+                          rowGroupOptions={ci === 0 ? [headerData.options, updateOptions] : undefined}
+                          rowOptions={ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined}
+                        />
+                      );
+                    })}
+                  </tr>
+                );
+              }
               )
             }
           </thead>
           <tbody>
             {
-              bodyData.rowGroups?.map((rowGroup, rgi) =>
-                rowGroup.rows.map((row, ri): JSX.Element =>
-                  <tr key={ri} >
-                    {row.cells.map((cell, ci): JSX.Element => {
-                      let location = { tableSection: AitCellType.body, rowGroup: rgi, row: ri, cell: ci } as AitLocation;
-                      return (
-                        <AitCell
-                          key={ci}
-                          location={location}
-                          showCellBorders={props.showCellBorders}
-                          type={AitCellType.body}
-                          editable={true}
-                          initialData={cell}
-                          returnData={(ret) => updateCell(ret, location)}
-                          rowGroupOptions={(ci === 0 ? [rowGroup.options, updateOptions] : undefined)}
-                          rowOptions={(ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined)}
-                        //addRowGroup={props.addRowGroup}
-                        />
-                      );
-                    })}
-                  </tr>
+              bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) =>
+                rowGroup.rows.map((row: AitRowData, ri: number): JSX.Element => {
+                  return (
+                    <tr key={row.aitid} >
+                      {row.cells.map((cell: AitCellData, ci: number): JSX.Element => {
+                        let location = { tableSection: AitCellType.body, rowGroup: rgi, row: ri, cell: ci } as AitLocation;
+                        return (
+                          <AitCell
+                            key={cell.aitid}
+                            location={location}
+                            showCellBorders={props.showCellBorders}
+                            type={AitCellType.body}
+                            editable={true}
+                            initialData={cell}
+                            returnData={(ret) => updateCell(ret, location)}
+                            rowGroupOptions={ci === 0 && ri === 0 ? [rowGroup.options, updateOptions] : undefined}
+                            addRowGroup={ci === 0 && ri === 0 ? addRowGroup : undefined}
+                            removeRowGroup={ci === 0 && ri === 0 && rgi > 0 ? removeRowGroup : undefined}
+                            rowOptions={(ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined)}
+                          />
+                        );
+                      })}
+                    </tr>
+                  );
+                }
                 )
               )
             }
