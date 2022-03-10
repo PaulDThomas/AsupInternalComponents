@@ -8,6 +8,7 @@ import { processOptions } from "../functions";
 import { AioExpander } from "../aio/aioExpander";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
 import { OptionGroup, OptionType, AitCellOptionNames } from "components/aio/aioInterface";
+import { v4 as uuidv4 } from 'uuid';
 
 interface AitCellProps {
   initialData: AitCellData,
@@ -62,7 +63,7 @@ export const AitCell = (props: AitCellProps) => {
     if (typeof (props.returnData) !== "function") return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
-      aitid: props.initialData.aitid,
+      aitid: props.initialData.aitid ?? uuidv4(),
       originalText: props.initialData.originalText,
       options: options ?? [],
       text: text ?? "",
@@ -162,16 +163,18 @@ export const AitCell = (props: AitCellProps) => {
                   className={`ait-options-button ait-options-button-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                   onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
                 />
-                <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
-                  <AioOptionGroup
-                    initialData={props.rowGroupOptions[0]}
-                    returnData={(ret) => {
-                      if (!props.rowGroupOptions) return;
-                      let rgl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: -1, cell: -1 } as AitLocation;
-                      props.rowGroupOptions[1](ret, rgl);
-                    }}
-                  />
-                </AsupInternalWindow>
+                {showRowGroupOptions &&
+                  <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+                    <AioOptionGroup
+                      initialData={props.rowGroupOptions[0]}
+                      returnData={(ret) => {
+                        if (!props.rowGroupOptions) return;
+                        let rgl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: -1, cell: -1 } as AitLocation;
+                        props.rowGroupOptions[1](ret, rgl);
+                      }}
+                    />
+                  </AsupInternalWindow>
+                }
               </>
             )
             :
@@ -184,16 +187,18 @@ export const AitCell = (props: AitCellProps) => {
                 className={`ait-options-button ait-options-button-row ${buttonState === "hidden" ? "hidden" : ""}`}
                 onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
               />
-              <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
-                <AioOptionGroup
-                  initialData={props.rowOptions[0]}
-                  returnData={(ret) => {
-                    if (!props.rowOptions) return;
-                    let rl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: props.location.row, cell: -1 } as AitLocation;
-                    props.rowOptions[1](ret, rl);
-                  }}
-                />
-              </AsupInternalWindow>
+              {showRowOptions &&
+                <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
+                  <AioOptionGroup
+                    initialData={props.rowOptions[0]}
+                    returnData={(ret) => {
+                      if (!props.rowOptions) return;
+                      let rl = { tableSection: props.location.tableSection, rowGroup: props.location.rowGroup, row: props.location.row, cell: -1 } as AitLocation;
+                      props.rowOptions[1](ret, rl);
+                    }}
+                  />
+                </AsupInternalWindow>
+              }
             </>)
             : null
         }
@@ -203,17 +208,19 @@ export const AitCell = (props: AitCellProps) => {
           onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
         >
         </div>
-        <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
-          <div className="aiw-body-row">
-            <div className={"aio-label"}>Cell location: </div>
-            <div className={"aio-value"}><AioExpander inputObject={props.location} /></div>
-          </div>
-          <div className="aiw-body-row">
-            <div className={"aio-label"}>Original text: </div>
-            <div className={"aio-ro-value"}>{props.initialData.originalText}</div>
-          </div>
-          <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }} />
-        </AsupInternalWindow>
+        {showCellOptions &&
+          <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
+            <div className="aiw-body-row">
+              <div className={"aio-label"}>Cell location: </div>
+              <div className={"aio-value"}><AioExpander inputObject={props.location} /></div>
+            </div>
+            <div className="aiw-body-row">
+              <div className={"aio-label"}>Original text: </div>
+              <div className={"aio-ro-value"}>{props.initialData.originalText}</div>
+            </div>
+            <AioOptionGroup initialData={options} returnData={(ret) => { setOptions(ret); }} />
+          </AsupInternalWindow>
+        }
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(props.type === AitCellType.rowHeader ? "left" : "center")}

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { AitCell } from "./aitCell";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitRowData } from "./aitInterface";
-import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
+import { AitTableOptionNames, OptionType, OptionGroup, AitCellOptionNames } from "components/aio/aioInterface";
 import { processOptions } from "components/functions";
 import { v4 as uuidv4 } from 'uuid';
 import './ait.css';
@@ -37,10 +37,6 @@ const addAitIdToRowGroup = (rg: AitRowGroupData): AitRowGroupData => {
   if (!rg.aitid) rg.aitid = uuidv4();
   rg.rows = rg.rows.map(r => {
     if (!r.aitid) r.aitid = uuidv4();
-    r.cells = r.cells.map(c => {
-      if (!c.aitid) c.aitid = uuidv4();
-      return c;
-    });
     return r;
   });
   return rg;
@@ -164,9 +160,8 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
   // Add a new row group to the table body
   const addRowGroup = useCallback((rgi: number) => {
     let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
-    let newRowGroup = { options: [], rows: [{ aitid: uuidv4(), options: [], cells: new Array(4).fill({ text: "", originalText: "" }) }] } as AitRowGroupData;
-    newRowGroup.rows[0].cells = newRowGroup.rows[0].cells.map(c => { c.aitid = uuidv4(); return c });
-    newBody.rowGroups.splice(rgi+1, 0, newRowGroup);
+    let newRowGroup = { options: [], rows: [{ aitid: uuidv4(), options: [], cells: new Array(4).fill({ originalText: "" }) }] };
+    newBody.rowGroups.splice(rgi + 1, 0, newRowGroup);
     // newRowGroup = { rows:[{cells:new Array(4).fill(text:"", originalText:"")}], options: []} as AitRowGroupData;
     setBodyData(newBody);
   }, [bodyData.options, bodyData.rowGroups]);
@@ -190,14 +185,21 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         <div>
           <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={() => { setShowOptions(true); }}>
           </div>
-          <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-            <AioOptionGroup initialData={options} returnData={setOptions} />
-          </AsupInternalWindow>
+          {showOptions &&
+            <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+              <AioOptionGroup initialData={options} returnData={setOptions} />
+            </AsupInternalWindow>
+          }
         </div>
         <table
           className="ait-table"
         >
           <thead>
+            <tr>
+              {headerData.rows[0].cells.map((cell: AitCellData, ci: number): JSX.Element =>
+                <td className="ait-border-cell" colSpan={cell.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+              )}
+            </tr>
             {
               headerData?.rows.map((row, ri): JSX.Element => {
                 return (
@@ -206,7 +208,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                       let location = { tableSection: AitCellType.header, rowGroup: 0, row: ri, cell: ci } as AitLocation;
                       return (
                         <AitCell
-                          key={cell.aitid}
+                          key={cell.aitid ?? ci}
                           location={location}
                           showCellBorders={props.showCellBorders}
                           type={AitCellType.header}
@@ -223,6 +225,11 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
               }
               )
             }
+            <tr>
+              {headerData.rows[0].cells.map((cell: AitCellData, ci: number): JSX.Element =>
+                <td className="ait-border-cell" colSpan={cell.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+              )}
+            </tr>
           </thead>
           <tbody>
             {
@@ -234,7 +241,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                         let location = { tableSection: AitCellType.body, rowGroup: rgi, row: ri, cell: ci } as AitLocation;
                         return (
                           <AitCell
-                            key={cell.aitid}
+                            key={cell.aitid ?? ci}
                             location={location}
                             showCellBorders={props.showCellBorders}
                             type={AitCellType.body}
@@ -254,6 +261,11 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 )
               )
             }
+            <tr>
+              {headerData.rows[0].cells.map((cell: AitCellData, ci: number): JSX.Element =>
+                <td className="ait-border-cell" colSpan={cell.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+              )}
+            </tr>
           </tbody>
         </table>
       </div>

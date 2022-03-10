@@ -3,20 +3,10 @@ table.ait-table {
   border-collapse: collapse;
 }
 
-table.ait-table>tbody>tr:first-child>td.ait-cell {
-  border-top: 2px black solid !important;
-}
-
-table.ait-table>thead>tr:first-child>td.ait-cell {
-  border-top: 2px black solid !important;
-}
-
-table.ait-table>tbody>tr:first-child>td.ait-cell {
-  border-top: 2px black solid !important;
-}
-
-table.ait-table tbody tr:last-child td.ait-cell {
+table .ait-border-cell {
   border-bottom: 2px black solid !important;
+  padding: 0;
+  min-height: "1px";
 }
 
 .ait-table-options {
