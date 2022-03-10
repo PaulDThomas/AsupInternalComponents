@@ -9,6 +9,16 @@ interface RawContentBlocks { contentBlocks: Array<ContentBlock>, entityMap: any 
 export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
 interface AieStyleExcludeMap { [styleName: string]: string[] };
 
+// Handler functions for Editor
+const isRawDraftContentState = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawDraftContentState => { return (initialText as RawDraftContentState).blocks !== undefined; };
+const isRawContentBlocks = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawContentBlocks => { return (initialText as RawContentBlocks).contentBlocks !== undefined; };
+const htmlEncodeRawDraftContentState = (r: RawDraftContentState) => r.blocks
+  .map(b => b.text.split("")
+    // Swap out HTML characters for safety
+    .map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"))
+    .join("")
+  )
+  .join("\n");
 const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
   let d: DraftStyleMap = {};
   if (styleMap !== undefined)
@@ -36,8 +46,6 @@ interface AsupInternalEditorProps {
   editable?: boolean,
 };
 
-const isRawDraftContentState = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawDraftContentState => { return (initialText as RawDraftContentState).blocks !== undefined; };
-const isRawContentBlocks = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawContentBlocks => { return (initialText as RawContentBlocks).contentBlocks !== undefined; };
 
 export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -63,15 +71,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
     if (typeof (props.returnRaw) === "function") props.returnRaw(raw);
 
     // Get text by joining
-    if (typeof (props.returnText) === "function") props.returnText(
-      raw.blocks
-        .map(b => b.text.split("")
-          // Swap out HTML characters for safety
-          .map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"))
-          .join("")
-        )
-        .join("\n")
-    );
+    if (typeof (props.returnText) === "function") props.returnText(htmlEncodeRawDraftContentState(raw));
 
     // Get HTML by exploding
     const htmlBlock = (b: RawDraftContentBlock): string => {
@@ -90,7 +90,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
 
     // Update div holder to indicate if changes have been made
     if (props.highlightChanges) {
-      setChangesMade(typeof (props.initialText) === "string" && props.initialText !== raw.blocks.map(b => b.text).join("\n"));
+      setChangesMade(typeof (props.initialText) === "string" && props.initialText !== htmlEncodeRawDraftContentState(raw));
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

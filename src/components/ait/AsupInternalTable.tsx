@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { AitCell } from "./aitCell";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, uuidv4, AitCellData, AitCellType } from "./aitInterface";
+import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType } from "./aitInterface";
 import { AitTableOptionNames, OptionType, OptionGroup } from "components/aio/aioInterface";
 import { processOptions } from "components/functions";
 import './ait.css';
@@ -10,9 +10,6 @@ import './ait.css';
 interface AsupInteralTableProps {
   initialData: AitTableData,
   returnData: (ret: AitTableData) => void,
-  // cellProperties,
-  // rowGroupProperties,
-  // columnGroupProperties,
   addStyle: React.CSSProperties,
   showCellBorders?: boolean,
   maxRows?: number,
@@ -82,7 +79,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
   // Collate and return data
   useEffect(() => {
-    if (typeof(props.returnData) !== "function") return;
+    if (typeof (props.returnData) !== "function") return;
 
     const r = {
       headerData: headerData,
@@ -94,21 +91,57 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
     if (JSON.stringify(r) !== lastSend) {
       props.returnData(r);
       setLastSend(JSON.stringify(r));
-    } 
+    }
   }, [headerData, bodyData, options, lastSend, props]);
 
+  // Update individual cells when a return is passed
   const updateCell = useCallback((ret: AitCellData, location: AitLocation) => {
-    if ( location.tableSection === AitCellType.header ) {
-      let newHeader = {rows:headerData.rows, options:headerData.options};
+    if (location.tableSection === AitCellType.header) {
+      let newHeader = { rows: headerData.rows, options: headerData.options };
       newHeader.rows[location.row].cells[location.cell] = ret;
       setHeaderData(newHeader);
     }
     else {
-      let newBody = {rowGroups:bodyData.rowGroups, options: bodyData.options};
+      let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
       newBody.rowGroups[location.rowGroup].rows[location.row].cells[location.cell] = ret;
       setBodyData(newBody);
     }
   }, [bodyData.options, bodyData.rowGroups, headerData.options, headerData.rows]);
+
+
+  // Update options when a return is passed
+  const updateOptions = useCallback((ret: OptionGroup, location: AitLocation) => {
+    // Update header options
+    if (location.tableSection === AitCellType.header) {
+      // Update row options
+      if (location.row >= 0) {
+        let newHeader = { rows: headerData.rows, options: headerData.options };
+        newHeader.rows[location.row].options = ret;
+        setHeaderData(newHeader);
+      }
+      // Update row group options
+      else {
+        let newHeader = { rows: headerData.rows, options: ret };
+        setHeaderData(newHeader);
+      }
+      //  Update body options
+    } else {
+      if (location.row >= 0) {
+        let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+        newBody.rowGroups[location.rowGroup].rows[location.row].options = ret;
+        setBodyData(newBody);
+      }
+      // Update row group options
+      else if (location.rowGroup >= 0) {
+        let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+        newBody.rowGroups[location.rowGroup].options = ret;
+        setBodyData(newBody);
+      } else {
+        console.log("Should not hit this!");
+      }
+    }
+  }, [headerData.options, headerData.rows, bodyData.options, bodyData.rowGroups]);
+
 
   // Print the table
   return (
@@ -140,16 +173,14 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                       <AitCell
                         key={ci}
                         location={location}
+                        showCellBorders={props.showCellBorders}
                         type={AitCellType.header}
                         editable={true}
                         initialData={cell}
                         returnData={(ret) => updateCell(ret, location)}
-                        rowGroupOptions={(ci === 0 ? headerData.options : undefined)}
-                        //addRowGroup={props.addRowGroup}
-                        //setRowGroupOptions={(i === 0 ? props.setRowGroupOptions : undefined)}
-                        rowOptions={(ci === row.cells.length-1 ? row.options : undefined)}
-                        //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
-                        showCellBorders={props.showCellBorders}
+                        rowGroupOptions={(ci === 0 ? [headerData.options, updateOptions] : undefined)}
+                        rowOptions={(ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined)}
+                      //addRowGroup={props.addRowGroup}
                       />
                     );
                   })}
@@ -159,26 +190,23 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
           </thead>
           <tbody>
             {
-              bodyData.rowGroups?.map((rowGroup, rgi) => 
+              bodyData.rowGroups?.map((rowGroup, rgi) =>
                 rowGroup.rows.map((row, ri): JSX.Element =>
                   <tr key={ri} >
                     {row.cells.map((cell, ci): JSX.Element => {
-                      // cell.aitid = cell.aitid ?? uuidv4();
                       let location = { tableSection: AitCellType.body, rowGroup: rgi, row: ri, cell: ci } as AitLocation;
                       return (
                         <AitCell
                           key={ci}
                           location={location}
+                          showCellBorders={props.showCellBorders}
                           type={AitCellType.body}
                           editable={true}
                           initialData={cell}
                           returnData={(ret) => updateCell(ret, location)}
-                          rowGroupOptions={(ci === 0 ? rowGroup.options : undefined)}
-                          //addRowGroup={props.addRowGroup}
-                          //setRowGroupOptions={(ci === 0 ? props.setRowGroupOptions : undefined)}
-                          rowOptions={(ci === row.cells.length-1 ? cell.options : undefined)}
-                          //setRowOptions={(i === props.data.cells.length - 1 ? setOptions : undefined)}
-                          showCellBorders={props.showCellBorders}
+                          rowGroupOptions={(ci === 0 ? [rowGroup.options, updateOptions] : undefined)}
+                          rowOptions={(ci === row.cells.length - 1 ? [row.options, updateOptions] : undefined)}
+                        //addRowGroup={props.addRowGroup}
                         />
                       );
                     })}
