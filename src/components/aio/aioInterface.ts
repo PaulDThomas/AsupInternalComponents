@@ -23,12 +23,13 @@ export enum AitCellOptionNames {
   cellText = "cellText",
   colSpan = "colSpan",
   rowSpan = "rowSpan",
+  cellType = "cellType",
 };
 export enum AitRowOptionNames {
 
 };
 export enum AitRowGroupOptionNames {
-
+  rgName = "rgName",
 };
 export enum AitTableOptionNames {
   tableName = "tableName",

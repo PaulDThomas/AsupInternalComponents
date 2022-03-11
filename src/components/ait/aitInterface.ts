@@ -4,7 +4,8 @@ export interface AitCellData {
   aitid?: string,
   text: string,
   originalText: string,
-  options: OptionGroup
+  options: OptionGroup,
+  renderColumn?: number,
 };
 
 export interface AitRowData {
@@ -47,9 +48,9 @@ export enum AitOptionLocation {
 }
 
 export enum AitCellType {
-  "header",
-  "rowHeader",
-  "body",
+  header = "header",
+  rowHeader = "rowHeader",
+  body = "body",
 }
 
 export enum AitRowType {

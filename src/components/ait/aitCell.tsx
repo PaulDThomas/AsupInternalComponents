@@ -4,7 +4,7 @@ import { AsupInternalEditor } from '../aie/AsupInternalEditor';
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioOptionGroup } from "../aio/aioOptionGroup";
 // import { AioString } from "../aio/aioString";
-import { processOptions } from "../functions";
+import { processOptions } from "./processes";
 import { AioExpander } from "../aio/aioExpander";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
 import { OptionGroup, OptionType, AitCellOptionNames } from "components/aio/aioInterface";
@@ -13,9 +13,9 @@ import { v4 as uuidv4 } from 'uuid';
 interface AitCellProps {
   initialData: AitCellData,
   location: AitLocation,
+  //renderColumn?: number,
   returnData: (ret: AitCellData) => void,
   showCellBorders?: boolean,
-  type: AitCellType,
   editable: boolean,
   addRowGroup?: (rgi: number) => void,
   rowGroupOptions?: [OptionGroup, (ret: OptionGroup, location: AitLocation) => void],
@@ -25,6 +25,7 @@ interface AitCellProps {
 
 const defaultOptions: OptionGroup = [
   { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: OptionType.string, },
+  { optionName: AitCellOptionNames.cellType, label: "Cell Type", value: AitCellType.body, type: OptionType.select, readOnly: true},
   { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: OptionType.number, readOnly: true },
   { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: OptionType.number, readOnly: true },
 ];
@@ -67,6 +68,7 @@ export const AitCell = (props: AitCellProps) => {
       originalText: props.initialData.originalText,
       options: options ?? [],
       text: text ?? "",
+      //renderColumn: props.renderColumn,
     }
     if (JSON.stringify(r) !== lastSend) {
       props.returnData(r);
@@ -119,11 +121,13 @@ export const AitCell = (props: AitCellProps) => {
     }
   }
 
+  let cellType = props.initialData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value ?? AitCellType.body;
+
   // Render element
   return (
     <td
       className={["ait-cell",
-        (props.type === AitCellType.header ? "ait-header-cell" : props.type === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell")
+        (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell")
       ].join(" ")}
       colSpan={options.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
       rowSpan={options.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
@@ -223,7 +227,7 @@ export const AitCell = (props: AitCellProps) => {
         }
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
-          textAlignment={(props.type === AitCellType.rowHeader ? "left" : "center")}
+          textAlignment={(cellType === AitCellType.rowHeader ? "left" : "center")}
           showStyleButtons={false}
           initialText={props.initialData.originalText}
           returnText={setText}

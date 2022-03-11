@@ -50,7 +50,7 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
               id={option.optionName as string}
               label={(option.label ?? option.optionName) as string}
               value={option.value}
-              setValue={(ret: Option) => { updateOption(ret, i) }}
+              setValue={!option.readOnly ? (ret: Option) => { updateOption(ret, i) } : undefined}
               type={option.type}
               availablValues={option.availableValues}
             />
