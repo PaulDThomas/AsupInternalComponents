@@ -1,9 +1,8 @@
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import * as React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { AioOptionGroup } from "./aioOptionGroup";
-import { AioPrintItem } from "./aioPrintItem";
-import { AioNewItem, OptionGroup, OptionType } from "./aioInterface";
+import { AioPrintOption } from "./aioPrintOption";
+import { AioNewItem, OptionType } from "./aioInterface";
 
 interface AioArraySortableProps {
   inputArray: any[],
@@ -70,12 +69,13 @@ export function AioArraySortable(props: AioArraySortableProps) {
 
   return (
     <>
+      {props.inputArray.length === 0 && <div className="aio-body-row"><div className="aio-label"><em>Empty array</em></div></div>}
       {
         props.inputArray.map((value: any, i: number) => {
           const id = value ?? i;
           return (
             <div className="aio-body-row" key={i}>
-              <AioPrintItem
+              <AioPrintOption
                 id={id}
                 value={value}
                 setValue={
@@ -129,8 +129,8 @@ export function AioArraySortable(props: AioArraySortableProps) {
                 canMoveItems={props.canMoveItems}
                 canRemoveItems={props.canRemoveItems}
               >
-                {props.canAddItems ? addWindow(i) : <></>}
-              </AioPrintItem>
+              </AioPrintOption>
+              {(showWindows[i] && props.canAddItems) ? addWindow(i) : <></>}
             </div>
           );
         })
@@ -144,9 +144,8 @@ export function AioArraySortable(props: AioArraySortableProps) {
               const newShowWindows = [...showWindows];
               newShowWindows[props.inputArray.length] = true;
               setShowWindows(newShowWindows);
-            }}>
-              {addWindow(props.inputArray.length)}
-            </div>
+            }} />
+            {showWindows[props.inputArray.length] && addWindow(props.inputArray.length)}
           </div>
         </div>
       }

@@ -1,8 +1,6 @@
-import * as React from "react";
-import { useEffect, useRef, useState } from "react";
-import { AioPrintOption } from "./aioPrintOption";
+import React, { useEffect, useRef, useState } from "react";
 import { Option, OptionGroup } from "./aioInterface";
-
+import { AioPrintOption } from "./aioPrintOption";
 import "./aio.css";
 
 interface AioOptionGroupProps {
@@ -17,7 +15,7 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
   const [options, setOptions] = useState((props.initialData ?? []).map(a => { return { ...a } }));
   const originalOptions = useRef((props.initialData ?? []).map(a => { return { ...a } }));
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [buttonText, setButtonText] = useState(props.buttonText ?? "Update");
+  const [buttonText] = useState(props.buttonText ?? "Update");
 
   // Update on a load...
   useEffect(() => {
@@ -45,10 +43,17 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
 
   return (
     <>
-      {options.map((k, i) => {
+      {options.map((option, i) => {
         return (
           <div className='aio-body-row' key={i}>
-            <AioPrintOption option={k} updateOption={(ret) => { updateOption(ret, i) }} />
+            <AioPrintOption
+              id={option.optionName as string}
+              label={(option.label ?? option.optionName) as string}
+              value={option.value}
+              setValue={(ret: Option) => { updateOption(ret, i) }}
+              type={option.type}
+              availablValues={option.availableValues}
+            />
           </div>
         );
       })}

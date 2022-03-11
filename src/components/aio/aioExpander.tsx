@@ -1,11 +1,8 @@
-import * as React from "react";
-import { useState } from "react"
-import { AioPrintItem } from "./aioPrintItem";
+import React, { useState } from "react"
+import { AioPrintOption } from "./aioPrintOption";
 import { AioLabel } from "./aioLabel";
 import { AioArraySortable } from "./aioArraySortable";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { AioString } from "./aioString";
 import { AioNewItem, OptionGroup, OptionType } from "./aioInterface";
 import { AioOptionGroup } from "./aioOptionGroup";
 
@@ -20,13 +17,35 @@ interface AioExpanderProps {
 
 export const AioExpander = (props: AioExpanderProps): JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(false);
-
   const [showNewItemWindow, setShowNewItemWindow] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [newItem, setNewItem] = useState<OptionGroup>([
-    { type: OptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
-    { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
-  ]);
+
+  const onClickAdd = (ret: OptionGroup) => {
+    // Check value is ok
+    if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
+      console.log(`Adding new key: ${ret[0].value}`);
+      let newItem;
+      switch (ret[1].value) {
+        case ("number"):
+          newItem = 0;
+          break;
+        case ("array"):
+          newItem = [];
+          break;
+        case ("object"):
+          newItem = {};
+          break;
+        case ("string"):
+        default:
+          newItem = "";
+      }
+      const newObject = { ...props.inputObject };
+      newObject[ret[0].value] = newItem;
+      props.updateObject(newObject);
+      console.log("Close window");
+      setShowNewItemWindow(false);
+    }
+  }
+
 
   // Show nothing
   if (!props.inputObject) { return (<></>); }
@@ -74,10 +93,11 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                 />
                 :
                 <>
+                  {(Object.keys(props.inputObject).length === 0) && <div className="aio-body-row"><div className="aio-label"><em>Empty object</em></div></div>}
                   {Object.keys(props.inputObject).map((k: string, i: number) => {
                     return (
                       <div className="aio-body-row" key={i}>
-                        <AioPrintItem
+                        <AioPrintOption
                           id={k}
                           label={k}
                           value={props.inputObject[k]}
@@ -106,14 +126,14 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                       </div>
                     );
                   })}
-                  {(Object.keys(props.inputObject).length === 0) && <div className="aio-body-row"><div className="aio-label"><em>Empty</em></div></div>}
                   {(props.canAddItems && props.updateObject)
                     ?
                     <div className="aio-body-row" key={"n"}>
                       <div className="aio-label" />
-                      <div className="aio-input-holder" style={{borderLeft:"0"}} />
+                      <div className="aio-input-holder" style={{ borderLeft: "0" }} />
                       <div className="aiox-button-holder">
-                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }}>
+                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }} />
+                        {showNewItemWindow &&
                           <AsupInternalWindow
                             Title={"Add item"}
                             Visible={showNewItemWindow}
@@ -121,37 +141,14 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                             style={{ minHeight: "120px" }}
                           >
                             <AioOptionGroup
-                              initialData={newItem}
-                              returnData={
-                                (ret) => {
-                                  // Check value is ok
-                                  if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
-                                    console.log(`Adding new key: ${ret[0].value}`);
-                                    let newItem;
-                                    switch (ret[1].value) {
-                                      case ("number"):
-                                        newItem = 0;
-                                        break;
-                                      case ("array"):
-                                        newItem = [];
-                                        break;
-                                      case ("object"):
-                                        newItem = {};
-                                        break;
-                                      case ("string"):
-                                      default:
-                                        newItem = "";
-                                    }
-                                    const newObject = { ...props.inputObject };
-                                    newObject[ret[0].value] = newItem;
-                                    props.updateObject(newObject);
-                                    setShowNewItemWindow(false);
-                                  }
-                                }
-                              }
+                              initialData={[
+                                { type: OptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
+                                { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
+                              ] as OptionGroup}
+                              returnData={onClickAdd}
                               buttonText="Add" />
                           </AsupInternalWindow>
-                        </div>
+                        }
                       </div>
                     </div>
                     :
