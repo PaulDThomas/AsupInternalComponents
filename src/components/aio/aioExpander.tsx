@@ -9,6 +9,7 @@ import { AioOptionGroup } from "./aioOptionGroup";
 interface AioExpanderProps {
   inputObject: { [key: string]: any },
   label?: string,
+  showBorders?: boolean,
   updateObject?: (value: any) => void,
   canAddItems?: boolean,
   canMoveItems?: boolean,
@@ -81,7 +82,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         <div className="aio-input-holder">
           <span className="aiox open">
             <div className="aiox-button" onClick={(e) => setIsExpanded(false)} />
-            <div className="aiox-table">
+            <div className={`aiox-table ${props.showBorders && "show-borders"}`}>
               {Array.isArray(props.inputObject)
                 ?
                 <AioArraySortable

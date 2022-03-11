@@ -33,20 +33,22 @@
   margin: 0;
   display: table;
   width: 100%;
-  border-right: 1px dotted burlywood;
-  border-bottom: 1px dotted burlywood;
 }
-
 .aiox-table .aio-row {
   display: table-row;
 }
-
 .aiox-table>.aio-body-row>.aio-label, .aiox-table>.aio-body-row>.aio-input-holder, .aiox-table>.aio-body-row>.aiox-button-holder {
-  border-top: 1px dotted burlywood;
   padding: 0 8px 0 8px;
 }
 
-.aiox-table>.aio-body-row>.aio-label, .aiox-table>.aio-body-row>.aio-input-holder {
+.aiox-table.show-borders {
+  border-right: 1px dotted burlywood;
+  border-bottom: 1px dotted burlywood;
+}  
+.aiox-table.show-borders>.aio-body-row>.aio-label, .aiox-table.show-borders>.aio-body-row>.aio-input-holder, .aiox-table.show-borders>.aio-body-row>.aiox-button-holder {
+  border-top: 1px dotted burlywood;
+}
+.aiox-table.show-borders>.aio-body-row>.aio-label, .aiox-table.show-borders>.aio-body-row>.aio-input-holder {
   border-left: 1px dotted burlywood;
 }
 

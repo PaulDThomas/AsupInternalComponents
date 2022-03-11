@@ -5,6 +5,7 @@ import { AioExpander } from 'components/aio/aioExpander';
 export const ExpanderPage = () => {
 
   const ta = useRef("");
+  const [showBorders, setShowBorders] = useState(false);
   const [currentData, setCurrentData] = useState({
     someText: "Hello",
     options: [
@@ -133,6 +134,7 @@ export const ExpanderPage = () => {
         <AioExpander
           inputObject={currentData}
           updateObject={(ret) => { setCurrentData(ret) ; }}
+          showBorders={showBorders}
           canAddItems={true}
           canRemoveItems={true}
           canMoveItems={true}
@@ -144,6 +146,15 @@ export const ExpanderPage = () => {
         border: "solid black 3px",
         backgroundColor: "rgb(240, 240, 240)"
       }}>
+                  <label>
+            Show borders
+            <input
+              name="showWindowCheck"
+              type="checkbox"
+              checked={showBorders}
+              onChange={(e) => {setShowBorders(e.target.checked);}}
+            />
+          </label>
         <button
           onClick={() => {
             try {
