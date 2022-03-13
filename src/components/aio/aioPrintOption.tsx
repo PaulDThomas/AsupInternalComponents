@@ -4,13 +4,13 @@ import { AioNumber } from "./aioNumber";
 import { AioString } from "./aioString";
 import { AioSelect } from "./aioSelect";
 import { AioReplacements } from "./aioReplacements";
-import { Replacement, OptionType } from "./aioInterface";
+import { AioReplacement, AioOptionType } from "./aioInterface";
 
 interface AioPrintOptionProps {
   id: string,
   value: any,
   label?: string,
-  type?: OptionType | string,
+  type?: AioOptionType | string,
   availablValues?: Array<string>,
   setValue?: (value: any) => void,
   canAddItems?: boolean,
@@ -40,11 +40,11 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
   switch (props.type ?? (props.value === null ? "string" : typeof (props.value))) {
     
     // Processing - do nothing, this should not be hit here
-    case (OptionType.processing): return (<></>);
+    case (AioOptionType.processing): return (<></>);
 
     // Object, need another expander
     case ("object"):
-    case (OptionType.object):
+    case (AioOptionType.object):
       return (
         <AioExpander
           label={props.label}
@@ -62,13 +62,13 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // Replacements
-    case (OptionType.replacements):
+    case (AioOptionType.replacements):
       return (
         <AioReplacements
           value={props.value}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: Replacement) => { props.setValue!(ret); console.log(ret); }
+            (ret: AioReplacement) => { props.setValue!(ret); console.log(ret); }
             :
             undefined
           }
@@ -76,7 +76,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // Select
-    case (OptionType.select):
+    case (AioOptionType.select):
       return (
         <AioSelect
           label={props.label}
@@ -92,7 +92,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // Number
-    case (OptionType.number):
+    case (AioOptionType.number):
     case ("number"):
       return (
         <AioNumber
@@ -108,7 +108,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // String or default
-    case (OptionType.string):
+    case (AioOptionType.string):
     case ("string"):
     default:
       return (

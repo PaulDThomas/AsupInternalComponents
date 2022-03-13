@@ -1,10 +1,10 @@
 import React, {useCallback} from "react";
-import { Replacement } from "./aioInterface";
+import { AioReplacement } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 
 interface AioReplacementsProps {
-  value: Replacement,
-  setValue?: (value: Replacement) => void,
+  value: AioReplacement,
+  setValue?: (value: AioReplacement) => void,
 }
 
 export const AioReplacements = (props: AioReplacementsProps): JSX.Element => {

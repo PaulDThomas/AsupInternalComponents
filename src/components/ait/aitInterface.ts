@@ -1,10 +1,10 @@
-import { OptionGroup } from "components/aio/aioInterface";
+import { AioOptionGroup } from "components/aio/aioInterface";
 
 export interface AitCellData {
   aitid?: string,
   text: string,
   originalText: string,
-  options: OptionGroup,
+  options: AioOptionGroup,
   renderColumn?: number,
   readOnly?: boolean,
 };
@@ -12,25 +12,25 @@ export interface AitCellData {
 export interface AitRowData {
   aitid?: string,
   cells: Array<AitCellData>,
-  options: OptionGroup,
+  options: AioOptionGroup,
 };
 
 export interface AitRowGroupData {
   aitid?: string,
   rows: Array<AitRowData>,
-  options: OptionGroup,
+  options: AioOptionGroup,
 };
 
 export interface AitTableBodyData {
   aitid?: string,
   rowGroups: Array<AitRowGroupData>,
-  options: OptionGroup,
+  options: AioOptionGroup,
 };
 
 export interface AitTableData {
   headerData: AitRowGroupData,
   bodyData: AitTableBodyData,
-  options: OptionGroup,
+  options: AioOptionGroup,
 };
 
 

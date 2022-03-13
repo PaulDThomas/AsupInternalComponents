@@ -1,7 +1,7 @@
 import { AitCellData, AitCellType, AitRowData, AitRowGroupData, AitTableBodyData } from "./aitInterface";
-import { AitCellOptionNames, AitRowGroupOptionNames, AitTableOptionNames, OptionGroup, AitProcessingOptions, OptionType } from "../aio/aioInterface";
+import { AitCellOptionNames, AitRowGroupOptionNames, AitTableOptionNames, AioOptionGroup, AitProcessingOptions, AioOptionType } from "../aio/aioInterface";
 
-export const processOptions = (updatedOptions: OptionGroup, previousOptions: OptionGroup) => {
+export const processOptions = (updatedOptions: AioOptionGroup, previousOptions: AioOptionGroup) => {
   // Return updated options if there is nothing to process against  
   if (previousOptions === undefined) {
     return updatedOptions;
@@ -32,7 +32,7 @@ export const processOptions = (updatedOptions: OptionGroup, previousOptions: Opt
 /* 
  * Process row data using available (processed) options 
  */
-function processCell(c: AitCellData, og: OptionGroup): AitCellData {
+function processCell(c: AitCellData, og: AioOptionGroup): AitCellData {
 
   for (let po of og) {
     switch (po.optionName) {
@@ -47,7 +47,7 @@ function processCell(c: AitCellData, og: OptionGroup): AitCellData {
             optionName: AitCellOptionNames.cellType,
             label: "Cell type",
             value: po.value,
-            type: OptionType.select,
+            type: AioOptionType.select,
             readOnly: true,
           });
         }
@@ -64,15 +64,15 @@ function processCell(c: AitCellData, og: OptionGroup): AitCellData {
 /* 
  * Process row data using available (processed) options 
  */
-function processRow(r: AitRowData, og: OptionGroup): AitRowData {
+function processRow(r: AitRowData, og: AioOptionGroup): AitRowData {
   r.cells = r.cells.map(c => {
     // Ensure default options are present
     c.options = processOptions(c.options ?? [], [
-        { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: OptionType.string, },
-        { optionName: AitCellOptionNames.cellType, label: "Cell Type", value: AitCellType.body, type: OptionType.select, readOnly: true, availableValues: [AitCellType.body, AitCellType.header, AitCellType.rowHeader] },
-        { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: OptionType.number, readOnly: true },
-        { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: OptionType.number, readOnly: true },
-      ] as OptionGroup
+        { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: AioOptionType.string, },
+        { optionName: AitCellOptionNames.cellType, label: "Cell Type", value: AitCellType.body, type: AioOptionType.select, readOnly: true, availableValues: [AitCellType.body, AitCellType.header, AitCellType.rowHeader] },
+        { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: AioOptionType.number, readOnly: true },
+        { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: AioOptionType.number, readOnly: true },
+      ] as AioOptionGroup
     );
     // Cell data processing
     processCell(c, [
@@ -89,7 +89,7 @@ function processRow(r: AitRowData, og: OptionGroup): AitRowData {
 /* 
  * Process row group data using available (processed) options 
  */
-function processRowGroup(rg: AitRowGroupData, og: OptionGroup): AitRowGroupData {
+function processRowGroup(rg: AitRowGroupData, og: AioOptionGroup): AitRowGroupData {
   rg.rows = rg.rows.map(r => processRow(r, [
     ...r.options,
     ...og,
@@ -100,7 +100,7 @@ function processRowGroup(rg: AitRowGroupData, og: OptionGroup): AitRowGroupData 
 /*
  * Process table data from passed options
  */
-export function processTable(headerData: AitRowGroupData, bodyData: AitTableBodyData, options: OptionGroup): [AitRowGroupData, AitTableBodyData, OptionGroup] {
+export function processTable(headerData: AitRowGroupData, bodyData: AitTableBodyData, options: AioOptionGroup): [AitRowGroupData, AitTableBodyData, AioOptionGroup] {
   console.log(`Processing data`)
   console.log(`Header data has ${headerData.rows.length} rows`);
   console.log(`Body data has ${bodyData.rowGroups.length} row groups`);
@@ -112,7 +112,7 @@ export function processTable(headerData: AitRowGroupData, bodyData: AitTableBody
 
   // Process header data
   headerData = processRowGroup(headerData, [
-    { optionName: AitProcessingOptions.setCellType, value: AitCellType.header, type: OptionType.processing }
+    { optionName: AitProcessingOptions.setCellType, value: AitCellType.header, type: AioOptionType.processing }
     , ...options
   ]);
   bodyData.rowGroups = bodyData.rowGroups.map(rg => processRowGroup(rg, [...options]));

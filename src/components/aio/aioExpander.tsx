@@ -3,7 +3,7 @@ import { AioPrintOption } from "./aioPrintOption";
 import { AioLabel } from "./aioLabel";
 import { AioArraySortable } from "./aioArraySortable";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { AioNewItem, OptionGroup, OptionType } from "./aioInterface";
+import { AioNewItem, AioOptionGroup, AioOptionType } from "./aioInterface";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 
 interface AioExpanderProps {
@@ -20,7 +20,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showNewItemWindow, setShowNewItemWindow] = useState(false);
 
-  const onClickAdd = (ret: OptionGroup) => {
+  const onClickAdd = (ret: AioOptionGroup) => {
     // Check value is ok
     if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
       console.log(`Adding new key: ${ret[0].value}`);
@@ -143,9 +143,9 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                           >
                             <AioOptionDisplay
                               initialData={[
-                                { type: OptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
-                                { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
-                              ] as OptionGroup}
+                                { type: AioOptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
+                                { type: AioOptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
+                              ] as AioOptionGroup}
                               returnData={onClickAdd}
                               buttonText="Add" />
                           </AsupInternalWindow>

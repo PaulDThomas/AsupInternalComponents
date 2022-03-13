@@ -1,21 +1,21 @@
-export interface Option {
+export interface AioOption {
   optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames 
   | AioNewItem | AitProcessingOptions,
-  type: OptionType,
+  type: AioOptionType,
   value: any,
   label?: string,
   availableValues?: Array<string>,
   readOnly?: boolean,
 }
-export interface OptionGroup extends Array<Option> { };
+export interface AioOptionGroup extends Array<AioOption> { };
 
-export interface Replacement {
+export interface AioReplacement {
   replacementText: string,
   replacementValues: Array<string>
 }
 
 
-export enum OptionType {
+export enum AioOptionType {
   string = "string",
   number = "number",
   array = "array",

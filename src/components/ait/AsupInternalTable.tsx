@@ -4,7 +4,7 @@ import { processTable, processOptions } from "./processes";
 import { AitCell } from "./aitCell";
 import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitRowData } from "./aitInterface";
 import { AioOptionDisplay } from "../aio/aioOptionDisplay";
-import { AitTableOptionNames, OptionType, OptionGroup, AitCellOptionNames, AitRowGroupOptionNames } from "../aio/aioInterface";
+import { AitTableOptionNames, AioOptionType, AioOptionGroup, AitCellOptionNames, AitRowGroupOptionNames } from "../aio/aioInterface";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
 
@@ -48,24 +48,24 @@ const initialBodyProcess = (b: AitTableBodyData): AitTableBodyData => {
   return b;
 };
 
-const defaultTableOptions: OptionGroup = [
-  { optionName: AitTableOptionNames.tableName, label: "Table name", type: OptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: OptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: OptionType.number, value: 1 },
-  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: OptionType.object, value: { start: "First column", end: "Last column" } },
-  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: OptionType.array, value: ["New list"] },
+const defaultTableOptions: AioOptionGroup = [
+  { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
+  { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
+  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
+  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
+  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
 ];
 
-const defaultRowGroupOptions: OptionGroup = [
-  { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: OptionType.string, value: "New group" },
-  { optionName: AitRowGroupOptionNames.replacements, label: "Replacement lists", type: OptionType.replacements, value: {}},
+const defaultRowGroupOptions: AioOptionGroup = [
+  { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "New group" },
+  { optionName: AitRowGroupOptionNames.replacements, label: "Replacement lists", type: AioOptionType.replacements, value: {}},
 ];
 
 
 export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const [headerData, setHeaderData] = useState<AitRowGroupData>(initialRowGroupProcess(props.initialData.headerData));
   const [bodyData, setBodyData] = useState<AitTableBodyData>(initialBodyProcess(props.initialData.bodyData));
-  const [options, setOptions] = useState<OptionGroup>(processOptions(props.initialData.options, defaultTableOptions));
+  const [options, setOptions] = useState<AioOptionGroup>(processOptions(props.initialData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
   const [lastSend, setLastSend] = useState<string>(JSON.stringify(props.initialData));
@@ -141,7 +141,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
 
   // Update options when a return is passed
-  const updateOptions = useCallback((ret: OptionGroup, location?: AitLocation) => {
+  const updateOptions = useCallback((ret: AioOptionGroup, location?: AitLocation) => {
     console.log(ret);
     let newHeader = { rows: headerData.rows, options: headerData.options };
     let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };

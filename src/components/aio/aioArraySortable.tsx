@@ -2,7 +2,7 @@ import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import React, { useState } from "react";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
-import { AioNewItem, OptionType } from "./aioInterface";
+import { AioNewItem, AioOptionType } from "./aioInterface";
 
 interface AioArraySortableProps {
   inputArray: any[],
@@ -31,7 +31,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
       <AioOptionDisplay
         initialData={[
           {
-            type: OptionType.select,
+            type: AioOptionType.select,
             optionName: AioNewItem.newType,
             value: "",
             label: "New type",

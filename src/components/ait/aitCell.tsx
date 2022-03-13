@@ -7,7 +7,7 @@ import { AioOptionDisplay } from "../aio/aioOptionDisplay";
 import { processOptions } from "./processes";
 import { AioExpander } from "../aio/aioExpander";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation } from "./aitInterface";
-import { OptionGroup, OptionType, AitCellOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup, AioOptionType, AitCellOptionNames } from "components/aio/aioInterface";
 import { v4 as uuidv4 } from 'uuid';
 
 interface AitCellProps {
@@ -18,9 +18,9 @@ interface AitCellProps {
   returnData: (ret: AitCellData) => void,
   showCellBorders?: boolean,
   addRowGroup?: (rgi: number) => void,
-  rowGroupOptions?: [OptionGroup, (ret: OptionGroup, location: AitLocation) => void],
+  rowGroupOptions?: [AioOptionGroup, (ret: AioOptionGroup, location: AitLocation) => void],
   removeRowGroup?: (rgi: number) => void,
-  rowOptions?: [OptionGroup, (ret: OptionGroup, location: AitLocation) => void],
+  rowOptions?: [AioOptionGroup, (ret: AioOptionGroup, location: AitLocation) => void],
 };
 
 export const AitCell = (props: AitCellProps) => {

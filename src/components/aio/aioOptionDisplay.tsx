@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Option, OptionGroup } from "./aioInterface";
+import { AioOption, AioOptionGroup } from "./aioInterface";
 import { AioPrintOption } from "./aioPrintOption";
 import "./aio.css";
 
 interface AioOptionDisplayProps {
-  initialData: OptionGroup,
-  returnData?: (ret: OptionGroup) => void,
+  initialData: AioOptionGroup,
+  returnData?: (ret: AioOptionGroup) => void,
   buttonText?: string,
 }
 
@@ -34,7 +34,7 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
   }, [props.initialData]);
 
   // Update current options from child object
-  const updateOption = (ret: Option, i: number) => {
+  const updateOption = (ret: AioOption, i: number) => {
     // console.log(`Updating option ${i} to... ${ret}`);
     const newOptions = [...options];
     newOptions[i].value = ret;
@@ -51,7 +51,7 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
               id={option.optionName as string}
               label={(option.label ?? option.optionName) as string}
               value={option.value}
-              setValue={!option.readOnly ? (ret: Option) => { updateOption(ret, i) } : undefined}
+              setValue={!option.readOnly ? (ret: AioOption) => { updateOption(ret, i) } : undefined}
               type={option.type}
               availablValues={option.availableValues}
             />
