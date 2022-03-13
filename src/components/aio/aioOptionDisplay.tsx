@@ -3,13 +3,13 @@ import { Option, OptionGroup } from "./aioInterface";
 import { AioPrintOption } from "./aioPrintOption";
 import "./aio.css";
 
-interface AioOptionGroupProps {
+interface AioOptionDisplayProps {
   initialData: OptionGroup,
   returnData?: (ret: OptionGroup) => void,
   buttonText?: string,
 }
 
-export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
+export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
 
   // Data holder
   const [options, setOptions] = useState((props.initialData ?? []).map(a => { return { ...a } }));
@@ -38,6 +38,7 @@ export const AioOptionGroup = (props: AioOptionGroupProps): JSX.Element => {
     // console.log(`Updating option ${i} to... ${ret}`);
     const newOptions = [...options];
     newOptions[i].value = ret;
+    console.log(ret);
     setOptions(newOptions);
   };
 

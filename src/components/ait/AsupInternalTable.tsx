@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { processTable, processOptions } from "./processes";
 import { AitCell } from "./aitCell";
 import { AitLocation, AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitRowData } from "./aitInterface";
-import { AioOptionGroup } from "../aio/aioOptionGroup";
+import { AioOptionDisplay } from "../aio/aioOptionDisplay";
 import { AitTableOptionNames, OptionType, OptionGroup, AitCellOptionNames, AitRowGroupOptionNames } from "../aio/aioInterface";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
@@ -58,6 +58,7 @@ const defaultTableOptions: OptionGroup = [
 
 const defaultRowGroupOptions: OptionGroup = [
   { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: OptionType.string, value: "New group" },
+  { optionName: AitRowGroupOptionNames.replacements, label: "Replacement lists", type: OptionType.replacements, value: {}},
 ];
 
 
@@ -141,6 +142,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
   // Update options when a return is passed
   const updateOptions = useCallback((ret: OptionGroup, location?: AitLocation) => {
+    console.log(ret);
     let newHeader = { rows: headerData.rows, options: headerData.options };
     let newBody = { rowGroups: bodyData.rowGroups, options: bodyData.options };
     let newOptions = options;
@@ -202,7 +204,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-              <AioOptionGroup initialData={options} returnData={(ret) => updateOptions(ret)} />
+              <AioOptionDisplay initialData={options} returnData={(ret) => updateOptions(ret)} />
             </AsupInternalWindow>
           }
         </div>
@@ -226,8 +228,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                           key={cell.aitid ?? ci}
                           location={location}
                           showCellBorders={props.showCellBorders}
-                          // type={AitCellType.header}
-                          editable={true}
+                          readOnly={cell.readOnly}
                           initialData={cell}
                           returnData={(ret) => updateCell(ret, location)}
                           rowGroupOptions={ci === 0 ? [headerData.options, updateOptions] : undefined}
@@ -259,7 +260,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                             key={cell.aitid ?? ci}
                             location={location}
                             showCellBorders={props.showCellBorders}
-                            editable={true}
+                            readOnly={cell.readOnly}
                             initialData={cell}
                             returnData={(ret) => updateCell(ret, location)}
                             rowGroupOptions={ci === 0 && ri === 0 ? [rowGroup.options, updateOptions] : undefined}

@@ -6,6 +6,7 @@ export interface AitCellData {
   originalText: string,
   options: OptionGroup,
   renderColumn?: number,
+  readOnly?: boolean,
 };
 
 export interface AitRowData {

@@ -3,12 +3,14 @@ import { AioExpander } from "./aioExpander";
 import { AioNumber } from "./aioNumber";
 import { AioString } from "./aioString";
 import { AioSelect } from "./aioSelect";
+import { AioReplacements } from "./aioReplacements";
+import { Replacement, OptionType } from "./aioInterface";
 
 interface AioPrintOptionProps {
   id: string,
   value: any,
   label?: string,
-  type?: string,
+  type?: OptionType | string,
   availablValues?: Array<string>,
   setValue?: (value: any) => void,
   canAddItems?: boolean,
@@ -36,15 +38,20 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
 
   // Take given type, or treat null as a string, or work out what we have
   switch (props.type ?? (props.value === null ? "string" : typeof (props.value))) {
+    
+    // Processing - do nothing, this should not be hit here
+    case (OptionType.processing): return (<></>);
+
     // Object, need another expander
     case ("object"):
+    case (OptionType.object):
       return (
         <AioExpander
           label={props.label}
           inputObject={props.value}
           updateObject={(typeof (props.setValue) === "function")
             ?
-            (ret: object) => { if (props.setValue) props.setValue(ret); }
+            (ret: object) => { props.setValue!(ret); }
             :
             undefined
           }
@@ -54,8 +61,22 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
         />
       );
 
+    // Replacements
+    case (OptionType.replacements):
+      return (
+        <AioReplacements
+          value={props.value}
+          setValue={(typeof (props.setValue) === "function")
+            ?
+            (ret: Replacement) => { props.setValue!(ret); console.log(ret); }
+            :
+            undefined
+          }
+        />
+      );
+
     // Select
-    case ("select"):
+    case (OptionType.select):
       return (
         <AioSelect
           label={props.label}
@@ -63,7 +84,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           availableValues={props.availableValues}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: string) => { if (props.setValue) props.setValue(ret); }
+            (ret: string) => { props.setValue!(ret); }
             :
             undefined
           }
@@ -71,6 +92,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // Number
+    case (OptionType.number):
     case ("number"):
       return (
         <AioNumber
@@ -78,7 +100,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           value={props.value}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: number) => { if (props.setValue) props.setValue(ret); }
+            (ret: number) => { props.setValue!(ret); }
             :
             undefined
           }
@@ -86,6 +108,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
       );
 
     // String or default
+    case (OptionType.string):
     case ("string"):
     default:
       return (
@@ -94,7 +117,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           value={props.value}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: string) => { if (props.setValue) props.setValue(ret); }
+            (ret: string) => { props.setValue!(ret); }
             :
             undefined
           }

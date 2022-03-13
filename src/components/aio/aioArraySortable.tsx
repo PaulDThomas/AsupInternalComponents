@@ -1,6 +1,6 @@
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import React, { useState } from "react";
-import { AioOptionGroup } from "./aioOptionGroup";
+import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
 import { AioNewItem, OptionType } from "./aioInterface";
 
@@ -28,7 +28,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
       }}
       style={{ minHeight: "100px" }}
     >
-      <AioOptionGroup
+      <AioOptionDisplay
         initialData={[
           {
             type: OptionType.select,

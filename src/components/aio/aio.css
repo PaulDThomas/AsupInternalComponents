@@ -18,6 +18,16 @@
   min-width: 177px;
 }
 
+.aio-input {
+  min-width: 171px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
+.aio-input-holder input:not(:first-child), .aio-input-holder textarea:not(:first-child) {
+  margin-top: 2px;
+}
+
 /* Expander */
 .aiox {
   padding: 0;

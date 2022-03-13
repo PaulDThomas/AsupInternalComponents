@@ -35,6 +35,13 @@ table .ait-border-cell {
   height: 100%;
 }
 
+.ait-cell.ait-readonly-cell {
+  background-color: rgb(211, 186, 117);
+  color: rgb(56, 34, 4);
+  font-style: italic;
+  opacity: 1;
+}
+
 .ait-cell.ait-header-cell {
   vertical-align: bottom;
 }
@@ -105,4 +112,6 @@ table .ait-border-cell {
 .ait-aie-holder {
   height: 100%;
   display: flex;
+  padding-left: 2px;
+  padding-right: 2px;
 }

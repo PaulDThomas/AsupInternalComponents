@@ -4,7 +4,7 @@ import { AioLabel } from "./aioLabel";
 import { AioArraySortable } from "./aioArraySortable";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AioNewItem, OptionGroup, OptionType } from "./aioInterface";
-import { AioOptionGroup } from "./aioOptionGroup";
+import { AioOptionDisplay } from "./aioOptionDisplay";
 
 interface AioExpanderProps {
   inputObject: { [key: string]: any },
@@ -141,7 +141,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                             onClose={() => setShowNewItemWindow(false)}
                             style={{ minHeight: "120px" }}
                           >
-                            <AioOptionGroup
+                            <AioOptionDisplay
                               initialData={[
                                 { type: OptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
                                 { type: OptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
