@@ -105,6 +105,9 @@ export const TablePage = () => {
     },
   });
 
+  //
+  // Mimic external updates here 
+  //
   const updateCell = useCallback((cell) => {
     cell.originalText = cell.text;
     return cell;
@@ -122,7 +125,6 @@ export const TablePage = () => {
     table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
     return table;
   }, [updateRowGroup]);
-
   const loadData = useCallback(() => {
     try {
       if (ta.current.value === "") {
@@ -138,7 +140,8 @@ export const TablePage = () => {
     }
   }, [updateTable]);
 
-return (
+
+  return (
   <>
     <div style={{
       width: "100%",
@@ -146,9 +149,9 @@ return (
       justifyContent: "center",
     }}>
       <AsupInteralTable
-        initialData={initialData}
-        returnData={setInitialData}
-        addStyle={{ margin: "1rem" }}
+        tableData={initialData}
+        setTableData={setInitialData}
+        style={{ margin: "1rem" }}
         showCellBorders={true}
       />
     </div>

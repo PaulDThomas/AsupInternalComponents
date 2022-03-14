@@ -14,7 +14,6 @@ export interface AioReplacement {
   replacementValues: Array<string>
 }
 
-
 export enum AioOptionType {
   string = "string",
   number = "number",
@@ -55,5 +54,6 @@ export enum AioNewItem {
 }
 
 export enum AitProcessingOptions {
-  setCellType = "setCellType"
+  setCellType = "setCellType",
+  replacement = "replacement",
 }

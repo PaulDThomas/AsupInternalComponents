@@ -38,7 +38,6 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
     // console.log(`Updating option ${i} to... ${ret}`);
     const newOptions = [...options];
     newOptions[i].value = ret;
-    console.log(ret);
     setOptions(newOptions);
   };
 

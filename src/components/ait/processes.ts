@@ -1,17 +1,17 @@
 import { AitCellData, AitCellType, AitRowData, AitRowGroupData, AitTableBodyData } from "./aitInterface";
-import { AitCellOptionNames, AitRowGroupOptionNames, AitTableOptionNames, AioOptionGroup, AitProcessingOptions, AioOptionType } from "../aio/aioInterface";
+import { AitCellOptionNames, AioOptionGroup, AitProcessingOptions, AioOptionType, AitRowGroupOptionNames, AioReplacement } from "../aio/aioInterface";
 
 export const processOptions = (updatedOptions: AioOptionGroup, previousOptions: AioOptionGroup) => {
   // Return updated options if there is nothing to process against  
   if (previousOptions === undefined) {
     return updatedOptions;
   }
-  
+
   // Create new options to update
   var newOptions = previousOptions.map(a => { return { ...a } });
 
   // Get each value, or add blank
-  for (let uo of updatedOptions) {    
+  for (let uo of updatedOptions) {
     let i = newOptions.findIndex(no => no.optionName === uo.optionName);
     if (i >= 0) {
       newOptions[i].type = uo.type;
@@ -21,7 +21,7 @@ export const processOptions = (updatedOptions: AioOptionGroup, previousOptions: 
       newOptions[i].readOnly = uo.readOnly ?? newOptions[i].readOnly;
     }
     else {
-      newOptions.push({...uo});
+      newOptions.push({ ...uo });
     }
     uo.value = updatedOptions?.find((i) => { return i.optionName === uo.optionName; })?.value ?? uo.value;
   }
@@ -32,8 +32,8 @@ export const processOptions = (updatedOptions: AioOptionGroup, previousOptions: 
 /* 
  * Process row data using available (processed) options 
  */
-function processCell(c: AitCellData, og: AioOptionGroup): AitCellData {
-
+export function processCell(c: AitCellData, og: AioOptionGroup): AitCellData {
+  console.log(`Processing cell ${c.originalText}`);
   for (let po of og) {
     switch (po.optionName) {
       // Update cellType
@@ -64,15 +64,15 @@ function processCell(c: AitCellData, og: AioOptionGroup): AitCellData {
 /* 
  * Process row data using available (processed) options 
  */
-function processRow(r: AitRowData, og: AioOptionGroup): AitRowData {
+export function processRow(r: AitRowData, og: AioOptionGroup): AitRowData {
   r.cells = r.cells.map(c => {
     // Ensure default options are present
     c.options = processOptions(c.options ?? [], [
-        { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: AioOptionType.string, },
-        { optionName: AitCellOptionNames.cellType, label: "Cell Type", value: AitCellType.body, type: AioOptionType.select, readOnly: true, availableValues: [AitCellType.body, AitCellType.header, AitCellType.rowHeader] },
-        { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: AioOptionType.number, readOnly: true },
-        { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: AioOptionType.number, readOnly: true },
-      ] as AioOptionGroup
+      { optionName: AitCellOptionNames.cellWidth, label: "Minimum width", value: "120px", type: AioOptionType.string, },
+      { optionName: AitCellOptionNames.cellType, label: "Cell Type", value: AitCellType.body, type: AioOptionType.select, readOnly: true, availableValues: [AitCellType.body, AitCellType.header, AitCellType.rowHeader] },
+      { optionName: AitCellOptionNames.colSpan, label: "Column span", value: 1, type: AioOptionType.number, readOnly: true },
+      { optionName: AitCellOptionNames.rowSpan, label: "Row span", value: 1, type: AioOptionType.number, readOnly: true },
+    ] as AioOptionGroup
     );
     // Cell data processing
     processCell(c, [
@@ -89,7 +89,44 @@ function processRow(r: AitRowData, og: AioOptionGroup): AitRowData {
 /* 
  * Process row group data using available (processed) options 
  */
-function processRowGroup(rg: AitRowGroupData, og: AioOptionGroup): AitRowGroupData {
+export function processRowGroup(rg: AitRowGroupData, og: AioOptionGroup): AitRowGroupData {
+  // Process replacements
+  let ri = og.findIndex(o => o.optionName === AitRowGroupOptionNames.replacements);
+  if (ri >= 0) {
+    let rep = og[ri].value as AioReplacement;
+    let shallowCopy = rg.rows.map(r => ({ ...r } as AitRowData)) as AitRowData[];
+    for (let rvi in rep.replacementValues) {
+      // Add replacement option
+      if (rvi === '0') {
+        // Add single replacment option
+        rg.rows.map(r => {
+          r.options.push(
+            {
+              optionName: AitProcessingOptions.replacement,
+              type: AioOptionType.processing,
+              value: { replaceText: og[rvi].value.replacementText, replaceValue: og[rvi].value.replacementValues[0] }
+            });
+          return r;
+        });
+      }
+      // Copy with new replacement option
+      else {
+        let addRows = [...shallowCopy];
+        addRows.map(r => {
+          r.options.push(
+            {
+              optionName: AitProcessingOptions.replacement,
+              type: AioOptionType.processing,
+              value: { replaceText: og[rvi].value.replacementText, replaceValue: og[rvi].value.replacementValues[0] }
+            });
+          return r;
+        })
+        rg.rows.push(...addRows);
+      }
+    }
+  }
+
+
   rg.rows = rg.rows.map(r => processRow(r, [
     ...r.options,
     ...og,
@@ -101,30 +138,23 @@ function processRowGroup(rg: AitRowGroupData, og: AioOptionGroup): AitRowGroupDa
  * Process table data from passed options
  */
 export function processTable(headerData: AitRowGroupData, bodyData: AitTableBodyData, options: AioOptionGroup): [AitRowGroupData, AitTableBodyData, AioOptionGroup] {
-  console.log(`Processing data`)
-  console.log(`Header data has ${headerData.rows.length} rows`);
-  console.log(`Body data has ${bodyData.rowGroups.length} row groups`);
-  console.log(`There are ${options.length} options`);
-
-  // Update cell type for rowHeaders
-  let rowHeaderColumns = options.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value ?? 1;
-  console.log(`Setting ${rowHeaderColumns} row header columns`);
+  console.log(`Processing table data`)
+  // console.log(`Header data has ${headerData.rows.length} rows`);
+  // console.log(`Body data has ${bodyData.rowGroups.length} row groups`);
+  // console.log(`There are ${options.length} options`);
 
   // Process header data
   headerData = processRowGroup(headerData, [
-    { optionName: AitProcessingOptions.setCellType, value: AitCellType.header, type: AioOptionType.processing }
-    , ...options
+    { optionName: AitProcessingOptions.setCellType, value: AitCellType.header, type: AioOptionType.processing },
+    ...headerData.options,
+    ...options,
   ]);
-  bodyData.rowGroups = bodyData.rowGroups.map(rg => processRowGroup(rg, [...options]));
+  bodyData.rowGroups = bodyData.rowGroups.map(rg => processRowGroup(rg, [
+    ...rg.options,
+    ...options
+  ]));
 
   /*
-    for (let r of headerData.rows) {
-      for (let c of r.cells) {
-        // Set header cells to cellType = header
-        if (c.options?.findIndex(o => o.optionName === AitCellOptionNames.cellType) > -1)
-          c.options.find(o => o.optionName === AitCellOptionNames.cellType)!.value = AitCellType.header;
-      }
-    }
   
     for (let rg of bodyData.rowGroups) {
       // let rgi = bodyData.rowGroups.findIndex(rgi);

@@ -68,7 +68,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           value={props.value}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: AioReplacement) => { props.setValue!(ret); console.log(ret); }
+            (ret: AioReplacement) => { props.setValue!(ret); }
             :
             undefined
           }

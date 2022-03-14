@@ -1,7 +1,7 @@
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
 
 export interface AitCellData {
-  aitid?: string,
+  aitid: string,
   text: string,
   originalText: string,
   options: AioOptionGroup,
@@ -10,19 +10,18 @@ export interface AitCellData {
 };
 
 export interface AitRowData {
-  aitid?: string,
+  aitid: string,
   cells: Array<AitCellData>,
   options: AioOptionGroup,
 };
 
 export interface AitRowGroupData {
-  aitid?: string,
+  aitid: string,
   rows: Array<AitRowData>,
   options: AioOptionGroup,
 };
 
 export interface AitTableBodyData {
-  aitid?: string,
   rowGroups: Array<AitRowGroupData>,
   options: AioOptionGroup,
 };
@@ -38,7 +37,7 @@ export interface AitLocation {
   tableSection: AitCellType,
   rowGroup: number,
   row: number,
-  cell: number,
+  column: number,
 }
 
 export enum AitOptionLocation {
@@ -59,3 +58,11 @@ export enum AitRowType {
   "body",
 }
 
+export interface AitOptionList {
+  tableSection: AitCellType,
+  rowGroup: number,
+  row: number,
+  column: number,
+  showCellBorders: boolean,
+  replacements: AioReplacement[],
+}
