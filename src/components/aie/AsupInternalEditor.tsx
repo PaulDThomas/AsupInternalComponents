@@ -1,24 +1,18 @@
 import * as React from 'react';
 import { useState, useRef, useEffect, useCallback } from "react";
-import { EditorState, Editor, ContentState, convertToRaw, convertFromRaw, Modifier, convertFromHTML, DraftStyleMap, RawDraftContentBlock, RawDraftContentState, ContentBlock } from "draft-js";
+import { EditorState, Editor, ContentState, convertToRaw, Modifier, convertFromHTML, DraftStyleMap, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 import 'draft-js/dist/Draft.css';
 import './aie.css';
 
-interface RawContentBlocks { contentBlocks: Array<ContentBlock>, entityMap: any };
 export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
 interface AieStyleExcludeMap { [styleName: string]: string[] };
 
-// Handler functions for Editor
-const isRawDraftContentState = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawDraftContentState => { return (initialText as RawDraftContentState).blocks !== undefined; };
-const isRawContentBlocks = (initialText: string | RawDraftContentState | { contentBlocks: Array<ContentBlock>, entityMap: any }): initialText is RawContentBlocks => { return (initialText as RawContentBlocks).contentBlocks !== undefined; };
-const htmlEncodeRawDraftContentState = (r: RawDraftContentState) => r.blocks
-  .map(b => b.text.split("")
-    // Swap out HTML characters for safety
-    .map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"))
-    .join("")
-  )
-  .join("\n");
+/**
+ * Change AieStyle map into Draft-js version
+ * @param styleMap Editor style map
+ * @returns Draft-js style map
+ */
 const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
   let d: DraftStyleMap = {};
   if (styleMap !== undefined)
@@ -27,122 +21,106 @@ const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
     }
   return d;
 }
+
+/**
+ * Returns style maps that are excluded from the given map
+ * @param styleMap Current style map
+ * @returns list of excluded maps
+ */
 const styleMapToExclude = (styleMap?: AieStyleMap): AieStyleExcludeMap => {
   let e: AieStyleExcludeMap = {};
   if (styleMap !== undefined) for (let s of Object.keys(styleMap!)) e[s] = styleMap![s].aieExclude;
   return e;
 }
 
+/**
+ * Safely change a draft block into HTML
+ * @param b Raw Draft-js block
+ * @param dsm Style map that has been applied
+ * @returns HTML string of the content
+ */
+const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
+  // Explode string
+  var chars = b.text.split("");
+  // Swap out HTML characters for safety
+  chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
+  // Add inline style starts and ends
+  for (const s of b.inlineStyleRanges) {
+    chars[s.offset] = `<span className='${s.style}' style='${Object.entries(dsm[s.style]).map(([k, v]) => `${k.replace(/[A-Z]/g, "-$&").toLowerCase()}:${v}`).join(';')}'>${chars[s.offset]}`;
+    chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
+  }
+  return `${chars.join("")}`;
+}
+/**
+ * Aggregate function to change editor contents into HTML string with line breaks
+ * @param d Raw Draft-js block
+ * @param dsm Style map that has been applied
+ * @returns URI encoded HTML string of the content 
+ */
+const convertToHTML = (d: RawDraftContentState, dsm:DraftStyleMap): string => {
+  return encodeURI(d.blocks.map(b => htmlBlock(b, dsm)).join("<br/>"));
+}
+
+/** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {
-  initialText: string | RawDraftContentState | RawContentBlocks,
-  returnRaw?: (ret: RawDraftContentState) => void,
-  returnText: (ret: string) => void,
-  returnHtml?: (ret: string) => void,
-  addStyle: React.CSSProperties,
+  value: string,
+  setValue?: (ret: string) => void,
+  addStyle?: React.CSSProperties,
   styleMap?: AieStyleMap,
-  highlightChanges: boolean,
-  textAlignment: Draft.DraftComponent.Base.DraftTextAlignment,
-  showStyleButtons: boolean,
+  highlightChanges?: boolean,
+  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment,
+  showStyleButtons?: boolean,
   editable?: boolean,
 };
 
-
 export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
+  /** Current editor state */
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  /** Current button state */
   const [buttonState, setButtonState] = useState("hidden");
-  const [currentStyle, setCurrentStyle] = useState(props.addStyle);
-  const [changesMade, setChangesMade] = useState(false);
-  const editor = useRef(null);
-
+  
   // Add default style map
   const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(props.styleMap));
   const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(props.styleMap));
 
   // Show or hide style buttons
-  const aieShowButtons = () => { if (props.showStyleButtons) { setButtonState(""); } };
-  const aieHideButtons = () => { setButtonState("hidden"); };
+  const aieShowButtons = useCallback(() => { if (props.showStyleButtons) { setButtonState(""); } }, [props.showStyleButtons]);
+  const aieHideButtons = useCallback(() => { setButtonState("hidden"); }, []);
 
   // Update editorState, and feed back to holder
   const onChange = useCallback((e: EditorState) => {
     setEditorState(e);
-
-    // Update outputs
-    const raw = convertToRaw(e.getCurrentContent());
-    if (typeof (props.returnRaw) === "function") props.returnRaw(raw);
-
-    // Get text by joining
-    if (typeof (props.returnText) === "function") props.returnText(htmlEncodeRawDraftContentState(raw));
-
-    // Get HTML by exploding
-    const htmlBlock = (b: RawDraftContentBlock): string => {
-      // Explode string
-      var chars = b.text.split("");
-      // Swap out HTML characters for safety
-      chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
-      // Add inline style starts and ends
-      for (const s of b.inlineStyleRanges) {
-        chars[s.offset] = `<span className='${s.style}' style='${Object.entries(currentStyleMap.current[s.style]).map(([k, v]) => `${k}:${v}`).join(';')}'>${chars[s.offset]}`;
-        chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
-      }
-      return `<p>${chars.join("")}</p>`;
-    }
-    if (typeof (props.returnHtml) === "function") props.returnHtml(raw.blocks.map(b => htmlBlock(b)).join(""));
-
-    // Update div holder to indicate if changes have been made
-    if (props.highlightChanges) {
-      setChangesMade(typeof (props.initialText) === "string" && props.initialText !== htmlEncodeRawDraftContentState(raw));
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.initialText, props.returnRaw, props.returnText, props.returnHtml, props.highlightChanges, currentStyleMap]);
-
-  // Update change highlight
-  useEffect(() => {
-    var newStyle = { ...props.addStyle };
-    if (changesMade) {
-      newStyle.margin = "-3px";
-      newStyle.border = "3px dashed burlywood";
-    }
-    setCurrentStyle(newStyle);
-  }, [props.addStyle, changesMade, props.initialText]);
+    // Update value externally
+    if (typeof (props.setValue) === "function") props.setValue(convertToHTML(convertToRaw(e.getCurrentContent()), currentStyleMap.current));
+  }, [props]);
 
   // Initial Text loading/update
   useEffect(() => {
+    // Stop if the content is the same
+    if (props.value === convertToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)) return;
+    // Update the content
+    const initialBlocks = convertFromHTML(props.value);
+    const state = ContentState.createFromBlockArray(
+      initialBlocks.contentBlocks,
+      initialBlocks.entityMap,
+    )
+    onChange(EditorState.createWithContent(state));
+  }, [editorState, onChange, props.value]);
 
-    if (props.initialText) {
-      // Loading raw form 
-      if (isRawDraftContentState(props.initialText)) {
-        onChange(EditorState.createWithContent(convertFromRaw(props.initialText)));
-      }
-      // Loading content blocks, converted from HTML
-      else if (isRawContentBlocks(props.initialText)) {
-        const state = ContentState.createFromBlockArray(
-          props.initialText.contentBlocks,
-          props.initialText.entityMap,
-        )
-        onChange(EditorState.createWithContent(state));
-      }
-      // Load HTML fragrment (crude check)
-      else {
-        const initialBlocks = convertFromHTML(props.initialText.replace(/\n/g, "<br/>"));
-        const state = ContentState.createFromBlockArray(
-          initialBlocks.contentBlocks,
-          initialBlocks.entityMap,
-        )
-        onChange(EditorState.createWithContent(state));
-      }
-    }
-  }, [onChange, props.initialText]);
-
-  // Apply style to current selection
+  /**
+   * Apply style to current selection on button press
+   * @param style Name of the style to apply
+   */
   const aieApplyStyle = (style: string) => {
     // Get current selection
-    var selection = editorState.getSelection();
+    let selection = editorState.getSelection();
     // Get current content
-    var nextContentState = editorState.getCurrentContent();
-    var currentStyles = editorState.getCurrentInlineStyle();
+    let nextContentState = editorState.getCurrentContent();
+    let currentStyles = editorState.getCurrentInlineStyle();
     // Remove all excluded styles from selection
-    for (let s of styleMapExclude.current[style]) nextContentState = Modifier.removeInlineStyle(nextContentState, selection, s);
+    for (let s of styleMapExclude.current[style]) {
+      nextContentState = Modifier.removeInlineStyle(nextContentState, selection, s);
+    }
     // Add or remove target style
     if (currentStyles.has(style)) {
       nextContentState = Modifier.removeInlineStyle(nextContentState, selection, style);
@@ -150,7 +128,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
     else {
       nextContentState = Modifier.applyInlineStyle(nextContentState, selection, style);
     }
-    var nextEditorState = EditorState.createWithContent(nextContentState);
+    let nextEditorState = EditorState.createWithContent(nextContentState);
     // Put selection back
     nextEditorState = EditorState.acceptSelection(nextEditorState, selection);
     // Update editor
@@ -163,7 +141,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
       className="aie-holder"
       onMouseOver={aieShowButtons}
       onMouseLeave={aieHideButtons}
-      style={currentStyle}
+      style={props.addStyle}
     >
       <div className={`aie-button-holder aie-style-button-holder ${buttonState === "hidden" ? "hidden" : ""}`}>
         <AieStyleButtonRow
@@ -174,7 +152,6 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
         />
       </div>
       <Editor
-        ref={editor}
         customStyleMap={currentStyleMap.current}
         editorState={editorState}
         onChange={onChange}
