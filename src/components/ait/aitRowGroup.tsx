@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioOptionGroup, AioReplacement, AitRowGroupOptionNames } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
@@ -18,7 +18,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    console.log(`Cell Return for rowGroup: ${props.higherOptions.tableSection},${props.higherOptions.rowGroup}`);
+    console.log(`Return for rowGroup: ${props.higherOptions.tableSection},${props.higherOptions.rowGroup}`);
     let newRowGroupData = { aitid: props.aitid, rows: rows, options: options };
     if (JSON.stringify(newRowGroupData) !== lastSend) {
       props.setRowGroupData!(newRowGroupData);
@@ -44,17 +44,30 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     returnData(props.rowGroupData.rows, ret);
   }, [props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
-  let repeatNumbers = [1];
+  // Get the first level of repeats
+  const level1reps = useMemo(():number[] => {
+    // Find replacments if there are any
+    let r:AioReplacement = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value[0];
+    if (!r || !r?.replacementValues || r.replacementValues.length === 0) return [0];
+
+    // Calculate all replacements at this level
+    return Array.from(
+      Array(
+        r.replacementValues.length
+        ).keys());
+
+  }, [props.rowGroupData.options]);
 
   return (
     <>
-      {repeatNumbers.map(repNo => {
+      {level1reps.map(repNo => {
         return (
           props.rowGroupData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
             let higherOptions = {
               ...props.higherOptions,
-              repeatNumber: repNo,
               row: ri,
+              repeatNumber: [repNo],
+              replacements: props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value,
             } as AitOptionList;
             if (row.aitid === undefined) row.aitid = uuidv4();
 

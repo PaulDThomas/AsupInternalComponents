@@ -3,7 +3,7 @@ import { AioExpander } from "./aioExpander";
 import { AioNumber } from "./aioNumber";
 import { AioString } from "./aioString";
 import { AioSelect } from "./aioSelect";
-import { AioReplacements } from "./aioReplacements";
+import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { AioReplacement, AioOptionType } from "./aioInterface";
 
 interface AioPrintOptionProps {
@@ -40,7 +40,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
   switch (props.type ?? (props.value === null ? "string" : typeof (props.value))) {
     
     // Processing - do nothing, this should not be hit here
-    case (AioOptionType.processing): return (<></>);
+    // case (AioOptionType.processing): return (<></>);
 
     // Object, need another expander
     case ("object"):
@@ -64,11 +64,11 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
     // Replacements
     case (AioOptionType.replacements):
       return (
-        <AioReplacements
-          value={props.value}
+        <AioReplacementDisplay
+          value={props.value[0]}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: AioReplacement) => { props.setValue!(ret); }
+            (ret: AioReplacement) => { props.setValue!([ret]); }
             :
             undefined
           }

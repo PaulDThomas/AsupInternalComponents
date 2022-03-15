@@ -2,11 +2,64 @@ import React, { useState, useEffect, useMemo } from "react";
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
-import { AioOptionGroup, AitCellOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup, AioReplacement, AitCellOptionNames } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 // import { AioString } from "../aio/aioString";
 import { processOptions } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList } from "./aitInterface";
+
+/** Check two arrays have the same LHS values */
+const getReplacementsForRepeat = (repNo: number[], replacements?: AioReplacement[]): { oldText: string, newText: string }[] => {
+  // console.log("Getting replacements");
+  let ret: { oldText: string, newText: string }[] = [];
+  for (let replacement of replacements ?? []) {
+    // Add this level's replacement
+    ret.push({
+      oldText: replacement.replacementText[0].text,
+      newText: replacement.replacementValues[repNo[0]]?.newText ?? ""
+    });
+
+    // Look to process the next level
+    if ((repNo.length > 1) && replacement.replacementText.length > 1 && (replacement.replacementValues[repNo[0]].subList?.length ?? 0) > 0)
+      ret.push(...getReplacementsForRepeat(
+        repNo.splice(1),
+        [{
+          replacementText: replacement.replacementText.splice(1),
+          replacementValues: replacement.replacementValues[repNo[0]].subList!,
+        } as AioReplacement]
+      ));
+  }
+  // console.log(ret);
+  return ret;
+}
+
+/**
+* Process text for repeat level and avaiable replacement values
+* @param text Initial text
+* @param repNo Array of repeat numbers to use
+* @param replacements Replacements object
+* @returns updated text
+*/
+const processRepeats = (text: string, repNo: number[], replacements: AioReplacement[]): string => {
+  // Do nothing if there is nothing to do
+  if (!replacements || replacements.length === 0 || replacements[0].replacementValues.length === 0) return text;
+
+  /** Text to return */
+  let newText = text;
+
+  /** Replacements for this text */
+  let rv: { oldText: string, newText: string }[] = [];
+
+  rv.push(...getReplacementsForRepeat(repNo, replacements));
+
+  for (let rep of rv) {
+    newText = newText.replaceAll(rep.oldText, rep.newText);
+  }
+  if (text !== newText) {
+    console.log(`Replacing "${text}" with "${newText}"`);
+  }
+  return newText;
+}
 
 interface AitCellProps {
   aitid: string,
@@ -27,7 +80,8 @@ interface AitCellProps {
 export const AitCell = (props: AitCellProps) => {
 
   // Data holder
-  const [text, setText] = useState(props.cellData.originalText);
+  const [receivedText, setReceivedText] = useState(props.cellData.text);
+  const [displayText, setDisplayText] = useState(() => processRepeats(props.cellData.text, props.higherOptions.repeatNumber, props.higherOptions.replacements));
   const [options, setOptions] = useState(props.cellData.options);
   const [buttonState, setButtonState] = useState("hidden");
   const [lastSend, setLastSend] = useState(JSON.stringify(props.cellData));
@@ -35,22 +89,47 @@ export const AitCell = (props: AitCellProps) => {
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
   const [cellStyle, setCellStyle] = useState<React.CSSProperties>();
+  const [readOnly, setReadOnly] = useState(() => {
+    return props.readOnly
+      || typeof (props.setCellData) !== "function"
+      || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+      || displayText !== receivedText
+
+  });
 
   // Static options/variables
-  let cellType = props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value ?? props.higherOptions.tableSection;
+  let cellType = useMemo(() => props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value ?? props.higherOptions.tableSection, [props.cellData.options, props.higherOptions.tableSection]);
   let location: AitLocation = useMemo(() => {
     return {
       tableSection: props.higherOptions.tableSection,
       rowGroup: props.higherOptions.rowGroup,
       row: props.higherOptions.row,
       column: props.columnIndex,
+      repeat: props.higherOptions.repeatNumber.join(',')
     }
-  }, [props.columnIndex, props.higherOptions.row, props.higherOptions.rowGroup, props.higherOptions.tableSection]);
+  }, [props.columnIndex, props.higherOptions.repeatNumber, props.higherOptions.row, props.higherOptions.rowGroup, props.higherOptions.tableSection]);
 
-  // Updates to initial data
-  useEffect(() => { setText(props.cellData.originalText); }, [props.cellData.originalText]);
+  /** Updates to initial text */
+  useEffect(() => {
+    let newText = processRepeats(props.cellData.text, props.higherOptions.repeatNumber, props.higherOptions.replacements);
+    if (newText !== displayText) {
+      // Check read only flag
+      setReadOnly(
+        props.readOnly
+        || typeof (props.setCellData) !== "function"
+        || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+        || newText !== props.cellData.text
+      );
+      setReceivedText(props.cellData.text);
+      setDisplayText(newText);
+    }
+  }, [displayText, props.cellData.options, props.cellData.text, props.higherOptions, props.readOnly, props.setCellData]);
+
+  /** Update to initial options, cannot include options in reference as this creates an infinite loop */
+  useEffect(() => { 
+    setOptions(processOptions(props.cellData.options, options)); 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { const newOptions = processOptions(props.cellData.options, options); setOptions(newOptions); }, [props.cellData.options]);
+  }, [props.cellData.options]);
 
   // Update cell style when options change
   useEffect(() => {
@@ -61,30 +140,22 @@ export const AitCell = (props: AitCellProps) => {
     setCellStyle(style);
   }, [options, props.higherOptions.showCellBorders]);
 
-  // Get cell options
-  let readOnly: boolean = useMemo(() => {
-    return props.readOnly
-      || typeof (props.setCellData) !== "function"
-      || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false);
-  }, [props.cellData.options, props.readOnly, props.setCellData]);
-
   // Send data back
   useEffect(() => {
     if (readOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
       aitid: props.cellData.aitid,
-      originalText: props.cellData.originalText,
       options: options ?? [],
-      text: text ?? "",
+      text: displayText ?? "",
       readOnly: props.cellData.readOnly,
     }
     if (JSON.stringify(r) !== lastSend) {
-      console.log(`Cell Return for cell: ${Object.values(location).join(',')}`);
+      console.log(`Return for cell: ${Object.values(location).join(',')}`);
       props.setCellData(r);
       setLastSend(JSON.stringify(r));
     }
-  }, [props, options, text, lastSend, readOnly, location]);
+  }, [options, displayText, lastSend, readOnly, location, props]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -152,61 +223,54 @@ export const AitCell = (props: AitCellProps) => {
       >
 
         {/* Option buttons  */}
-        {
-          (props.rowGroupOptions)
-            ?
-            (
-              <>
-                {typeof (props.addRowGroup) === "function"
-                  ?
+        {props.readOnly === false &&
+          <>
+            {(props.rowGroupOptions)
+              ?
+              (<>
+                {typeof (props.addRowGroup) === "function" &&
                   <div
                     className={`ait-options-button ait-options-button-add-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                     onClick={(e) => { onAddClick(AitOptionLocation.rowGroup) }}
                   />
-                  :
-                  <></>
                 }
-                {typeof (props.removeRowGroup) === "function"
-                  ?
+                {typeof (props.removeRowGroup) === "function" &&
                   <div
                     className={`ait-options-button ait-options-button-remove-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                     onClick={(e) => { onRemoveClick(AitOptionLocation.rowGroup) }}
                   />
-                  :
-                  <></>
                 }
                 <div
                   className={`ait-options-button ait-options-button-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                   onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
                 />
-              </>
-            )
-            :
-            null
-        }
-        {
-          (props.rowOptions)
-            ? (<>
+              </>)
+              :
+              null
+            }
+            {(props.rowOptions)
+              ?
               <div
                 className={`ait-options-button ait-options-button-row ${buttonState === "hidden" ? "hidden" : ""}`}
                 onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
               />
-
-            </>)
-            : null
+              :
+              null
+            }
+            <div
+              className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
+              onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
+            >
+            </div>
+          </>
         }
-        <div
-          className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
-          onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
-        >
-        </div>
 
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(cellType === AitCellType.rowHeader ? "left" : "center")}
           showStyleButtons={false}
-          initialText={props.cellData.originalText}
-          returnText={setText}
+          value={displayText}
+          setValue={setDisplayText}
           editable={!readOnly}
           highlightChanges={true}
         />
@@ -214,47 +278,50 @@ export const AitCell = (props: AitCellProps) => {
 
       <div>
         {/* Option windows */}
-        {showRowGroupOptions &&
-          <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
-            <AioOptionDisplay
-              initialData={props.rowGroupOptions![0]}
-              returnData={(ret) => {
-                if (!props.rowGroupOptions) return;
-                let rgl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
-                props.rowGroupOptions[1](ret, rgl);
-              }}
-            />
-          </AsupInternalWindow>
-        }
+        {props.readOnly === false &&
+          <>
+            {showRowGroupOptions &&
+              <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+                <AioOptionDisplay
+                  initialData={props.rowGroupOptions![0]}
+                  returnData={(ret) => {
+                    if (!props.rowGroupOptions) return;
+                    let rgl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
+                    props.rowGroupOptions[1](ret, rgl);
+                  }}
+                />
+              </AsupInternalWindow>
+            }
 
-        {showRowOptions &&
-          <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
-            <AioOptionDisplay
-              initialData={props.rowOptions![0]}
-              returnData={(ret) => {
-                if (!props.rowOptions) return;
-                let rl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: props.higherOptions.row, column: -1 } as AitLocation;
-                props.rowOptions[1](ret, rl);
-              }}
-            />
-          </AsupInternalWindow>
-        }
+            {showRowOptions &&
+              <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
+                <AioOptionDisplay
+                  initialData={props.rowOptions![0]}
+                  returnData={(ret) => {
+                    if (!props.rowOptions) return;
+                    let rl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: props.higherOptions.row, column: -1 } as AitLocation;
+                    props.rowOptions[1](ret, rl);
+                  }}
+                />
+              </AsupInternalWindow>
+            }
 
-        {showCellOptions &&
-          <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Cell location: </div>
-              <div className={"aio-value"}><AioExpander inputObject={location} /></div>
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Original text: </div>
-              <div className={"aio-ro-value"}>{props.cellData.originalText}</div>
-            </div>
-            <AioOptionDisplay initialData={options} returnData={!readOnly ? (ret) => { setOptions(ret); } : undefined} />
-          </AsupInternalWindow>
+            {showCellOptions &&
+              <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Cell location: </div>
+                  <div className={"aio-value"}><AioExpander inputObject={location} /></div>
+                </div>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Original text: </div>
+                  <div className={"aio-ro-value"}>{props.cellData.text}</div>
+                </div>
+                <AioOptionDisplay initialData={options} returnData={!readOnly ? (ret) => { setOptions(ret); } : undefined} />
+              </AsupInternalWindow>
+            }
+          </>
         }
       </div>
-      
     </td>
   );
 }

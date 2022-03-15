@@ -74,9 +74,7 @@ export const TablePage = () => {
               ]
             },
           ],
-          options: [
-            { optionName: "rowGroupOption1", value: "first group" }
-          ]
+          options: []
         },
         {
           rows: [
@@ -97,9 +95,7 @@ export const TablePage = () => {
               ]
             }
           ],
-          options: [
-            { optionName: "rowGroupOption1", value: "second group" }
-          ]
+          options: []
         }
       ]
     },

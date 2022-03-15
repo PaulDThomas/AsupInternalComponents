@@ -17,13 +17,13 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    console.log(`Cell Return for header: ${props.higherOptions.tableSection}`);
+    //console.log(`Return for header: ${props.higherOptions.tableSection}`);
     let newHeaderData = { aitid: props.aitid, rows: rows, options: options };
     if (JSON.stringify(newHeaderData) !== lastSend) {
       props.setHeaderData!(newHeaderData);
       setLastSend(JSON.stringify(newHeaderData));
     }
-  }, [lastSend, props.aitid, props.higherOptions.tableSection, props.setHeaderData]);
+  }, [lastSend, props.aitid, props.setHeaderData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
@@ -51,6 +51,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
 
           let higherOptions = {
             ...props.higherOptions,
+            repeatNumber: [0],
             row: ri,
           } as AitOptionList;
           if (row.aitid === undefined) row.aitid = uuidv4();

@@ -32,7 +32,7 @@ function App() {
         <Routes>
           <Route path="/"         element={<TablePage />      } />
           <Route path="/table"    element={<TablePage />   } />
-          <Route path="/table2"    element={<Table2 />   } />
+          <Route path="/table2"   element={<Table2 />   } />
           <Route path="/editor"   element={<EditorPage />  } />
           <Route path="/expander" element={<ExpanderPage />} />
           <Route path="/window"   element={<WindowPage />  } />

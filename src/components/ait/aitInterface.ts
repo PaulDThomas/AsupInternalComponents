@@ -3,7 +3,6 @@ import { AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
 export interface AitCellData {
   aitid: string,
   text: string,
-  originalText: string,
   options: AioOptionGroup,
   renderColumn?: number,
   readOnly?: boolean,
@@ -11,7 +10,7 @@ export interface AitCellData {
 
 export interface AitRowData {
   aitid: string,
-  cells: Array<AitCellData>,
+  cells: AitCellData[],
   options: AioOptionGroup,
 };
 
@@ -38,6 +37,7 @@ export interface AitLocation {
   rowGroup: number,
   row: number,
   column: number,
+  repeat: string
 }
 
 export enum AitOptionLocation {
@@ -65,4 +65,5 @@ export interface AitOptionList {
   column: number,
   showCellBorders: boolean,
   replacements: AioReplacement[],
+  repeatNumber: number[],
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AitTableOptionNames, AioOptionType, AioOptionGroup, AitRowGroupOptionNames } from "components/aio/aioInterface";
+import { AitTableOptionNames, AioOptionType, AioOptionGroup, AitRowGroupOptionNames, AioReplacement, AitCellOptionNames } from "components/aio/aioInterface";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
@@ -43,11 +43,21 @@ const defaultTableOptions: AioOptionGroup = [
 
 const defaultRowGroupOptions: AioOptionGroup = [
   { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "New group" },
-  { optionName: AitRowGroupOptionNames.replacements, label: "Replacement lists", type: AioOptionType.replacements, value: {} },
+  {
+    optionName: AitRowGroupOptionNames.replacements,
+    label: "Replacement lists",
+    type: AioOptionType.replacements,
+    value: [{ replacementText: [{ level: 0, text: "" }], replacementValues: [] }] as AioReplacement[]
+  },
 ];
 
-const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", originalText: "", options: [], }; }
+const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [], }; }
 
+/**
+ * Table view for clinical table data
+ * @param props 
+ * @returns 
+ */
 export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const [headerData, setHeaderData] = useState<AitRowGroupData>(initialRowGroupProcess(props.tableData.headerData));
   const [bodyData, setBodyData] = useState<AitTableBodyData>(initialBodyProcess(props.tableData.bodyData));
@@ -100,10 +110,10 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         cells: [],
       }]
     };
-    newRowGroup.rows[0].cells.push(newCell());
-    newRowGroup.rows[0].cells.push(newCell());
-    newRowGroup.rows[0].cells.push(newCell());
-    newRowGroup.rows[0].cells.push(newCell());
+    let cols = bodyData.rowGroups[0].rows[0].cells
+      .map(c => (c.options?.find(o => (o.optionName === AitCellOptionNames.colSpan))?.value) ?? 1)
+      .reduce((sum, a) => sum + a, 0);
+    for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
     newBody.rowGroups.splice(rgi + 1, 0, newRowGroup);
     setBodyData(newBody); // This will trigger updateTable from updateCell
   }, [bodyData.options, bodyData.rowGroups]);

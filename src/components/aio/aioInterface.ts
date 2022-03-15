@@ -1,17 +1,29 @@
+/**
+ * 
+ */
 export interface AioOption {
-  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames 
-  | AioNewItem | AitProcessingOptions,
+  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
   type: AioOptionType,
   value: any,
   label?: string,
-  availableValues?: Array<string>,
+  availableValues?: string[],
   readOnly?: boolean,
 }
 export interface AioOptionGroup extends Array<AioOption> { };
 
+/**
+ * Single replacement value, allowing for sublists
+ * @interface newText Text that will be applied
+ * @interface subList Sub list of replacements that are associated with only this value
+ */
+export interface AioReplacementValue {
+  newText: string,
+  subList?: AioReplacementValue[],
+}
+
 export interface AioReplacement {
-  replacementText: string,
-  replacementValues: Array<string>
+  replacementText: [{ level: number, text: string }],
+  replacementValues: AioReplacementValue[],
 }
 
 export enum AioOptionType {
@@ -21,7 +33,6 @@ export enum AioOptionType {
   object = "object",
   select = "select",
   replacements = "replacements",
-  processing = "processing",
 }
 
 export enum AitCellOptionNames {
@@ -51,9 +62,4 @@ export enum AitTableOptionNames {
 export enum AioNewItem {
   newKey = "newKey",
   newType = "newType",
-}
-
-export enum AitProcessingOptions {
-  setCellType = "setCellType",
-  replacement = "replacement",
 }
