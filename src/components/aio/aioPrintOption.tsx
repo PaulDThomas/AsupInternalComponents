@@ -5,6 +5,7 @@ import { AioString } from "./aioString";
 import { AioSelect } from "./aioSelect";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { AioReplacement, AioOptionType } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
 
 interface AioPrintOptionProps {
   id: string,
@@ -38,7 +39,7 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
 
   // Take given type, or treat null as a string, or work out what we have
   switch (props.type ?? (props.value === null ? "string" : typeof (props.value))) {
-    
+
     // Processing - do nothing, this should not be hit here
     // case (AioOptionType.processing): return (<></>);
 
@@ -65,10 +66,10 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
     case (AioOptionType.replacements):
       return (
         <AioReplacementDisplay
-          value={props.value[0]}
+          value={props.value}
           setValue={(typeof (props.setValue) === "function")
             ?
-            (ret: AioReplacement) => { props.setValue!([ret]); }
+            (ret: AioReplacement[]) => { props.setValue!(ret); }
             :
             undefined
           }
@@ -110,7 +111,6 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
     // String or default
     case (AioOptionType.string):
     case ("string"):
-    default:
       return (
         <AioString
           label={props.label}
@@ -123,6 +123,8 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           }
         />
       );
+    default:
+      return (<AioLabel label={"Missing type"} noColon={true} />);
   }
 }
 

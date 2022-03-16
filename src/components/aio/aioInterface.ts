@@ -11,6 +11,12 @@ export interface AioOption {
 }
 export interface AioOptionGroup extends Array<AioOption> { };
 
+
+export interface AioReplacementText {
+  level: number,
+  text: string,
+}
+
 /**
  * Single replacement value, allowing for sublists
  * @interface newText Text that will be applied
@@ -22,7 +28,7 @@ export interface AioReplacementValue {
 }
 
 export interface AioReplacement {
-  replacementText: [{ level: number, text: string }],
+  replacementText: AioReplacementText[],
   replacementValues: AioReplacementValue[],
 }
 

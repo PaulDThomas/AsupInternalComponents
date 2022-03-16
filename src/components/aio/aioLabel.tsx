@@ -1,7 +1,8 @@
 import * as React from "react";
 
 interface AioLabelProps {
-  label?: string
+  label?: string,
+  noColon?: boolean,
 }
 
 export const AioLabel = (props: AioLabelProps): JSX.Element => {
@@ -9,6 +10,6 @@ export const AioLabel = (props: AioLabelProps): JSX.Element => {
     return (<></>);
 
   return (
-    <div className={"aio-label"}>{`${props.label}${props.label ? ":" : ""}`}</div>
+    <div className={"aio-label"}>{`${props.label}${(!props.noColon && props.label) ? ":" : ""}`}</div>
   );
 }
