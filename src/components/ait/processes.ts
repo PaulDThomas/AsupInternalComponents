@@ -9,14 +9,14 @@ import { AioOptionGroup } from "../aio/aioInterface";
 export const processOptions = (incomingOptions: AioOptionGroup, previousOptions: AioOptionGroup) => {
   // Return updated options if there is nothing to process against  
   if (previousOptions === undefined) {
-    return incomingOptions;
+    return incomingOptions ?? [];
   }
 
   // Create new options to update
   var newOptions = previousOptions.map(a => { return { ...a } });
 
   // Get each value, or add blank
-  for (let uo of incomingOptions) {
+  for (let uo of incomingOptions ?? []) {
     let i = newOptions.findIndex(no => no.optionName === uo.optionName);
     if (i >= 0) {
       newOptions[i].type = uo.type;
