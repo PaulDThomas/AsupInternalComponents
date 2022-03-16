@@ -45,7 +45,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
 
   return (
     <thead>
-      <AitBorderRow rowCells={props.headerData.rows[0].cells} />
+      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceAfter={true} />
       {
         props.headerData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
 
@@ -69,6 +69,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
         }
         )
       }
+      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceBefore={true} noBorder={true}/>
     </thead>
   );
 }

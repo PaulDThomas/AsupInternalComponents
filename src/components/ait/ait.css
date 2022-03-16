@@ -3,12 +3,6 @@ table.ait-table {
   border-collapse: collapse;
 }
 
-table .ait-border-cell {
-  border-bottom: 2px black solid !important;
-  padding: 0;
-  min-height: "1px";
-}
-
 .ait-table-options {
   z-index: 1000;
   position: absolute;
@@ -52,6 +46,17 @@ table .ait-border-cell {
 
 .ait-cell.ait-body-cell {
   vertical-align: top;
+}
+
+.ait-border-cell {
+  border-bottom: 2px black solid !important;
+  padding: 0;
+  min-height: 1px;
+}
+
+.ait-space-cell {
+  padding: 0;
+  height: 0.5rem;
 }
 
 

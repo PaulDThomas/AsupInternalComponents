@@ -163,7 +163,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
           />
 
           <tbody>
-            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} />
+            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceAfter={true} />
             {
               bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) => {
 
@@ -186,7 +186,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 );
               })
             }
-            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} />
+            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} />
           </tbody>
         </table>
       </div>
