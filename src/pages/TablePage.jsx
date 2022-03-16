@@ -40,7 +40,6 @@ export const TablePage = () => {
   // Mimic external updates here 
   //
   const updateCell = useCallback((cell) => {
-    cell.originalText = cell.text;
     return cell;
   }, []);
   const updateRow = useCallback((row) => {

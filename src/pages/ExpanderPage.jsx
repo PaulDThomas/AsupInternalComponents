@@ -25,7 +25,7 @@ export const ExpanderPage = () => {
       undefined,
       3.1416,
       0,
-      [1,2,3],
+      [1, 2, 3],
       0,
       -34,
       "0"
@@ -37,11 +37,11 @@ export const ExpanderPage = () => {
         {
           cells: [
             {
-              text: "A", originalText: "A", rowSpan: 2, options: [
+              text: "A", rowSpan: 2, options: [
                 { optionName: "cellWidth", value: "150px" }
               ]
             },
-            { text: "B", originalText: "B", colSpan: 3 },
+            { text: "B", colSpan: 3 },
           ],
           options: [
             { optionName: "headerRow1", value: "this is the header row option" }
@@ -49,9 +49,9 @@ export const ExpanderPage = () => {
         },
         {
           cells: [
-            { text: "C", originalText: "C" },
-            { text: "E", originalText: "E" },
-            { text: "D", originalText: "D" },
+            { text: "C", },
+            { text: "E", },
+            { text: "D", },
           ],
           options: [
             { optionName: "headerRow2", value: "2nd row option" }
@@ -69,23 +69,23 @@ export const ExpanderPage = () => {
             {
               cells: [
                 {
-                  text: "C0", originalText: "C0", rowSpan: 2, options: [
+                  text: "C0", rowSpan: 2, options: [
                     { noptionNameme: "cellType", value: "rowHeader" }
                   ]
                 },
-                { text: "D0", originalText: "D0" },
-                { text: "E0", originalText: "E0" },
-                { text: "F0", originalText: "F0" },
+                { text: "D0", },
+                { text: "E0", },
+                { text: "F0", },
               ],
               options: [
-                { optionName: "rowOptionA", value: "a value" }
+                { optionName: "a value" }
               ]
             },
             {
               cells: [
-                { text: "D1", originalText: "D1" },
-                { text: "E1", originalText: "E1" },
-                { text: "F1", originalText: "F1" },
+                { text: "D1", },
+                { text: "E1", },
+                { text: "F1", },
               ],
               options: [
                 { optionName: "rowOptionA", value: "another value" }
@@ -101,14 +101,14 @@ export const ExpanderPage = () => {
             {
               cells: [
                 {
-                  text: "C2", originalText: "C2",
+                  text: "C2",
                   options: [
                     { optionName: "cellType", value: "rowHeader" }
                   ]
                 },
-                { text: "D2", originalText: "D2" },
-                { text: "E2", originalText: "E2" },
-                { text: "F2", originalText: "F2" },
+                { text: "D2", },
+                { text: "E2", },
+                { text: "F2", },
               ],
               options: [
                 { optionName: "rowOptionA", value: "first row in this group" }
@@ -133,7 +133,7 @@ export const ExpanderPage = () => {
       }}>
         <AioExpander
           inputObject={currentData}
-          updateObject={(ret) => { setCurrentData(ret) ; }}
+          updateObject={(ret) => { setCurrentData(ret); }}
           showBorders={showBorders}
           canAddItems={true}
           canRemoveItems={true}
@@ -146,15 +146,15 @@ export const ExpanderPage = () => {
         border: "solid black 3px",
         backgroundColor: "rgb(240, 240, 240)"
       }}>
-                  <label>
-            Show borders
-            <input
-              name="showWindowCheck"
-              type="checkbox"
-              checked={showBorders}
-              onChange={(e) => {setShowBorders(e.target.checked);}}
-            />
-          </label>
+        <label>
+          Show borders
+          <input
+            name="showWindowCheck"
+            type="checkbox"
+            checked={showBorders}
+            onChange={(e) => { setShowBorders(e.target.checked); }}
+          />
+        </label>
         <button
           onClick={() => {
             try {
