@@ -58,7 +58,7 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
  * @returns URI encoded HTML string of the content 
  */
 const convertToHTML = (d: RawDraftContentState, dsm:DraftStyleMap): string => {
-  return encodeURI(d.blocks.map(b => htmlBlock(b, dsm)).join("<br/>"));
+  return d.blocks.map(b => htmlBlock(b, dsm)).join("<br/>");
 }
 
 /** Interface for the AsupInternalEditor component */
