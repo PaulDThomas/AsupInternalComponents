@@ -35,6 +35,9 @@ table.ait-table {
   font-style: italic;
   opacity: 1;
 }
+/* Stop italic carrying into options window */
+.ait-cell.ait-readonly-cell .aiw-holder { font-style: normal; }
+
 
 .ait-cell.ait-header-cell {
   vertical-align: bottom;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from 'uuid';
 import { AitTableOptionNames, AioOptionType, AioOptionGroup, AitRowGroupOptionNames, AioReplacement, AitCellOptionNames } from "components/aio/aioInterface";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
@@ -7,7 +8,7 @@ import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
 import { AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitOptionList } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { processOptions } from "./processes";
+import { objEqual, processOptions } from "./processes";
 import './ait.css';
 
 interface AsupInteralTableProps {
@@ -64,7 +65,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const [options, setOptions] = useState<AioOptionGroup>(processOptions(props.tableData.options, defaultTableOptions));
   const [showOptions, setShowOptions] = useState(false);
   const [showOptionsButton, setShowOptionsButton] = useState(false);
-  const [lastSend, setLastSend] = useState<string>(JSON.stringify(props.tableData));
+  const [lastSend, setLastSend] = useState<AitTableData>(structuredClone(props.tableData));
 
   useEffect(() => setHeaderData(initialRowGroupProcess(props.tableData.headerData)), [props.tableData.headerData]);
   useEffect(() => setBodyData(initialBodyProcess(props.tableData.bodyData)), [props.tableData.bodyData]);
@@ -76,7 +77,6 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
   // Collate and return data
   useEffect(() => {
-    console.log(`Return for table`);
     if (typeof (props.setTableData) !== "function") return;
 
     const r = {
@@ -85,9 +85,11 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       options: options,
     };
 
-    if (JSON.stringify(r) !== lastSend) {
+    let [chkObj, diffs] = objEqual(r, lastSend, `table`);
+    if (!chkObj) {
+      console.log(`Return for table: ${diffs}`);
       props.setTableData(r);
-      setLastSend(JSON.stringify(r));
+      setLastSend(r);
     }
   }, [headerData, bodyData, options, lastSend, props]);
 

@@ -1,8 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
+import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup, AioReplacement, AitRowGroupOptionNames } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
+import { objEqual } from "./processes";
 
 interface AitRowGroupProps {
   aitid: string,
@@ -14,17 +16,32 @@ interface AitRowGroupProps {
 }
 
 export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState("");
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone(props.rowGroupData));
+
+  const location: AitLocation = useMemo(() => {
+    return {
+      tableSection: props.higherOptions.tableSection,
+      rowGroup: props.higherOptions.rowGroup,
+      row: -1,
+      column: -1,
+      repeat: "0",
+    }
+  }, [props.higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    console.log(`Return for rowGroup: ${props.higherOptions.tableSection},${props.higherOptions.rowGroup}`);
-    let newRowGroupData = { aitid: props.aitid, rows: rows, options: options };
-    if (JSON.stringify(newRowGroupData) !== lastSend) {
-      props.setRowGroupData!(newRowGroupData);
-      setLastSend(JSON.stringify(newRowGroupData));
+    let r:AitRowGroupData = { 
+      aitid: props.rowGroupData.aitid ?? props.aitid, 
+      rows: rows, 
+      options: options 
+    };
+    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    if (!chkObj) {
+      console.log(`Return for rowGroup: ${diffs}`);
+      props.setRowGroupData!(r);
+      setLastSend(structuredClone(r));
     }
-  }, [lastSend, props.aitid, props.higherOptions.rowGroup, props.higherOptions.tableSection, props.setRowGroupData]);
+  }, [props.rowGroupData.aitid, props.aitid, props.setRowGroupData, lastSend, location]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {

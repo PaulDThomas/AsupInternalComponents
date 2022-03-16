@@ -1,9 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitRow } from "./aitRow";
+import { objEqual } from "./processes";
 
 interface AitHeaderProps {
   aitid: string,
@@ -13,17 +15,32 @@ interface AitHeaderProps {
 }
 
 export const AitHeader = (props: AitHeaderProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState("");
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone(props.headerData));
+
+  const location: AitLocation = useMemo(() => {
+    return {
+      tableSection: props.higherOptions.tableSection,
+      rowGroup: props.higherOptions.rowGroup,
+      row: -1,
+      column: -1,
+      repeat: "0",
+    }
+  }, [props.higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    //console.log(`Return for header: ${props.higherOptions.tableSection}`);
-    let newHeaderData = { aitid: props.aitid, rows: rows, options: options };
-    if (JSON.stringify(newHeaderData) !== lastSend) {
-      props.setHeaderData!(newHeaderData);
-      setLastSend(JSON.stringify(newHeaderData));
+    let r = { 
+      aitid: props.headerData.aitid ?? props.aitid, 
+      rows: rows, 
+      options: options 
+    };
+    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    if (!chkObj) {
+      console.log(`Return for header: ${diffs}`);
+      props.setHeaderData!(r);
+      setLastSend(structuredClone(r));
     }
-  }, [lastSend, props.aitid, props.setHeaderData]);
+  }, [lastSend, location, props.aitid, props.headerData.aitid, props.setHeaderData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {

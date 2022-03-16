@@ -54,7 +54,7 @@ export const EditorPage = () => {
         <h5>Text</h5>
         <pre>{text}</pre>
         <h5>HTML</h5>
-        <p dangerouslySetInnerHTML={{ __html: decodeURI(text) }}></p>
+        <p dangerouslySetInnerHTML={{ __html: text }}></p>
       </div>
     </div>
   );
