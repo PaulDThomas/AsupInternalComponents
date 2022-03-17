@@ -56,9 +56,6 @@ const processRepeats = (text: string, repNo: number[], replacements: AioReplacem
   for (let rep of rv) {
     newText = newText.replaceAll(rep.oldText, rep.newText);
   }
-  if (text !== newText) {
-    console.log(`Replacing "${text}" with "${newText}"`);
-  }
   return newText;
 }
 
