@@ -27,13 +27,13 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
       rowGroup: props.higherOptions.rowGroup,
       row: props.higherOptions.row,
       column: -1,
-      repeat: props.higherOptions.repeatNumber.join(',')
+      repeat: (props.higherOptions.repeatNumber ?? []).join(",")
     }
   }, [props.higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((cells: AitCellData[], options: AioOptionGroup) => {
-    let r:AitRowData = {
+    let r: AitRowData = {
       aitid: props.rowData.aitid ?? props.aitid,
       cells: cells,
       options: options
@@ -71,7 +71,6 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
           // Sort out static options
           let higherOptions = {
             ...props.higherOptions,
-            repeatNumber: [...props.higherOptions.repeatNumber],
             column: ci,
           } as AitOptionList;
           if (cell.aitid === undefined) cell.aitid = uuidv4();
@@ -85,7 +84,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
               columnIndex={ci} /* This needs to be calculated after row/colspan! */
               cellData={cell}
               setCellData={(ret) => updateCell(ret, ci)}
-              readOnly={(cell.readOnly || (higherOptions.repeatNumber.reduce((r, a) => r + a, 0) > 0)) ?? false}
+              readOnly={(cell.readOnly || (higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
               rowGroupOptions={ci === 0 && props.higherOptions.row === 0 ? props.rowGroupOptions : undefined}
               addRowGroup={ci === 0 && props.higherOptions.row === 0 ? props.addRowGroup : undefined}
               removeRowGroup={ci === 0 && props.higherOptions.row === 0 && props.higherOptions.rowGroup > 0 ? props.removeRowGroup : undefined}

@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioReplacement, AitRowGroupOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup, AioReplacement, AioReplacementValue, AitRowGroupOptionNames } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { objEqual } from "./processes";
@@ -24,16 +24,16 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
       rowGroup: props.higherOptions.rowGroup,
       row: -1,
       column: -1,
-      repeat: "0",
+      repeat: "na",
     }
   }, [props.higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    let r:AitRowGroupData = { 
-      aitid: props.rowGroupData.aitid ?? props.aitid, 
-      rows: rows, 
-      options: options 
+    let r: AitRowGroupData = {
+      aitid: props.rowGroupData.aitid ?? props.aitid,
+      rows: rows,
+      options: options
     };
     let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
     if (!chkObj) {
@@ -62,28 +62,49 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
   }, [props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
   // Get the first level of repeats
-  const level1reps = useMemo(():number[] => {
-    // Find replacments if there are any
-    let r:AioReplacement = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value[0];
-    if (!r || !r?.replacementValues || r.replacementValues.length === 0) return [0];
+  const repeatValues = useMemo((): [number[][], string[][]] => {
 
-    // Calculate all replacements at this level
-    return Array.from(
-      Array(
-        r.replacementValues.length
-        ).keys());
+    function getReplacementValues(rvs: AioReplacementValue[]): [number[][], string[][]] {
+      if (!rvs || rvs.length === 0) return [[], []];
+      let thisIndex: number[][] = [];
+      let thisValues: string[][] = [];
+      for (let i = 0; i < rvs.length; i++) {
+        if (!rvs[i].subList || rvs[i].subList?.length === 0) {
+          thisIndex.push([i]);
+          thisValues.push([rvs[i].newText]);
+        }
+        else {
+          thisIndex.push(
+            ...getReplacementValues(rvs[i].subList!)[0].map(s => [i, ...s])
+          );
+
+          thisValues.push(
+            ...getReplacementValues(rvs[i].subList!)[1].map(s => [rvs[i].newText, ...s])
+          );
+        }
+      }
+      return [thisIndex, thisValues];
+    }
+
+    // Find first of replacments if there are any
+    let r: AioReplacement = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value[0];
+    if (!r || !r?.replacementValues || r.replacementValues.length === 0) return [[], []];
+
+    // Get repNo list
+    return getReplacementValues(r.replacementValues);
 
   }, [props.rowGroupData.options]);
 
   return (
     <>
-      {level1reps.map(repNo => {
+      {(repeatValues[0].length > 0 ? repeatValues[0] : [undefined]).map((repNo, i) => {
         return (
           props.rowGroupData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
             let higherOptions = {
               ...props.higherOptions,
               row: ri,
-              repeatNumber: [repNo],
+              repeatNumber: repNo,
+              repeatValues: repeatValues[1][i],
               replacements: props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value,
             } as AitOptionList;
             if (row.aitid === undefined) row.aitid = uuidv4();

@@ -68,9 +68,9 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
           />
         </div>
         {(typeof (props.setValues) === "function") &&
-          <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start" }}>
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
             <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px", paddingTop: "6px" }}>
-              {props.values[0].newText !== "" && <div className={"aiox-button aiox-plus"} onClick={addLevel} />}
+              {props.values[0].newText !== "" && <div className={"aiox-button aiox-explode"} onClick={addLevel} />}
             </div>
           </div>
         }
@@ -80,7 +80,7 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
   return (<>
     {props.values.map((rv, i) => {
       return (
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div key={i} style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "180px", minWidth: "180px" }}>
             <input
               key={`t${i}`}
@@ -107,11 +107,11 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
         ;
     })}
     {(typeof (props.setValues) === "function") &&
-      <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBlock: "4px" }}>
-        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", paddingTop: "6px" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
+        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px"}}>
           {props.values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
           <div className={"aiox-button aiox-plus"} onClick={addEntry} />
-          <div className={"aiox-button aiox-minus"} onClick={removeLevel} style={{ float:"right" }}/>
+          <div className={"aiox-button aiox-implode"} onClick={removeLevel} style={{ float:"right", marginTop:"-16px" }}/>
         </div>
       </div>
     }

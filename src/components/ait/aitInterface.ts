@@ -65,4 +65,5 @@ export interface AitOptionList {
   showCellBorders: boolean,
   replacements: AioReplacement[],
   repeatNumber: number[],
+  repeatValues: string[],
 }

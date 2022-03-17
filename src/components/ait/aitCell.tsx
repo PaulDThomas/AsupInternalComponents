@@ -3,58 +3,35 @@ import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
-import { AioOptionGroup, AioReplacement, AitCellOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup, AitCellOptionNames } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 // import { AioString } from "../aio/aioString";
 import { objEqual, processOptions } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList } from "./aitInterface";
 
-/** Check two arrays have the same LHS values */
-const getReplacementsForRepeat = (repNo: number[], replacements?: AioReplacement[]): { oldText: string, newText: string }[] => {
-  // console.log("Getting replacements");
-  let ret: { oldText: string, newText: string }[] = [];
-  for (let replacement of replacements ?? []) {
-    // Add this level's replacement
-    ret.push({
-      oldText: replacement.replacementText[0].text,
-      newText: replacement.replacementValues[repNo[0]]?.newText ?? ""
-    });
-
-    // Look to process the next level
-    if ((repNo.length > 1) && replacement.replacementText.length > 1 && (replacement.replacementValues[repNo[0]].subList?.length ?? 0) > 0)
-      ret.push(...getReplacementsForRepeat(
-        repNo.splice(1),
-        [{
-          replacementText: replacement.replacementText.splice(1),
-          replacementValues: replacement.replacementValues[repNo[0]].subList!,
-        } as AioReplacement]
-      ));
-  }
-  // console.log(ret);
-  return ret;
-}
 
 /**
 * Process text for repeat level and avaiable replacement values
 * @param text Initial text
-* @param repNo Array of repeat numbers to use
-* @param replacements Replacements object
+* @param options Options applied to the cell, should contain repeat options
 * @returns updated text
 */
-const processRepeats = (text: string, repNo: number[], replacements: AioReplacement[]): string => {
+const processRepeats = (text: string, options: AitOptionList): string => {
   // Do nothing if there is nothing to do
-  if (!replacements || replacements.length === 0 || replacements[0].replacementValues.length === 0) return text;
+  if (!options.repeatNumber || !options.replacements[0].replacementText) return text;
 
   /** Text to return */
   let newText = text;
 
   /** Replacements for this text */
-  let rv: { oldText: string, newText: string }[] = [];
-
-  rv.push(...getReplacementsForRepeat(repNo, replacements));
-
-  for (let rep of rv) {
-    newText = newText.replaceAll(rep.oldText, rep.newText);
+  for (let r = 0; r < options.replacements.length; r++) {
+    for (let i = 0; i < options.replacements[r].replacementText.length; i++) {
+      // Replace if there in old and new text
+      let o = options.replacements[r].replacementText[i].text;
+      let n = options.repeatValues[r+i]; 
+      console.log(`Replacing ${o} with ${n}`);
+      if (options.repeatValues[r+i]) newText = newText.replace(o, n);
+    }
   }
   return newText;
 }
@@ -79,7 +56,7 @@ export const AitCell = (props: AitCellProps) => {
 
   // Data holder
   const [receivedText, setReceivedText] = useState(props.cellData.text);
-  const [displayText, setDisplayText] = useState(() => processRepeats(props.cellData.text, props.higherOptions.repeatNumber, props.higherOptions.replacements));
+  const [displayText, setDisplayText] = useState(() => processRepeats(props.cellData.text, props.higherOptions));
   const [options, setOptions] = useState(props.cellData.options);
   const [buttonState, setButtonState] = useState("hidden");
   const [lastSend, setLastSend] = useState<AitCellData>(structuredClone(props.cellData));
@@ -92,7 +69,6 @@ export const AitCell = (props: AitCellProps) => {
       || typeof (props.setCellData) !== "function"
       || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
       || displayText !== receivedText
-
   });
 
   // Static options/variables
@@ -103,13 +79,13 @@ export const AitCell = (props: AitCellProps) => {
       rowGroup: props.higherOptions.rowGroup,
       row: props.higherOptions.row,
       column: props.columnIndex,
-      repeat: props.higherOptions.repeatNumber.join(',')
+      repeat: (props.higherOptions.repeatNumber ?? []).join(",")
     }
   }, [props.columnIndex, props.higherOptions.repeatNumber, props.higherOptions.row, props.higherOptions.rowGroup, props.higherOptions.tableSection]);
 
   /** Updates to initial text */
   useEffect(() => {
-    let newText = processRepeats(props.cellData.text, props.higherOptions.repeatNumber, props.higherOptions.replacements);
+    let newText = processRepeats(props.cellData.text, props.higherOptions);
     // Check read only flag
     setReadOnly(
       props.readOnly

@@ -23,7 +23,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
       rowGroup: props.higherOptions.rowGroup,
       row: -1,
       column: -1,
-      repeat: "0",
+      repeat: "",
     }
   }, [props.higherOptions]);
 
@@ -68,7 +68,6 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
 
           let higherOptions = {
             ...props.higherOptions,
-            repeatNumber: [0],
             row: ri,
           } as AitOptionList;
           if (row.aitid === undefined) row.aitid = uuidv4();
