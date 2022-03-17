@@ -12,7 +12,7 @@ export const TablePage = () => {
             { text: "A", options: [] },
             { text: "B", options: [] },
             { text: "C", options: [] },
-            { text: "D",  options: [] },
+            { text: "D", options: [] },
           ],
         },
       ],
@@ -24,10 +24,18 @@ export const TablePage = () => {
           rows: [
             {
               cells: [
-                { text: "E", options: [] },
-                { text: "F", options: [] },
-                { text: "G", options: [] },
-                { text: "H", options: [] },
+                { text: "E1", options: [] },
+                { text: "F1", options: [] },
+                { text: "G1", options: [] },
+                { text: "H1", options: [] },
+              ],
+            },
+            {
+              cells: [
+                { text: "E2", options: [] },
+                { text: "F3", options: [] },
+                { text: "G4", options: [] },
+                { text: "H5", options: [] },
               ],
             },
           ],
@@ -71,8 +79,7 @@ export const TablePage = () => {
   }, [updateTable]);
 
 
-  return (
-  <>
+  return (<>
     <div style={{
       width: "100%",
       display: "flex",
@@ -109,6 +116,5 @@ export const TablePage = () => {
         <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
       </pre>
     </div>
-  </>
-);
+  </>);
 }

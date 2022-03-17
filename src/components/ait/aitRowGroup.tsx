@@ -1,10 +1,56 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
-import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioReplacement, AioReplacementValue, AitRowGroupOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup, AioReplacement, AioReplacementText, AitRowGroupOptionNames } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { objEqual } from "./processes";
+import { firstUnequal, getReplacementValues, objEqual } from "./processes";
+
+/** Find which row replacementText first appears in */
+const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[]): number[] => {
+  let targetArray: number[] = [];
+  if (!replacementText || replacementText.length === 0) return targetArray;
+
+  textSearch: for (let i = 0; i < replacementText.length; i++) {
+    rowSearch: for (let ri = 0; ri < rows.length; ri++) {
+      for (let ci = 0; ci < rows[ri].cells.length; ci++) {
+        if (rows[ri].cells[ci].text.includes(replacementText[i].text)) {
+          targetArray.push(ri);
+          break rowSearch;
+        }
+      }
+      if (targetArray.length < i) break textSearch;
+    }
+  }
+  return targetArray;
+}
+
+/** Repeat rows based on repeat number array with potential for partial repeats */
+const repeatRows = (
+  rows: AitRowData[],
+  replacementText?: AioReplacementText[],
+  repeatNumbers?: number[][],
+  repeatValues?: string[][]
+): [AitRowData[], number[][], string[][]] => {
+
+  let targetArray = findTargets(rows, replacementText);
+  if (!repeatNumbers || repeatNumbers.length === 0) return [rows, repeatNumbers ?? [[]], repeatValues ?? [[]]];
+
+  let newRows: AitRowData[] = [];
+  let newRepeatNumbers: number[][] = [];
+  let newRepeatValues: string[][] = [];
+  let lastRepeat: number[] = [];
+  for (let repi = 0; repi < repeatNumbers.length; repi++) {
+    let repNo: number[] = repeatNumbers[repi];
+    let repVal: string[] = repeatValues !== undefined ? repeatValues[repi] : [];
+    let firstLevel: number = firstUnequal(repNo, lastRepeat);
+    let slice = rows.slice(targetArray[firstLevel]);
+    newRows.push(...slice);
+    newRepeatNumbers.push(...Array(slice.length).fill(repNo));
+    newRepeatValues.push(...Array(slice.length).fill(repVal));
+    lastRepeat = [...repNo];
+  }
+  return [newRows, newRepeatNumbers, newRepeatValues];
+}
 
 interface AitRowGroupProps {
   aitid: string,
@@ -63,29 +109,6 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
   // Get the first level of repeats
   const repeatValues = useMemo((): [number[][], string[][]] => {
-
-    function getReplacementValues(rvs: AioReplacementValue[]): [number[][], string[][]] {
-      if (!rvs || rvs.length === 0) return [[], []];
-      let thisIndex: number[][] = [];
-      let thisValues: string[][] = [];
-      for (let i = 0; i < rvs.length; i++) {
-        if (!rvs[i].subList || rvs[i].subList?.length === 0) {
-          thisIndex.push([i]);
-          thisValues.push([rvs[i].newText]);
-        }
-        else {
-          thisIndex.push(
-            ...getReplacementValues(rvs[i].subList!)[0].map(s => [i, ...s])
-          );
-
-          thisValues.push(
-            ...getReplacementValues(rvs[i].subList!)[1].map(s => [rvs[i].newText, ...s])
-          );
-        }
-      }
-      return [thisIndex, thisValues];
-    }
-
     // Find first of replacments if there are any
     let r: AioReplacement = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value[0];
     if (!r || !r?.replacementValues || r.replacementValues.length === 0) return [[], []];
@@ -95,33 +118,35 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
   }, [props.rowGroupData.options]);
 
+  const [processedRows, processedRepeatNumbers, processedRepeatValues] = repeatRows(
+    props.rowGroupData.rows,
+    props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value.map((r: AioReplacement) => r.replacementText).flat(),
+    repeatValues[0],
+    repeatValues[1]
+  )
+
   return (
     <>
-      {(repeatValues[0].length > 0 ? repeatValues[0] : [undefined]).map((repNo, i) => {
-        return (
-          props.rowGroupData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
-            let higherOptions = {
-              ...props.higherOptions,
-              row: ri,
-              repeatNumber: repNo,
-              repeatValues: repeatValues[1][i],
-              replacements: props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value,
-            } as AitOptionList;
-            if (row.aitid === undefined) row.aitid = uuidv4();
+      {processedRows.map((row: AitRowData, ri: number): JSX.Element => {
+        let higherOptions = {
+          ...props.higherOptions,
+          row: ri,
+          repeatNumber: processedRepeatNumbers[ri],
+          repeatValues: processedRepeatValues[ri],
+          replacements: props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value,
+        } as AitOptionList;
 
-            return (
-              <AitRow
-                key={row.aitid}
-                aitid={row.aitid}
-                rowData={row}
-                setRowData={(ret) => updateRow(ret, ri)}
-                higherOptions={higherOptions}
-                rowGroupOptions={[props.rowGroupData.options, updateOptions]}
-                addRowGroup={props.addRowGroup}
-                removeRowGroup={props.removeRowGroup}
-              />
-            );
-          })
+        return (
+          <AitRow
+            key={`${ri}-R${processedRepeatNumbers[ri].join(",")}-${row.aitid}`}
+            aitid={row.aitid}
+            rowData={row}
+            setRowData={(ret) => updateRow(ret, ri)}
+            higherOptions={higherOptions}
+            rowGroupOptions={[props.rowGroupData.options, updateOptions]}
+            addRowGroup={props.addRowGroup}
+            removeRowGroup={props.removeRowGroup}
+          />
         );
       })}
     </>

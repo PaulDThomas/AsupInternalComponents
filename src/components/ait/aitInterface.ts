@@ -63,7 +63,7 @@ export interface AitOptionList {
   row: number,
   column: number,
   showCellBorders: boolean,
-  replacements: AioReplacement[],
-  repeatNumber: number[],
-  repeatValues: string[],
+  replacements?: AioReplacement[],
+  repeatNumber?: number[],
+  repeatValues?: string[],
 }

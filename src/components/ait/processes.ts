@@ -1,4 +1,4 @@
-import { AioOptionGroup } from "../aio/aioInterface";
+import { AioOptionGroup, AioReplacementValue } from "../aio/aioInterface";
 
 /**
  * Update options with another set of options
@@ -51,4 +51,35 @@ export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
       , [true, ""]
     );
   return checkObject;
+}
+
+export const getReplacementValues = (rvs: AioReplacementValue[]): [number[][], string[][]] => {
+  if (!rvs || rvs.length === 0) return [[], []];
+  let thisIndex: number[][] = [];
+  let thisValues: string[][] = [];
+  for (let i = 0; i < rvs.length; i++) {
+    if (!rvs[i].subList || rvs[i].subList?.length === 0) {
+      thisIndex.push([i]);
+      thisValues.push([rvs[i].newText]);
+    }
+    else {
+      thisIndex.push(
+        ...getReplacementValues(rvs[i].subList!)[0].map(s => [i, ...s])
+      );
+
+      thisValues.push(
+        ...getReplacementValues(rvs[i].subList!)[1].map(s => [rvs[i].newText, ...s])
+      );
+    }
+  }
+  return [thisIndex, thisValues];
+}
+
+/** Find first unequal obs in two number arrays */
+export const firstUnequal = (a: number[], b: number[]): number => {
+  for (let i = 0; i < a.length; i++) {
+    if (a[i] !== b[i]) return i;
+  }
+  if (b.length > a.length) return a.length;
+  else return 0;
 }
