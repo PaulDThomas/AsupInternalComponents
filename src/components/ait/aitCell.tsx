@@ -28,7 +28,7 @@ const processRepeats = (text: string, options: AitOptionList): string => {
     for (let i = 0; i < options.replacements[r].replacementText.length; i++) {
       // Replace if there in old and new text
       let o = options.replacements[r].replacementText[i].text;
-      let n = options.repeatValues ? options.repeatValues[r+i] : undefined;
+      let n = options.repeatValues ? options.repeatValues[r + i] : undefined;
       if (n) newText = newText.replace(o, n);
     }
   }
@@ -42,10 +42,18 @@ interface AitCellProps {
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
-  rowGroupOptions?: [AioOptionGroup, (ret: AioOptionGroup, location: AitLocation) => void],
+  rowGroupOptions?: {
+    options: AioOptionGroup,
+    setOptions: (ret: AioOptionGroup, location: AitLocation) => void
+  },
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
-  rowOptions?: [AioOptionGroup, (ret: AioOptionGroup, location: AitLocation) => void],
+  rowOptions?: {
+    options: AioOptionGroup,
+    setOptions: (ret: AioOptionGroup, location: AitLocation) => void,
+    addRow?: (ret: number) => void
+    removeRow?: (ret: number) => void
+  },
 };
 
 /*
@@ -224,10 +232,23 @@ export const AitCell = (props: AitCellProps) => {
               }
               {(props.rowOptions)
                 ?
-                <div
-                  className={`ait-options-button ait-options-button-row ${buttonState === "hidden" ? "hidden" : ""}`}
-                  onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
-                />
+                <>
+                  <div
+                    className={`ait-options-button ait-options-button-row ${buttonState === "hidden" ? "hidden" : ""}`}
+                    onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
+                  />
+                  {typeof props.rowOptions.addRow === "function" &&
+                    <div
+                      className={`ait-options-button ait-options-button-add-row ${buttonState === "hidden" ? "hidden" : ""}`}
+                      onClick={(e) => { props.rowOptions!.addRow!(location.row) }}
+                    />
+                  }
+                  {typeof props.rowOptions.removeRow === "function" &&
+                    <div
+                      className={`ait-options-button ait-options-button-remove-row ${buttonState === "hidden" ? "hidden" : ""}`}
+                      onClick={(e) => { props.rowOptions!.removeRow!(location.row) }}
+                    />
+                  }                </>
                 :
                 null
               }
@@ -258,11 +279,11 @@ export const AitCell = (props: AitCellProps) => {
             {showRowGroupOptions &&
               <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
                 <AioOptionDisplay
-                  options={props.rowGroupOptions![0]}
+                  options={props.rowGroupOptions!.options}
                   setOptions={(ret) => {
                     if (!props.rowGroupOptions) return;
                     let rgl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
-                    props.rowGroupOptions[1](ret, rgl);
+                    props.rowGroupOptions!.setOptions(ret, rgl);
                   }}
                 />
               </AsupInternalWindow>
@@ -271,11 +292,11 @@ export const AitCell = (props: AitCellProps) => {
             {showRowOptions &&
               <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
                 <AioOptionDisplay
-                  options={props.rowOptions![0]}
+                  options={props.rowOptions?.options}
                   setOptions={(ret) => {
                     if (!props.rowOptions) return;
                     let rl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: props.higherOptions.row, column: -1 } as AitLocation;
-                    props.rowOptions[1](ret, rl);
+                    props.rowOptions.setOptions!(ret, rl);
                   }}
                 />
               </AsupInternalWindow>

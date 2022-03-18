@@ -12,9 +12,11 @@ interface AitRowProps {
   rowData: AitRowData,
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  rowGroupOptions: [AioOptionGroup, (ret: AioOptionGroup) => void],
+  rowGroupOptions: { options: AioOptionGroup, setOptions: (ret: AioOptionGroup) => void },
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
+  addRow?: (ri: number) => void,
+  removeRow?: (ri: number) => void,
 }
 
 
@@ -88,7 +90,13 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
               rowGroupOptions={ci === 0 && props.higherOptions.row === 0 ? props.rowGroupOptions : undefined}
               addRowGroup={ci === 0 && props.higherOptions.row === 0 ? props.addRowGroup : undefined}
               removeRowGroup={ci === 0 && props.higherOptions.row === 0 && props.higherOptions.rowGroup > 0 ? props.removeRowGroup : undefined}
-              rowOptions={(ci === props.rowData.cells.length - 1 ? [props.rowData.options, updateOptions] : undefined)}
+              rowOptions={(ci === props.rowData.cells.length - 1
+                ? {
+                  options: props.rowData.options,
+                  setOptions: updateOptions,
+                  addRow: props.addRow,
+                  removeRow: location.row > 0 ? props.removeRow : undefined
+                } : undefined)}
             />
           );
         })}

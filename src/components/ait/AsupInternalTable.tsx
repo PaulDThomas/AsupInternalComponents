@@ -6,9 +6,9 @@ import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitCellOptionNames, AitOptionList } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellType, AitCellOptionNames, AitOptionList } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { objEqual, processOptions } from "./processes";
+import { newCell, objEqual, processOptions } from "./processes";
 import './ait.css';
 
 interface AsupInteralTableProps {
@@ -52,8 +52,6 @@ const defaultRowGroupOptions: AioOptionGroup = [
     value: [{ replacementText: [{ level: 0, text: "" }], replacementValues: [] }] as AioReplacement[]
   },
 ];
-
-const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [], }; }
 
 /**
  * Table view for clinical table data

@@ -1,4 +1,6 @@
+import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup, AioReplacementValue } from "../aio/aioInterface";
+import { AitCellData } from "./aitInterface";
 
 /**
  * Update options with another set of options
@@ -85,3 +87,5 @@ export const firstUnequal = (a: number[], b: number[]): number => {
   if (b.length > a.length) return a.length;
   else return 0;
 }
+
+export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [], }; }

@@ -1,9 +1,10 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import structuredClone from '@ungap/structured-clone';
 import { AioOptionGroup, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames, AitCellOptionNames } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { firstUnequal, getReplacementValues, objEqual } from "./processes";
+import { firstUnequal, getReplacementValues, newCell, objEqual } from "./processes";
 
 /** Find which row replacementText first appears in */
 const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[]): number[] => {
@@ -103,6 +104,28 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     returnData(newRows, props.rowGroupData.options);
   }, [props.rowGroupData.options, props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
+  const addRow = useCallback((ri) => {
+    let newRowGroup = {...props.rowGroupData};
+    let newRow: AitRowData = {
+        aitid: uuidv4(),
+        options: [],
+        cells: [],
+      };
+    let cols = props.rowGroupData.rows[0].cells
+      .map(c => (c.options?.find(o => (o.optionName === AitCellOptionNames.colSpan))?.value) ?? 1)
+      .reduce((sum, a) => sum + a, 0);
+    for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
+    newRowGroup.rows.splice(ri+1, 0, newRow);
+    props.setRowGroupData(newRowGroup);
+  }, [props])
+
+  const removeRow = useCallback((ri) => {
+    let newRowGroup = {...props.rowGroupData};
+    newRowGroup.rows.splice(ri, 1);
+    // updateTable(headerData, newBody, options);
+    props.setRowGroupData(newRowGroup);
+  }, [props])
+
   // Update options
   const updateOptions = useCallback((ret: AioOptionGroup) => {
     // Do nothing if readonly
@@ -147,9 +170,11 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
             rowData={row}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={higherOptions}
-            rowGroupOptions={[props.rowGroupData.options, updateOptions]}
+            rowGroupOptions={{options:props.rowGroupData.options, setOptions:updateOptions}}
             addRowGroup={props.addRowGroup}
             removeRowGroup={props.removeRowGroup}
+            addRow={addRow}
+            removeRow={removeRow}
           />
         );
       })}
