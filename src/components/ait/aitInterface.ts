@@ -4,7 +4,6 @@ export interface AitCellData {
   aitid: string,
   text: string,
   options: AioOptionGroup,
-  readOnly?: boolean,
 };
 
 export interface AitRowData {

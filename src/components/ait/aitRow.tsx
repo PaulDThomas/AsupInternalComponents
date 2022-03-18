@@ -86,7 +86,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
               columnIndex={ci} /* This needs to be calculated after row/colspan! */
               cellData={cell}
               setCellData={(ret) => updateCell(ret, ci)}
-              readOnly={(cell.readOnly || (higherOptions.repeatNumber && higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
+              readOnly={((higherOptions.repeatNumber && higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
               rowGroupOptions={ci === 0 && props.higherOptions.row === 0 ? props.rowGroupOptions : undefined}
               addRowGroup={ci === 0 && props.higherOptions.row === 0 ? props.addRowGroup : undefined}
               removeRowGroup={ci === 0 && props.higherOptions.row === 0 && props.higherOptions.rowGroup > 0 ? props.removeRowGroup : undefined}

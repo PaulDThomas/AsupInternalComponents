@@ -69,7 +69,7 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
         </div>
         {(typeof (props.setValues) === "function") &&
           <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px", paddingTop: "6px" }}>
+            <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px" }}>
               {props.values.length > 0 && props.values[0].newText !== "" && <div className={"aiox-button aiox-explode"} onClick={addLevel} />}
             </div>
           </div>

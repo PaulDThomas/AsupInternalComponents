@@ -165,7 +165,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
         return (
           <AitRow
-            key={`${ri}-R${Array.isArray(processedRepeatNumbers[ri]) ? processedRepeatNumbers[ri].join(",") : "0"}-${row.aitid}`}
+            key={higherOptions.repeatNumber === undefined || higherOptions.repeatNumber?.reduce((s,a) => s+a, 0) === 0 ? row.aitid : `${row.aitid}-${higherOptions.repeatNumber?.join(',')}`}
             aitid={row.aitid}
             rowData={row}
             setRowData={(ret) => updateRow(ret, ri)}

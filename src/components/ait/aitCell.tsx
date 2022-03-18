@@ -135,7 +135,6 @@ export const AitCell = (props: AitCellProps) => {
       aitid: props.cellData.aitid ?? props.aitid,
       options: options ?? [],
       text: displayText ?? "",
-      readOnly: props.cellData.readOnly ?? props.readOnly ?? false,
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
@@ -143,7 +142,7 @@ export const AitCell = (props: AitCellProps) => {
       props.setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [options, displayText, lastSend, props.cellData.aitid, location, props.cellData.readOnly, readOnly, props]);
+  }, [options, displayText, lastSend, props.cellData.aitid, location, readOnly, props]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };

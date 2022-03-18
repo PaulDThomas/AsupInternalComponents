@@ -88,4 +88,4 @@ export const firstUnequal = (a: number[], b: number[]): number => {
   else return 0;
 }
 
-export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [], readOnly: false}; }
+export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: []}; }
