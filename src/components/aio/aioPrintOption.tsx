@@ -6,6 +6,7 @@ import { AioSelect } from "./aioSelect";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { AioReplacement, AioOptionType } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
+import { AioBoolean } from "./aioBoolean";
 
 interface AioPrintOptionProps {
   id: string,
@@ -102,6 +103,23 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           setValue={(typeof (props.setValue) === "function")
             ?
             (ret: number) => { props.setValue!(ret); }
+            :
+            undefined
+          }
+        />
+      );
+
+
+    // Boolean
+    case (AioOptionType.boolean):
+    case ("boolean"):
+      return (
+        <AioBoolean
+          label={props.label}
+          value={props.value}
+          setValue={(typeof (props.setValue) === "function")
+            ?
+            (ret: boolean) => { props.setValue!(ret); }
             :
             undefined
           }
