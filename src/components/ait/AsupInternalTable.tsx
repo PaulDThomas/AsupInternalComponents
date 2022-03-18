@@ -162,7 +162,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
             higherOptions={{
               ...higherOptions,
               tableSection: AitCellType.header,
-              rowGroup: 1,
+              rowGroup: 0,
             }}
           />
 

@@ -21,7 +21,6 @@ table.ait-table {
   visibility: hidden;
 }
 
-
 /* Table cell positioning */
 .ait-cell {
   position: relative;
@@ -52,7 +51,7 @@ table.ait-table {
 }
 
 .ait-border-cell {
-  border-bottom: 2px black solid !important;
+  border-bottom: 3px black solid !important;
   padding: 0;
   min-height: 1px;
 }

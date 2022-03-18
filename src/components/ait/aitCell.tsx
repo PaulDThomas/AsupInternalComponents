@@ -115,7 +115,14 @@ export const AitCell = (props: AitCellProps) => {
   useEffect(() => {
     const style = {
       width: options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
-      border: props.higherOptions.showCellBorders ? "1px dashed burlywood" : ""
+      borderLeft: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderRight: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderBottom: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderTop: props.higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
+        ? "2px dashed black"
+        : props.higherOptions.showCellBorders
+          ? "1px dashed burlywood"
+          : "",
     }
     setCellStyle(style);
   }, [options, props.higherOptions.showCellBorders]);
@@ -128,7 +135,7 @@ export const AitCell = (props: AitCellProps) => {
       aitid: props.cellData.aitid ?? props.aitid,
       options: options ?? [],
       text: displayText ?? "",
-      readOnly: props.cellData.readOnly ?? props.readOnly,
+      readOnly: props.cellData.readOnly ?? props.readOnly ?? false,
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
