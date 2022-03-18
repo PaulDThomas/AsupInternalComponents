@@ -1,6 +1,6 @@
-/**
- * 
- */
+import { AitCellOptionNames, AitRowGroupOptionNames, AitRowOptionNames, AitTableOptionNames } from "components/ait/aitInterface";
+
+/** Individual options */
 export interface AioOption {
   optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
   type: AioOptionType,
@@ -11,22 +11,19 @@ export interface AioOption {
 }
 export interface AioOptionGroup extends Array<AioOption> { };
 
-
+/** Individual text replacements */
 export interface AioReplacementText {
   level: number,
   text: string,
 }
 
-/**
- * Single replacement value, allowing for sublists
- * @interface newText Text that will be applied
- * @interface subList Sub list of replacements that are associated with only this value
- */
+/** Single replacement value, allowing for sublists */
 export interface AioReplacementValue {
   newText: string,
   subList?: AioReplacementValue[],
 }
 
+/** Text replacements, and their replacement matrix */
 export interface AioReplacement {
   replacementText: AioReplacementText[],
   replacementValues: AioReplacementValue[],
@@ -37,33 +34,10 @@ export enum AioOptionType {
   number = "number",
   array = "array",
   object = "object",
+  boolean = "boolean",
   select = "select",
   replacements = "replacements",
 }
-
-export enum AitCellOptionNames {
-  cellWidth = "cellWidth",
-  cellStatistic = "cellStatisic",
-  cellText = "cellText",
-  colSpan = "colSpan",
-  rowSpan = "rowSpan",
-  cellType = "cellType",
-  readOnly = "readOnly",
-};
-export enum AitRowOptionNames {
-
-};
-export enum AitRowGroupOptionNames {
-  rgName = "rgName",
-  replacements = "replacements",
-};
-export enum AitTableOptionNames {
-  tableName = "tableName",
-  tableDescription = "tableDescription",
-  rowHeaderColumns = "rowHeaderColumns",
-  repeatingColumns = "repeatingColumns",
-  columnRepeatList = "columnRepeatList",
-};
 
 export enum AioNewItem {
   newKey = "newKey",

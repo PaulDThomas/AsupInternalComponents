@@ -57,8 +57,33 @@ export enum AitRowType {
   "body",
 }
 
+export enum AitCellOptionNames {
+  cellWidth = "cellWidth",
+  cellStatistic = "cellStatisic",
+  cellText = "cellText",
+  colSpan = "colSpan",
+  rowSpan = "rowSpan",
+  cellType = "cellType",
+  readOnly = "readOnly",
+};
+export enum AitRowOptionNames {
+
+};
+export enum AitRowGroupOptionNames {
+  rgName = "rgName",
+  replacements = "replacements",
+};
+export enum AitTableOptionNames {
+  tableName = "tableName",
+  tableDescription = "tableDescription",
+  noRepeatProcessing = "noRepeatProcessing",
+  rowHeaderColumns = "rowHeaderColumns",
+  repeatingColumns = "repeatingColumns",
+  columnRepeatList = "columnRepeatList",
+};
 export interface AitOptionList {
   tableSection: AitCellType,
+  noRepeatProcessing: boolean,
   rowGroup: number,
   row: number,
   column: number,

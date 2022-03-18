@@ -34,7 +34,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
       rows: rows, 
       options: options 
     };
-    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    let [chkObj, diffs] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       console.log(`Return for header: ${diffs}`);
       props.setHeaderData!(r);

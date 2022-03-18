@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
-import { AioOptionGroup, AioReplacement, AioReplacementText, AitRowGroupOptionNames } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
+import { AioOptionGroup, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { firstUnequal, getReplacementValues, objEqual } from "./processes";
 
@@ -27,10 +27,13 @@ const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[])
 /** Repeat rows based on repeat number array with potential for partial repeats */
 const repeatRows = (
   rows: AitRowData[],
+  noProcessing?: boolean,
   replacementText?: AioReplacementText[],
   repeatNumbers?: number[][],
   repeatValues?: string[][]
 ): [AitRowData[], number[][], string[][]] => {
+
+  if (noProcessing) return [rows, [[]], [[]]];
 
   let targetArray = findTargets(rows, replacementText);
   if (!repeatNumbers || repeatNumbers.length === 0) return [rows, repeatNumbers ?? [[]], repeatValues ?? [[]]];
@@ -81,7 +84,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
       rows: rows,
       options: options
     };
-    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       console.log(`Return for rowGroup: ${diffs}`);
       props.setRowGroupData!(r);
@@ -120,10 +123,11 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
   const [processedRows, processedRepeatNumbers, processedRepeatValues] = repeatRows(
     props.rowGroupData.rows,
+    props.higherOptions.noRepeatProcessing,
     props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value.map((r: AioReplacement) => r.replacementText).flat(),
     repeatValues[0],
     repeatValues[1]
-  )
+  );
 
   return (
     <>
@@ -138,7 +142,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
         return (
           <AitRow
-            key={`${ri}-R${processedRepeatNumbers[ri].join(",")}-${row.aitid}`}
+            key={`${ri}-R${Array.isArray(processedRepeatNumbers[ri]) ? processedRepeatNumbers[ri].join(",") : "0"}-${row.aitid}`}
             aitid={row.aitid}
             rowData={row}
             setRowData={(ret) => updateRow(ret, ri)}

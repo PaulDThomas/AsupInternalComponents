@@ -3,11 +3,11 @@ import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
-import { AioOptionGroup, AitCellOptionNames } from "components/aio/aioInterface";
+import { AioOptionGroup } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 // import { AioString } from "../aio/aioString";
 import { objEqual, processOptions } from "./processes";
-import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList } from "./aitInterface";
+import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitCellOptionNames } from "./aitInterface";
 
 
 /**
@@ -122,7 +122,7 @@ export const AitCell = (props: AitCellProps) => {
       text: displayText ?? "",
       readOnly: props.cellData.readOnly ?? props.readOnly,
     }
-    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       console.log(`Return for cell: ${diffs}`);
       props.setCellData(r);

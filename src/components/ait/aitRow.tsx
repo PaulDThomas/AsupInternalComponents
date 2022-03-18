@@ -39,7 +39,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
       options: options
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `${Object.values(location).join(',')}-`);
+    let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       console.log(`Return for row: ${diffs}`);
       props.setRowData!(r);

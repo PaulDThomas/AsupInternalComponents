@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from 'uuid';
-import { AitTableOptionNames, AioOptionType, AioOptionGroup, AitRowGroupOptionNames, AioReplacement, AitCellOptionNames } from "components/aio/aioInterface";
+import { AioOptionType, AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitRowGroupData, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitOptionList } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellData, AitCellType, AitCellOptionNames, AitOptionList } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { objEqual, processOptions } from "./processes";
 import './ait.css';
@@ -37,9 +37,10 @@ const initialBodyProcess = (b: AitTableBodyData): AitTableBodyData => {
 const defaultTableOptions: AioOptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
-  { optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
-  { optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
+  { optionName: AitTableOptionNames.noRepeatProcessing, label: "Disable repeating", type: AioOptionType.boolean, value: false },
+  //{ optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
+  //{ optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
+  //{ optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
 ];
 
 const defaultRowGroupOptions: AioOptionGroup = [
@@ -85,7 +86,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       options: options,
     };
 
-    let [chkObj, diffs] = objEqual(r, lastSend, `table`);
+    let [chkObj, diffs] = objEqual(r, lastSend, `TABLECHECK`);
     if (!chkObj) {
       console.log(`Return for table: ${diffs}`);
       props.setTableData(r);
@@ -128,9 +129,12 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
     setBodyData(newBody);
   }, [bodyData.options, bodyData.rowGroups]);
 
-  let higherOptions = {
-    showCellBorders: props.showCellBorders,
-  } as AitOptionList;
+  let higherOptions = useMemo(() => {
+    return {
+      showCellBorders: props.showCellBorders,
+      noRepeatProcessing: options.find(o => o.optionName === AitTableOptionNames.noRepeatProcessing)?.value,
+    };
+  }, [options, props.showCellBorders]) as AitOptionList;
 
   // Print the table
   return (
