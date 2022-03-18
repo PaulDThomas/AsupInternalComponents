@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import structuredClone from '@ungap/structured-clone';
 import { objEqual } from 'components/ait/processes';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
-import { AioReplacementValueDisplay } from './aioReplacementValues';
+import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 
 interface AioReplacmentTableProps {
   replacement: AioReplacement,
