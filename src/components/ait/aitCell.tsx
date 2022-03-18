@@ -258,8 +258,8 @@ export const AitCell = (props: AitCellProps) => {
             {showRowGroupOptions &&
               <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
                 <AioOptionDisplay
-                  initialData={props.rowGroupOptions![0]}
-                  returnData={(ret) => {
+                  options={props.rowGroupOptions![0]}
+                  setOptions={(ret) => {
                     if (!props.rowGroupOptions) return;
                     let rgl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
                     props.rowGroupOptions[1](ret, rgl);
@@ -271,8 +271,8 @@ export const AitCell = (props: AitCellProps) => {
             {showRowOptions &&
               <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
                 <AioOptionDisplay
-                  initialData={props.rowOptions![0]}
-                  returnData={(ret) => {
+                  options={props.rowOptions![0]}
+                  setOptions={(ret) => {
                     if (!props.rowOptions) return;
                     let rl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: props.higherOptions.row, column: -1 } as AitLocation;
                     props.rowOptions[1](ret, rl);
@@ -293,7 +293,7 @@ export const AitCell = (props: AitCellProps) => {
               <div className={"aio-label"}>Unprocessed text: </div>
               <div className={"aio-ro-value"}>{props.cellData.text}</div>
             </div>
-            <AioOptionDisplay initialData={options} returnData={!readOnly ? (ret) => { setOptions(ret); } : undefined} />
+            <AioOptionDisplay options={options} setOptions={!readOnly ? (ret) => { setOptions(ret); } : undefined} />
           </AsupInternalWindow>
         }
       </div>

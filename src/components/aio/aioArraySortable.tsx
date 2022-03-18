@@ -29,7 +29,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
       style={{ minHeight: "100px" }}
     >
       <AioOptionDisplay
-        initialData={[
+        options={[
           {
             type: AioOptionType.select,
             optionName: AioNewItem.newType,
@@ -38,7 +38,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
             availableValues: ["string", "number", "array", "object"]
           },
         ]}
-        returnData={(ret) => {
+        setOptions={(ret) => {
           // Check value is ok
           let newItem;
           switch (ret[0].value) {

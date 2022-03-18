@@ -37,7 +37,7 @@ const initialBodyProcess = (b: AitTableBodyData): AitTableBodyData => {
 const defaultTableOptions: AioOptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.noRepeatProcessing, label: "Disable repeating", type: AioOptionType.boolean, value: false },
+  { optionName: AitTableOptionNames.noRepeatProcessing, label: "Supress repeats", type: AioOptionType.boolean, value: false },
   //{ optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
   //{ optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
   //{ optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
@@ -150,7 +150,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-              <AioOptionDisplay initialData={options} returnData={setOptions} />
+              <AioOptionDisplay options={options} setOptions={setOptions} />
             </AsupInternalWindow>
           }
         </div>

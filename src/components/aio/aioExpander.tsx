@@ -142,11 +142,11 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                             style={{ minHeight: "120px" }}
                           >
                             <AioOptionDisplay
-                              initialData={[
+                              options={[
                                 { type: AioOptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
                                 { type: AioOptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
                               ] as AioOptionGroup}
-                              returnData={onClickAdd}
+                              setOptions={onClickAdd}
                               buttonText="Add" />
                           </AsupInternalWindow>
                         }

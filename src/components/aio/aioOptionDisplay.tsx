@@ -1,28 +1,31 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { AioOption, AioOptionGroup } from "./aioInterface";
 import { AioPrintOption } from "./aioPrintOption";
 import "./aio.css";
+import { AioLabel } from "./aioLabel";
 
 interface AioOptionDisplayProps {
-  initialData: AioOptionGroup,
-  returnData?: (ret: AioOptionGroup) => void,
+  options?: AioOptionGroup,
+  setOptions?: (ret: AioOptionGroup) => void,
   buttonText?: string,
 }
 
 export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
 
   // Update current options from child object
-  const updateOption = (ret: AioOption, i: number) => {
-    if (typeof (props.returnData) !== "function") return;
+  const updateOption = useCallback((ret: AioOption, i: number) => {
+    if (typeof (props.setOptions) !== "function") return;
     // console.log(`Updating option ${i} to... ${ret}`);
-    const newOptions = [...props.initialData];
+    const newOptions = [...props.options!];
     newOptions[i].value = ret;
-    props.returnData!(newOptions);
-  };
+    props.setOptions!(newOptions);
+  }, [props.options, props.setOptions]);
+
+  if (props.options === undefined) return <div className='aio-body-row'><AioLabel label="No options deinfed"/></div>;
 
   return (
     <>
-      {props.initialData.map((option, i) => {
+      {props.options!.map((option, i) => {
         return (
           <div className='aio-body-row' key={i}>
             <AioPrintOption
