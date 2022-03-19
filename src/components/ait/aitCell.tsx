@@ -24,12 +24,14 @@ const processRepeats = (text: string, options: AitOptionList): string => {
   let newText = text;
 
   /** Replacements for this text */
+  let k = 0;
   for (let r = 0; r < options.replacements.length; r++) {
     for (let i = 0; i < options.replacements[r].replacementText.length; i++) {
       // Replace if there in old and new text
       let o = options.replacements[r].replacementText[i].text;
-      let n = options.repeatValues ? options.repeatValues[r + i] : undefined;
+      let n = options.repeatValues ? options.repeatValues[k] : undefined;
       if (n) newText = newText.replace(o, n);
+      k++;
     }
   }
   return newText;
@@ -125,7 +127,7 @@ export const AitCell = (props: AitCellProps) => {
           : "",
     }
     setCellStyle(style);
-  }, [options, props.higherOptions.showCellBorders]);
+  }, [location.row, location.rowGroup, options, props.higherOptions.showCellBorders]);
 
   /** Send data back */
   useEffect(() => {

@@ -67,8 +67,8 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
     case (AioOptionType.replacements):
       return (
         <AioReplacementDisplay
-          value={props.value}
-          setValue={(typeof (props.setValue) === "function")
+          replacements={props.value}
+          setReplacements={(typeof (props.setValue) === "function")
             ?
             (ret: AioReplacement[]) => { props.setValue!(ret); }
             :

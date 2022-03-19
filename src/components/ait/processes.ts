@@ -36,7 +36,6 @@ export const processOptions = (incomingOptions: AioOptionGroup, previousOptions:
 };
 
 export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
-  // console.log(`Checking ${path}`);
   if (a === b) return [true, ""];
   if (typeof a !== "object" && typeof b !== "object" && a !== b) return [false, `${path}:notEqual:${a}<>${b}`];
   if (!a || !b || (typeof a !== 'object' && typeof b !== 'object')) return [a === b, (a === b) ? "" : `${path}:notMismatch:${a}<>${b}`];
@@ -57,8 +56,8 @@ export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
   return checkObjectR;
 }
 
-export const getReplacementValues = (rvs: AioReplacementValue[]): [number[][], string[][]] => {
-  if (!rvs || rvs.length === 0) return [[], []];
+export const getReplacementValues = (rvs: AioReplacementValue[]): {numbers:number[][], values:string[][]} => {
+  if (!rvs || rvs.length === 0) return {numbers:[], values:[]};
   let thisIndex: number[][] = [];
   let thisValues: string[][] = [];
   for (let i = 0; i < rvs.length; i++) {
@@ -68,15 +67,15 @@ export const getReplacementValues = (rvs: AioReplacementValue[]): [number[][], s
     }
     else {
       thisIndex.push(
-        ...getReplacementValues(rvs[i].subList!)[0].map(s => [i, ...s])
+        ...getReplacementValues(rvs[i].subList!).numbers.map(s => [i, ...s])
       );
 
       thisValues.push(
-        ...getReplacementValues(rvs[i].subList!)[1].map(s => [rvs[i].newText, ...s])
+        ...getReplacementValues(rvs[i].subList!).values.map(s => [rvs[i].newText, ...s])
       );
     }
   }
-  return [thisIndex, thisValues];
+  return {numbers:thisIndex, values:thisValues};
 }
 
 /** Find first unequal obs in two number arrays */

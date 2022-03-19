@@ -69,10 +69,10 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
             <div key={l} style={{ width: "180px", minWidth: "180px" }}>
               {(typeof (props.setReplacement) !== "function")
                 ?
-                <span key={l} className={"aio-replaceText"}>{r.level}: {r.text === "" ? r.text : <em>Nothing</em>}</span>
+                <span key={l} className={"aio-replaceText"}>{r.text === "" ? r.text : <em>Nothing</em>}</span>
                 :
                 <>
-                  <span style={{ minWidth: "26px", width: "26px", display: "inline-block", textAlign: "right", paddingRight: "4px" }}>{r.level + 1}</span>
+                  <span style={{ minWidth: "26px", width: "26px", display: "inline-block", textAlign: "right", paddingRight: "4px" }} />
                   <input
                     key={`t${l}`}
                     className={"aio-input"}

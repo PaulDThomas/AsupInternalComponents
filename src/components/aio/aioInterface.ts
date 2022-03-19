@@ -23,6 +23,8 @@ export interface AioReplacementValue {
   subList?: AioReplacementValue[],
 }
 
+export interface AioRepeats { numbers: number[][], values: string[][] };
+
 /** Text replacements, and their replacement matrix */
 export interface AioReplacement {
   replacementText: AioReplacementText[],
