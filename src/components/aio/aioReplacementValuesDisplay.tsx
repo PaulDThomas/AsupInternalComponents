@@ -30,17 +30,6 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
     props.setValues!(newValues);
   }, [props]);
 
-  const addLevel = useCallback(() => {
-    let newValues = [...props.values!.map(rv => { return { newText: rv.newText, subList: [{ newText: "" }] } })];
-    props.setValues!(newValues);
-  }, [props]);
-
-  const removeLevel = useCallback(() => {
-    console.log("removeLevel");
-    let newValues = [...props.values!.map(rv => { return { newText: rv.newText } })];
-    props.setValues!(newValues);
-  }, [props]);
-
   const addEntry = useCallback(() => {
     let newValues = [...(props.values ?? [])];
     newValues.push({ newText: "", subList: [{ newText: "" }] });
@@ -67,13 +56,6 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
             style={{ width: "168px", minWidth: "168px" }}
           />
         </div>
-        {(typeof (props.setValues) === "function") &&
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
-            <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px" }}>
-              {props.values.length > 0 && props.values[0].newText !== "" && <div className={"aiox-button aiox-explode"} onClick={addLevel} />}
-            </div>
-          </div>
-        }
       </div>
     );
   }
@@ -108,10 +90,9 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
     })}
     {(typeof (props.setValues) === "function") &&
       <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
-        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px"}}>
-          {props.values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
+        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", display: "flex", justifyContent: "center" }}>
           <div className={"aiox-button aiox-plus"} onClick={addEntry} />
-          <div className={"aiox-button aiox-implode"} onClick={removeLevel} style={{ float:"right", marginTop:"-16px" }}/>
+          {props.values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
         </div>
       </div>
     }

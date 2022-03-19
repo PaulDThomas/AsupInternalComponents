@@ -45,18 +45,40 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
     setTextArray(newRT);
   }, [props.replacement.replacementText]);
 
+  const addSubList = useCallback((rv:AioReplacementValue):AioReplacementValue => { 
+    if (!rv.subList) rv.subList = [{newText:""}]; 
+    else rv.subList = rv.subList.map(sub => addSubList(sub));
+    return rv;
+  }, []);
+
   const addLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementText];
     newRT.push({ level: newRT.length, text: "" });
     setTextArray(newRT);
 
-  }, [props.replacement.replacementText]);
+    let newValues = [...props.replacement.replacementValues!.map(rv => addSubList(rv))];
+    setValues!(newValues);
+
+  }, [addSubList, props.replacement.replacementText, props.replacement.replacementValues]);
+
+  const removeSubList = useCallback((rv:AioReplacementValue):AioReplacementValue => {
+    if (rv.subList && rv.subList.map(sub => sub.subList?.length ?? 0).reduce((s,a) => s+a, 0) === 0) {
+      return { newText: rv.newText};
+    }
+    else {
+      rv.subList = rv.subList!.map(sub => removeSubList(sub));
+      return rv;
+    }
+  }, []);
 
   const removeLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementText];
     newRT.pop();
     setTextArray(newRT);
-  }, [props.replacement.replacementText]);
+    let newValues = [...props.replacement.replacementValues!.map(rv => removeSubList(rv))];
+    setValues!(newValues);
+
+  }, [props.replacement.replacementText, props.replacement.replacementValues, removeSubList]);
 
   /**
    * Update the list
@@ -87,8 +109,8 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
           )}
           <div>
             <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px", paddingTop: "6px" }}>
-              {props.replacement.replacementText.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeLevel} />}
-              <div className={"aiox-button aiox-plus"} onClick={addLevel} />
+              {props.replacement.replacementText.length > 1 && <div className={"aiox-button aiox-implode"} onClick={removeLevel} />}
+              <div className={"aiox-button aiox-explode"} onClick={addLevel} />
             </div>
           </div>
         </div>
