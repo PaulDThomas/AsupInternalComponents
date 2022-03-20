@@ -81,7 +81,17 @@ export const AitCell = (props: AitCellProps) => {
   });
 
   // Static options/variables
-  const cellType = useMemo(() => props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value ?? props.higherOptions.tableSection, [props.cellData.options, props.higherOptions.tableSection]);
+  const cellType = useMemo(() => {
+    let cellType =
+      props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
+      ??
+      (props.higherOptions.tableSection === AitCellType.body && props.columnIndex < props.higherOptions.rowHeaderColumns
+        ?
+        AitCellType.rowHeader
+        :
+        props.higherOptions.tableSection);
+    return cellType;
+  }, [props.cellData.options, props.columnIndex, props.higherOptions.rowHeaderColumns, props.higherOptions.tableSection]);
   const location: AitLocation = useMemo(() => {
     return {
       tableSection: props.higherOptions.tableSection,

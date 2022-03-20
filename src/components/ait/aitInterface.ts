@@ -83,6 +83,7 @@ export enum AitTableOptionNames {
 export interface AitOptionList {
   tableSection: AitCellType,
   noRepeatProcessing: boolean,
+  rowHeaderColumns: number,
   rowGroup: number,
   row: number,
   column: number,

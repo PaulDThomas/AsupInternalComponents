@@ -74,8 +74,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
 
           // Sort out static options
           let higherOptions = {
-            ...props.higherOptions,
-            column: ci,
+            ...props.higherOptions
           } as AitOptionList;
           if (cell.aitid === undefined) cell.aitid = uuidv4();
 

@@ -38,7 +38,7 @@ const defaultTableOptions: AioOptionGroup = [
   { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
   { optionName: AitTableOptionNames.noRepeatProcessing, label: "Supress repeats", type: AioOptionType.boolean, value: false },
-  //{ optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
+  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
   //{ optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
   //{ optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
 ];
@@ -49,7 +49,7 @@ const defaultRowGroupOptions: AioOptionGroup = [
     optionName: AitRowGroupOptionNames.replacements,
     label: "Replacement lists",
     type: AioOptionType.replacements,
-    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter:false }], replacementValues: [{ newText:""}] }] as AioReplacement[]
+    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
   },
 ];
 
@@ -131,6 +131,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
     return {
       showCellBorders: props.showCellBorders,
       noRepeatProcessing: options.find(o => o.optionName === AitTableOptionNames.noRepeatProcessing)?.value,
+      rowHeaderColumns: options.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value,
     };
   }, [options, props.showCellBorders]) as AitOptionList;
 
