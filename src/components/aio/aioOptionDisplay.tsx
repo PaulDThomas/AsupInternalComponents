@@ -21,7 +21,7 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
     props.setOptions!(newOptions);
   }, [props.options, props.setOptions]);
 
-  if (props.options === undefined) return <div className='aio-body-row'><AioLabel label="No options deinfed"/></div>;
+  if (props.options === undefined) return <div className='aio-body-row'><AioLabel label="No options deinfed" /></div>;
 
   return (
     <>

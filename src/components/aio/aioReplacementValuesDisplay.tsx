@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
@@ -9,12 +9,16 @@ interface AioReplacementValueDisplayProps {
 
 export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProps): JSX.Element => {
 
-  const updateValues = useCallback((text: string) => {
+  const [currentText, setCurrentText] = useState(props.values && props.values.length > 0 ? props.values.map(rv => rv.newText).join("\n") : "");
+  const [lastSend, setLastSend] = useState(props.values && props.values.length > 0 ? props.values.map(rv => rv.newText).join("\n") : "");
+
+  useEffect(() => {
     if ((typeof props.setValues) !== "function") return;
-    console.log("updating values");
-    let newValues = text.split("\n").map(t => { return { newText: t }; });
-    props.setValues!(newValues);
-  }, [props]);
+    if (currentText !== lastSend) {
+      props.setValues!(currentText.split("\n").map(t => { return { newText: t }; }));
+      setLastSend(currentText);
+    }
+  }, [currentText, lastSend, props.setValues]);
 
   const updateNewText = useCallback((ret: string, i: number) => {
     if ((typeof props.setValues) !== "function") return;
@@ -51,8 +55,8 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
           <textarea
             className={"aio-input"}
             rows={4}
-            value={props.values.length > 0 ? props.values.map(rv => rv.newText).join("\n") : ""}
-            onChange={e => updateValues(e.currentTarget.value)}
+            value={currentText}
+            onChange={(e) => { setCurrentText(e.currentTarget.value); }}
             style={{ width: "168px", minWidth: "168px" }}
           />
         </div>
