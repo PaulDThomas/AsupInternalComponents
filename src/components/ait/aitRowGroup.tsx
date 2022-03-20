@@ -25,7 +25,14 @@ const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[])
   return targetArray;
 }
 
-/** Repeat rows based on repeat number array with potential for partial repeats */
+/**
+ * Repeat rows based on repeat number array with potential for partial repeats 
+ * @param rows 
+ * @param noProcessing 
+ * @param replacementText 
+ * @param repeats 
+ * @returns 
+ */
 const repeatRows = (
   rows: AitRowData[],
   noProcessing?: boolean,
@@ -33,26 +40,46 @@ const repeatRows = (
   repeats?: AioRepeats
 ): { rows: AitRowData[], repeats: AioRepeats } => {
 
-  if (noProcessing) return { rows: rows, repeats: { numbers: [[]], values: [[]] } };
+  /** Stop processing if flagged */
+  if (noProcessing) return { rows: rows, repeats: { numbers: [[]], values: [[]], last: [[]] } };
 
+  /** Stop processing if there is nothing to repeat */
+  if (!repeats?.numbers || repeats.numbers.length === 0) return { rows: rows, repeats: repeats ?? { numbers: [[]], values: [[]], last: [[]] } };
+
+  /** Get ros numbers that contain the repeat texts */
   let targetArray = findTargets(rows, replacementText);
-  if (!repeats?.numbers || repeats.numbers.length === 0) return { rows: rows, repeats: repeats ?? { numbers: [[]], values: [[]] } };
 
+  /** Rows to the returned by this function */
   let newRows: AitRowData[] = [];
+  /** Row repeat number signature to be returned by this function */
   let newRepeatNumbers: number[][] = [];
+  /** Last value indicator be returned by this function */
+  let newLast: boolean[][] = [];
+  /** Row repeat values to be returned by this function */
   let newRepeatValues: string[][] = [];
+  /** Value of the previous repeat signature, used to check which rows need to be repeated */
   let lastRepeat: number[] = [];
+  /** Loop through each of the repeat levels */
   for (let repi = 0; repi < repeats.numbers.length; repi++) {
+    /** Current repeat signature */
     let repNo: number[] = repeats.numbers[repi];
+    /** Current last repeat value indicator */
+    let repLast: boolean[] = repeats.last[repi];
+    /** Current repeat values */
     let repVal: string[] = repeats.values !== undefined ? repeats.values[repi] : [];
+    /** First row number that needs to be repeated for this level */
     let firstLevel: number = firstUnequal(repNo, lastRepeat);
+    /** Rows that need to be repeated for this level */
     let slice = rows.slice(targetArray[firstLevel]);
+    /** Push current repeats into the output */
     newRows.push(...slice);
     newRepeatNumbers.push(...Array(slice.length).fill(repNo));
+    newLast.push(...Array(slice.length).fill(repLast));
     newRepeatValues.push(...Array(slice.length).fill(repVal));
+    /** Update for the next loop */
     lastRepeat = [...repNo];
   }
-  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues } };
+  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
 }
 
 interface AitRowGroupProps {
@@ -135,7 +162,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
   // Get the first level of repeats
   const repeatValues = useMemo((): AioRepeats => {
 
-    let newRepeats: AioRepeats = { numbers: [], values: [] };
+    let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
     // Find first of replacments if there are any
     let r: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
     if (!r || !r[0].replacementValues || r[0].replacementValues.length === 0) return newRepeats;
@@ -147,16 +174,19 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
       else {
         let thisRepeat = getReplacementValues(r[i].replacementValues);
         let newRepeatNumbers: number[][] = [];
+        let newLast: boolean[][] = [];
         let newRepeatValues: string[][] = [];
         for (let j = 0; j < newRepeats.numbers.length; j++) {
           for (let k = 0; k < thisRepeat.numbers.length; k++) {
             newRepeatNumbers.push([...newRepeats.numbers[j], ...thisRepeat.numbers[k]]);
+            newLast.push([...newRepeats.last[j], ...thisRepeat.last[k]]);
             newRepeatValues.push([...newRepeats.values[j], ...thisRepeat.values[k]]);
           }
         }
         newRepeats = {
           numbers: newRepeatNumbers,
           values: newRepeatValues,
+          last: newLast,
         }
       }
 
@@ -166,24 +196,37 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
   }, [props.rowGroupData.options]);
 
   const processed = useMemo(() => {
-    return repeatRows(
+    let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
+    let replacementText: AioReplacementText[] = replacements.map(r => r.replacementTexts).flat();
+    let x = repeatRows(
       props.rowGroupData.rows,
       props.higherOptions.noRepeatProcessing,
-      props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value.map((r: AioReplacement) => r.replacementText).flat(),
+      replacementText,
       repeatValues
     );
-  }, [props.higherOptions.noRepeatProcessing, props.rowGroupData.options, props.rowGroupData.rows, repeatValues]);
+    return x;
+  }, [props.higherOptions.noRepeatProcessing, props.rowGroupData, repeatValues]);
 
   return (
     <>
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
+        let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
         let higherOptions = {
           ...props.higherOptions,
           row: ri,
           repeatNumber: processed.repeats.numbers[ri],
           repeatValues: processed.repeats.values[ri],
-          replacements: props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value,
+          replacements: replacements,
         } as AitOptionList;
+
+        /** Check for spaceAfter highest level */
+        let spaceAfter = false;
+        if (ri < processed.rows.length - 1 && processed.repeats.numbers.length > 0) {
+          let replacementTexts = replacements.map(r => r.replacementTexts).flat();
+          let checkSpaceLevel: number = replacementTexts?.reduce((r, a, i) => a.spaceAfter === true ? i : r, -1) ?? -1;
+          let isLastLevel: number = processed.repeats.last[ri]?.reduce((l, a, i) => a ? Math.min(l, i) : i + 1, 1);
+          spaceAfter = checkSpaceLevel >= isLastLevel;
+        }
 
         return (
           <AitRow
@@ -197,6 +240,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
             removeRowGroup={props.removeRowGroup}
             addRow={addRow}
             removeRow={removeRow}
+            spaceAfter={spaceAfter}
           />
         );
       })}

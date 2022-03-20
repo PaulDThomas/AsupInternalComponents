@@ -15,6 +15,7 @@ export interface AioOptionGroup extends Array<AioOption> { };
 export interface AioReplacementText {
   level: number,
   text: string,
+  spaceAfter: boolean,
 }
 
 /** Single replacement value, allowing for sublists */
@@ -23,13 +24,13 @@ export interface AioReplacementValue {
   subList?: AioReplacementValue[],
 }
 
-export interface AioRepeats { numbers: number[][], values: string[][] };
-
 /** Text replacements, and their replacement matrix */
 export interface AioReplacement {
-  replacementText: AioReplacementText[],
+  replacementTexts: AioReplacementText[],
   replacementValues: AioReplacementValue[],
 }
+
+export interface AioRepeats { numbers: number[][], values: string[][], last: boolean[][] };
 
 export enum AioOptionType {
   string = "string",

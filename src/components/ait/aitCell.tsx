@@ -18,7 +18,7 @@ import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList
 */
 const processRepeats = (text: string, options: AitOptionList): string => {
   // Do nothing if there is nothing to do
-  if (!options.repeatNumber || !options.replacements || !options.replacements[0].replacementText) return text;
+  if (!options.repeatNumber || !options.replacements || !options.replacements[0].replacementTexts) return text;
 
   /** Text to return */
   let newText = text;
@@ -26,9 +26,9 @@ const processRepeats = (text: string, options: AitOptionList): string => {
   /** Replacements for this text */
   let k = 0;
   for (let r = 0; r < options.replacements.length; r++) {
-    for (let i = 0; i < options.replacements[r].replacementText.length; i++) {
+    for (let i = 0; i < options.replacements[r].replacementTexts.length; i++) {
       // Replace if there in old and new text
-      let o = options.replacements[r].replacementText[i].text;
+      let o = options.replacements[r].replacementTexts[i].text;
       let n = options.repeatValues ? options.repeatValues[k] : undefined;
       if (n) newText = newText.replace(o, n);
       k++;

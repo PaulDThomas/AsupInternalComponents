@@ -49,7 +49,7 @@ const defaultRowGroupOptions: AioOptionGroup = [
     optionName: AitRowGroupOptionNames.replacements,
     label: "Replacement lists",
     type: AioOptionType.replacements,
-    value: [{ replacementText: [{ level: 0, text: "" }], replacementValues: [] }] as AioReplacement[]
+    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter:false }], replacementValues: [] }] as AioReplacement[]
   },
 ];
 

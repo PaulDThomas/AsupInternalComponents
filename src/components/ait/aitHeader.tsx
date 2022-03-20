@@ -79,6 +79,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
               rowData={row}
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={higherOptions}
+              spaceAfter={false}
               rowGroupOptions={{options:props.headerData.options, setOptions:updateOptions}}
             />
           );

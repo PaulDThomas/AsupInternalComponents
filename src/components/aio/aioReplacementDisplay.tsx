@@ -30,9 +30,10 @@ export const AioReplacementDisplay = (props: AioReplacementsProps): JSX.Element 
   const addReplacement = useCallback(() => {
     let newReplacements = [...props.replacements];
     newReplacements.push({
-      replacementText: [{
+      replacementTexts: [{
         level: 0,
         text: "",
+        spaceAfter: false,
       }],
       replacementValues: [{
         newText: "",

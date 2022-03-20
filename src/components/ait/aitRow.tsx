@@ -5,6 +5,7 @@ import { AioOptionGroup } from "components/aio/aioInterface";
 import { AitRowData, AitCellData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitCell } from "./aitCell";
 import { objEqual } from "./processes";
+import { AitBorderRow } from "./aitBorderRow";
 
 
 interface AitRowProps {
@@ -17,6 +18,7 @@ interface AitRowProps {
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
+  spaceAfter: boolean,
 }
 
 
@@ -38,7 +40,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
     let r: AitRowData = {
       aitid: props.rowData.aitid ?? props.aitid,
       cells: cells,
-      options: options
+      options: options,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
@@ -101,6 +103,7 @@ export const AitRow = (props: AitRowProps): JSX.Element => {
           );
         })}
       </tr>
+      {props.spaceAfter && <AitBorderRow rowCells={props.rowData.cells} spaceAfter={true} noBorder={true} />}
     </>
   );
 }
