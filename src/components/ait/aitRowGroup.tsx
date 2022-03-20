@@ -74,7 +74,7 @@ const repeatRows = (
     /** Push current repeats into the output */
     newRows.push(...slice);
     newRepeatNumbers.push(...Array(slice.length).fill(repNo));
-    newLast.push(...Array(slice.length).fill(repLast));
+    newLast.push(...Array(slice.length - 1).fill(Array(repLast.length).fill(false)), repLast);
     newRepeatValues.push(...Array(slice.length).fill(repVal));
     /** Update for the next loop */
     lastRepeat = [...repNo];
@@ -160,12 +160,11 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
   }, [props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
   // Get the first level of repeats
-  const repeatValues = useMemo((): AioRepeats => {
+  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo(() => {
 
     let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
     // Find first of replacments if there are any
     let r: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
-    if (!r || !r[0].replacementValues || r[0].replacementValues.length === 0) return newRepeats;
 
     // Get repNo list
     for (let i = 0; i < r.length; i++) {
@@ -179,7 +178,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
         for (let j = 0; j < newRepeats.numbers.length; j++) {
           for (let k = 0; k < thisRepeat.numbers.length; k++) {
             newRepeatNumbers.push([...newRepeats.numbers[j], ...thisRepeat.numbers[k]]);
-            newLast.push([...newRepeats.last[j], ...thisRepeat.last[k]]);
+            newLast.push([...newRepeats.last[j].map(l => l && k === thisRepeat.numbers.length - 1), ...thisRepeat.last[k]]);
             newRepeatValues.push([...newRepeats.values[j], ...thisRepeat.values[k]]);
           }
         }
@@ -192,20 +191,16 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
 
     }
 
-    return newRepeats;
-  }, [props.rowGroupData.options]);
-
-  const processed = useMemo(() => {
     let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
     let replacementText: AioReplacementText[] = replacements.map(r => r.replacementTexts).flat();
     let x = repeatRows(
       props.rowGroupData.rows,
       props.higherOptions.noRepeatProcessing,
       replacementText,
-      repeatValues
+      newRepeats,
     );
     return x;
-  }, [props.higherOptions.noRepeatProcessing, props.rowGroupData, repeatValues]);
+  }, [props.higherOptions.noRepeatProcessing, props.rowGroupData]);
 
   return (
     <>
