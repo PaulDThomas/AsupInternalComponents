@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioRepeats, AioReplacementValue } from "../aio/aioInterface";
-import { AitCellData } from "./aitInterface";
+import { AioOptionGroup, AioRepeats, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
+import { AitCellData, AitRowData } from "./aitInterface";
 
 /**
  * Update options with another set of options
@@ -85,7 +85,7 @@ export const getReplacementValues = (rvs: AioReplacementValue[]): AioRepeats => 
 }
 
 /** Find first unequal obs in two number arrays */
-export const firstUnequal = (a: number[], b: number[]): number => {
+const firstUnequal = (a: number[], b: number[]): number => {
   for (let i = 0; i < a.length; i++) {
     if (a[i] !== b[i]) return i;
   }
@@ -94,3 +94,79 @@ export const firstUnequal = (a: number[], b: number[]): number => {
 }
 
 export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [] }; }
+
+/** Find which row replacementText first appears in */
+const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[]): number[] => {
+  let targetArray: number[] = [];
+  if (!replacementText || replacementText.length === 0) return targetArray;
+
+  textSearch: for (let i = 0; i < replacementText.length; i++) {
+    rowSearch: for (let ri = 0; ri < rows.length; ri++) {
+      for (let ci = 0; ci < rows[ri].cells.length; ci++) {
+        if (rows[ri].cells[ci].text.includes(replacementText[i].text)) {
+          targetArray.push(ri);
+          break rowSearch;
+        }
+      }
+      if (targetArray.length < i) break textSearch;
+    }
+  }
+  return targetArray;
+}
+
+/**
+ * Repeat rows based on repeat number array with potential for partial repeats 
+ * @param rows 
+ * @param noProcessing 
+ * @param replacementText 
+ * @param repeats 
+ * @returns 
+ */
+export const repeatRows = (
+  rows: AitRowData[],
+  noProcessing?: boolean,
+  replacementText?: AioReplacementText[],
+  repeats?: AioRepeats
+): { rows: AitRowData[], repeats: AioRepeats } => {
+
+  /** Stop processing if flagged */
+  if (noProcessing) return { rows: rows, repeats: { numbers: [[]], values: [[]], last: [[]] } };
+
+  /** Stop processing if there is nothing to repeat */
+  if (!repeats?.numbers || repeats.numbers.length === 0) return { rows: rows, repeats: repeats ?? { numbers: [[]], values: [[]], last: [[]] } };
+
+  /** Get ros numbers that contain the repeat texts */
+  let targetArray = findTargets(rows, replacementText);
+
+  /** Rows to the returned by this function */
+  let newRows: AitRowData[] = [];
+  /** Row repeat number signature to be returned by this function */
+  let newRepeatNumbers: number[][] = [];
+  /** Last value indicator be returned by this function */
+  let newLast: boolean[][] = [];
+  /** Row repeat values to be returned by this function */
+  let newRepeatValues: string[][] = [];
+  /** Value of the previous repeat signature, used to check which rows need to be repeated */
+  let lastRepeat: number[] = [];
+  /** Loop through each of the repeat levels */
+  for (let repi = 0; repi < repeats.numbers.length; repi++) {
+    /** Current repeat signature */
+    let repNo: number[] = repeats.numbers[repi];
+    /** Current last repeat value indicator */
+    let repLast: boolean[] = repeats.last[repi];
+    /** Current repeat values */
+    let repVal: string[] = repeats.values !== undefined ? repeats.values[repi] : [];
+    /** First row number that needs to be repeated for this level */
+    let firstLevel: number = firstUnequal(repNo, lastRepeat);
+    /** Rows that need to be repeated for this level */
+    let slice = rows.slice(targetArray[firstLevel]);
+    /** Push current repeats into the output */
+    newRows.push(...slice);
+    newRepeatNumbers.push(...Array(slice.length).fill(repNo));
+    newLast.push(...Array(slice.length - 1).fill(Array(repLast.length).fill(false)), repLast);
+    newRepeatValues.push(...Array(slice.length).fill(repVal));
+    /** Update for the next loop */
+    lastRepeat = [...repNo];
+  }
+  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
+}
