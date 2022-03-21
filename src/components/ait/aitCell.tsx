@@ -131,7 +131,7 @@ export const AitCell = (props: AitCellProps) => {
       borderRight: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderTop: props.higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
-        ? "2px dashed black"
+        ? "2px solid burlywood"
         : props.higherOptions.showCellBorders
           ? "1px dashed burlywood"
           : "",

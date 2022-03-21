@@ -138,9 +138,11 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
           replacements: replacements,
         } as AitOptionList;
 
-        /** Check for spaceAfter highest level */
         let spaceAfter = false;
-        if (ri < processed.rows.length - 1 && processed.repeats.numbers.length > 0) {
+        /** Always add space after at the end of the group */
+        if (ri === processed.rows.length-1) spaceAfter = true;
+        /** Check for spaceAfter highest level  for within group */
+        else if (processed.repeats.numbers.length > 0) {
           let replacementTexts = replacements.map(r => r.replacementTexts).flat();
           let checkSpaceLevel: number = replacementTexts?.reduce((r, a, i) => a.spaceAfter === true ? i : r, -1) ?? -1;
           let isLastLevel: number = processed.repeats.last[ri]?.reduce((l, a, i) => a ? Math.min(l, i) : i + 1, 1);

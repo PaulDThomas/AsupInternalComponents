@@ -191,7 +191,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 );
               })
             }
-            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} />
+            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} />
           </tbody>
         </table>
       </div>
