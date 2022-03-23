@@ -98,9 +98,11 @@ export const AitRow = ({
             <AitCell
               key={cell.aitid}
               aitid={cell.aitid}
+              text={cell.text}
+              replacedText={cell.replacedText}
+              options={cell.options}
               higherOptions={cellHigherOptions}
               columnIndex={ci} /* This needs to be calculated after row/colspan! */
-              cellData={cell}
               setCellData={(ret) => updateCell(ret, ci)}
               readOnly={((cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
               rowGroupOptions={ci === 0 && higherOptions.row === 0 ? rowGroupOptions : undefined}

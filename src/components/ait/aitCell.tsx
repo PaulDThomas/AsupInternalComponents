@@ -12,7 +12,9 @@ import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList
 
 interface AitCellProps {
   aitid: string,
-  cellData: AitCellData,
+  text: string,
+  replacedText?: string,
+  options: AioOptionGroup,
   columnIndex: number,
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
@@ -32,8 +34,10 @@ interface AitCellProps {
  * Table cell in AsupInternalTable
  */
 export const AitCell = ({
-  aitid, 
-  cellData, 
+  aitid,
+  text,
+  replacedText,
+  options,
   columnIndex, 
   setCellData, 
   readOnly, 
@@ -50,10 +54,10 @@ export const AitCell = ({
 }: AitCellProps) => {
 
   // Data holder
-  const [receivedText, setReceivedText] = useState(cellData.text);
-  const [displayText, setDisplayText] = useState(cellData.replacedText ?? cellData.text);
+  const [receivedText, setReceivedText] = useState(text);
+  const [displayText, setDisplayText] = useState(replacedText ?? text);
   const [buttonState, setButtonState] = useState("hidden");
-  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone(cellData));
+  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({aitid: aitid, text:text, replacedText: replacedText, options: options}));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
@@ -61,14 +65,14 @@ export const AitCell = ({
   const [currentReadOnly, setCurrentReadOnly] = useState(() => {
     return readOnly
       || typeof (setCellData) !== "function"
-      || (cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+      || (options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
       || displayText !== receivedText
   });
 
   // Static options/variables
   const cellType = useMemo(() => {
     let cellType =
-      cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
+      options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
       ??
       (higherOptions.tableSection === AitCellType.body && columnIndex < higherOptions.rowHeaderColumns
         ?
@@ -76,7 +80,7 @@ export const AitCell = ({
         :
         higherOptions.tableSection);
     return cellType;
-  }, [cellData.options, columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
+  }, [options, columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
   const location: AitLocation = useMemo(() => {
     return {
       tableSection: higherOptions.tableSection,
@@ -89,24 +93,24 @@ export const AitCell = ({
 
   /** Updates to initial text */
   useEffect(() => {
-    let newText = cellData.replacedText ?? cellData.text;
+    let newText = replacedText ?? text;
     // Check read only flag
     setCurrentReadOnly(
       readOnly
-      || cellData.replacedText !== undefined
+      || replacedText !== undefined
       || typeof (setCellData) !== "function"
-      || (cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
-      || newText !== cellData.text
+      || (options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+      || newText !== text
     );
-    setReceivedText(cellData.text);
+    setReceivedText(text);
     setDisplayText(newText);
-  }, [cellData.replacedText, cellData.text, cellData.options, readOnly, setCellData]);
+  }, [replacedText, text, options, readOnly, setCellData]);
 
 
   // Update cell style when options change
   useEffect(() => {
     const style = {
-      width: cellData.options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
+      width: options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
       borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderRight: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
@@ -117,13 +121,13 @@ export const AitCell = ({
           : "",
     }
     setCellStyle(style);
-  }, [location.row, location.rowGroup, higherOptions.showCellBorders, cellData.options]);
+  }, [location.row, location.rowGroup, higherOptions.showCellBorders, options]);
 
   const updateOptions = useCallback((ret: AioOptionGroup) => {
     if (currentReadOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
-      aitid: cellData.aitid,
+      aitid: aitid,
       options: ret,
       text: displayText ?? "",
     }
@@ -133,15 +137,15 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [cellData.aitid, currentReadOnly, displayText, lastSend, location, setCellData]);
+  }, [aitid, currentReadOnly, displayText, lastSend, location, setCellData]);
 
   /** Send data back */
   useEffect(() => {
     if (currentReadOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
-      aitid: cellData.aitid,
-      options: cellData.options ?? [],
+      aitid: aitid,
+      options: options ?? [],
       text: displayText ?? "",
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -150,7 +154,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [displayText, lastSend, cellData.aitid, location, currentReadOnly, cellData.options, setCellData]);
+  }, [displayText, lastSend, aitid, location, currentReadOnly, options, setCellData]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -196,8 +200,8 @@ export const AitCell = ({
   }
 
   // Do not render if there is no rowSpan or colSpan
-  if (cellData.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
-    || cellData.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
+  if (options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
+    || options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
   ) return <></>;
 
   // Render element
@@ -207,8 +211,8 @@ export const AitCell = ({
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (currentReadOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
-      colSpan={cellData.options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
-      rowSpan={cellData.options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
+      colSpan={options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
+      rowSpan={options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
       style={cellStyle}
       data-location-table-section={higherOptions.tableSection}
       data-location-row-group={higherOptions.rowGroup}
@@ -329,9 +333,9 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <div className={"aio-ro-value"}>{cellData.text}</div>
+              <div className={"aio-ro-value"}>{text}</div>
             </div>
-            <AioOptionDisplay options={cellData.options} setOptions={!currentReadOnly ? (ret) => { updateOptions(ret); } : undefined} />
+            <AioOptionDisplay options={options} setOptions={!currentReadOnly ? (ret) => { updateOptions(ret); } : undefined} />
           </AsupInternalWindow>
         }
       </div>
