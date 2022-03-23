@@ -6,7 +6,7 @@ import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellType, AitCellOptionNames, AitOptionList } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellType, AitOptionList } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell, objEqual, processOptions } from "./processes";
 import './ait.css';
@@ -112,7 +112,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       }]
     };
     let cols = bodyData.rowGroups[0].rows[0].cells
-      .map(c => (c.options?.find(o => (o.optionName === AitCellOptionNames.colSpan))?.value) ?? 1)
+      .map(c => c.colSpan ?? 1)
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
     newBody.rowGroups.splice(rgi + 1, 0, newRowGroup);

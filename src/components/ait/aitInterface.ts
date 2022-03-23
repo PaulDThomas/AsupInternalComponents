@@ -4,6 +4,8 @@ export interface AitCellData {
   aitid: string,
   text: string,
   replacedText?: string,
+  rowSpan?: number,
+  colSpan?: number,
   options: AioOptionGroup,
 };
 
@@ -61,8 +63,8 @@ export enum AitCellOptionNames {
   cellWidth = "cellWidth",
   cellStatistic = "cellStatisic",
   cellText = "cellText",
-  colSpan = "colSpan",
-  rowSpan = "rowSpan",
+  // colSpan = "colSpan",
+  // rowSpan = "rowSpan",
   cellType = "cellType",
   readOnly = "readOnly",
 };

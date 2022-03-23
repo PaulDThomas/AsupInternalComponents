@@ -14,6 +14,8 @@ interface AitCellProps {
   aitid: string,
   text: string,
   replacedText?: string,
+  rowSpan?: number,
+  colSpan?: number,
   options: AioOptionGroup,
   columnIndex: number,
   setCellData: (ret: AitCellData) => void,
@@ -37,14 +39,16 @@ export const AitCell = ({
   aitid,
   text,
   replacedText,
+  rowSpan,
+  colSpan,
   options,
-  columnIndex, 
-  setCellData, 
-  readOnly, 
-  higherOptions, 
-  rowGroupOptions, 
-  setRowGroupOptions, 
-  rowGroupWindowTitle, 
+  columnIndex,
+  setCellData,
+  readOnly,
+  higherOptions,
+  rowGroupOptions,
+  setRowGroupOptions,
+  rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
   rowOptions,
@@ -57,7 +61,7 @@ export const AitCell = ({
   const [receivedText, setReceivedText] = useState(text);
   const [displayText, setDisplayText] = useState(replacedText ?? text);
   const [buttonState, setButtonState] = useState("hidden");
-  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({aitid: aitid, text:text, replacedText: replacedText, options: options}));
+  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({ aitid: aitid, text: text, replacedText: replacedText, rowSpan: rowSpan, colSpan: colSpan, options: options }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
@@ -129,7 +133,10 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       options: ret,
-      text: displayText ?? "",
+      text: text ?? "",
+      replacedText: replacedText,
+      rowSpan: rowSpan,
+      colSpan: colSpan,
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
@@ -137,7 +144,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, currentReadOnly, displayText, lastSend, location, setCellData]);
+  }, [aitid, colSpan, currentReadOnly, lastSend, location, rowSpan, setCellData, text]);
 
   /** Send data back */
   useEffect(() => {
@@ -147,14 +154,18 @@ export const AitCell = ({
       aitid: aitid,
       options: options ?? [],
       text: displayText ?? "",
+      replacedText: replacedText,
+      rowSpan: rowSpan,
+      colSpan: colSpan,
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
+      console.log(`Diffs:${diffs}`);
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [displayText, lastSend, aitid, location, currentReadOnly, options, setCellData]);
+  }, [displayText, lastSend, currentReadOnly, setCellData, aitid, options, replacedText, rowSpan, colSpan, location]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -200,9 +211,7 @@ export const AitCell = ({
   }
 
   // Do not render if there is no rowSpan or colSpan
-  if (options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
-    || options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
-  ) return <></>;
+  if (colSpan === 0 || rowSpan === 0) return <></>;
 
   // Render element
   return (
@@ -211,8 +220,8 @@ export const AitCell = ({
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (currentReadOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
-      colSpan={options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
-      rowSpan={options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
+      colSpan={colSpan ?? 1}
+      rowSpan={rowSpan ?? 1}
       style={cellStyle}
       data-location-table-section={higherOptions.tableSection}
       data-location-row-group={higherOptions.rowGroup}

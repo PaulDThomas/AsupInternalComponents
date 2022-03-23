@@ -40,7 +40,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         props.spaceBefore &&
         <tr>
           {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-space-cell" colSpan={cell.options?.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+            <td className="ait-space-cell" colSpan={cell.colSpan ?? 1} key={ci} />
           )}
         </tr>
       }
@@ -48,7 +48,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         !props.noBorder &&
         <tr>
           {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-border-cell" colSpan={cell.options?.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+            <td className="ait-border-cell" colSpan={cell.colSpan ?? 1} key={ci} />
           )}
         </tr>
       }
@@ -56,7 +56,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         props.spaceAfter &&
         <tr>
           {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-space-cell" colSpan={cell.options?.find(o => o.optionName === AitCellOptionNames.colSpan)?.value} key={ci} />
+            <td className="ait-space-cell" colSpan={cell.colSpan ?? 1} key={ci} />
           )}
         </tr>
       }

@@ -195,7 +195,7 @@ export const repeatRows = (
       /** Get cell to check */
       let currentCell = newRows[r].cells[col];
       /** Ensure it has not already been udpated */
-      if (currentCell?.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0) {
+      if (currentCell?.rowSpan === 0) {
         col++;
         continue;
       }
@@ -208,18 +208,18 @@ export const repeatRows = (
       ) rowSpan++;
       /** Update rowSpans if duplicates have been found */
       if (rowSpan > 1) {
-        setCellOption(currentCell, AitCellOptionNames.rowSpan, "Row span", AioOptionType.number, rowSpan, true);
+        currentCell.rowSpan = rowSpan;
         for (let _r = 1; _r < rowSpan; _r++) {
-          setCellOption(newRows[r + _r].cells[col], AitCellOptionNames.rowSpan, "Row span", AioOptionType.number, 0, true);
+          newRows[r + _r].cells[col].rowSpan = 0;
         }
       }
       else {
-        removeCellOption(currentCell, AitCellOptionNames.rowSpan);
+        delete currentCell.rowSpan;
       }
       col++;
     }
     while (col < newRows[r].cells.length) {
-      removeCellOption(newRows[r].cells[col], AitCellOptionNames.rowSpan);
+      delete newRows[r].cells[col].rowSpan;
       col++;
     }
   }
@@ -242,7 +242,7 @@ export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
     aitid: row.aitid,
     cells: row.cells.map(c => {
       if (c.replacedText !== undefined) delete (c.replacedText);
-      removeCellOption(c, AitCellOptionNames.rowSpan);
+      delete c.rowSpan;
       return c;      
     }),
     options: row.options,

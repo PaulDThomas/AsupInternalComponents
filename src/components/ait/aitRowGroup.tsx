@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import structuredClone from '@ungap/structured-clone';
 import { AioOptionGroup, AioRepeats, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames, AitCellOptionNames } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { getRepeats, newCell, objEqual, repeatRows } from "./processes";
 
@@ -62,7 +62,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
       cells: [],
     };
     let cols = rows[0].cells
-      .map(c => (c.options?.find(o => (o.optionName === AitCellOptionNames.colSpan))?.value) ?? 1)
+      .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
     newRowGroup.rows.splice(ri + 1, 0, newRow);
