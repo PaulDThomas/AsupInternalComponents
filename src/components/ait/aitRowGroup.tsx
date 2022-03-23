@@ -4,7 +4,7 @@ import structuredClone from '@ungap/structured-clone';
 import { AioOptionGroup, AioRepeats, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames, AitCellOptionNames } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { getReplacementValues, newCell, objEqual, repeatRows } from "./processes";
+import { getRepeats, newCell, objEqual, repeatRows } from "./processes";
 
 interface AitRowGroupProps {
   aitid: string,
@@ -35,7 +35,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
       rows: rows,
       options: options
     };
-    let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
+    let [chkObj] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       props.setRowGroupData!(r);
       setLastSend(structuredClone(r));
@@ -82,7 +82,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     returnData(props.rowGroupData.rows, ret);
   }, [props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
-  // Get the first level of repeats
+  // Get rows after repeat processing
   const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo(() => {
 
     let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
@@ -90,28 +90,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     let r: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
 
     // Get repNo list
-    for (let i = 0; i < r.length; i++) {
-      if (i === 0)
-        newRepeats = getReplacementValues(r[i].replacementValues);
-      else {
-        let thisRepeat = getReplacementValues(r[i].replacementValues);
-        let newRepeatNumbers: number[][] = [];
-        let newLast: boolean[][] = [];
-        let newRepeatValues: string[][] = [];
-        for (let j = 0; j < newRepeats.numbers.length; j++) {
-          for (let k = 0; k < thisRepeat.numbers.length; k++) {
-            newRepeatNumbers.push([...newRepeats.numbers[j], ...thisRepeat.numbers[k]]);
-            newLast.push([...newRepeats.last[j].map(l => l && k === thisRepeat.numbers.length - 1), ...thisRepeat.last[k]]);
-            newRepeatValues.push([...newRepeats.values[j], ...thisRepeat.values[k]]);
-          }
-        }
-        newRepeats = {
-          numbers: newRepeatNumbers,
-          values: newRepeatValues,
-          last: newLast,
-        }
-      }
-    }
+    newRepeats = getRepeats(r, newRepeats);
 
     let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
     let replacementText: AioReplacementText[] = replacements.map(r => r.replacementTexts).flat();
@@ -125,6 +104,7 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     return x;
   }, [props.higherOptions.noRepeatProcessing, props.higherOptions.rowHeaderColumns, props.rowGroupData.options, props.rowGroupData.rows]);
 
+  // Output the rows
   return (
     <>
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
@@ -138,9 +118,9 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
         } as AitOptionList;
 
         let spaceAfter = false;
-        /** Always add space after at the end of the group */
+        // Always add space after at the end of the group 
         if (ri === processed.rows.length-1) spaceAfter = true;
-        /** Check for spaceAfter highest level  for within group */
+        // Check for spaceAfter highest level  for within group 
         else if (processed.repeats.numbers.length > 0) {
           let replacementTexts = replacements.map(r => r.replacementTexts).flat();
           let checkSpaceLevel: number = replacementTexts?.reduce((r, a, i) => a.spaceAfter === true ? i : r, -1) ?? -1;

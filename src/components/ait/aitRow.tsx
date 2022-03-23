@@ -13,7 +13,7 @@ interface AitRowProps {
   rowData: AitRowData,
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  rowGroupOptions: { options: AioOptionGroup, setOptions: (ret: AioOptionGroup) => void },
+  rowGroupOptions: { options: AioOptionGroup, setOptions: (ret: AioOptionGroup) => void, windowTitle?: string },
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,

@@ -1,6 +1,6 @@
 import structuredClone from "@ungap/structured-clone";
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioOptionType, AioRepeats, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
+import { AioOptionGroup, AioOptionType, AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
 import { AitCellData, AitCellOptionNames, AitRowData } from "./aitInterface";
 
 /**
@@ -57,7 +57,7 @@ export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
   return checkObjectR;
 }
 
-export const getReplacementValues = (rvs: AioReplacementValue[]): AioRepeats => {
+const getReplacementValues = (rvs: AioReplacementValue[]): AioRepeats => {
   if (!rvs || rvs.length === 0) return { numbers: [], values: [], last: [] };
   let thisNumbers: number[][] = [];
   let thisValues: string[][] = [];
@@ -246,4 +246,30 @@ export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
     options: row.options,
   };
   return newRow;
+}
+
+export const getRepeats = (r: AioReplacement[], newRepeats: AioRepeats) => {
+  for (let i = 0; i < r.length; i++) {
+    if (i === 0)
+      newRepeats = getReplacementValues(r[i].replacementValues);
+    else {
+      let thisRepeat = getReplacementValues(r[i].replacementValues);
+      let newRepeatNumbers: number[][] = [];
+      let newLast: boolean[][] = [];
+      let newRepeatValues: string[][] = [];
+      for (let j = 0; j < newRepeats.numbers.length; j++) {
+        for (let k = 0; k < thisRepeat.numbers.length; k++) {
+          newRepeatNumbers.push([...newRepeats.numbers[j], ...thisRepeat.numbers[k]]);
+          newLast.push([...newRepeats.last[j].map(l => l && k === thisRepeat.numbers.length - 1), ...thisRepeat.last[k]]);
+          newRepeatValues.push([...newRepeats.values[j], ...thisRepeat.values[k]]);
+        }
+      }
+      newRepeats = {
+        numbers: newRepeatNumbers,
+        values: newRepeatValues,
+        last: newLast,
+      };
+    }
+  }
+  return newRepeats;
 }

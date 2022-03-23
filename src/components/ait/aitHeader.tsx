@@ -29,12 +29,12 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
-    let r = { 
-      aitid: props.headerData.aitid ?? props.aitid, 
-      rows: rows, 
-      options: options 
+    let r = {
+      aitid: props.headerData.aitid ?? props.aitid,
+      rows: rows,
+      options: options
     };
-    let [chkObj, diffs] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
+    let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       props.setHeaderData!(r);
       setLastSend(structuredClone(r));
@@ -79,13 +79,13 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={higherOptions}
               spaceAfter={false}
-              rowGroupOptions={{options:props.headerData.options, setOptions:updateOptions}}
+              rowGroupOptions={{ options: props.headerData.options, setOptions: updateOptions }}
             />
           );
         }
         )
       }
-      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceBefore={true} noBorder={true}/>
+      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceBefore={true} noBorder={true} />
     </thead>
   );
 }

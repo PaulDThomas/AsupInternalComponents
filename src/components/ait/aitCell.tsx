@@ -17,10 +17,7 @@ interface AitCellProps {
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
-  rowGroupOptions?: {
-    options: AioOptionGroup,
-    setOptions: (ret: AioOptionGroup, location: AitLocation) => void
-  },
+  rowGroupOptions?: { options: AioOptionGroup, setOptions: (ret: AioOptionGroup, location: AitLocation) => void, windowTitle?: string },
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
   rowOptions?: {
@@ -113,7 +110,7 @@ export const AitCell = (props: AitCellProps) => {
     setCellStyle(style);
   }, [location.row, location.rowGroup, props.cellData.options, props.higherOptions.showCellBorders]);
 
-  const updateOptions = useCallback((ret:AioOptionGroup) => {
+  const updateOptions = useCallback((ret: AioOptionGroup) => {
     if (readOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
@@ -121,12 +118,12 @@ export const AitCell = (props: AitCellProps) => {
       options: ret,
       text: displayText ?? "",
     }
-    let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
+    let [chkObj] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       props.setCellData(r);
       setLastSend(structuredClone(r));
     }
-  },[displayText, lastSend, location, props, readOnly]);
+  }, [displayText, lastSend, location, props, readOnly]);
 
   /** Send data back */
   useEffect(() => {
@@ -137,7 +134,7 @@ export const AitCell = (props: AitCellProps) => {
       options: props.cellData.options ?? [],
       text: displayText ?? "",
     }
-    let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
+    let [chkObj] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       props.setCellData(r);
       setLastSend(structuredClone(r));
@@ -286,7 +283,7 @@ export const AitCell = (props: AitCellProps) => {
         {props.readOnly === false &&
           <>
             {showRowGroupOptions &&
-              <AsupInternalWindow key="RowGroup" Title={"Row group options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+              <AsupInternalWindow key="RowGroup" Title={(props.rowGroupOptions?.windowTitle ?? "Row group") + " options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
                 <AioOptionDisplay
                   options={props.rowGroupOptions!.options}
                   setOptions={(ret) => {
