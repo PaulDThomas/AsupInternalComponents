@@ -39,7 +39,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
       setHeaderData!(r);
       setLastSend(structuredClone(r));
     }
-    }, [lastSend, location, aitid, setHeaderData]);
+  }, [lastSend, location, aitid, setHeaderData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
@@ -79,7 +79,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={rowHigherOptions}
               spaceAfter={false}
-              rowGroupOptions={{ options: options, setOptions: updateOptions }}
+              rowGroupOptions={options}
+              setRowGroupOptions={updateOptions}
             />
           );
         }

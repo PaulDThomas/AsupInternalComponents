@@ -23,6 +23,7 @@ const initialRowGroupProcess = (rg: AitRowGroupData): AitRowGroupData => {
   if (!rg.aitid) rg.aitid = uuidv4();
   rg.rows = rg.rows.map(r => {
     if (!r.aitid) r.aitid = uuidv4();
+    if (!r.options) r.options = [];
     return r;
   });
   rg.options = processOptions(rg.options, defaultRowGroupOptions);
@@ -134,34 +135,31 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
   }, [options, props.showCellBorders]) as AitOptionList;
 
   const addCol = useCallback((col: number) => {
-    console.log(`Adding column after column: ${col}`);
     let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
     newBody.rowGroups = newBody.rowGroups.map(rg => {
       rg.rows = rg.rows.map(r => {
-        r.cells.splice(col+1, 0, newCell());
+        r.cells.splice(col + 1, 0, newCell());
         return r;
       });
-      return rg;      
+      return rg;
     });
     setBodyData(newBody);
     let newHeader: AitRowGroupData = { ...headerData };
     headerData.rows = newHeader.rows.map(r => {
-      r.cells.splice(col+1, 0, newCell());
+      r.cells.splice(col + 1, 0, newCell());
       return r;
     });
     setHeaderData(newHeader);
   }, [bodyData.options, bodyData.rowGroups, headerData]);
 
   const remCol = useCallback((col: number) => {
-    console.log(`Remove column: ${col}`);
     let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
     newBody.rowGroups = newBody.rowGroups.map(rg => {
       rg.rows = rg.rows.map(r => {
-        let [removed] = r.cells.splice(col, 1);
-        console.log(`Removed cell: ${removed.text}`)
+        r.cells.splice(col, 1);
         return r;
       });
-      return rg;      
+      return rg;
     });
     setBodyData(newBody);
     let newHeader: AitRowGroupData = { ...headerData };
@@ -170,7 +168,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       return r;
     });
     setHeaderData(newHeader);
-    }, [bodyData.options, bodyData.rowGroups, headerData]);
+  }, [bodyData.options, bodyData.rowGroups, headerData]);
 
   // Print the table
   return (
@@ -247,7 +245,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                       rowGroup: rgi,
                     }}
                     addRowGroup={(rgi) => { addRowGroup(rgi) }}
-                    removeRowGroup={(rgi) => { removeRowGroup(rgi) }}
+                    removeRowGroup={rgi > 0 ? (rgi) => { removeRowGroup(rgi) } : undefined}
                   />
                 );
               })

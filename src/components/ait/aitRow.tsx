@@ -14,19 +14,31 @@ interface AitRowProps {
   options: AioOptionGroup,
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  rowGroupOptions: { 
-    options: AioOptionGroup, 
-    setOptions: (ret: AioOptionGroup) => void, 
-    windowTitle?: string 
-    addRowGroup?: (rgi: number) => void,
-    removeRowGroup?: (rgi: number) => void,
-  },
+  rowGroupOptions: AioOptionGroup,
+  setRowGroupOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
+  rowGroupWindowTitle?: string
+  addRowGroup?: (rgi: number) => void,
+  removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
   spaceAfter: boolean,
 }
 
-export const AitRow = ({ aitid, cells, options, setRowData, higherOptions, rowGroupOptions, addRow, removeRow, spaceAfter }: AitRowProps): JSX.Element => {
+export const AitRow = ({ 
+  aitid, 
+  cells, 
+  options, 
+  setRowData, 
+  higherOptions, 
+  rowGroupOptions, 
+  setRowGroupOptions, 
+  rowGroupWindowTitle, 
+  addRowGroup, 
+  removeRowGroup,
+  addRow, 
+  removeRow, 
+  spaceAfter 
+}: AitRowProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells, options: options }));
 
   const location: AitLocation = useMemo(() => {
@@ -92,15 +104,14 @@ export const AitRow = ({ aitid, cells, options, setRowData, higherOptions, rowGr
               setCellData={(ret) => updateCell(ret, ci)}
               readOnly={((cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
               rowGroupOptions={ci === 0 && higherOptions.row === 0 ? rowGroupOptions : undefined}
-              addRowGroup={ci === 0 && higherOptions.row === 0 ? rowGroupOptions.addRowGroup : undefined}
-              removeRowGroup={ci === 0 && higherOptions.row === 0 && higherOptions.rowGroup > 0 ? rowGroupOptions.removeRowGroup : undefined}
-              rowOptions={(ci === cells.length - 1
-                ? {
-                  options: options,
-                  setOptions: updateOptions,
-                  addRow: addRow,
-                  removeRow: location.row > 0 ? removeRow : undefined
-                } : undefined)}
+              setRowGroupOptions={ci === 0 && higherOptions.row === 0 ? setRowGroupOptions : undefined}
+              rowGroupWindowTitle={ci === 0 && higherOptions.row === 0 ? rowGroupWindowTitle : undefined}
+              addRowGroup={ci === 0 && higherOptions.row === 0 ? addRowGroup : undefined}
+              removeRowGroup={ci === 0 && higherOptions.row === 0 ? removeRowGroup : undefined}
+              rowOptions={ci === cells.length - 1 ? options : undefined}
+              setRowOptions={ci === cells.length - 1 ? updateOptions : undefined}
+              addRow={ci === cells.length - 1 ? addRow : undefined}
+              removeRow={ci === cells.length - 1 ? removeRow : undefined}
             />
           );
         })}

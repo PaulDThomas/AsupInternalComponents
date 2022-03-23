@@ -133,7 +133,7 @@ export const repeatRows = (
 ): { rows: AitRowData[], repeats: AioRepeats } => {
 
   /** Strip repeat data if flagged */
-  if (noProcessing) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: { numbers: [[]], values: [[]], last: [[]] } };
+  if (noProcessing || rows.length === 0) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: { numbers: [[]], values: [[]], last: [[]] } };
 
   /** Stop processing if there is nothing to repeat */
   if (!repeats?.numbers || repeats.numbers.length === 0) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: repeats ?? { numbers: [[]], values: [[]], last: [[]] } };

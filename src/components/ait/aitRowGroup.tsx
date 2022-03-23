@@ -16,7 +16,7 @@ interface AitRowGroupProps {
   removeRowGroup?: (rgi: number) => void,
 }
 
-export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptions, addRowGroup, removeRowGroup}: AitRowGroupProps): JSX.Element => {
+export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptions, addRowGroup, removeRowGroup }: AitRowGroupProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, options: options }));
 
   const location: AitLocation = useMemo(() => {
@@ -84,12 +84,12 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
   }, [setRowGroupData, returnData, rows]);
 
   // Get rows after repeat processing
-  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo(():{ rows: AitRowData[], repeats: AioRepeats } => {
+  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
 
     let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
     // Find first of replacments if there are any
     let r: AioReplacement[] = options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
-    if (!r) return {rows:rows, repeats:newRepeats};
+    if (!r) return { rows: rows, repeats: newRepeats };
     let replacementText: AioReplacementText[] = r.map(r => r.replacementTexts).flat();
 
     // Get repNo list
@@ -120,7 +120,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
 
         let spaceAfter = false;
         // Always add space after at the end of the group 
-        if (ri === processed.rows.length-1) spaceAfter = true;
+        if (ri === processed.rows.length - 1) spaceAfter = true;
         // Check for spaceAfter highest level  for within group 
         else if (processed.repeats.numbers.length > 0) {
           let replacementTexts = replacements.map(r => r.replacementTexts).flat();
@@ -128,6 +128,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
           let isLastLevel: number = processed.repeats.last[ri]?.reduce((l, a, i) => a ? Math.min(l, i) : i + 1, 1);
           spaceAfter = checkSpaceLevel >= isLastLevel;
         }
+        if (!row.aitid) row.aitid = uuidv4();
 
         return (
           <AitRow
@@ -137,14 +138,12 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
             options={row.options}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
-            rowGroupOptions={{ 
-              options: options, 
-              setOptions: updateOptions,
-              addRowGroup: addRowGroup,
-              removeRowGroup: removeRowGroup,
-            }}
+            rowGroupOptions={options}
+            setRowGroupOptions={updateOptions}
+            addRowGroup={addRowGroup}
+            removeRowGroup={removeRowGroup}
             addRow={addRow}
-            removeRow={removeRow}
+            removeRow={ri > 0 ? removeRow : undefined}
             spaceAfter={spaceAfter}
           />
         );
