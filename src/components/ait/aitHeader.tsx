@@ -8,63 +8,64 @@ import { objEqual } from "./processes";
 
 interface AitHeaderProps {
   aitid: string,
-  headerData: AitRowGroupData
+  rows: AitRowData[],
+  options: AioOptionGroup,
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
 }
 
-export const AitHeader = (props: AitHeaderProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone(props.headerData));
+export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }: AitHeaderProps): JSX.Element => {
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, options: options }));
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: props.higherOptions.tableSection,
-      rowGroup: props.higherOptions.rowGroup,
+      tableSection: higherOptions.tableSection,
+      rowGroup: higherOptions.rowGroup,
       row: -1,
       column: -1,
       repeat: "",
     }
-  }, [props.higherOptions]);
+  }, [higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
     let r = {
-      aitid: props.headerData.aitid ?? props.aitid,
+      aitid: aitid ?? aitid,
       rows: rows,
       options: options
     };
     let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      props.setHeaderData!(r);
+      setHeaderData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [lastSend, location, props.aitid, props.headerData.aitid, props.setHeaderData]);
+    }, [lastSend, location, aitid, setHeaderData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
     // Do nothing if readonly
-    if (typeof (props.setHeaderData) !== "function") return;
+    if (typeof (setHeaderData) !== "function") return;
 
     // Create new object to send back
-    let newRows = [...props.headerData.rows];
+    let newRows = [...rows];
     newRows[ri] = ret;
-    returnData(newRows, props.headerData.options);
-  }, [props.headerData.options, props.headerData.rows, props.setHeaderData, returnData]);
+    returnData(newRows, options);
+  }, [options, rows, setHeaderData, returnData]);
 
   // Update options
   const updateOptions = useCallback((ret: AioOptionGroup) => {
     // Do nothing if readonly
-    if (typeof (props.setHeaderData) !== "function") return;
-    returnData(props.headerData.rows, ret);
-  }, [props.headerData.rows, props.setHeaderData, returnData]);
+    if (typeof (setHeaderData) !== "function") return;
+    returnData(rows, ret);
+  }, [rows, setHeaderData, returnData]);
 
   return (
     <>
       {
-        props.headerData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
+        rows.map((row: AitRowData, ri: number): JSX.Element => {
 
-          let higherOptions = {
-            ...props.higherOptions,
+          let rowHigherOptions = {
+            ...higherOptions,
             row: ri,
           } as AitOptionList;
           if (row.aitid === undefined) row.aitid = uuidv4();
@@ -75,9 +76,9 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
               aitid={row.aitid}
               rowData={row}
               setRowData={(ret) => updateRow(ret, ri)}
-              higherOptions={higherOptions}
+              higherOptions={rowHigherOptions}
               spaceAfter={false}
-              rowGroupOptions={{ options: props.headerData.options, setOptions: updateOptions }}
+              rowGroupOptions={{ options: options, setOptions: updateOptions }}
             />
           );
         }

@@ -204,7 +204,8 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
               />
               <AitHeader
                 aitid={headerData.aitid}
-                headerData={headerData}
+                rows={headerData.rows}
+                options={headerData.options}
                 setHeaderData={setHeaderData}
                 higherOptions={{
                   ...higherOptions,
@@ -237,7 +238,8 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                   <AitRowGroup
                     key={rowGroup.aitid}
                     aitid={rowGroup.aitid}
-                    rowGroupData={rowGroup}
+                    rows={rowGroup.rows}
+                    options={rowGroup.options}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
                     higherOptions={{
                       ...higherOptions,
