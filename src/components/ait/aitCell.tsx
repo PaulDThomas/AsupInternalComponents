@@ -12,8 +12,8 @@ import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList
 
 interface AitCellProps {
   aitid: string,
-  columnIndex: number,
   cellData: AitCellData,
+  columnIndex: number,
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
@@ -31,110 +31,126 @@ interface AitCellProps {
 /*
  * Table cell in AsupInternalTable
  */
-export const AitCell = (props: AitCellProps) => {
+export const AitCell = ({
+  aitid, 
+  cellData, 
+  columnIndex, 
+  setCellData, 
+  readOnly, 
+  higherOptions, 
+  rowGroupOptions, 
+  setRowGroupOptions, 
+  rowGroupWindowTitle, 
+  addRowGroup,
+  removeRowGroup,
+  rowOptions,
+  setRowOptions,
+  addRow,
+  removeRow,
+}: AitCellProps) => {
 
   // Data holder
-  const [receivedText, setReceivedText] = useState(props.cellData.text);
-  const [displayText, setDisplayText] = useState(props.cellData.replacedText ?? props.cellData.text);
+  const [receivedText, setReceivedText] = useState(cellData.text);
+  const [displayText, setDisplayText] = useState(cellData.replacedText ?? cellData.text);
   const [buttonState, setButtonState] = useState("hidden");
-  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone(props.cellData));
+  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone(cellData));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
   const [cellStyle, setCellStyle] = useState<React.CSSProperties>();
   const [currentReadOnly, setCurrentReadOnly] = useState(() => {
-    return props.readOnly
-      || typeof (props.setCellData) !== "function"
-      || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+    return readOnly
+      || typeof (setCellData) !== "function"
+      || (cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
       || displayText !== receivedText
   });
 
   // Static options/variables
   const cellType = useMemo(() => {
     let cellType =
-      props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
+      cellData.options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
       ??
-      (props.higherOptions.tableSection === AitCellType.body && props.columnIndex < props.higherOptions.rowHeaderColumns
+      (higherOptions.tableSection === AitCellType.body && columnIndex < higherOptions.rowHeaderColumns
         ?
         AitCellType.rowHeader
         :
-        props.higherOptions.tableSection);
+        higherOptions.tableSection);
     return cellType;
-  }, [props.cellData.options, props.columnIndex, props.higherOptions.rowHeaderColumns, props.higherOptions.tableSection]);
+  }, [cellData.options, columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: props.higherOptions.tableSection,
-      rowGroup: props.higherOptions.rowGroup,
-      row: props.higherOptions.row,
-      column: props.columnIndex,
-      repeat: (props.higherOptions.repeatNumber ?? []).join(",")
+      tableSection: higherOptions.tableSection,
+      rowGroup: higherOptions.rowGroup,
+      row: higherOptions.row,
+      column: columnIndex,
+      repeat: (higherOptions.repeatNumber ?? []).join(",")
     }
-  }, [props.columnIndex, props.higherOptions.repeatNumber, props.higherOptions.row, props.higherOptions.rowGroup, props.higherOptions.tableSection]);
+  }, [columnIndex, higherOptions.repeatNumber, higherOptions.row, higherOptions.rowGroup, higherOptions.tableSection]);
 
   /** Updates to initial text */
   useEffect(() => {
-    let newText = props.cellData.replacedText ?? props.cellData.text;
+    let newText = cellData.replacedText ?? cellData.text;
     // Check read only flag
     setCurrentReadOnly(
-      props.readOnly
-      || props.cellData.replacedText !== undefined
-      || typeof (props.setCellData) !== "function"
-      || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
-      || newText !== props.cellData.text
+      readOnly
+      || cellData.replacedText !== undefined
+      || typeof (setCellData) !== "function"
+      || (cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
+      || newText !== cellData.text
     );
-    setReceivedText(props.cellData.text);
+    setReceivedText(cellData.text);
     setDisplayText(newText);
-  }, [props.cellData.replacedText, props.cellData.text, props.cellData.options, props.readOnly, props.setCellData]);
+  }, [cellData.replacedText, cellData.text, cellData.options, readOnly, setCellData]);
 
 
   // Update cell style when options change
   useEffect(() => {
     const style = {
-      width: props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
-      borderLeft: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderRight: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderBottom: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderTop: props.higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
+      width: cellData.options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
+      borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderRight: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderTop: higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
         ? "2px solid burlywood"
-        : props.higherOptions.showCellBorders
+        : higherOptions.showCellBorders
           ? "1px dashed burlywood"
           : "",
     }
     setCellStyle(style);
-  }, [location.row, location.rowGroup, props.higherOptions.showCellBorders, props.cellData.options]);
+  }, [location.row, location.rowGroup, higherOptions.showCellBorders, cellData.options]);
 
   const updateOptions = useCallback((ret: AioOptionGroup) => {
     if (currentReadOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
-      aitid: props.cellData.aitid,
+      aitid: cellData.aitid,
       options: ret,
       text: displayText ?? "",
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      props.setCellData(r);
+      setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [currentReadOnly, displayText, lastSend, location, props]);
+  }, [cellData.aitid, currentReadOnly, displayText, lastSend, location, setCellData]);
 
   /** Send data back */
   useEffect(() => {
     if (currentReadOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
-      aitid: props.cellData.aitid,
-      options: props.cellData.options ?? [],
+      aitid: cellData.aitid,
+      options: cellData.options ?? [],
       text: displayText ?? "",
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      props.setCellData(r);
+      setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [displayText, lastSend, props.cellData.aitid, location, props, currentReadOnly]);
+  }, [displayText, lastSend, cellData.aitid, location, currentReadOnly, cellData.options, setCellData]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -162,7 +178,7 @@ export const AitCell = (props: AitCellProps) => {
   const onAddClick = (optionType: AitOptionLocation) => {
     setButtonState("hidden");
     switch (optionType) {
-      case (AitOptionLocation.rowGroup): props.addRowGroup!(props.higherOptions.rowGroup!); break;
+      case (AitOptionLocation.rowGroup): addRowGroup!(higherOptions.rowGroup!); break;
       // case (AitOptionLocation.row): setShowRowOptions(true); break;
       // case (AitOptionLocation.cell): setShowCellOptions(true); break;
       default: break;
@@ -172,7 +188,7 @@ export const AitCell = (props: AitCellProps) => {
   const onRemoveClick = (optionType: AitOptionLocation) => {
     setButtonState("hidden");
     switch (optionType) {
-      case (AitOptionLocation.rowGroup): props.removeRowGroup!(props.higherOptions.rowGroup!); break;
+      case (AitOptionLocation.rowGroup): removeRowGroup!(higherOptions.rowGroup!); break;
       // case (AitOptionLocation.row): setShowRowOptions(true); break;
       // case (AitOptionLocation.cell): setShowCellOptions(true); break;
       default: break;
@@ -180,8 +196,8 @@ export const AitCell = (props: AitCellProps) => {
   }
 
   // Do not render if there is no rowSpan or colSpan
-  if (props.cellData.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
-    || props.cellData.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
+  if (cellData.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
+    || cellData.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
   ) return <></>;
 
   // Render element
@@ -191,13 +207,13 @@ export const AitCell = (props: AitCellProps) => {
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (currentReadOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
-      colSpan={props.cellData.options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
-      rowSpan={props.cellData.options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
+      colSpan={cellData.options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
+      rowSpan={cellData.options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
       style={cellStyle}
-      data-location-table-section={props.higherOptions.tableSection}
-      data-location-row-group={props.higherOptions.rowGroup}
-      data-location-row={props.higherOptions.row}
-      data-location-cell={props.higherOptions.column}
+      data-location-table-section={higherOptions.tableSection}
+      data-location-row-group={higherOptions.rowGroup}
+      data-location-row={higherOptions.row}
+      data-location-cell={higherOptions.column}
     >
       <div className="ait-aie-holder"
         onMouseOver={aitShowButtons}
@@ -206,18 +222,18 @@ export const AitCell = (props: AitCellProps) => {
 
         {/* Option buttons  */}
         <>
-          {props.readOnly === false &&
+          {readOnly === false &&
             <>
-              {(props.rowGroupOptions)
+              {(rowGroupOptions)
                 ?
                 (<>
-                  {typeof (props.addRowGroup) === "function" &&
+                  {typeof (addRowGroup) === "function" &&
                     <div
                       className={`ait-options-button ait-options-button-add-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                       onClick={(e) => { onAddClick(AitOptionLocation.rowGroup) }}
                     />
                   }
-                  {typeof (props.removeRowGroup) === "function" &&
+                  {typeof (removeRowGroup) === "function" &&
                     <div
                       className={`ait-options-button ait-options-button-remove-row-group ${buttonState === "hidden" ? "hidden" : ""}`}
                       onClick={(e) => { onRemoveClick(AitOptionLocation.rowGroup) }}
@@ -231,23 +247,23 @@ export const AitCell = (props: AitCellProps) => {
                 :
                 null
               }
-              {(props.rowOptions)
+              {(rowOptions)
                 ?
                 <>
                   <div
                     className={`ait-options-button ait-options-button-row ${buttonState === "hidden" ? "hidden" : ""}`}
                     onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
                   />
-                  {typeof props.addRow === "function" &&
+                  {typeof addRow === "function" &&
                     <div
                       className={`ait-options-button ait-options-button-add-row ${buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { props.addRow!(location.row) }}
+                      onClick={(e) => { addRow!(location.row) }}
                     />
                   }
-                  {typeof props.removeRow === "function" &&
+                  {typeof removeRow === "function" &&
                     <div
                       className={`ait-options-button ait-options-button-remove-row ${buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { props.removeRow!(location.row) }}
+                      onClick={(e) => { removeRow!(location.row) }}
                     />
                   }                </>
                 :
@@ -275,16 +291,16 @@ export const AitCell = (props: AitCellProps) => {
 
       {/* Option windows */}
       <div>
-        {props.readOnly === false &&
+        {readOnly === false &&
           <>
             {showRowGroupOptions &&
-              <AsupInternalWindow key="RowGroup" Title={(props.rowGroupWindowTitle ?? "Row group") + " options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+              <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group") + " options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
                 <AioOptionDisplay
-                  options={props.rowGroupOptions}
+                  options={rowGroupOptions}
                   setOptions={(ret) => {
-                    if (!props.rowGroupOptions) return;
-                    let rgl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
-                    props.setRowGroupOptions!(ret, rgl);
+                    if (!rowGroupOptions) return;
+                    let rgl = { tableSection: higherOptions.tableSection, rowGroup: higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
+                    setRowGroupOptions!(ret, rgl);
                   }}
                 />
               </AsupInternalWindow>
@@ -293,11 +309,11 @@ export const AitCell = (props: AitCellProps) => {
             {showRowOptions &&
               <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
                 <AioOptionDisplay
-                  options={props.rowOptions}
+                  options={rowOptions}
                   setOptions={(ret) => {
-                    if (!props.rowOptions) return;
-                    let rl = { tableSection: props.higherOptions.tableSection, rowGroup: props.higherOptions.rowGroup, row: props.higherOptions.row, column: -1 } as AitLocation;
-                    props.setRowOptions!(ret, rl);
+                    if (!rowOptions) return;
+                    let rl = { tableSection: higherOptions.tableSection, rowGroup: higherOptions.rowGroup, row: higherOptions.row, column: -1 } as AitLocation;
+                    setRowOptions!(ret, rl);
                   }}
                 />
               </AsupInternalWindow>
@@ -313,9 +329,9 @@ export const AitCell = (props: AitCellProps) => {
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <div className={"aio-ro-value"}>{props.cellData.text}</div>
+              <div className={"aio-ro-value"}>{cellData.text}</div>
             </div>
-            <AioOptionDisplay options={props.cellData.options} setOptions={!currentReadOnly ? (ret) => { updateOptions(ret); } : undefined} />
+            <AioOptionDisplay options={cellData.options} setOptions={!currentReadOnly ? (ret) => { updateOptions(ret); } : undefined} />
           </AsupInternalWindow>
         }
       </div>
