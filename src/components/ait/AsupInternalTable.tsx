@@ -106,7 +106,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       options: [],
       rows: [{
         aitid: uuidv4(),
-        options: [],
+        options: structuredClone(defaultRowGroupOptions),
         cells: [],
       }]
     };
@@ -122,7 +122,6 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
   const removeRowGroup = useCallback((rgi: number) => {
     let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
     newBody.rowGroups.splice(rgi, 1);
-    // updateTable(headerData, newBody, options);
     setBodyData(newBody);
   }, [bodyData.options, bodyData.rowGroups]);
 
@@ -133,6 +132,45 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       rowHeaderColumns: options.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value,
     };
   }, [options, props.showCellBorders]) as AitOptionList;
+
+  const addCol = useCallback((col: number) => {
+    console.log(`Adding column after column: ${col}`);
+    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    newBody.rowGroups = newBody.rowGroups.map(rg => {
+      rg.rows = rg.rows.map(r => {
+        r.cells.splice(col+1, 0, newCell());
+        return r;
+      });
+      return rg;      
+    });
+    setBodyData(newBody);
+    let newHeader: AitRowGroupData = { ...headerData };
+    headerData.rows = newHeader.rows.map(r => {
+      r.cells.splice(col+1, 0, newCell());
+      return r;
+    });
+    setHeaderData(newHeader);
+  }, [bodyData.options, bodyData.rowGroups, headerData]);
+
+  const remCol = useCallback((col: number) => {
+    console.log(`Remove column: ${col}`);
+    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    newBody.rowGroups = newBody.rowGroups.map(rg => {
+      rg.rows = rg.rows.map(r => {
+        let [removed] = r.cells.splice(col, 1);
+        console.log(`Removed cell: ${removed.text}`)
+        return r;
+      });
+      return rg;      
+    });
+    setBodyData(newBody);
+    let newHeader: AitRowGroupData = { ...headerData };
+    headerData.rows = newHeader.rows.map(r => {
+      r.cells.splice(col, 1);
+      return r;
+    });
+    setHeaderData(newHeader);
+    }, [bodyData.options, bodyData.rowGroups, headerData]);
 
   // Print the table
   return (
@@ -152,22 +190,44 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
             </AsupInternalWindow>
           }
         </div>
-        <table
-          className="ait-table"
-        >
-          <AitHeader
-            aitid={headerData.aitid}
-            headerData={headerData}
-            setHeaderData={setHeaderData}
-            higherOptions={{
-              ...higherOptions,
-              tableSection: AitCellType.header,
-              rowGroup: 0,
-            }}
-          />
+        <table className="ait-table">
+          {headerData.rows.length > 0 &&
+            <thead>
+              <AitBorderRow
+                rowCells={bodyData.rowGroups[0].rows[0].cells}
+                spaceAfter={true}
+                changeColumns={{
+                  addColumn: addCol,
+                  removeColumn: remCol,
+                  showButtons: showOptionsButton,
+                }}
+              />
+              <AitHeader
+                aitid={headerData.aitid}
+                headerData={headerData}
+                setHeaderData={setHeaderData}
+                higherOptions={{
+                  ...higherOptions,
+                  tableSection: AitCellType.header,
+                  rowGroup: 0,
+                }}
+              />
+              <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} noBorder={true} />
+            </thead>
+          }
 
           <tbody>
-            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceAfter={true} />
+            <AitBorderRow
+              rowCells={bodyData.rowGroups[0].rows[0].cells}
+              spaceAfter={true}
+              changeColumns={headerData.rows.length === 0 ?
+                {
+                  addColumn: addCol,
+                  removeColumn: remCol,
+                  showButtons: showOptionsButton,
+                }
+                : undefined}
+            />
             {
               bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) => {
 

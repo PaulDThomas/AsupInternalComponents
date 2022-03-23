@@ -278,8 +278,8 @@ export const AitCell = (props: AitCellProps) => {
         />
       </div>
 
+      {/* Option windows */}
       <div>
-        {/* Option windows */}
         {props.readOnly === false &&
           <>
             {showRowGroupOptions &&

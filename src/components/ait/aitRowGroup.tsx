@@ -83,17 +83,17 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
   }, [props.rowGroupData.rows, props.setRowGroupData, returnData]);
 
   // Get rows after repeat processing
-  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo(() => {
+  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo(():{ rows: AitRowData[], repeats: AioRepeats } => {
 
     let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
     // Find first of replacments if there are any
     let r: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
+    if (!r) return {rows:props.rowGroupData.rows, repeats:newRepeats};
+    let replacementText: AioReplacementText[] = r.map(r => r.replacementTexts).flat();
 
     // Get repNo list
     newRepeats = getRepeats(r, newRepeats);
 
-    let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
-    let replacementText: AioReplacementText[] = replacements.map(r => r.replacementTexts).flat();
     let x = repeatRows(
       props.rowGroupData.rows,
       props.higherOptions.noRepeatProcessing,

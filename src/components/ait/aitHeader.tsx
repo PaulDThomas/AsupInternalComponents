@@ -3,7 +3,6 @@ import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
-import { AitBorderRow } from "./aitBorderRow";
 import { AitRow } from "./aitRow";
 import { objEqual } from "./processes";
 
@@ -60,8 +59,7 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
   }, [props.headerData.rows, props.setHeaderData, returnData]);
 
   return (
-    <thead>
-      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceAfter={true} />
+    <>
       {
         props.headerData?.rows.map((row: AitRowData, ri: number): JSX.Element => {
 
@@ -85,7 +83,6 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
         }
         )
       }
-      <AitBorderRow rowCells={props.headerData.rows[0].cells} spaceBefore={true} noBorder={true} />
-    </thead>
+    </>
   );
 }
