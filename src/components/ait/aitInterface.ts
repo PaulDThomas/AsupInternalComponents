@@ -3,6 +3,7 @@ import { AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
 export interface AitCellData {
   aitid: string,
   text: string,
+  replacedText?: string,
   options: AioOptionGroup,
 };
 

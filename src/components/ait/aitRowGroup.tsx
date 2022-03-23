@@ -112,7 +112,6 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
           last: newLast,
         }
       }
-
     }
 
     let replacements: AioReplacement[] = props.rowGroupData.options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
@@ -122,9 +121,10 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
       props.higherOptions.noRepeatProcessing,
       replacementText,
       newRepeats,
+      props.higherOptions.rowHeaderColumns,
     );
     return x;
-  }, [props.higherOptions.noRepeatProcessing, props.rowGroupData]);
+  }, [props.higherOptions.noRepeatProcessing, props.higherOptions.rowHeaderColumns, props.rowGroupData.options, props.rowGroupData.rows]);
 
   return (
     <>

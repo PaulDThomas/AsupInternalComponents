@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
@@ -6,36 +6,9 @@ import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AioOptionGroup } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 // import { AioString } from "../aio/aioString";
-import { objEqual, processOptions } from "./processes";
+import { objEqual } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitCellOptionNames } from "./aitInterface";
 
-
-/**
-* Process text for repeat level and avaiable replacement values
-* @param text Initial text
-* @param options Options applied to the cell, should contain repeat options
-* @returns updated text
-*/
-const processRepeats = (text: string, options: AitOptionList): string => {
-  // Do nothing if there is nothing to do
-  if (!options.repeatNumber || !options.replacements || !options.replacements[0].replacementTexts) return text;
-
-  /** Text to return */
-  let newText = text;
-
-  /** Replacements for this text */
-  let k = 0;
-  for (let r = 0; r < options.replacements.length; r++) {
-    for (let i = 0; i < options.replacements[r].replacementTexts.length; i++) {
-      // Replace if there in old and new text
-      let o = options.replacements[r].replacementTexts[i].text;
-      let n = options.repeatValues ? options.repeatValues[k] : undefined;
-      if (n) newText = newText.replace(o, n);
-      k++;
-    }
-  }
-  return newText;
-}
 
 interface AitCellProps {
   aitid: string,
@@ -65,8 +38,8 @@ export const AitCell = (props: AitCellProps) => {
 
   // Data holder
   const [receivedText, setReceivedText] = useState(props.cellData.text);
-  const [displayText, setDisplayText] = useState(() => processRepeats(props.cellData.text, props.higherOptions));
-  const [options, setOptions] = useState(props.cellData.options);
+  const [displayText, setDisplayText] = useState(props.cellData.replacedText ?? props.cellData.text);
+  //const [options, setOptions] = useState(props.cellData.options);
   const [buttonState, setButtonState] = useState("hidden");
   const [lastSend, setLastSend] = useState<AitCellData>(structuredClone(props.cellData));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
@@ -104,29 +77,30 @@ export const AitCell = (props: AitCellProps) => {
 
   /** Updates to initial text */
   useEffect(() => {
-    let newText = processRepeats(props.cellData.text, props.higherOptions);
+    let newText = props.cellData.replacedText ?? props.cellData.text;
     // Check read only flag
     setReadOnly(
       props.readOnly
+      || props.cellData.replacedText !== undefined
       || typeof (props.setCellData) !== "function"
       || (props.cellData.options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
       || newText !== props.cellData.text
     );
     setReceivedText(props.cellData.text);
     setDisplayText(newText);
-  }, [props.cellData.options, props.cellData.text, props.higherOptions, props.readOnly, props.setCellData]);
+  }, [props.cellData.options, props.cellData.replacedText, props.cellData.text, props.higherOptions, props.readOnly, props.setCellData]);
 
 
   /** Update to initial options, cannot include options in reference as this creates an infinite loop */
-  useEffect(() => {
-    setOptions(processOptions(props.cellData.options, options));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.cellData.options]);
+  // useEffect(() => {
+  //   setOptions(processOptions(props.cellData.options, options));
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [props.cellData.options]);
 
   // Update cell style when options change
   useEffect(() => {
     const style = {
-      width: options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
+      width: props.cellData.options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
       borderLeft: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderRight: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: props.higherOptions.showCellBorders ? "1px dashed burlywood" : "",
@@ -137,15 +111,14 @@ export const AitCell = (props: AitCellProps) => {
           : "",
     }
     setCellStyle(style);
-  }, [location.row, location.rowGroup, options, props.higherOptions.showCellBorders]);
+  }, [location.row, location.rowGroup, props.cellData.options, props.higherOptions.showCellBorders]);
 
-  /** Send data back */
-  useEffect(() => {
+  const updateOptions = useCallback((ret:AioOptionGroup) => {
     if (readOnly) return;
     // All these parameters should be in the initial data
     const r: AitCellData = {
       aitid: props.cellData.aitid ?? props.aitid,
-      options: options ?? [],
+      options: ret,
       text: displayText ?? "",
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
@@ -154,7 +127,24 @@ export const AitCell = (props: AitCellProps) => {
       props.setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [options, displayText, lastSend, props.cellData.aitid, location, readOnly, props]);
+  },[displayText, lastSend, location, props, readOnly]);
+
+  /** Send data back */
+  useEffect(() => {
+    if (readOnly) return;
+    // All these parameters should be in the initial data
+    const r: AitCellData = {
+      aitid: props.cellData.aitid ?? props.aitid,
+      options: props.cellData.options ?? [],
+      text: displayText ?? "",
+    }
+    let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
+    if (!chkObj) {
+      console.log(`Return for cell: ${diffs}`);
+      props.setCellData(r);
+      setLastSend(structuredClone(r));
+    }
+  }, [displayText, lastSend, props.cellData.aitid, location, readOnly, props]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -201,6 +191,11 @@ export const AitCell = (props: AitCellProps) => {
     }
   }
 
+  // Do not render if there is no rowSpan or colSpan
+  if (props.cellData.options.find(o => o.optionName === AitCellOptionNames.colSpan)?.value === 0
+    || props.cellData.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0
+  ) return <></>;
+
   // Render element
   return (
     <td
@@ -208,8 +203,8 @@ export const AitCell = (props: AitCellProps) => {
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (readOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
-      colSpan={options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
-      rowSpan={options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
+      colSpan={props.cellData.options?.find((o) => o.optionName === AitCellOptionNames.colSpan)?.value ?? 1}
+      rowSpan={props.cellData.options?.find((o) => o.optionName === AitCellOptionNames.rowSpan)?.value ?? 1}
       style={cellStyle}
       data-location-table-section={props.higherOptions.tableSection}
       data-location-row-group={props.higherOptions.rowGroup}
@@ -332,7 +327,7 @@ export const AitCell = (props: AitCellProps) => {
               <div className={"aio-label"}>Unprocessed text: </div>
               <div className={"aio-ro-value"}>{props.cellData.text}</div>
             </div>
-            <AioOptionDisplay options={options} setOptions={!readOnly ? (ret) => { setOptions(ret); } : undefined} />
+            <AioOptionDisplay options={props.cellData.options} setOptions={!readOnly ? (ret) => { updateOptions(ret); } : undefined} />
           </AsupInternalWindow>
         }
       </div>
