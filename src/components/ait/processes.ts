@@ -93,7 +93,9 @@ const firstUnequal = (a: number[], b: number[]): number => {
   else return 0;
 }
 
-export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [] }; }
+export const newCell = (): AitCellData => { 
+  return { aitid: uuidv4(), text: "", options: [] }; 
+}
 
 /** Find which row replacementText first appears in */
 const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[]): number[] => {
@@ -193,7 +195,7 @@ export const repeatRows = (
       /** Get cell to check */
       let currentCell = newRows[r].cells[col];
       /** Ensure it has not already been udpated */
-      if (currentCell.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0) {
+      if (currentCell?.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0) {
         col++;
         continue;
       }
@@ -201,7 +203,7 @@ export const repeatRows = (
       let rowSpan = 1;
       /** Look for duplicate text in the next row */
       while (
-        currentCell.replacedText !== undefined
+        currentCell?.replacedText !== undefined
         && newRows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) rowSpan++;
       /** Update rowSpans if duplicates have been found */
@@ -231,7 +233,7 @@ export const setCellOption = (cell: AitCellData, optionName: AitCellOptionNames,
 }
 
 export const removeCellOption = (cell: AitCellData, optionName: AitCellOptionNames): void => {
-  let optionIndex = cell.options.findIndex(o => o.optionName === optionName);
+  let optionIndex = cell?.options.findIndex(o => o.optionName === optionName);
   if (optionIndex > -1) cell.options.splice(optionIndex, 1);
 }
 
@@ -249,6 +251,7 @@ export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
 }
 
 export const getRepeats = (r: AioReplacement[], newRepeats: AioRepeats) => {
+  if (!r || r.length === 0) return newRepeats;
   for (let i = 0; i < r.length; i++) {
     if (i === 0)
       newRepeats = getReplacementValues(r[i].replacementValues);
