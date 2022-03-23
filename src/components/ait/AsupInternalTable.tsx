@@ -86,7 +86,6 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
 
     let [chkObj, diffs] = objEqual(r, lastSend, `TABLECHECK`);
     if (!chkObj) {
-      console.log(`Return for table: ${diffs}`);
       props.setTableData(r);
       setLastSend(r);
     }

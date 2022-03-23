@@ -15,7 +15,6 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
   // Update current options from child object
   const updateOption = useCallback((ret: AioOption, i: number) => {
     if (typeof (props.setOptions) !== "function") return;
-    // console.log(`Updating option ${i} to... ${ret}`);
     const newOptions = [...props.options!];
     newOptions[i].value = ret;
     props.setOptions!(newOptions);

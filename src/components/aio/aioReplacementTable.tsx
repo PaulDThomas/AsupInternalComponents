@@ -28,7 +28,6 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `Replacement.join(',')}-`);
     if (!chkObj) {
-      console.log(`Return for replacement: ${diffs}`);
       props.setReplacement(r);
       setLastSend(structuredClone(r));
     }

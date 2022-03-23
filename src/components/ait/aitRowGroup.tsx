@@ -37,7 +37,6 @@ export const AitRowGroup = (props: AitRowGroupProps): JSX.Element => {
     };
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      console.log(`Return for rowGroup: ${diffs}`);
       props.setRowGroupData!(r);
       setLastSend(structuredClone(r));
     }

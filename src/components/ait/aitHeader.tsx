@@ -36,7 +36,6 @@ export const AitHeader = (props: AitHeaderProps): JSX.Element => {
     };
     let [chkObj, diffs] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      console.log(`Return for header: ${diffs}`);
       props.setHeaderData!(r);
       setLastSend(structuredClone(r));
     }

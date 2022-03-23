@@ -23,7 +23,6 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
   const onClickAdd = (ret: AioOptionGroup) => {
     // Check value is ok
     if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
-      console.log(`Adding new key: ${ret[0].value}`);
       let newItem;
       switch (ret[1].value) {
         case ("number"):
@@ -42,7 +41,6 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
       const newObject = { ...props.inputObject };
       newObject[ret[0].value] = newItem;
       props.updateObject(newObject);
-      console.log("Close window");
       setShowNewItemWindow(false);
     }
   }

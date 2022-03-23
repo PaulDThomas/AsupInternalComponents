@@ -123,7 +123,6 @@ export const AitCell = (props: AitCellProps) => {
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      console.log(`Return for cell: ${diffs}`);
       props.setCellData(r);
       setLastSend(structuredClone(r));
     }
@@ -140,7 +139,6 @@ export const AitCell = (props: AitCellProps) => {
     }
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      console.log(`Return for cell: ${diffs}`);
       props.setCellData(r);
       setLastSend(structuredClone(r));
     }
@@ -152,7 +150,6 @@ export const AitCell = (props: AitCellProps) => {
 
   // Show windows
   const onShowOptionClick = (optionType: AitOptionLocation) => {
-    // console.log(`Show option click in aieCell for ${optionType}`);
     switch (optionType) {
       case (AitOptionLocation.rowGroup): setShowRowGroupOptions(true); break;
       case (AitOptionLocation.row): setShowRowOptions(true); break;
@@ -162,7 +159,6 @@ export const AitCell = (props: AitCellProps) => {
   }
   // Hide windows
   const onCloseOption = (optionType: AitOptionLocation) => {
-    // console.log(`Hide option click in aieCell for ${optionType}`);
     switch (optionType) {
       case (AitOptionLocation.rowGroup): setShowRowGroupOptions(false); break;
       case (AitOptionLocation.row): setShowRowOptions(false); break;
