@@ -133,12 +133,16 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
           <AitRow
             key={rowHigherOptions.repeatNumber === undefined || rowHigherOptions.repeatNumber?.reduce((s, a) => s + a, 0) === 0 ? row.aitid : `${row.aitid}-${rowHigherOptions.repeatNumber?.join(',')}`}
             aitid={row.aitid}
-            rowData={row}
+            cells={row.cells}
+            options={row.options}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
-            rowGroupOptions={{ options: options, setOptions: updateOptions }}
-            addRowGroup={addRowGroup}
-            removeRowGroup={removeRowGroup}
+            rowGroupOptions={{ 
+              options: options, 
+              setOptions: updateOptions,
+              addRowGroup: addRowGroup,
+              removeRowGroup: removeRowGroup,
+            }}
             addRow={addRow}
             removeRow={removeRow}
             spaceAfter={spaceAfter}

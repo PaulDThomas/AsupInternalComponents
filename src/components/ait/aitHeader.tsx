@@ -74,7 +74,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
             <AitRow
               key={row.aitid}
               aitid={row.aitid}
-              rowData={row}
+              cells={row.cells}
+              options={row.options}
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={rowHigherOptions}
               spaceAfter={false}
