@@ -144,7 +144,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, currentReadOnly, lastSend, location, rowSpan, setCellData, text]);
+  }, [aitid, colSpan, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text]);
 
   /** Send data back */
   useEffect(() => {
@@ -307,7 +307,7 @@ export const AitCell = ({
         {readOnly === false &&
           <>
             {showRowGroupOptions &&
-              <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group") + " options"} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
+              <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
                 <AioOptionDisplay
                   options={rowGroupOptions}
                   setOptions={(ret) => {

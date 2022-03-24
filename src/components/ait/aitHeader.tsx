@@ -81,6 +81,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               spaceAfter={false}
               rowGroupOptions={options}
               setRowGroupOptions={updateOptions}
+              rowGroupWindowTitle={"Header options"}
             />
           );
         }
