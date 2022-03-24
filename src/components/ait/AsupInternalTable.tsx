@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import structuredClone from '@ungap/structured-clone';
+import React, { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AioOptionType, AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
+import { AioOptionGroup } from "components/aio/aioInterface";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitRowGroupOptionNames, AitTableBodyData, AitTableData, AitCellType, AitOptionList } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitCellType, AitOptionList } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { newCell, objEqual, processOptions } from "./processes";
+import { newCell } from "./processes";
 import './ait.css';
 
 interface AsupInteralTableProps {
@@ -18,124 +17,70 @@ interface AsupInteralTableProps {
   showCellBorders?: boolean,
 }
 
-// Initial data processing on load
-const initialRowGroupProcess = (rg: AitRowGroupData): AitRowGroupData => {
-  if (!rg.aitid) rg.aitid = uuidv4();
-  rg.rows = rg.rows.map(r => {
-    if (!r.aitid) r.aitid = uuidv4();
-    if (!r.options) r.options = [];
-    return r;
-  });
-  rg.options = processOptions(rg.options, defaultRowGroupOptions);
-  return rg;
-};
-
-const initialBodyProcess = (b: AitTableBodyData): AitTableBodyData => {
-  b.rowGroups = b.rowGroups.map(rg => initialRowGroupProcess(rg));
-  return b;
-};
-
-const defaultTableOptions: AioOptionGroup = [
-  { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
-  { optionName: AitTableOptionNames.noRepeatProcessing, label: "Supress repeats", type: AioOptionType.boolean, value: false },
-  { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
-  //{ optionName: AitTableOptionNames.repeatingColumns, label: "Repeating columns", type: AioOptionType.object, value: { start: "First column", end: "Last column" } },
-  //{ optionName: AitTableOptionNames.columnRepeatList, label: "Repeat lists for columns", type: AioOptionType.array, value: ["New list"] },
-];
-
-const defaultRowGroupOptions: AioOptionGroup = [
-  { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "New group" },
-  {
-    optionName: AitRowGroupOptionNames.replacements,
-    label: "Replacement lists",
-    type: AioOptionType.replacements,
-    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
-  },
-];
-
 /**
  * Table view for clinical table data
  * @param props 
  * @returns 
  */
-export const AsupInteralTable = (props: AsupInteralTableProps) => {
-  const [headerData, setHeaderData] = useState<AitRowGroupData>(initialRowGroupProcess(props.tableData.headerData));
-  const [bodyData, setBodyData] = useState<AitTableBodyData>(initialBodyProcess(props.tableData.bodyData));
-  const [options, setOptions] = useState<AioOptionGroup>(processOptions(props.tableData.options, defaultTableOptions));
+export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
-  const [showOptionsButton, setShowOptionsButton] = useState(false);
-  const [lastSend, setLastSend] = useState<AitTableData>(structuredClone(props.tableData));
 
-  useEffect(() => setHeaderData(initialRowGroupProcess(props.tableData.headerData)), [props.tableData.headerData]);
-  useEffect(() => setBodyData(initialBodyProcess(props.tableData.bodyData)), [props.tableData.bodyData]);
-  useEffect(() => setOptions(processOptions(props.tableData.options, defaultTableOptions)), [props.tableData.options]);
+  const returnData = useCallback((newTableData: { headerData?: AitRowGroupData, bodyData?: AitTableBodyData, options?: AioOptionGroup }) => {
+    if (typeof (setTableData) !== "function") return;
 
-  // Show or hide style buttons
-  const aitShowProperties = () => { setShowOptionsButton(true); };
-  const aitHideProperties = () => { setShowOptionsButton(false); };
-
-  // Collate and return data
-  useEffect(() => {
-    if (typeof (props.setTableData) !== "function") return;
 
     const r = {
-      headerData: headerData,
-      bodyData: bodyData,
-      options: options,
+      headerData: newTableData.headerData ?? tableData.headerData,
+      bodyData: newTableData.bodyData ?? tableData.bodyData,
+      options: newTableData.options ?? tableData.options,
     };
-
-    let [chkObj] = objEqual(r, lastSend, `TABLECHECK`);
-    if (!chkObj) {
-      props.setTableData(r);
-      setLastSend(r);
-    }
-  }, [headerData, bodyData, options, lastSend, props]);
+    setTableData(r);
+  }, [setTableData, tableData.bodyData, tableData.headerData, tableData.options]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
     newBody.rowGroups[rgi] = ret;
-    setBodyData(newBody);
-  }, [bodyData.options, bodyData.rowGroups]);
+    returnData({ bodyData: newBody });
+  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, returnData]);
 
   // Add a new row group to the table body
   const addRowGroup = useCallback((rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
     let newRowGroup: AitRowGroupData = {
       aitid: uuidv4(),
       options: [],
       rows: [{
         aitid: uuidv4(),
-        options: structuredClone(defaultRowGroupOptions),
+        options: [],
         cells: [],
       }]
     };
-    let cols = bodyData.rowGroups[0].rows[0].cells
+    let cols = tableData.bodyData.rowGroups[0].rows[0].cells
       .map(c => c.colSpan ?? 1)
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
     newBody.rowGroups.splice(rgi + 1, 0, newRowGroup);
-    setBodyData(newBody); // This will trigger updateTable from updateCell
-  }, [bodyData.options, bodyData.rowGroups]);
+    returnData({ bodyData: newBody });
+  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, returnData]);
 
   // Remove a row group from the table body
   const removeRowGroup = useCallback((rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
     newBody.rowGroups.splice(rgi, 1);
-    setBodyData(newBody);
-  }, [bodyData.options, bodyData.rowGroups]);
+    returnData({ bodyData: newBody });
+  }, [returnData, tableData.bodyData.options, tableData.bodyData.rowGroups]);
 
   let higherOptions = useMemo(() => {
     return {
-      showCellBorders: props.showCellBorders,
-      noRepeatProcessing: options.find(o => o.optionName === AitTableOptionNames.noRepeatProcessing)?.value,
-      rowHeaderColumns: options.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value,
+      showCellBorders: showCellBorders,
+      noRepeatProcessing: tableData.options?.find(o => o.optionName === AitTableOptionNames.noRepeatProcessing)?.value,
+      rowHeaderColumns: tableData.options?.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value,
     };
-  }, [options, props.showCellBorders]) as AitOptionList;
+  }, [showCellBorders, tableData.options]) as AitOptionList;
 
   const addCol = useCallback((col: number) => {
-    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
     newBody.rowGroups = newBody.rowGroups.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(col + 1, 0, newCell());
@@ -143,17 +88,16 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       });
       return rg;
     });
-    setBodyData(newBody);
-    let newHeader: AitRowGroupData = { ...headerData };
-    headerData.rows = newHeader.rows.map(r => {
+    let newHeader: AitRowGroupData = { ...tableData.headerData };
+    tableData.headerData.rows = newHeader.rows.map(r => {
       r.cells.splice(col + 1, 0, newCell());
       return r;
     });
-    setHeaderData(newHeader);
-  }, [bodyData.options, bodyData.rowGroups, headerData]);
+    returnData({ headerData: newHeader, bodyData: newBody });
+  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, tableData.headerData, returnData]);
 
   const remCol = useCallback((col: number) => {
-    let newBody: AitTableBodyData = { rowGroups: bodyData.rowGroups, options: bodyData.options };
+    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
     newBody.rowGroups = newBody.rowGroups.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(col, 1);
@@ -161,76 +105,77 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
       });
       return rg;
     });
-    setBodyData(newBody);
-    let newHeader: AitRowGroupData = { ...headerData };
-    headerData.rows = newHeader.rows.map(r => {
+    let newHeader: AitRowGroupData = { ...tableData.headerData };
+    tableData.headerData.rows = newHeader.rows.map(r => {
       r.cells.splice(col, 1);
       return r;
     });
-    setHeaderData(newHeader);
-  }, [bodyData.options, bodyData.rowGroups, headerData]);
+    returnData({ headerData: newHeader, bodyData: newBody });
+  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, tableData.headerData, returnData]);
 
   // Print the table
   return (
     <>
       <div
         className="ait-holder"
-        onMouseOver={aitShowProperties}
-        onMouseLeave={aitHideProperties}
-        style={props.style}
+        style={style}
       >
         <div>
-          <div className={`ait-table-options  ${true || showOptionsButton ? "visible" : "hidden"}`} onClick={() => { setShowOptions(true); }}>
+          <div className={`ait-table-options visible`} onClick={() => { setShowOptions(true); }}>
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-              <AioOptionDisplay options={options} setOptions={setOptions} />
+              <AioOptionDisplay options={tableData.options} setOptions={(ret) => returnData({ options: ret })} />
             </AsupInternalWindow>
           }
         </div>
         <table className="ait-table">
-          {headerData.rows.length > 0 &&
+          {tableData.headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
-                rowCells={bodyData.rowGroups[0].rows[0].cells}
+                rowCells={tableData.bodyData.rowGroups[0].rows[0].cells}
                 spaceAfter={true}
                 changeColumns={{
                   addColumn: addCol,
                   removeColumn: remCol,
-                  showButtons: true || showOptionsButton,
+                  showButtons: true,
                 }}
               />
               <AitHeader
-                aitid={headerData.aitid}
-                rows={headerData.rows}
-                options={headerData.options}
-                setHeaderData={setHeaderData}
+                aitid={tableData.headerData.aitid}
+                rows={tableData.headerData.rows}
+                options={tableData.headerData.options}
+                setHeaderData={(ret) => returnData({ headerData: ret })}
                 higherOptions={{
                   ...higherOptions,
                   tableSection: AitCellType.header,
                   rowGroup: 0,
                 }}
               />
-              <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} noBorder={true} />
+              <AitBorderRow rowCells={tableData.bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} noBorder={true} />
             </thead>
           }
 
           <tbody>
             <AitBorderRow
-              rowCells={bodyData.rowGroups[0].rows[0].cells}
+              rowCells={tableData.bodyData.rowGroups[0].rows[0].cells}
               spaceAfter={true}
-              changeColumns={headerData.rows.length === 0 ?
+              changeColumns={tableData.headerData.rows.length === 0
+                ?
                 {
                   addColumn: addCol,
                   removeColumn: remCol,
-                  showButtons: true || showOptionsButton,
+                  showButtons: true,
                 }
-                : undefined}
+                : undefined
+              }
             />
             {
-              bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) => {
+              tableData.bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) => {
 
+                /** Protect against missing information on load */
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
+                if (rowGroup.options === undefined) rowGroup.options = [];
 
                 return (
                   <AitRowGroup
@@ -250,7 +195,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 );
               })
             }
-            <AitBorderRow rowCells={bodyData.rowGroups[0].rows[0].cells} />
+            <AitBorderRow rowCells={tableData.bodyData.rowGroups[0].rows[0].cells} />
           </tbody>
         </table>
       </div>

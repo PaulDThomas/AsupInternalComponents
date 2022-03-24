@@ -30,18 +30,18 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
+  const returnData = useCallback((newRowGroup:{rows?: AitRowData[], options?: AioOptionGroup}) => {
     let r: AitRowGroupData = {
       aitid: aitid,
-      rows: rows,
-      options: options
+      rows: newRowGroup.rows ?? rows,
+      options: newRowGroup.options ?? options
     };
     let [chkObj] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       setRowGroupData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, setRowGroupData, lastSend, location]);
+  }, [aitid, rows, options, lastSend, location, setRowGroupData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
@@ -51,11 +51,11 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
     // Create new object to send back
     let newRows = [...rows];
     newRows[ri] = ret;
-    returnData(newRows, options);
-  }, [setRowGroupData, rows, returnData, options]);
+    returnData({rows:newRows});
+  }, [setRowGroupData, rows, returnData]);
 
   const addRow = useCallback((ri) => {
-    let newRowGroup = { aitid: aitid, rows: rows, options: options };
+    let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
       options: [],
@@ -65,23 +65,15 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
-    newRowGroup.rows.splice(ri + 1, 0, newRow);
-    setRowGroupData(newRowGroup);
-  }, [aitid, options, rows, setRowGroupData])
+    newRows.splice(ri + 1, 0, newRow);
+    returnData({rows:newRows});
+  }, [returnData, rows])
 
   const removeRow = useCallback((ri) => {
-    let newRowGroup = { aitid: aitid, rows: rows, options: options };
-    newRowGroup.rows.splice(ri, 1);
-    // updateTable(headerData, newBody, options);
-    setRowGroupData(newRowGroup);
-  }, [aitid, options, rows, setRowGroupData])
-
-  // Update options
-  const updateOptions = useCallback((ret: AioOptionGroup) => {
-    // Do nothing if readonly
-    if (typeof (setRowGroupData) !== "function") return;
-    returnData(rows, ret);
-  }, [setRowGroupData, returnData, rows]);
+    let newRows = [...rows];
+    newRows.splice(ri, 1);
+    returnData({rows:newRows});
+  }, [returnData, rows])
 
   // Get rows after repeat processing
   const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
@@ -139,7 +131,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
             rowGroupOptions={options}
-            setRowGroupOptions={updateOptions}
+            setRowGroupOptions={(ret) => returnData({options:ret})}
             addRowGroup={addRowGroup}
             removeRowGroup={removeRowGroup}
             addRow={addRow}
