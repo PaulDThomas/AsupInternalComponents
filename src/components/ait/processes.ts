@@ -162,7 +162,7 @@ export const repeatRows = (
     /** First row number that needs to be repeated for this level */
     let firstLevel: number = firstUnequal(repNo, lastRepeat);
     /** Rows that need to be repeated for this level */
-    let slice = rows.slice(targetArray[firstLevel]);
+    let slice = repi === 0 ? rows : rows.slice(targetArray[firstLevel]);
     /** Push current repeats into the output */
     newRows.push(...(repi === 0 ? slice : structuredClone(slice)));
     newRepeatNumbers.push(...Array(slice.length).fill(repNo));
