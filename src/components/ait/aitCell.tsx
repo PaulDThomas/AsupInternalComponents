@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
@@ -66,20 +66,27 @@ export const AitCell = ({
 }: AitCellProps) => {
 
   // Data holder
-  const [receivedText, setReceivedText] = useState(text);
   const [displayText, setDisplayText] = useState(replacedText ?? text);
   const [buttonState, setButtonState] = useState("hidden");
-  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({ aitid: aitid, text: text, replacedText: replacedText, rowSpan: rowSpan, colSpan: colSpan, options: options }));
+  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({
+    aitid: aitid,
+    text: text,
+    replacedText: replacedText,
+    rowSpan: rowSpan,
+    colSpan: colSpan,
+    options: options
+  }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
   const [cellStyle, setCellStyle] = useState<React.CSSProperties>();
-  const [currentReadOnly, setCurrentReadOnly] = useState(() => {
+
+  const currentReadOnly = useMemo(() => {
     return readOnly
       || typeof (setCellData) !== "function"
       || (options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
-      || displayText !== receivedText
-  });
+      || displayText === replacedText
+  }, [displayText, options, readOnly, replacedText, setCellData]);
 
   // Static options/variables
   const cellType = useMemo(() => {
@@ -104,22 +111,6 @@ export const AitCell = ({
     }
   }, [columnIndex, higherOptions.repeatNumber, higherOptions.row, higherOptions.rowGroup, higherOptions.tableSection]);
 
-  /** Updates to initial text */
-  useEffect(() => {
-    let newText = replacedText ?? text;
-    // Check read only flag
-    setCurrentReadOnly(
-      readOnly
-      || replacedText !== undefined
-      || typeof (setCellData) !== "function"
-      || (options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
-      || newText !== text
-    );
-    setReceivedText(text);
-    setDisplayText(newText);
-  }, [replacedText, text, options, readOnly, setCellData]);
-
-
   // Update cell style when options change
   useEffect(() => {
     const style = {
@@ -136,19 +127,17 @@ export const AitCell = ({
     setCellStyle(style);
   }, [location.row, location.rowGroup, higherOptions.showCellBorders, options]);
 
-
-  /** Send data back, should only be called for displayText */
-  useEffect(() => {
+  /** Callback for update to any cell data */
+  const returnData = useCallback((cellUpdate: { text?: string, options?: AioOptionGroup }) => {
     if (currentReadOnly) return;
-    // All these parameters should be in the initial data
     const r: AitCellData = {
       aitid: aitid,
-      options: options ?? [],
-      text: displayText ?? "",
+      text: cellUpdate.text ?? text,
       replacedText: replacedText,
       rowSpan: rowSpan,
       colSpan: colSpan,
-    }
+      options: cellUpdate.options ?? options,
+    };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
@@ -156,7 +145,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [displayText, lastSend, currentReadOnly, setCellData, aitid, options, replacedText, rowSpan, colSpan, location]);
+  }, [aitid, colSpan, currentReadOnly, lastSend, location, options, replacedText, rowSpan, setCellData, text]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -177,26 +166,6 @@ export const AitCell = ({
       case (AitOptionLocation.rowGroup): setShowRowGroupOptions(false); break;
       case (AitOptionLocation.row): setShowRowOptions(false); break;
       case (AitOptionLocation.cell): setShowCellOptions(false); break;
-      default: break;
-    }
-  }
-  // Add group button
-  const onAddClick = (optionType: AitOptionLocation) => {
-    setButtonState("hidden");
-    switch (optionType) {
-      case (AitOptionLocation.rowGroup): addRowGroup!(higherOptions.rowGroup!); break;
-      // case (AitOptionLocation.row): setShowRowOptions(true); break;
-      // case (AitOptionLocation.cell): setShowCellOptions(true); break;
-      default: break;
-    }
-  }
-  // Remove group button
-  const onRemoveClick = (optionType: AitOptionLocation) => {
-    setButtonState("hidden");
-    switch (optionType) {
-      case (AitOptionLocation.rowGroup): removeRowGroup!(higherOptions.rowGroup!); break;
-      // case (AitOptionLocation.row): setShowRowOptions(true); break;
-      // case (AitOptionLocation.cell): setShowCellOptions(true); break;
       default: break;
     }
   }
@@ -233,18 +202,18 @@ export const AitCell = ({
                 (<>
                   {typeof (addRowGroup) === "function" &&
                     <div
-                      className={`ait-options-button ait-options-button-add-row-group ${false && buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { onAddClick(AitOptionLocation.rowGroup) }}
+                      className={`ait-options-button ait-options-button-add-row-group`}
+                      onClick={(e) => { addRowGroup(location.rowGroup) }}
                     />
                   }
                   {typeof (removeRowGroup) === "function" &&
                     <div
-                      className={`ait-options-button ait-options-button-remove-row-group ${false && buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { onRemoveClick(AitOptionLocation.rowGroup) }}
+                      className={`ait-options-button ait-options-button-remove-row-group`}
+                      onClick={(e) => { removeRowGroup(location.rowGroup) }}
                     />
                   }
                   <div
-                    className={`ait-options-button ait-options-button-row-group ${false && buttonState === "hidden" ? "hidden" : ""}`}
+                    className={`ait-options-button ait-options-button-row-group`}
                     onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
                   />
                 </>)
@@ -255,19 +224,19 @@ export const AitCell = ({
                 ?
                 <>
                   <div
-                    className={`ait-options-button ait-options-button-row ${false && buttonState === "hidden" ? "hidden" : ""}`}
+                    className={`ait-options-button ait-options-button-row`}
                     onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
                   />
                   {typeof addRow === "function" &&
                     <div
-                      className={`ait-options-button ait-options-button-add-row ${false && buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { addRow!(location.row) }}
+                      className={`ait-options-button ait-options-button-add-row`}
+                      onClick={(e) => { addRow(location.row) }}
                     />
                   }
                   {typeof removeRow === "function" &&
                     <div
-                      className={`ait-options-button ait-options-button-remove-row ${false && buttonState === "hidden" ? "hidden" : ""}`}
-                      onClick={(e) => { removeRow!(location.row) }}
+                      className={`ait-options-button ait-options-button-remove-row`}
+                      onClick={(e) => { removeRow(location.row) }}
                     />
                   }                </>
                 :
@@ -287,7 +256,7 @@ export const AitCell = ({
           textAlignment={(cellType === AitCellType.rowHeader ? "left" : "center")}
           showStyleButtons={false}
           value={displayText}
-          setValue={setDisplayText}
+          setValue={(ret) => { setDisplayText(ret); returnData({ text: ret }); }}
           editable={!currentReadOnly}
           highlightChanges={true}
         />
@@ -337,7 +306,7 @@ export const AitCell = ({
             <div className="aiw-body-row">
               <div className={"aio-label"}>Row span: </div>
               <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
-              <div className={"aiox-button-holder"} style={{padding:"2px"}}>
+              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
                 {(typeof addRowSpan === "function") && <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />}
                 {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
               </div>
@@ -345,7 +314,7 @@ export const AitCell = ({
             <div className="aiw-body-row">
               <div className={"aio-label"}>Column span: </div>
               <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
-              <div className={"aiox-button-holder"} style={{padding:"2px"}}>
+              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
                 {(typeof addColSpan === "function") && <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />}
                 {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
               </div>

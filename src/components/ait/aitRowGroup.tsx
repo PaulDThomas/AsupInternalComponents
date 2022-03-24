@@ -30,13 +30,15 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((newRowGroup:{rows?: AitRowData[], options?: AioOptionGroup}) => {
+  const returnData = useCallback((rowGroupUpdate: { rows?: AitRowData[], options?: AioOptionGroup }) => {
+    if (typeof setRowGroupData !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
-      rows: newRowGroup.rows ?? rows,
-      options: newRowGroup.options ?? options
+      rows: rowGroupUpdate.rows ?? rows,
+      options: rowGroupUpdate.options ?? options
     };
-    let [chkObj] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       setRowGroupData!(r);
       setLastSend(structuredClone(r));
@@ -51,7 +53,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
     // Create new object to send back
     let newRows = [...rows];
     newRows[ri] = ret;
-    returnData({rows:newRows});
+    returnData({ rows: newRows });
   }, [setRowGroupData, rows, returnData]);
 
   const addRow = useCallback((ri) => {
@@ -66,13 +68,13 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
     newRows.splice(ri + 1, 0, newRow);
-    returnData({rows:newRows});
+    returnData({ rows: newRows });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri) => {
     let newRows = [...rows];
     newRows.splice(ri, 1);
-    returnData({rows:newRows});
+    returnData({ rows: newRows });
   }, [returnData, rows])
 
   // Get rows after repeat processing
@@ -121,6 +123,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
           spaceAfter = checkSpaceLevel >= isLastLevel;
         }
         if (!row.aitid) row.aitid = uuidv4();
+        if (!row.options) row.options = [];
 
         return (
           <AitRow
@@ -131,7 +134,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
             rowGroupOptions={options}
-            setRowGroupOptions={(ret) => returnData({options:ret})}
+            setRowGroupOptions={(ret) => returnData({ options: ret })}
             addRowGroup={addRowGroup}
             removeRowGroup={removeRowGroup}
             addRow={addRow}

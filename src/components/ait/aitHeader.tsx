@@ -28,36 +28,27 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rows: AitRowData[], options: AioOptionGroup) => {
+  const returnData = useCallback((headerUpdate:{rows?: AitRowData[], options?: AioOptionGroup}) => {
+    if (typeof (setHeaderData) !== "function") return;
     let r = {
-      aitid: aitid ?? aitid,
-      rows: rows,
-      options: options
+      aitid: aitid,
+      rows: headerUpdate.rows ?? rows,
+      options: headerUpdate.options ?? options,
     };
     let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       setHeaderData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [lastSend, location, aitid, setHeaderData]);
+  }, [aitid, rows, options, lastSend, location, setHeaderData]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
-    // Do nothing if readonly
-    if (typeof (setHeaderData) !== "function") return;
-
     // Create new object to send back
     let newRows = [...rows];
     newRows[ri] = ret;
-    returnData(newRows, options);
-  }, [options, rows, setHeaderData, returnData]);
-
-  // Update options
-  const updateOptions = useCallback((ret: AioOptionGroup) => {
-    // Do nothing if readonly
-    if (typeof (setHeaderData) !== "function") return;
-    returnData(rows, ret);
-  }, [rows, setHeaderData, returnData]);
+    returnData({rows:newRows});
+  }, [rows, returnData]);
 
   // Manipulate spans
   const addColSpan = useCallback((loc: AitLocation) => {
@@ -85,7 +76,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               higherOptions={rowHigherOptions}
               spaceAfter={false}
               rowGroupOptions={options}
-              setRowGroupOptions={updateOptions}
+              setRowGroupOptions={(ret) => returnData({options:ret})}
               rowGroupWindowTitle={"Header options"}
               addColSpan={addColSpan}
               removeColSpan={addColSpan}

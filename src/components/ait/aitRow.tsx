@@ -28,19 +28,19 @@ interface AitRowProps {
   removeRowSpan?: (loc: AitLocation) => void,
 }
 
-export const AitRow = ({ 
-  aitid, 
-  cells, 
-  options, 
-  setRowData, 
-  higherOptions, 
-  rowGroupOptions, 
-  setRowGroupOptions, 
-  rowGroupWindowTitle, 
-  addRowGroup, 
+export const AitRow = ({
+  aitid,
+  cells,
+  options,
+  setRowData,
+  higherOptions,
+  rowGroupOptions,
+  setRowGroupOptions,
+  rowGroupWindowTitle,
+  addRowGroup,
   removeRowGroup,
-  addRow, 
-  removeRow, 
+  addRow,
+  removeRow,
   spaceAfter,
   addColSpan,
   removeColSpan,
@@ -60,11 +60,12 @@ export const AitRow = ({
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((cells: AitCellData[], options: AioOptionGroup) => {
+  const returnData = useCallback((rowUpdate: { cells?: AitCellData[], options?: AioOptionGroup }) => {
+    if (typeof (setRowData) !== "function") return;
     let r: AitRowData = {
       aitid: aitid,
-      cells: cells,
-      options: options,
+      cells: rowUpdate.cells ?? cells,
+      options: rowUpdate.options ?? options,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
@@ -72,23 +73,14 @@ export const AitRow = ({
       setRowData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, setRowData, lastSend, location]);
+  }, [setRowData, aitid, cells, options, lastSend, location]);
 
   const updateCell = useCallback((ret, ci) => {
-    // Do nothing if readonly
-    if (typeof (setRowData) !== "function") return;
-
     // Create new object to send back
     let newCells = [...cells];
     newCells[ci] = ret;
-    returnData(newCells, options);
-  }, [cells, options, setRowData, returnData]);
-
-  const updateOptions = useCallback((ret: AioOptionGroup) => {
-    // Do nothing if readonly
-    if (typeof (setRowData) !== "function") return;
-    returnData(cells, ret);
-  }, [cells, setRowData, returnData]);
+    returnData({ cells: newCells });
+  }, [cells, returnData]);
 
   return (
     <>
@@ -124,7 +116,7 @@ export const AitRow = ({
               addRowGroup={ci === 0 && higherOptions.row === 0 ? addRowGroup : undefined}
               removeRowGroup={ci === 0 && higherOptions.row === 0 ? removeRowGroup : undefined}
               rowOptions={ci === cells.length - 1 ? options : undefined}
-              setRowOptions={ci === cells.length - 1 ? updateOptions : undefined}
+              setRowOptions={ci === cells.length - 1 ? (ret) => { returnData({ options: ret }); } : undefined}
               addRow={ci === cells.length - 1 ? addRow : undefined}
               removeRow={ci === cells.length - 1 ? removeRow : undefined}
               addColSpan={addColSpan}

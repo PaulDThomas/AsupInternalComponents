@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioOptionGroup, AioOptionType, AioReplacement } from "components/aio/aioInterface";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitCellType, AitOptionList } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitCellType, AitOptionList, AitRowGroupOptionNames } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
@@ -25,14 +25,14 @@ interface AsupInteralTableProps {
 export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  const returnData = useCallback((newTableData: { headerData?: AitRowGroupData, bodyData?: AitTableBodyData, options?: AioOptionGroup }) => {
+  const returnData = useCallback((tableUpdate: { headerData?: AitRowGroupData, bodyData?: AitTableBodyData, options?: AioOptionGroup }) => {
     if (typeof (setTableData) !== "function") return;
 
 
     const r = {
-      headerData: newTableData.headerData ?? tableData.headerData,
-      bodyData: newTableData.bodyData ?? tableData.bodyData,
-      options: newTableData.options ?? tableData.options,
+      headerData: tableUpdate.headerData ?? tableData.headerData,
+      bodyData: tableUpdate.bodyData ?? tableData.bodyData,
+      options: tableUpdate.options ?? tableData.options,
     };
     setTableData(r);
   }, [setTableData, tableData.bodyData, tableData.headerData, tableData.options]);
@@ -144,7 +144,22 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
               <AitHeader
                 aitid={tableData.headerData.aitid}
                 rows={tableData.headerData.rows}
-                options={tableData.headerData.options}
+                options={
+                  tableData.headerData.options?.length > 0
+                    ?
+                    tableData.headerData.options
+                    :
+                    /** Default header options */
+                    [
+                      { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "Header" },
+                      {
+                        optionName: AitRowGroupOptionNames.replacements,
+                        label: "Replacement lists",
+                        type: AioOptionType.replacements,
+                        value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
+                      },
+                    ]
+                }
                 setHeaderData={(ret) => returnData({ headerData: ret })}
                 higherOptions={{
                   ...higherOptions,
@@ -175,7 +190,16 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
                 /** Protect against missing information on load */
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
-                if (rowGroup.options === undefined) rowGroup.options = [];
+                /** Default row group options */
+                if (rowGroup.options === undefined || rowGroup.options.length === 0) rowGroup.options = [
+                  { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "New group" },
+                  {
+                    optionName: AitRowGroupOptionNames.replacements,
+                    label: "Replacement lists",
+                    type: AioOptionType.replacements,
+                    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
+                  },
+                ];
 
                 return (
                   <AitRowGroup
