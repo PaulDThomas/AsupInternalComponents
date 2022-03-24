@@ -2,7 +2,7 @@ import { AitCellOptionNames, AitRowGroupOptionNames, AitRowOptionNames, AitTable
 
 /** Individual options */
 export interface AioOption {
-  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
+  optionName?: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
   type: AioOptionType,
   value: any,
   label?: string,

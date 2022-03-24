@@ -4,8 +4,8 @@ export interface AitCellData {
   aitid: string,
   text: string,
   replacedText?: string,
-  rowSpan?: number,
-  colSpan?: number,
+  rowSpan: number,
+  colSpan: number,
   options: AioOptionGroup,
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { AitCellData, AitCellOptionNames } from "./aitInterface";
+import { AitCellData } from "./aitInterface";
 
 interface AitBorderRowProps {
   rowCells: Array<AitCellData>

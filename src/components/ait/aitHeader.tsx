@@ -59,6 +59,11 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     returnData(rows, ret);
   }, [rows, setHeaderData, returnData]);
 
+  // Manipulate spans
+  const addColSpan = useCallback((loc: AitLocation) => {
+    console.log(`Adding to rowspan for cell ${JSON.stringify(loc)}`);
+  },[]);
+
   return (
     <>
       {
@@ -82,6 +87,10 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               rowGroupOptions={options}
               setRowGroupOptions={updateOptions}
               rowGroupWindowTitle={"Header options"}
+              addColSpan={addColSpan}
+              removeColSpan={addColSpan}
+              addRowSpan={addColSpan}
+              removeRowSpan={addColSpan}
             />
           );
         }

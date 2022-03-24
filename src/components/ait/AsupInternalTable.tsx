@@ -180,7 +180,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
         style={props.style}
       >
         <div>
-          <div className={`ait-table-options  ${showOptionsButton ? "visible" : "hidden"}`} onClick={() => { setShowOptions(true); }}>
+          <div className={`ait-table-options  ${true || showOptionsButton ? "visible" : "hidden"}`} onClick={() => { setShowOptions(true); }}>
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
@@ -197,7 +197,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 changeColumns={{
                   addColumn: addCol,
                   removeColumn: remCol,
-                  showButtons: showOptionsButton,
+                  showButtons: true || showOptionsButton,
                 }}
               />
               <AitHeader
@@ -223,7 +223,7 @@ export const AsupInteralTable = (props: AsupInteralTableProps) => {
                 {
                   addColumn: addCol,
                   removeColumn: remCol,
-                  showButtons: showOptionsButton,
+                  showButtons: true || showOptionsButton,
                 }
                 : undefined}
             />

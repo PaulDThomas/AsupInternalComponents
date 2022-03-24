@@ -22,6 +22,10 @@ interface AitRowProps {
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
   spaceAfter: boolean,
+  addColSpan?: (loc: AitLocation) => void,
+  removeColSpan?: (loc: AitLocation) => void,
+  addRowSpan?: (loc: AitLocation) => void,
+  removeRowSpan?: (loc: AitLocation) => void,
 }
 
 export const AitRow = ({ 
@@ -37,7 +41,11 @@ export const AitRow = ({
   removeRowGroup,
   addRow, 
   removeRow, 
-  spaceAfter 
+  spaceAfter,
+  addColSpan,
+  removeColSpan,
+  addRowSpan,
+  removeRowSpan,
 }: AitRowProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells, options: options }));
 
@@ -91,7 +99,10 @@ export const AitRow = ({
           let cellHigherOptions = {
             ...higherOptions
           } as AitOptionList;
+          // Add defaults - can happen on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
+          if (cell.rowSpan === undefined) cell.rowSpan = 1;
+          if (cell.colSpan === undefined) cell.colSpan = 1;
 
           // Render object
           return (
@@ -116,6 +127,10 @@ export const AitRow = ({
               setRowOptions={ci === cells.length - 1 ? updateOptions : undefined}
               addRow={ci === cells.length - 1 ? addRow : undefined}
               removeRow={ci === cells.length - 1 ? removeRow : undefined}
+              addColSpan={addColSpan}
+              removeColSpan={removeColSpan}
+              addRowSpan={addRowSpan}
+              removeRowSpan={removeRowSpan}
             />
           );
         })}

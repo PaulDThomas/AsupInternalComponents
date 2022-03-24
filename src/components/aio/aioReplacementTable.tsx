@@ -26,6 +26,7 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
       replacementTexts: textArray,
       replacementValues: values,
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `Replacement.join(',')}-`);
     if (!chkObj) {
       props.setReplacement(r);

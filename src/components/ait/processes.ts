@@ -94,7 +94,7 @@ const firstUnequal = (a: number[], b: number[]): number => {
 }
 
 export const newCell = (): AitCellData => { 
-  return { aitid: uuidv4(), text: "", options: [] }; 
+  return { aitid: uuidv4(), text: "", options: [], rowSpan:1, colSpan:1 }; 
 }
 
 /** Find which row replacementText first appears in */
@@ -214,12 +214,12 @@ export const repeatRows = (
         }
       }
       else {
-        delete currentCell.rowSpan;
+        currentCell.rowSpan = 1;
       }
       col++;
     }
     while (col < newRows[r].cells.length) {
-      delete newRows[r].cells[col].rowSpan;
+      newRows[r].cells[col].rowSpan = 1;
       col++;
     }
   }
@@ -242,7 +242,7 @@ export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
     aitid: row.aitid,
     cells: row.cells.map(c => {
       if (c.replacedText !== undefined) delete (c.replacedText);
-      delete c.rowSpan;
+      c.rowSpan = 1;
       return c;      
     }),
     options: row.options,
