@@ -158,17 +158,14 @@ table.ait-table {
   border-bottom: 1px dotted #ccc;
   color: #006080;
 }
-
 .ait-tip-lhs {
   position: absolute;
   left: 0;
 }
-
 .ait-tip-rhs {
   position: absolute;
   right: 0;
 }
-
 .ait-tip .ait-tiptext {
   visibility: hidden;
   position: absolute;
@@ -182,12 +179,10 @@ table.ait-table {
   opacity: 0;
   transition: opacity .6s;
 }
-
 .ait-tip:hover .ait-tiptext {
   visibility: visible;
   opacity: 1;
 }
-
 .ait-tip .ait-tiptext2 {
   visibility: hidden;
   position: absolute;
@@ -308,7 +303,6 @@ table.ait-table {
   left: 50%;
   margin-left: -60px;
 }
-
 .ait-tip .ait-tiptext-bottomarrow::after {
   content: "";
   position: absolute;
@@ -319,7 +313,6 @@ table.ait-table {
   border-style: solid;
   border-color: black transparent transparent transparent;
 }
-
 .ait-tip:hover .ait-tiptext-bottomarrow {
   visibility: visible;
 }
@@ -338,7 +331,6 @@ table.ait-table {
   left: 50%;
   margin-left: -60px;
 }
-
 .ait-tip .ait-tiptext-toparrow::after {
   content: "";
   position: absolute;
@@ -349,7 +341,6 @@ table.ait-table {
   border-style: solid;
   border-color: transparent transparent black transparent;
 }
-
 .ait-tip:hover .ait-tiptext-toparrow {
   visibility: visible;
 }
@@ -367,7 +358,6 @@ table.ait-table {
   top: -5px;
   left: 110%;
 }
-
 .ait-tip .ait-tiptext-leftarrow::after {
   content: "";
   position: absolute;
@@ -396,7 +386,6 @@ table.ait-table {
   top: -5px;
   right: 110%;
 }
-
 .ait-tip .ait-tiptext-rightarrow::after {
   content: "";
   position: absolute;
@@ -407,7 +396,6 @@ table.ait-table {
   border-style: solid;
   border-color: transparent transparent transparent black;
 }
-
 .ait-tip:hover .ait-tiptext-rightarrow {
   visibility: visible;
 }
