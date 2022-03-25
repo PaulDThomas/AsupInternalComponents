@@ -121,7 +121,10 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
         style={style}
       >
         <div>
-          <div className={`ait-table-options visible`} onClick={() => { setShowOptions(true); }}>
+          <div className="ait-tip">
+            <div className={`ait-table-options visible`} onClick={() => { setShowOptions(true); }}>
+              <span className="ait-tip-left ait-tiptext">Table settings</span>
+            </div>
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
