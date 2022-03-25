@@ -20,18 +20,25 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         <tr>
           {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
             <td className="ait-cell" key={ci}>
-              <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+              <div className="ait-tip ait-tip-rhs">
                 <div
                   className={`ait-options-button ait-options-button-add-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
                   onClick={(e) => { props.changeColumns!.addColumn!(ci) }}
-                />
-                {ci > 0 &&
-                  <div
-                    className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                    onClick={(e) => { props.changeColumns!.removeColumn!(ci) }}
-                  />
-                }
+                >
+                  <span className="ait-tiptext ait-tip-top">Add&nbsp;column</span>
+                </div>
               </div>
+
+              {ci > 0 &&
+              <div className="ait-tip ait-tip-lhs">
+                <div
+                  className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
+                  onClick={(e) => { props.changeColumns!.removeColumn!(ci) }}
+                >
+                  <span className="ait-tiptext ait-tip-top">Remove&nbsp;column</span>
+                </div>
+                </div>
+              }
             </td>
           )}
         </tr>

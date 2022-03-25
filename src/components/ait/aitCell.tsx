@@ -201,21 +201,33 @@ export const AitCell = ({
                 ?
                 (<>
                   {typeof (addRowGroup) === "function" &&
-                    <div
-                      className={`ait-options-button ait-options-button-add-row-group`}
-                      onClick={(e) => { addRowGroup(location.rowGroup) }}
-                    />
+                    <div className="ait-tip">
+                      <div
+                        className={`ait-options-button ait-options-button-add-row-group`}
+                        onClick={(e) => { addRowGroup(location.rowGroup) }}
+                      >
+                        <span className="ait-tiptext ait-tip-left">Add&nbsp;row&nbsp;group</span>
+                      </div>
+                    </div>
                   }
                   {typeof (removeRowGroup) === "function" &&
-                    <div
-                      className={`ait-options-button ait-options-button-remove-row-group`}
-                      onClick={(e) => { removeRowGroup(location.rowGroup) }}
-                    />
+                    <div className="ait-tip">
+                      <div
+                        className={`ait-options-button ait-options-button-remove-row-group`}
+                        onClick={(e) => { removeRowGroup(location.rowGroup) }}
+                      >
+                        <span className="ait-tiptext ait-tip-left">Remove&nbsp;row&nbsp;group</span>
+                      </div>
+                    </div>
                   }
-                  <div
-                    className={`ait-options-button ait-options-button-row-group`}
-                    onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
-                  />
+                  <div className="ait-tip">
+                    <div
+                      className={`ait-options-button ait-options-button-row-group`}
+                      onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
+                    >
+                      <span className="ait-tiptext ait-tip-left">Row&nbsp;group&nbsp;options</span>
+                    </div>
+                  </div>
                 </>)
                 :
                 null
@@ -223,31 +235,47 @@ export const AitCell = ({
               {(rowOptions)
                 ?
                 <>
-                  <div
-                    className={`ait-options-button ait-options-button-row`}
-                    onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
-                  />
-                  {typeof addRow === "function" &&
+                  <div className="ait-tip ait-tip-rhs">
                     <div
-                      className={`ait-options-button ait-options-button-add-row`}
-                      onClick={(e) => { addRow(location.row) }}
-                    />
+                      className={`ait-options-button ait-options-button-row`}
+                      onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
+                    >
+                      <span className="ait-tiptext ait-tip-right">Row&nbsp;options</span>
+                    </div>
+                  </div>
+                  {typeof addRow === "function" &&
+                    <div className="ait-tip ait-tip-rhs">
+                      <div
+                        className={`ait-options-button ait-options-button-add-row`}
+                        onClick={(e) => { addRow(location.row) }}
+                      >
+                        <span className="ait-tiptext ait-tip-right">Add&nbsp;row</span>
+                      </div>
+                    </div>
                   }
                   {typeof removeRow === "function" &&
-                    <div
-                      className={`ait-options-button ait-options-button-remove-row`}
-                      onClick={(e) => { removeRow(location.row) }}
-                    />
-                  }                </>
+                    <div className="ait-tip ait-tip-rhs">
+                      <div
+                        className={`ait-options-button ait-options-button-remove-row`}
+                        onClick={(e) => { removeRow(location.row) }}
+                      >
+                        <span className="ait-tiptext ait-tip-right">Remove&nbsp;row</span>
+                      </div>
+                    </div>
+                  }
+                </>
                 :
                 null
               }
             </>
           }
-          <div
-            className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
-            onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
-          >
+          <div className="ait-tip ait-tip-rhs">
+            <div
+              className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
+              onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
+            >
+              <span className="ait-tiptext ait-tip-right">Cell&nbsp;options</span>
+            </div>
           </div>
         </>
 
