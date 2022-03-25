@@ -6,6 +6,7 @@ export interface AitCellData {
   replacedText?: string,
   rowSpan: number,
   colSpan: number,
+  colWidth?: string,
   options: AioOptionGroup,
 };
 
@@ -60,7 +61,7 @@ export enum AitRowType {
 }
 
 export enum AitCellOptionNames {
-  cellWidth = "cellWidth",
+  // cellWidth = "cellWidth",
   cellStatistic = "cellStatisic",
   cellText = "cellText",
   // colSpan = "colSpan",

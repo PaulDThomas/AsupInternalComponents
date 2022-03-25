@@ -1,7 +1,7 @@
 import structuredClone from "@ungap/structured-clone";
 import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup, AioOptionType, AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
-import { AitCellData, AitCellOptionNames, AitRowData } from "./aitInterface";
+import { AitCellData, AitCellOptionNames, AitCellType, AitRowData } from "./aitInterface";
 
 /**
  * Update options with another set of options
@@ -93,8 +93,10 @@ const firstUnequal = (a: number[], b: number[]): number => {
   else return 0;
 }
 
-export const newCell = (): AitCellData => { 
-  return { aitid: uuidv4(), text: "", options: [], rowSpan:1, colSpan:1 }; 
+export const newCell = (type?: AitCellType): AitCellData => {
+  let cell: AitCellData = { aitid: uuidv4(), text: "", options: [], rowSpan: 1, colSpan: 1 };
+  if (type === AitCellType.header) cell.colWidth = "120px";
+  return cell;
 }
 
 /** Find which row replacementText first appears in */
@@ -237,13 +239,13 @@ export const removeCellOption = (cell: AitCellData, optionName: AitCellOptionNam
   if (optionIndex > -1) cell.options.splice(optionIndex, 1);
 }
 
-export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
-  let newRow:AitRowData = {
+export const removeRowRepeatInfo = (row: AitRowData): AitRowData => {
+  let newRow: AitRowData = {
     aitid: row.aitid,
     cells: row.cells.map(c => {
       if (c.replacedText !== undefined) delete (c.replacedText);
       c.rowSpan = 1;
-      return c;      
+      return c;
     }),
     options: row.options,
   };

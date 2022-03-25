@@ -105,6 +105,7 @@ export const AitRow = ({
               replacedText={cell.replacedText}
               colSpan={cell.colSpan}
               rowSpan={cell.rowSpan}
+              colWidth={cell.colWidth}
               options={cell.options}
               higherOptions={cellHigherOptions}
               columnIndex={ci} /* This needs to be calculated after row/colspan! */

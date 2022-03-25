@@ -237,7 +237,7 @@ table.ait-table {
   margin-left: -60px;
 }
 
-.ait-tip-bottom::after {
+/* .ait-tip-bottom::after {
   content: "";
   position: absolute;
   bottom: 100%;
@@ -246,7 +246,7 @@ table.ait-table {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent #555 transparent;
-}
+} */
 
 .ait-tip-top {
   bottom: 125%;
@@ -260,7 +260,7 @@ table.ait-table {
   margin-left: -60px;
 }
 
-.ait-tip-top::after {
+/* .ait-tip-top::after {
   content: "";
   position: absolute;
   top: 100%;
@@ -269,7 +269,7 @@ table.ait-table {
   border-width: 5px;
   border-style: solid;
   border-color: #555 transparent transparent transparent;
-}
+} */
 
 .ait-tip-left {
   top: -5px;
@@ -294,7 +294,7 @@ table.ait-table {
   border-color: transparent transparent transparent #555;
 }
 
-.ait-tip .ait-tiptext-bottomarrow {
+/* .ait-tip .ait-tiptext-bottomarrow {
   visibility: hidden;
   width: 120px;
   background-color: #111;
@@ -322,9 +322,9 @@ table.ait-table {
 
 .ait-tip:hover .ait-tiptext-bottomarrow {
   visibility: visible;
-}
+} */
 
-.ait-tip .ait-tiptext-toparrow {
+/* .ait-tip .ait-tiptext-toparrow {
   visibility: hidden;
   width: 120px;
   background-color: #111;
@@ -348,7 +348,7 @@ table.ait-table {
   border-width: 5px;
   border-style: solid;
   border-color: transparent transparent black transparent;
-}
+} */
 
 .ait-tip:hover .ait-tiptext-toparrow {
   visibility: visible;

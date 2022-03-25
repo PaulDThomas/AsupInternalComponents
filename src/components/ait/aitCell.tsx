@@ -8,6 +8,7 @@ import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 // import { AioString } from "../aio/aioString";
 import { objEqual } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitCellOptionNames } from "./aitInterface";
+import { AioString } from "components/aio/aioString";
 
 
 interface AitCellProps {
@@ -16,6 +17,7 @@ interface AitCellProps {
   replacedText?: string,
   rowSpan: number,
   colSpan: number,
+  colWidth?: string,
   options: AioOptionGroup,
   columnIndex: number,
   setCellData: (ret: AitCellData) => void,
@@ -45,6 +47,7 @@ export const AitCell = ({
   replacedText,
   rowSpan,
   colSpan,
+  colWidth,
   options,
   columnIndex,
   setCellData,
@@ -67,6 +70,9 @@ export const AitCell = ({
 
   // Data holder
   const [displayText, setDisplayText] = useState(replacedText ?? text);
+  /* Need to update if these change */
+  useEffect(() => setDisplayText(replacedText ?? text), [replacedText, text]);
+
   const [buttonState, setButtonState] = useState("hidden");
   const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({
     aitid: aitid,
@@ -74,13 +80,14 @@ export const AitCell = ({
     replacedText: replacedText,
     rowSpan: rowSpan,
     colSpan: colSpan,
+    colWidth: colWidth,
     options: options
   }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
-  const [cellStyle, setCellStyle] = useState<React.CSSProperties>();
 
+  // Static options/variables
   const currentReadOnly = useMemo(() => {
     return readOnly
       || typeof (setCellData) !== "function"
@@ -88,7 +95,6 @@ export const AitCell = ({
       || displayText === replacedText
   }, [displayText, options, readOnly, replacedText, setCellData]);
 
-  // Static options/variables
   const cellType = useMemo(() => {
     let cellType =
       options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
@@ -112,9 +118,9 @@ export const AitCell = ({
   }, [columnIndex, higherOptions.repeatNumber, higherOptions.row, higherOptions.rowGroup, higherOptions.tableSection]);
 
   // Update cell style when options change
-  useEffect(() => {
-    const style = {
-      width: options?.find(o => o.optionName === AitCellOptionNames.cellWidth)?.value ?? "100px",
+  const cellStyle = useMemo<React.CSSProperties>(() => {
+    return {
+      width: colWidth ?? (cellType === AitCellType.header ? "120px" : undefined),
       borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderRight: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
@@ -124,11 +130,14 @@ export const AitCell = ({
           ? "1px dashed burlywood"
           : "",
     }
-    setCellStyle(style);
-  }, [location.row, location.rowGroup, higherOptions.showCellBorders, options]);
+  }, [cellType, colWidth, higherOptions.showCellBorders, location.row, location.rowGroup]);
 
   /** Callback for update to any cell data */
-  const returnData = useCallback((cellUpdate: { text?: string, options?: AioOptionGroup }) => {
+  const returnData = useCallback((cellUpdate: {
+    text?: string,
+    options?: AioOptionGroup,
+    colWidth?: string
+  }) => {
     if (currentReadOnly) return;
     const r: AitCellData = {
       aitid: aitid,
@@ -136,6 +145,7 @@ export const AitCell = ({
       replacedText: replacedText,
       rowSpan: rowSpan,
       colSpan: colSpan,
+      colWidth: cellUpdate.colWidth ?? colWidth,
       options: cellUpdate.options ?? options,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -145,7 +155,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, currentReadOnly, lastSend, location, options, replacedText, rowSpan, setCellData, text]);
+  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, options, replacedText, rowSpan, setCellData, text]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -206,7 +216,7 @@ export const AitCell = ({
                         className={`ait-options-button ait-options-button-add-row-group`}
                         onClick={(e) => { addRowGroup(location.rowGroup) }}
                       >
-                        <span className="ait-tiptext ait-tip-left">Add&nbsp;row&nbsp;group</span>
+                        <span className="ait-tiptext ait-tip-top">Add&nbsp;row&nbsp;group</span>
                       </div>
                     </div>
                   }
@@ -216,7 +226,7 @@ export const AitCell = ({
                         className={`ait-options-button ait-options-button-remove-row-group`}
                         onClick={(e) => { removeRowGroup(location.rowGroup) }}
                       >
-                        <span className="ait-tiptext ait-tip-left">Remove&nbsp;row&nbsp;group</span>
+                        <span className="ait-tiptext ait-tip-top">Remove&nbsp;row&nbsp;group</span>
                       </div>
                     </div>
                   }
@@ -225,7 +235,7 @@ export const AitCell = ({
                       className={`ait-options-button ait-options-button-row-group`}
                       onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
                     >
-                      <span className="ait-tiptext ait-tip-left">Row&nbsp;group&nbsp;options</span>
+                      <span className="ait-tiptext ait-tip-top">Row&nbsp;group&nbsp;options</span>
                     </div>
                   </div>
                 </>)
@@ -240,7 +250,7 @@ export const AitCell = ({
                       className={`ait-options-button ait-options-button-row`}
                       onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
                     >
-                      <span className="ait-tiptext ait-tip-right">Row&nbsp;options</span>
+                      <span className="ait-tiptext ait-tip-top">Row&nbsp;options</span>
                     </div>
                   </div>
                   {typeof addRow === "function" &&
@@ -249,7 +259,7 @@ export const AitCell = ({
                         className={`ait-options-button ait-options-button-add-row`}
                         onClick={(e) => { addRow(location.row) }}
                       >
-                        <span className="ait-tiptext ait-tip-right">Add&nbsp;row</span>
+                        <span className="ait-tiptext ait-tip-top">Add&nbsp;row</span>
                       </div>
                     </div>
                   }
@@ -259,7 +269,7 @@ export const AitCell = ({
                         className={`ait-options-button ait-options-button-remove-row`}
                         onClick={(e) => { removeRow(location.row) }}
                       >
-                        <span className="ait-tiptext ait-tip-right">Remove&nbsp;row</span>
+                        <span className="ait-tiptext ait-tip-top">Remove&nbsp;row</span>
                       </div>
                     </div>
                   }
@@ -274,7 +284,7 @@ export const AitCell = ({
               className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
               onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
             >
-              <span className="ait-tiptext ait-tip-right">Cell&nbsp;options</span>
+              <span className="ait-tiptext ait-tip-top">Cell&nbsp;options</span>
             </div>
           </div>
         </>
@@ -321,6 +331,7 @@ export const AitCell = ({
             }
           </>
         }
+        {/* Cell options window */}
         {showCellOptions &&
           <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
             <div className="aiw-body-row">
@@ -331,22 +342,51 @@ export const AitCell = ({
               <div className={"aio-label"}>Unprocessed text: </div>
               <div className={"aio-ro-value"}>{text}</div>
             </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Row span: </div>
-              <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
-              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                {(typeof addRowSpan === "function") && <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />}
-                {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
-              </div>
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Column span: </div>
-              <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
-              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                {(typeof addColSpan === "function") && <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />}
-                {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
-              </div>
-            </div>
+            {(typeof addRowSpan === "function") ?
+              <>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Row span: </div>
+                  <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
+                    {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
+                  </div>
+                </div>
+              </>
+              :
+              <></>
+            }
+            {(typeof addColSpan === "function")
+              ?
+              <>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Column span: </div>
+                  <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
+                    {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
+                  </div>
+                </div>
+              </>
+              :
+              <></>
+            }
+            {(cellType === AitCellType.header)
+              ?
+              <>
+                <div className="aiw-body-row">
+                  <AioString
+                    label="Colmn span"
+                    value={colWidth ?? "120px"}
+                    setValue={(ret) => returnData({
+                      colWidth: ret
+                    })}
+                  />
+                </div>
+              </>
+              :
+              <></>
+            }
           </AsupInternalWindow>
         }
       </div>

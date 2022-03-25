@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitCellType } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { newCell, objEqual } from "./processes";
 
@@ -60,7 +60,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
-    for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
+    for (let i = 0; i < cols; i++) newRow.cells.push(newCell(AitCellType.header));
     newRows.splice(ri + 1, 0, newRow);
     returnData({ rows: newRows });
   }, [returnData, rows])
