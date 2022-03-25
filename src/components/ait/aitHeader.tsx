@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AioOptionGroup } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { objEqual } from "./processes";
+import { newCell, objEqual } from "./processes";
 
 interface AitHeaderProps {
   aitid: string,
@@ -50,6 +50,28 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     returnData({rows:newRows});
   }, [rows, returnData]);
 
+  const addRow = useCallback((ri) => {
+    let newRows = [...rows];
+    let newRow: AitRowData = {
+      aitid: uuidv4(),
+      options: [],
+      cells: [],
+    };
+    let cols = rows[0].cells
+      .map(c => (c.colSpan ?? 1))
+      .reduce((sum, a) => sum + a, 0);
+    for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
+    newRows.splice(ri + 1, 0, newRow);
+    returnData({ rows: newRows });
+  }, [returnData, rows])
+
+  const removeRow = useCallback((ri) => {
+    let newRows = [...rows];
+    newRows.splice(ri, 1);
+    returnData({ rows: newRows });
+  }, [returnData, rows])
+
+
   // Manipulate spans
   const addColSpan = useCallback((loc: AitLocation) => {
     console.log(`Adding to rowspan for cell ${JSON.stringify(loc)}`);
@@ -65,7 +87,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
             row: ri,
           } as AitOptionList;
           if (row.aitid === undefined) row.aitid = uuidv4();
-
+          if (!row.options) row.options = [];
+          
           return (
             <AitRow
               key={row.aitid}
@@ -78,6 +101,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               rowGroupOptions={options}
               setRowGroupOptions={(ret) => returnData({options:ret})}
               rowGroupWindowTitle={"Header options"}
+              addRow={addRow}
+              removeRow={ri > 0 ? removeRow : undefined}
               addColSpan={addColSpan}
               removeColSpan={addColSpan}
               addRowSpan={addColSpan}
