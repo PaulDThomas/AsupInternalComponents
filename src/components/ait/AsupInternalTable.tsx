@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AioOptionType, AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitRowGroupData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
+import { AitRowGroupData, AitTableData, AitOptionList, AitRowType } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
@@ -64,11 +63,11 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     let newBody: AitRowGroupData[] = [...tableData.bodyData];
     let newRowGroup: AitRowGroupData = {
       aitid: uuidv4(),
-      options: [],
       rows: [{
         aitid: uuidv4(),
         cells: [],
-      }]
+      }],
+      replacements: [],
     };
     let cols = tableData.bodyData[0].rows[0].cells
       .map(c => c.colSpan ?? 1)
@@ -169,21 +168,11 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
               <AitHeader
                 aitid={tableData.headerData.aitid}
                 rows={tableData.headerData.rows}
-                options={
-                  tableData.headerData.options?.length > 0
-                    ?
-                    tableData.headerData.options
-                    :
-                    /** Default header options */
-                    [
-                      { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "Header" },
-                      {
-                        optionName: AitRowGroupOptionNames.replacements,
-                        label: "Replacement lists",
-                        type: AioOptionType.replacements,
-                        value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
-                      },
-                    ]
+                replacements={tableData.headerData.replacements ??
+                  [{
+                    replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
+                    replacementValues: [{ newText: "" }],
+                  }]
                 }
                 setHeaderData={(ret) => returnData({ headerData: ret })}
                 higherOptions={{
@@ -216,22 +205,17 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 /** Protect against missing information on load */
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
                 /** Default row group options */
-                if (rowGroup.options === undefined || rowGroup.options.length === 0) rowGroup.options = [
-                  { optionName: AitRowGroupOptionNames.rgName, label: "Group name", type: AioOptionType.string, value: "New group" },
-                  {
-                    optionName: AitRowGroupOptionNames.replacements,
-                    label: "Replacement lists",
-                    type: AioOptionType.replacements,
-                    value: [{ replacementTexts: [{ level: 0, text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] }] as AioReplacement[]
-                  },
-                ];
+                if (rowGroup.replacements === undefined) rowGroup.replacements = [{
+                  replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
+                  replacementValues: [{ newText: "" }]
+                }];
 
                 return (
                   <AitRowGroup
                     key={rowGroup.aitid}
                     aitid={rowGroup.aitid}
                     rows={rowGroup.rows}
-                    options={rowGroup.options}
+                    replacements={rowGroup.replacements}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
                     higherOptions={{
                       ...higherOptions,

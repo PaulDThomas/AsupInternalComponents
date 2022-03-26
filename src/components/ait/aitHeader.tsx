@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioReplacement } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitCellType, AitCellData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { newCell, objEqual } from "./processes";
@@ -9,13 +9,13 @@ import { newCell, objEqual } from "./processes";
 interface AitHeaderProps {
   aitid: string,
   rows: AitRowData[],
-  options: AioOptionGroup,
+  replacements: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
 }
 
-export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }: AitHeaderProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, options: options }));
+export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOptions }: AitHeaderProps): JSX.Element => {
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
 
   const location: AitLocation = useMemo(() => {
     return {
@@ -28,19 +28,19 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((headerUpdate: { rows?: AitRowData[], options?: AioOptionGroup }) => {
+  const returnData = useCallback((headerUpdate: { rows?: AitRowData[], replacements?: AioReplacement[] }) => {
     if (typeof (setHeaderData) !== "function") return;
-    let r = {
+    let r: AitRowGroupData = {
       aitid: aitid,
       rows: headerUpdate.rows ?? rows,
-      options: headerUpdate.options ?? options,
+      replacements: headerUpdate.replacements ?? replacements,
     };
     let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       setHeaderData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, rows, options, lastSend, location, setHeaderData]);
+  }, [setHeaderData, aitid, rows, replacements, lastSend, location]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
@@ -75,8 +75,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
   const addColSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell:AitCellData = newRows[loc.row].cells[loc.column];
-    let hideCell:AitCellData = newRows[loc.row].cells[loc.column+targetCell.colSpan];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.rowSpan !== 1) return;
@@ -88,7 +88,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     targetCell.colSpan++;
     targetCell.colWidth = (targetCell.colWidth ?? 60) + (hideCell.colWidth ?? 60);
     // Hide next cell
-    hideCell.colSpan=0;
+    hideCell.colSpan = 0;
     newRows[loc.row].cells[loc.column + targetCell.colSpan - 1].colSpan = 0;
     // Done
     returnData({ rows: newRows });
@@ -97,8 +97,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
   const removeColSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell:AitCellData = newRows[loc.row].cells[loc.column];
-    let hideCell:AitCellData = newRows[loc.row].cells[loc.column+targetCell.colSpan -1];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan - 1];
     // Update target cell
     targetCell.colSpan--;
     targetCell.colWidth = (targetCell.colWidth ?? 60) - (hideCell.colWidth ?? 60);
@@ -111,8 +111,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
   const addRowSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell:AitCellData = newRows[loc.row].cells[loc.column];
-    let hideCell:AitCellData = newRows[loc.row+targetCell.rowSpan]?.cells[loc.column];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[loc.column];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.colSpan !== 1) return;
@@ -122,7 +122,7 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     // Update target cell
     targetCell.rowSpan++;
     // Hide next cell
-    hideCell.rowSpan=0;
+    hideCell.rowSpan = 0;
     // Done
     returnData({ rows: newRows });
   }, [higherOptions.rowHeaderColumns, returnData, rows]);
@@ -131,17 +131,17 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     console.log(`Removing to rowspan for cell ${JSON.stringify(loc)}`);
     // Get things to change
     let newRows = [...rows];
-    let targetCell:AitCellData = newRows[loc.row].cells[loc.column];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
     // Check before getting hidden cell
-    if (!newRows[loc.row+targetCell.rowSpan-1]?.cells.length) return;
-    let hideCell:AitCellData = newRows[loc.row+1].cells[loc.column];
+    if (!newRows[loc.row + targetCell.rowSpan - 1]?.cells.length) return;
+    let hideCell: AitCellData = newRows[loc.row + 1].cells[loc.column];
     // Update target cell
     targetCell.rowSpan--;
     // Show hidden cell
     hideCell.rowSpan = 1;
     // Done
     returnData({ rows: newRows });
-    }, [returnData, rows]);
+  }, [returnData, rows]);
 
   return (
     <>
@@ -163,8 +163,8 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={rowHigherOptions}
               spaceAfter={false}
-              rowGroupOptions={options}
-              setRowGroupOptions={(ret) => returnData({ options: ret })}
+              replacements={replacements}
+              setReplacements={(ret) => returnData({ replacements: ret })}
               rowGroupWindowTitle={"Header options"}
               addRow={addRow}
               removeRow={ri > 0 ? removeRow : undefined}

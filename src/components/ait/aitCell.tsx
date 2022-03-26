@@ -2,12 +2,12 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
-import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { objEqual } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitRowType } from "./aitInterface";
 import { AioNumber } from "components/aio/aioNumber";
+import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
 
 
 interface AitCellProps {
@@ -21,8 +21,8 @@ interface AitCellProps {
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
-  rowGroupOptions?: AioOptionGroup,
-  setRowGroupOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
+  replacements?: AioReplacement[],
+  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
@@ -50,8 +50,8 @@ export const AitCell = ({
   setCellData,
   readOnly,
   higherOptions,
-  rowGroupOptions,
-  setRowGroupOptions,
+  replacements,
+  setReplacements,
   rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
@@ -138,7 +138,6 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
-    options?: AioOptionGroup,
     colWidth?: number
   }) => {
     if (currentReadOnly) return;
@@ -209,7 +208,7 @@ export const AitCell = ({
         <>
           {readOnly === false &&
             <>
-              {(rowGroupOptions)
+              {(replacements)
                 ?
                 (<>
                   {typeof (addRowGroup) === "function" &&
@@ -306,16 +305,14 @@ export const AitCell = ({
       <div>
         {readOnly === false &&
           <>
-            {showRowGroupOptions &&
+            {showRowGroupOptions && replacements !== undefined &&
               <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
-                <AioOptionDisplay
-                  options={rowGroupOptions}
-                  setOptions={(ret) => {
-                    if (!rowGroupOptions) return;
-                    let rgl = { tableSection: higherOptions.tableSection, rowGroup: higherOptions.rowGroup, row: -1, column: -1 } as AitLocation;
-                    setRowGroupOptions!(ret, rgl);
-                  }}
-                />
+                <div className="aiw-body-row">
+                  <AioReplacementDisplay
+                    replacements={replacements!}
+                    setReplacements={typeof setReplacements === "function" ? ret => {setReplacements(ret, location)} : undefined}
+                    />
+                </div>
               </AsupInternalWindow>
             }
 

@@ -1,23 +1,23 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import structuredClone from '@ungap/structured-clone';
-import { AioOptionGroup, AioRepeats, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitRowGroupOptionNames } from "./aitInterface";
+import { AioRepeats, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { getRepeats, newCell, objEqual, repeatRows } from "./processes";
 
 interface AitRowGroupProps {
   aitid: string,
   rows: AitRowData[]
-  options: AioOptionGroup
+  replacements: AioReplacement[],
   setRowGroupData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
 }
 
-export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptions, addRowGroup, removeRowGroup }: AitRowGroupProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, options: options }));
+export const AitRowGroup = ({ aitid, rows, replacements, setRowGroupData, higherOptions, addRowGroup, removeRowGroup }: AitRowGroupProps): JSX.Element => {
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements}));
 
   const location: AitLocation = useMemo(() => {
     return {
@@ -30,12 +30,12 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rowGroupUpdate: { rows?: AitRowData[], options?: AioOptionGroup }) => {
+  const returnData = useCallback((rowGroupUpdate: { rows?: AitRowData[], replacements?: AioReplacement[] }) => {
     if (typeof setRowGroupData !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
       rows: rowGroupUpdate.rows ?? rows,
-      options: rowGroupUpdate.options ?? options
+      replacements: rowGroupUpdate.replacements ?? replacements
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
@@ -43,7 +43,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
       setRowGroupData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, rows, options, lastSend, location, setRowGroupData]);
+  }, [setRowGroupData, aitid, rows, replacements, lastSend, location]);
 
   // Update row
   const updateRow = useCallback((ret, ri) => {
@@ -81,7 +81,7 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
 
     let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
     // Find first of replacments if there are any
-    let r: AioReplacement[] = options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
+    let r: AioReplacement[] = replacements;
     if (!r) return { rows: rows, repeats: newRepeats };
     let replacementText: AioReplacementText[] = r.map(r => r.replacementTexts).flat();
 
@@ -96,19 +96,17 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
       higherOptions.rowHeaderColumns,
     );
     return x;
-  }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, options, rows]);
+  }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
 
   // Output the rows
   return (
     <>
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
-        let replacements: AioReplacement[] = options.find(o => o.optionName === AitRowGroupOptionNames.replacements)?.value;
         let rowHigherOptions = {
           ...higherOptions,
           row: ri,
           repeatNumber: processed.repeats.numbers[ri],
           repeatValues: processed.repeats.values[ri],
-          replacements: replacements,
         } as AitOptionList;
 
         let spaceAfter = false;
@@ -130,8 +128,8 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
-            rowGroupOptions={options}
-            setRowGroupOptions={(ret) => returnData({ options: ret })}
+            replacements={replacements}
+            setReplacements={(ret) => returnData({ replacements: ret })}
             addRowGroup={addRowGroup}
             removeRowGroup={removeRowGroup}
             addRow={addRow}

@@ -1,8 +1,6 @@
-import { AitRowGroupOptionNames, AitTableOptionNames } from "components/ait/aitInterface";
-
 /** Individual options */
 export interface AioOption {
-  optionName?: AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
+  optionName?: AioNewItem,
   type: AioOptionType,
   value: any,
   label?: string,

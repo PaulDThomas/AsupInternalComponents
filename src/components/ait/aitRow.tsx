@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup } from "components/aio/aioInterface";
+import { AioReplacement } from "components/aio/aioInterface";
 import { AitRowData, AitCellData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitCell } from "./aitCell";
 import { objEqual } from "./processes";
@@ -13,8 +13,8 @@ interface AitRowProps {
   cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  rowGroupOptions: AioOptionGroup,
-  setRowGroupOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
+  replacements: AioReplacement[],
+  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
@@ -32,8 +32,8 @@ export const AitRow = ({
   cells,
   setRowData,
   higherOptions,
-  rowGroupOptions,
-  setRowGroupOptions,
+  replacements,
+  setReplacements,
   rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
@@ -58,7 +58,7 @@ export const AitRow = ({
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rowUpdate: { cells?: AitCellData[], options?: AioOptionGroup }) => {
+  const returnData = useCallback((rowUpdate: { cells?: AitCellData[] }) => {
     if (typeof (setRowData) !== "function") return;
     let r: AitRowData = {
       aitid: aitid,
@@ -108,8 +108,8 @@ export const AitRow = ({
               columnIndex={ci} /* This needs to be calculated after row/colspan! */
               setCellData={(ret) => updateCell(ret, ci)}
               readOnly={((cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
-              rowGroupOptions={ci === 0 && higherOptions.row === 0 ? rowGroupOptions : undefined}
-              setRowGroupOptions={ci === 0 && higherOptions.row === 0 ? setRowGroupOptions : undefined}
+              replacements={ci === 0 && higherOptions.row === 0 ? replacements : undefined}
+              setReplacements={ci === 0 && higherOptions.row === 0 ? setReplacements : undefined}
               rowGroupWindowTitle={ci === 0 && higherOptions.row === 0 ? rowGroupWindowTitle : undefined}
               addRowGroup={ci === 0 && higherOptions.row === 0 ? addRowGroup : undefined}
               removeRowGroup={ci === 0 && higherOptions.row === 0 ? removeRowGroup : undefined}

@@ -1,4 +1,4 @@
-import { AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
+import { AioReplacement } from "components/aio/aioInterface";
 
 export interface AitCellData {
   aitid: string,
@@ -17,7 +17,7 @@ export interface AitRowData {
 export interface AitRowGroupData {
   aitid: string,
   rows: Array<AitRowData>,
-  options: AioOptionGroup,
+  replacements: AioReplacement[],
 };
 
 export interface AitTableData {
@@ -26,7 +26,6 @@ export interface AitTableData {
   rowHeaderColumns: number,
   noRepeatProcessing: boolean,
 };
-
 
 export interface AitLocation {
   tableSection: AitRowType,
@@ -50,22 +49,10 @@ export enum AitCellType {
 }
 
 export enum AitRowType {
-  "header",
-  "body",
+  header = "header",
+  body = "body",
 }
 
-export enum AitRowGroupOptionNames {
-  rgName = "rgName",
-  replacements = "replacements",
-};
-export enum AitTableOptionNames {
-  tableName = "tableName",
-  tableDescription = "tableDescription",
-  noRepeatProcessing = "noRepeatProcessing",
-  rowHeaderColumns = "rowHeaderColumns",
-  repeatingColumns = "repeatingColumns",
-  columnRepeatList = "columnRepeatList",
-};
 export interface AitOptionList {
   tableSection: AitRowType,
   noRepeatProcessing: boolean,
