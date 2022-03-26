@@ -4,7 +4,7 @@ import { AioOptionType, AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitRowGroupData, AitTableBodyData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
+import { AitRowGroupData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
@@ -36,7 +36,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   // Return data
   const returnData = useCallback((tableUpdate: {
     headerData?: AitRowGroupData,
-    bodyData?: AitTableBodyData,
+    bodyData?: AitRowGroupData[],
     rowHeaderColumns?: number,
     noRepeatProcessing?: boolean,
   }) => {
@@ -50,18 +50,18 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
     };
     setTableData(r);
-  }, [setTableData, tableData.bodyData, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
+  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
-    newBody.rowGroups[rgi] = ret;
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    newBody[rgi] = ret;
     returnData({ bodyData: newBody });
-  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, returnData]);
+  }, [tableData.bodyData, returnData]);
 
   // Add a new row group to the table body
   const addRowGroup = useCallback((rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
     let newRowGroup: AitRowGroupData = {
       aitid: uuidv4(),
       options: [],
@@ -70,20 +70,20 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
         cells: [],
       }]
     };
-    let cols = tableData.bodyData.rowGroups[0].rows[0].cells
+    let cols = tableData.bodyData[0].rows[0].cells
       .map(c => c.colSpan ?? 1)
       .reduce((sum, a) => sum + a, 0);
     for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
-    newBody.rowGroups.splice(rgi + 1, 0, newRowGroup);
+    newBody.splice(rgi + 1, 0, newRowGroup);
     returnData({ bodyData: newBody });
-  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, returnData]);
+  }, [tableData.bodyData, returnData]);
 
   // Remove a row group from the table body
   const removeRowGroup = useCallback((rgi: number) => {
-    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
-    newBody.rowGroups.splice(rgi, 1);
-    returnData({ bodyData: newBody });
-  }, [returnData, tableData.bodyData.options, tableData.bodyData.rowGroups]);
+    let newRowGroups: AitRowGroupData[] = [...tableData.bodyData];
+    newRowGroups.splice(rgi, 1);
+    returnData({ bodyData: newRowGroups });
+  }, [returnData, tableData.bodyData]);
 
   // Set up higher options, defaults need to be set
   let higherOptions = useMemo(() => {
@@ -96,8 +96,8 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
   // Add column 
   const addCol = useCallback((col: number) => {
-    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
-    newBody.rowGroups = newBody.rowGroups.map(rg => {
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(col + 1, 0, newCell());
         return r;
@@ -110,12 +110,12 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       return r;
     });
     returnData({ headerData: newHeader, bodyData: newBody });
-  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, tableData.headerData, returnData]);
+  }, [tableData.bodyData, tableData.headerData, returnData]);
 
   // Remove column 
   const remCol = useCallback((col: number) => {
-    let newBody: AitTableBodyData = { rowGroups: tableData.bodyData.rowGroups, options: tableData.bodyData.options };
-    newBody.rowGroups = newBody.rowGroups.map(rg => {
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(col, 1);
         return r;
@@ -128,7 +128,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       return r;
     });
     returnData({ headerData: newHeader, bodyData: newBody });
-  }, [tableData.bodyData.options, tableData.bodyData.rowGroups, tableData.headerData, returnData]);
+  }, [tableData.bodyData, tableData.headerData, returnData]);
 
   // Print the table
   return (
@@ -158,7 +158,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           {tableData.headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
-                rowCells={tableData.bodyData.rowGroups[0].rows[0].cells}
+                rowCells={tableData.bodyData[0].rows[0].cells}
                 spaceAfter={true}
                 changeColumns={{
                   addColumn: addCol,
@@ -192,13 +192,13 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                   rowGroup: 0,
                 }}
               />
-              <AitBorderRow rowCells={tableData.bodyData.rowGroups[0].rows[0].cells} spaceBefore={true} noBorder={true} />
+              <AitBorderRow rowCells={tableData.bodyData[0].rows[0].cells} spaceBefore={true} noBorder={true} />
             </thead>
           }
 
           <tbody>
             <AitBorderRow
-              rowCells={tableData.bodyData.rowGroups[0].rows[0].cells}
+              rowCells={tableData.bodyData[0].rows[0].cells}
               spaceAfter={true}
               changeColumns={tableData.headerData.rows.length === 0
                 ?
@@ -211,7 +211,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
               }
             />
             {
-              tableData.bodyData.rowGroups?.map((rowGroup: AitRowGroupData, rgi: number) => {
+              tableData.bodyData?.map((rowGroup: AitRowGroupData, rgi: number) => {
 
                 /** Protect against missing information on load */
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
@@ -244,7 +244,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 );
               })
             }
-            <AitBorderRow rowCells={tableData.bodyData.rowGroups[0].rows[0].cells} />
+            <AitBorderRow rowCells={tableData.bodyData[0].rows[0].cells} />
           </tbody>
         </table>
       </div>

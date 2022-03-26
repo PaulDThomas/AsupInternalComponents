@@ -20,14 +20,9 @@ export interface AitRowGroupData {
   options: AioOptionGroup,
 };
 
-export interface AitTableBodyData {
-  rowGroups: Array<AitRowGroupData>,
-  options: AioOptionGroup,
-};
-
 export interface AitTableData {
   headerData: AitRowGroupData,
-  bodyData: AitTableBodyData,
+  bodyData: AitRowGroupData[],
   rowHeaderColumns: number,
   noRepeatProcessing: boolean,
 };

@@ -18,30 +18,28 @@ export const TablePage = () => {
       ],
       options: []
     },
-    bodyData: {
-      rowGroups: [
-        {
-          rows: [
-            {
-              cells: [
-                { text: "E1", options: [] },
-                { text: "F1", options: [] },
-                { text: "G1", options: [] },
-                { text: "H1", options: [] },
-              ],
-            },
-            {
-              cells: [
-                { text: "E2", options: [] },
-                { text: "F3", options: [] },
-                { text: "G4", options: [] },
-                { text: "H5", options: [] },
-              ],
-            },
-          ],
-        },
-      ]
-    },
+    bodyData: [
+      {
+        rows: [
+          {
+            cells: [
+              { text: "E1", options: [] },
+              { text: "F1", options: [] },
+              { text: "G1", options: [] },
+              { text: "H1", options: [] },
+            ],
+          },
+          {
+            cells: [
+              { text: "E2", options: [] },
+              { text: "F3", options: [] },
+              { text: "G4", options: [] },
+              { text: "H5", options: [] },
+            ],
+          },
+        ],
+      },
+    ]
   });
 
   //
