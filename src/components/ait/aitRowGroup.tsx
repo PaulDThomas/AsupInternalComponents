@@ -60,7 +60,6 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
-      options: [],
       cells: [],
     };
     let cols = rows[0].cells
@@ -123,14 +122,12 @@ export const AitRowGroup = ({ aitid, rows, options, setRowGroupData, higherOptio
           spaceAfter = checkSpaceLevel >= isLastLevel;
         }
         if (!row.aitid) row.aitid = uuidv4();
-        if (!row.options) row.options = [];
 
         return (
           <AitRow
             key={rowHigherOptions.repeatNumber === undefined || rowHigherOptions.repeatNumber?.reduce((s, a) => s + a, 0) === 0 ? row.aitid : `${row.aitid}-${rowHigherOptions.repeatNumber?.join(',')}`}
             aitid={row.aitid}
             cells={row.cells}
-            options={row.options}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
             rowGroupOptions={options}

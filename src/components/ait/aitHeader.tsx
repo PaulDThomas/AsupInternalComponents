@@ -54,7 +54,6 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
-      options: [],
       cells: [],
     };
     let cols = rows[0].cells
@@ -155,14 +154,12 @@ export const AitHeader = ({ aitid, rows, options, setHeaderData, higherOptions }
             row: ri,
           } as AitOptionList;
           if (row.aitid === undefined) row.aitid = uuidv4();
-          if (!row.options) row.options = [];
 
           return (
             <AitRow
               key={row.aitid}
               aitid={row.aitid}
               cells={row.cells}
-              options={row.options}
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={rowHigherOptions}
               spaceAfter={false}

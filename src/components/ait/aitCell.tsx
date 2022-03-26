@@ -26,8 +26,8 @@ interface AitCellProps {
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
-  rowOptions?: AioOptionGroup,
-  setRowOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
+  // rowOptions?: AioOptionGroup,
+  // setRowOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
   addRow?: (ret: number) => void,
   removeRow?: (ret: number) => void,
   addColSpan?: (loc: AitLocation) => void,
@@ -55,8 +55,8 @@ export const AitCell = ({
   rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
-  rowOptions,
-  setRowOptions,
+  // rowOptions,
+  // setRowOptions,
   addRow,
   removeRow,
   addColSpan,
@@ -80,7 +80,7 @@ export const AitCell = ({
     colWidth: colWidth,
   }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
-  const [showRowOptions, setShowRowOptions] = useState(false);
+  // const [showRowOptions, setShowRowOptions] = useState(false);
   const [showCellOptions, setShowCellOptions] = useState(false);
 
   // Static options/variables
@@ -167,7 +167,7 @@ export const AitCell = ({
   const onShowOptionClick = (optionType: AitOptionLocation) => {
     switch (optionType) {
       case (AitOptionLocation.rowGroup): setShowRowGroupOptions(true); break;
-      case (AitOptionLocation.row): setShowRowOptions(true); break;
+      // case (AitOptionLocation.row): setShowRowOptions(true); break;
       case (AitOptionLocation.cell): setShowCellOptions(true); break;
       default: break;
     }
@@ -176,7 +176,7 @@ export const AitCell = ({
   const onCloseOption = (optionType: AitOptionLocation) => {
     switch (optionType) {
       case (AitOptionLocation.rowGroup): setShowRowGroupOptions(false); break;
-      case (AitOptionLocation.row): setShowRowOptions(false); break;
+      // case (AitOptionLocation.row): setShowRowOptions(false); break;
       case (AitOptionLocation.cell): setShowCellOptions(false); break;
       default: break;
     }
@@ -244,17 +244,17 @@ export const AitCell = ({
                 :
                 null
               }
-              {(rowOptions)
+              {(location.column === higherOptions.columns -1)
                 ?
                 <>
-                  <div className="ait-tip ait-tip-rhs">
+                  {/* <div className="ait-tip ait-tip-rhs">
                     <div
                       className={`ait-options-button ait-options-button-row`}
                       onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
                     >
                       <span className="ait-tiptext ait-tip-top">Row&nbsp;options</span>
                     </div>
-                  </div>
+                  </div> */}
                   {typeof addRow === "function" &&
                     <div className="ait-tip ait-tip-rhs">
                       <div
@@ -319,7 +319,7 @@ export const AitCell = ({
               </AsupInternalWindow>
             }
 
-            {showRowOptions &&
+            {/* {showRowOptions &&
               <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
                 <AioOptionDisplay
                   options={rowOptions}
@@ -329,8 +329,8 @@ export const AitCell = ({
                     setRowOptions!(ret, rl);
                   }}
                 />
-              </AsupInternalWindow>
-            }
+              </AsupInternalWindow> 
+            } */}
           </>
         }
         {/* Cell options window */}

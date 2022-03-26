@@ -236,7 +236,6 @@ export const removeRowRepeatInfo = (row: AitRowData): AitRowData => {
       c.rowSpan = 1;
       return c;
     }),
-    options: row.options,
   };
   return newRow;
 }

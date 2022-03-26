@@ -11,7 +11,6 @@ import { AitBorderRow } from "./aitBorderRow";
 interface AitRowProps {
   aitid: string,
   cells: AitCellData[],
-  options: AioOptionGroup,
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
   rowGroupOptions: AioOptionGroup,
@@ -31,7 +30,6 @@ interface AitRowProps {
 export const AitRow = ({
   aitid,
   cells,
-  options,
   setRowData,
   higherOptions,
   rowGroupOptions,
@@ -47,7 +45,7 @@ export const AitRow = ({
   addRowSpan,
   removeRowSpan,
 }: AitRowProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells, options: options }));
+  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells }));
 
   const location: AitLocation = useMemo(() => {
     return {
@@ -65,7 +63,6 @@ export const AitRow = ({
     let r: AitRowData = {
       aitid: aitid,
       cells: rowUpdate.cells ?? cells,
-      options: rowUpdate.options ?? options,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
@@ -73,7 +70,7 @@ export const AitRow = ({
       setRowData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [setRowData, aitid, cells, options, lastSend, location]);
+  }, [setRowData, aitid, cells, lastSend, location]);
 
   const updateCell = useCallback((ret, ci) => {
     // Create new object to send back
@@ -88,8 +85,9 @@ export const AitRow = ({
         {cells.map((cell: AitCellData, ci: number): JSX.Element => {
 
           // Sort out static options
-          let cellHigherOptions = {
-            ...higherOptions
+          let cellHigherOptions:AitOptionList = {
+            ...higherOptions,
+            columns: cells.length
           } as AitOptionList;
           // Add defaults - can happen on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
@@ -115,8 +113,6 @@ export const AitRow = ({
               rowGroupWindowTitle={ci === 0 && higherOptions.row === 0 ? rowGroupWindowTitle : undefined}
               addRowGroup={ci === 0 && higherOptions.row === 0 ? addRowGroup : undefined}
               removeRowGroup={ci === 0 && higherOptions.row === 0 ? removeRowGroup : undefined}
-              rowOptions={ci === cells.length - 1 ? options : undefined}
-              setRowOptions={ci === cells.length - 1 ? (ret) => { returnData({ options: ret }); } : undefined}
               addRow={ci === cells.length - 1 ? addRow : undefined}
               removeRow={ci === cells.length - 1 ? removeRow : undefined}
               addColSpan={ci + cell.colSpan < cells.length ? addColSpan : undefined}

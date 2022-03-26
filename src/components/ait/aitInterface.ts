@@ -12,7 +12,6 @@ export interface AitCellData {
 export interface AitRowData {
   aitid: string,
   cells: AitCellData[],
-  options: AioOptionGroup,
 };
 
 export interface AitRowGroupData {
@@ -74,8 +73,9 @@ export enum AitTableOptionNames {
 export interface AitOptionList {
   tableSection: AitRowType,
   noRepeatProcessing: boolean,
-  rowHeaderColumns: number,
   headerRows: number,
+  columns: number,
+  rowHeaderColumns: number,
   rowGroup: number,
   row: number,
   column: number,

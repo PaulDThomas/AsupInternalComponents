@@ -68,7 +68,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       options: [],
       rows: [{
         aitid: uuidv4(),
-        options: [],
         cells: [],
       }]
     };
