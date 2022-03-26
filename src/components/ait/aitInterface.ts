@@ -6,7 +6,7 @@ export interface AitCellData {
   replacedText?: string,
   rowSpan: number,
   colSpan: number,
-  colWidth?: string,
+  colWidth?: number,
   options: AioOptionGroup,
 };
 
@@ -88,6 +88,7 @@ export interface AitOptionList {
   tableSection: AitCellType,
   noRepeatProcessing: boolean,
   rowHeaderColumns: number,
+  headerRows: number,
   rowGroup: number,
   row: number,
   column: number,

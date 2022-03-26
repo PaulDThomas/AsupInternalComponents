@@ -95,7 +95,7 @@ const firstUnequal = (a: number[], b: number[]): number => {
 
 export const newCell = (type?: AitCellType): AitCellData => {
   let cell: AitCellData = { aitid: uuidv4(), text: "", options: [], rowSpan: 1, colSpan: 1 };
-  if (type === AitCellType.header) cell.colWidth = "120px";
+  if (type === AitCellType.header) cell.colWidth = 60;
   return cell;
 }
 

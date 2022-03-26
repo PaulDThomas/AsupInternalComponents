@@ -120,10 +120,10 @@ export const AitRow = ({
               setRowOptions={ci === cells.length - 1 ? (ret) => { returnData({ options: ret }); } : undefined}
               addRow={ci === cells.length - 1 ? addRow : undefined}
               removeRow={ci === cells.length - 1 ? removeRow : undefined}
-              addColSpan={addColSpan}
-              removeColSpan={removeColSpan}
-              addRowSpan={addRowSpan}
-              removeRowSpan={removeRowSpan}
+              addColSpan={ci + cell.colSpan < cells.length ? addColSpan : undefined}
+              removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
+              addRowSpan={cellHigherOptions.row + cell.rowSpan < cellHigherOptions.headerRows ? addRowSpan : undefined}
+              removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}
             />
           );
         })}

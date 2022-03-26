@@ -5,10 +5,9 @@ import { AioExpander } from "components/aio/aioExpander";
 import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AioOptionGroup } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-// import { AioString } from "../aio/aioString";
 import { objEqual } from "./processes";
 import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitCellOptionNames } from "./aitInterface";
-import { AioString } from "components/aio/aioString";
+import { AioNumber } from "components/aio/aioNumber";
 
 
 interface AitCellProps {
@@ -17,7 +16,7 @@ interface AitCellProps {
   replacedText?: string,
   rowSpan: number,
   colSpan: number,
-  colWidth?: string,
+  colWidth?: number,
   options: AioOptionGroup,
   columnIndex: number,
   setCellData: (ret: AitCellData) => void,
@@ -120,23 +119,31 @@ export const AitCell = ({
   // Update cell style when options change
   const cellStyle = useMemo<React.CSSProperties>(() => {
     return {
-      width: colWidth ?? (cellType === AitCellType.header ? "120px" : undefined),
+      width: cellType === AitCellType.header
+        ? (colWidth !== undefined
+          ? `${colWidth * 2 + (colSpan - 1) * 4}px`
+          : "120px")
+        : undefined,
       borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderRight: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
+      borderRight: higherOptions.showCellBorders && (location.column === higherOptions.rowHeaderColumns - 1)
+        ? "2px solid burlywood"
+        : higherOptions.showCellBorders
+          ? "1px dashed burlywood"
+          : "",
       borderTop: higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
         ? "2px solid burlywood"
         : higherOptions.showCellBorders
           ? "1px dashed burlywood"
           : "",
     }
-  }, [cellType, colWidth, higherOptions.showCellBorders, location.row, location.rowGroup]);
+  }, [cellType, colSpan, colWidth, higherOptions.rowHeaderColumns, higherOptions.showCellBorders, location.column, location.row, location.rowGroup]);
 
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
     options?: AioOptionGroup,
-    colWidth?: string
+    colWidth?: number
   }) => {
     if (currentReadOnly) return;
     const r: AitCellData = {
@@ -342,45 +349,30 @@ export const AitCell = ({
               <div className={"aio-label"}>Unprocessed text: </div>
               <div className={"aio-ro-value"}>{text}</div>
             </div>
-            {(typeof addRowSpan === "function") ?
+            {(cellType === AitCellType.header)
+              ?
               <>
                 <div className="aiw-body-row">
                   <div className={"aio-label"}>Row span: </div>
                   <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
+                    {(typeof addRowSpan === "function" && colSpan === 1) && <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />}
                     {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
                   </div>
                 </div>
-              </>
-              :
-              <></>
-            }
-            {(typeof addColSpan === "function")
-              ?
-              <>
                 <div className="aiw-body-row">
                   <div className={"aio-label"}>Column span: </div>
-                  <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
+                  <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
+                    {(typeof addColSpan === "function" && rowSpan === 1) && <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />}
                     {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
                   </div>
                 </div>
-              </>
-              :
-              <></>
-            }
-            {(cellType === AitCellType.header)
-              ?
-              <>
                 <div className="aiw-body-row">
-                  <AioString
-                    label="Colmn span"
-                    value={colWidth ?? "120px"}
-                    setValue={(ret) => returnData({
-                      colWidth: ret
-                    })}
+                  <AioNumber
+                    label="Width (mm)"
+                    value={colWidth ?? 60}
+                    setValue={(ret) => returnData({ colWidth: ret })}
                   />
                 </div>
               </>
