@@ -122,7 +122,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     });
     let newHeader: AitRowGroupData = { ...tableData.headerData };
     tableData.headerData.rows = newHeader.rows.map(r => {
-      console.log("Colspan check");
       // Check for colSpan 
       let c = r.cells[ci];
       let found = false;
@@ -183,13 +182,13 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
               </div>
               <div className="aiw-body-row">
                 <div className={"aio-label"}>Row headers: </div>
-                <div className={"aio-ro-value"}>{tableData.rowHeaderColumns}</div>
+                <div className={"aio-ro-value"}>{tableData.rowHeaderColumns ?? 1}</div>
                 <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                  {tableData.rowHeaderColumns < tableData.bodyData[0].rows[0].cells.length - 1
+                  {(tableData.rowHeaderColumns ?? 1) < tableData.bodyData[0].rows[0].cells.length - 1
                     ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
                     : <div className="aiox-button" />
                   }
-                  {tableData.rowHeaderColumns > 0
+                  {(tableData.rowHeaderColumns ?? 1) > 0
                     ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
                     : <div className="aiox-button" />
                   }

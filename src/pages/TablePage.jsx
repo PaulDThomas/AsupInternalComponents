@@ -42,39 +42,20 @@ export const TablePage = () => {
     ]
   });
 
-  //
-  // Mimic external updates here 
-  //
-  const updateCell = useCallback((cell) => {
-    return cell;
-  }, []);
-  const updateRow = useCallback((row) => {
-    row.cells = row.cells.map((cell) => updateCell(cell));
-    return row;
-  }, [updateCell]);
-  const updateRowGroup = useCallback((rowGroup) => {
-    rowGroup.rows = rowGroup.rows.map((row) => updateRow(row));
-    return rowGroup;
-  }, [updateRow]);
-  const updateTable = useCallback((table) => {
-    table.headerData = updateRowGroup(table.headerData);
-    table.bodyData = table.bodyData.map((rowGroup) => updateRowGroup(rowGroup));
-    return table;
-  }, [updateRowGroup]);
   const loadData = useCallback(() => {
     try {
       if (ta.current.value === "") {
         ta.current.value = window.localStorage.getItem('tableContent');
       }
-      const j = updateTable(JSON.parse(ta.current.value));
-      ta.current.value = JSON.stringify(j, null, 2);
+      const j = JSON.parse(ta.current.value);
       setTableData(j);
+      ta.current.value = JSON.stringify(j, null, 2);
     }
     catch (e) {
       console.log("JSON parse failed");
       console.dir(e);
     }
-  }, [updateTable]);
+  }, []);
 
 
   return (<>
@@ -102,7 +83,7 @@ export const TablePage = () => {
       </button>
       <button
         onClick={() => {
-          // Show intented data
+          // Show intended data
           ta.current.value = JSON.stringify(tableData, null, 2);
           // Save string
           window.localStorage.setItem('tableContent', JSON.stringify(tableData));
