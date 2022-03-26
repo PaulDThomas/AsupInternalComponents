@@ -7,6 +7,7 @@ export interface AitCellData {
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
+  textIndents?: number,
 };
 
 export interface AitRowData {

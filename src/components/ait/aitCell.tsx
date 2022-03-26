@@ -18,6 +18,7 @@ interface AitCellProps {
   colSpan: number,
   colWidth?: number,
   columnIndex: number,
+  textIndents?: number,
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
@@ -46,6 +47,7 @@ export const AitCell = ({
   rowSpan,
   colSpan,
   colWidth,
+  textIndents,
   columnIndex,
   setCellData,
   readOnly,
@@ -78,6 +80,7 @@ export const AitCell = ({
     rowSpan: rowSpan,
     colSpan: colSpan,
     colWidth: colWidth,
+    textIndents: textIndents
   }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   // const [showRowOptions, setShowRowOptions] = useState(false);
@@ -87,8 +90,8 @@ export const AitCell = ({
   const currentReadOnly = useMemo(() => {
     return readOnly
       || typeof (setCellData) !== "function"
-      || displayText === replacedText
-  }, [displayText, readOnly, replacedText, setCellData]);
+      || replacedText !== undefined
+  }, [readOnly, replacedText, setCellData]);
 
   const cellType = useMemo(() => {
     let cellType = (higherOptions.tableSection === AitRowType.body) && (columnIndex < higherOptions.rowHeaderColumns)
@@ -132,13 +135,15 @@ export const AitCell = ({
         : higherOptions.showCellBorders
           ? "1px dashed burlywood"
           : "",
+      paddingLeft: (cellType === AitCellType.rowHeader && textIndents !== undefined) ? `${textIndents}rem` : undefined,
     }
-  }, [cellType, colSpan, colWidth, higherOptions.rowHeaderColumns, higherOptions.showCellBorders, location.column, location.row, location.rowGroup]);
+  }, [cellType, colSpan, colWidth, higherOptions.rowHeaderColumns, higherOptions.showCellBorders, location.column, location.row, location.rowGroup, textIndents]);
 
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
     colWidth?: number
+    textIndents?: number
   }) => {
     if (currentReadOnly) return;
     const r: AitCellData = {
@@ -148,6 +153,7 @@ export const AitCell = ({
       rowSpan: rowSpan,
       colSpan: colSpan,
       colWidth: cellUpdate.colWidth ?? colWidth,
+      textIndents: cellUpdate.textIndents ?? textIndents ?? 0,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
@@ -156,7 +162,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text]);
+  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -295,7 +301,7 @@ export const AitCell = ({
           textAlignment={(cellType === AitCellType.rowHeader ? "left" : "center")}
           showStyleButtons={false}
           value={displayText}
-          setValue={(ret) => { setDisplayText(ret); returnData({ text: ret }); }}
+          setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
           highlightChanges={true}
         />
@@ -374,6 +380,19 @@ export const AitCell = ({
                   />
                 </div>
               </>
+              :
+              <></>
+            }
+            {(cellType === AitCellType.rowHeader)
+              ?
+              <div className="aiw-body-row">
+                <div className={"aio-label"}>Text indents: </div>
+                <div className={"aio-ro-value"}>{textIndents ?? 0}</div>
+                <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                  <div className="aiox-button aiox-plus" onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })} />
+                  {(textIndents ?? 0) > 0 && <div className="aiox-button aiox-minus" onClick={() => returnData({ textIndents: textIndents! - 1 })} />}
+                </div>
+              </div>
               :
               <></>
             }

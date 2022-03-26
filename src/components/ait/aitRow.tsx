@@ -104,6 +104,7 @@ export const AitRow = ({
               colSpan={cell.colSpan}
               rowSpan={cell.rowSpan}
               colWidth={cell.colWidth}
+              textIndents={cell.textIndents}
               higherOptions={cellHigherOptions}
               columnIndex={ci} /* This needs to be calculated after row/colspan! */
               setCellData={(ret) => updateCell(ret, ci)}
