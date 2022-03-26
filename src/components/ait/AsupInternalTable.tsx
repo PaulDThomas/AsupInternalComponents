@@ -1,14 +1,15 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AioOptionGroup, AioOptionType, AioReplacement } from "components/aio/aioInterface";
-import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
+import { AioOptionType, AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
+import { AitRowGroupData, AitTableBodyData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { newCell, processOptions } from "./processes";
+import { newCell } from "./processes";
 import './ait.css';
+import { AioBoolean } from "components/aio/aioBoolean";
+import { AioNumber } from "components/aio/aioNumber";
 
 interface AsupInteralTableProps {
   tableData: AitTableData,
@@ -27,31 +28,29 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
   // Initial processing, only ever run once!
   useEffect(() => {
-
-    const defaultTableOptions: AioOptionGroup = [
-      { optionName: AitTableOptionNames.tableName, label: "Table name", type: AioOptionType.string, value: "New table" },
-      { optionName: AitTableOptionNames.tableDescription, label: "Table description", type: AioOptionType.string, value: "New table" },
-      { optionName: AitTableOptionNames.noRepeatProcessing, label: "Supress repeats", type: AioOptionType.boolean, value: false },
-      { optionName: AitTableOptionNames.rowHeaderColumns, label: "Number of row headers", type: AioOptionType.number, value: 1 },
-    ];
-
-    console.log("processing options");
-    tableData.options = processOptions(tableData.options, defaultTableOptions);
-    //if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1;
+    if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
 
   // Return data
-  const returnData = useCallback((tableUpdate: { headerData?: AitRowGroupData, bodyData?: AitTableBodyData, options?: AioOptionGroup }) => {
+  const returnData = useCallback((tableUpdate: {
+    headerData?: AitRowGroupData,
+    bodyData?: AitTableBodyData,
+    rowHeaderColumns?: number,
+    noRepeatProcessing?: boolean,
+  }) => {
     if (typeof (setTableData) !== "function") return;
 
+    console.log("Sending table return");
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
-      options: tableUpdate.options ?? tableData.options,
+      rowHeaderColumns: tableUpdate.rowHeaderColumns ?? tableData.rowHeaderColumns,
+      noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
     };
     setTableData(r);
-  }, [setTableData, tableData.bodyData, tableData.headerData, tableData.options]);
+  }, [setTableData, tableData.bodyData, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
@@ -86,14 +85,14 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     returnData({ bodyData: newBody });
   }, [returnData, tableData.bodyData.options, tableData.bodyData.rowGroups]);
 
-  // Set up higher options
+  // Set up higher options, defaults need to be set
   let higherOptions = useMemo(() => {
     return {
       showCellBorders: showCellBorders,
-      noRepeatProcessing: tableData.options?.find(o => o.optionName === AitTableOptionNames.noRepeatProcessing)?.value,
-      rowHeaderColumns: tableData.options?.find(o => o.optionName === AitTableOptionNames.rowHeaderColumns)?.value,
+      noRepeatProcessing: tableData.noRepeatProcessing ?? false,
+      rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
     };
-  }, [showCellBorders, tableData.options]) as AitOptionList;
+  }, [showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((col: number) => {
@@ -146,7 +145,12 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-              <AioOptionDisplay options={tableData.options} setOptions={(ret) => returnData({ options: ret })} />
+              <div className="aiw-body-row">
+                <AioBoolean label="Suppress repeats" value={tableData.noRepeatProcessing} setValue={(ret) => returnData({ noRepeatProcessing: ret })} />
+              </div>
+              <div className="aiw-body-row">
+                <AioNumber label="Row headers" value={tableData.rowHeaderColumns} setValue={(ret) => returnData({ rowHeaderColumns: ret })} />
+              </div>
             </AsupInternalWindow>
           }
         </div>

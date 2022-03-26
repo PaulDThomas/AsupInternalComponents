@@ -28,7 +28,8 @@ export interface AitTableBodyData {
 export interface AitTableData {
   headerData: AitRowGroupData,
   bodyData: AitTableBodyData,
-  options: AioOptionGroup,
+  rowHeaderColumns: number,
+  noRepeatProcessing: boolean,
 };
 
 
