@@ -116,16 +116,14 @@ export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOpti
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.colSpan !== 1) return;
-    if (hideCell.colSpan !== 1) return;
-    if (loc.column + targetCell.colSpan === higherOptions.rowHeaderColumns) return;
-    if (loc.column + targetCell.colSpan >= newRows[loc.row].cells.length) return;
+    if (hideCell.colSpan !== 1 || hideCell.rowSpan !== 1) return;
     // Update target cell
     targetCell.rowSpan++;
     // Hide next cell
     hideCell.rowSpan = 0;
     // Done
     returnData({ rows: newRows });
-  }, [higherOptions.rowHeaderColumns, returnData, rows]);
+  }, [returnData, rows]);
 
   const removeRowSpan = useCallback((loc: AitLocation) => {
     console.log(`Removing to rowspan for cell ${JSON.stringify(loc)}`);
@@ -134,7 +132,8 @@ export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOpti
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
     // Check before getting hidden cell
     if (!newRows[loc.row + targetCell.rowSpan - 1]?.cells.length) return;
-    let hideCell: AitCellData = newRows[loc.row + 1].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan - 1].cells[loc.column];
+    if (hideCell.rowSpan !== 0) return;
     // Update target cell
     targetCell.rowSpan--;
     // Show hidden cell
