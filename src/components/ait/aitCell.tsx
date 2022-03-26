@@ -122,7 +122,7 @@ export const AitCell = ({
         : undefined,
       borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderRight: higherOptions.showCellBorders && (location.column === higherOptions.rowHeaderColumns - 1)
+      borderRight: higherOptions.showCellBorders && (location.column === higherOptions.rowHeaderColumns - colSpan)
         ? "1px solid burlywood"
         : higherOptions.showCellBorders
           ? "1px dashed burlywood"

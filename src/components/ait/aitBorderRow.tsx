@@ -6,6 +6,7 @@ interface AitBorderRowProps {
   spaceBefore?: boolean,
   spaceAfter?: boolean,
   noBorder?: boolean,
+  rowHeaderColumns?: number
   changeColumns?: {
     addColumn: (col: number) => void,
     removeColumn: (col: number) => void,
@@ -29,7 +30,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 </div>
               </div>
 
-              {ci > 0 &&
+              {ci > 0 && ci !== props.rowHeaderColumns && 
               <div className="ait-tip ait-tip-lhs">
                 <div
                   className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}

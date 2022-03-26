@@ -8,7 +8,6 @@ import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
 import { AioBoolean } from "components/aio/aioBoolean";
-import { AioNumber } from "components/aio/aioNumber";
 
 interface AsupInteralTableProps {
   tableData: AitTableData,
@@ -140,8 +139,29 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       r.cells.splice(ci, 1);
       return r;
     });
-    returnData({ headerData: newHeader, bodyData: newBody });
-  }, [tableData.bodyData, tableData.headerData, returnData]);
+    let newHeaderColumns = tableData.rowHeaderColumns;
+    if (ci < newHeaderColumns) newHeaderColumns--;
+    returnData({ headerData: newHeader, bodyData: newBody, rowHeaderColumns: newHeaderColumns });
+  }, [tableData.bodyData, tableData.headerData, tableData.rowHeaderColumns, returnData]);
+
+  // Add rowHeader columns
+  const addRowHeaderColumn = useCallback(() => {
+    // Check new column has not colspan
+    if (tableData.rowHeaderColumns === tableData.bodyData[0].rows[0].cells.length - 1) return;
+    if (tableData.headerData.rows.some(r => r.cells[tableData.rowHeaderColumns + 1].colSpan !== 1)) return;
+    let newHeaderColumns = tableData.rowHeaderColumns + 1;
+    returnData({ rowHeaderColumns: newHeaderColumns });
+  }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+
+  // Remove rowHeader columns
+  const removeRowHeaderColumn = useCallback(() => {
+    // Check new column has not colspan
+    if (tableData.rowHeaderColumns === 0) return;
+    if (tableData.headerData.rows.some(r => r.cells[tableData.rowHeaderColumns - 1].colSpan !== 1)) return;
+    let newHeaderColumns = tableData.rowHeaderColumns - 1;
+    returnData({ rowHeaderColumns: newHeaderColumns });
+  }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+
 
   // Print the table
   return (
@@ -162,7 +182,18 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 <AioBoolean label="Suppress repeats" value={tableData.noRepeatProcessing} setValue={(ret) => returnData({ noRepeatProcessing: ret })} />
               </div>
               <div className="aiw-body-row">
-                <AioNumber label="Row headers" value={tableData.rowHeaderColumns} setValue={(ret) => returnData({ rowHeaderColumns: ret })} />
+                <div className={"aio-label"}>Row headers: </div>
+                <div className={"aio-ro-value"}>{tableData.rowHeaderColumns}</div>
+                <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                  {tableData.rowHeaderColumns < tableData.bodyData[0].rows[0].cells.length - 1
+                    ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
+                  {tableData.rowHeaderColumns > 0
+                    ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
+                </div>
               </div>
             </AsupInternalWindow>
           }
@@ -178,6 +209,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                   removeColumn: remCol,
                   showButtons: true,
                 }}
+                rowHeaderColumns={tableData.rowHeaderColumns}
               />
               <AitHeader
                 aitid={tableData.headerData.aitid}
@@ -212,6 +244,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 }
                 : undefined
               }
+              rowHeaderColumns={tableData.rowHeaderColumns}
             />
             {
               tableData.bodyData?.map((rowGroup: AitRowGroupData, rgi: number) => {
