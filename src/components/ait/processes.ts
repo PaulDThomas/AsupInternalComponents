@@ -1,7 +1,7 @@
 import structuredClone from "@ungap/structured-clone";
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioOptionType, AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
-import { AitCellData, AitCellOptionNames, AitCellType, AitRowData } from "./aitInterface";
+import { AioOptionGroup, AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
+import { AitCellData, AitCellType, AitRowData } from "./aitInterface";
 
 /**
  * Update options with another set of options
@@ -94,7 +94,7 @@ const firstUnequal = (a: number[], b: number[]): number => {
 }
 
 export const newCell = (type?: AitCellType): AitCellData => {
-  let cell: AitCellData = { aitid: uuidv4(), text: "", options: [], rowSpan: 1, colSpan: 1 };
+  let cell: AitCellData = { aitid: uuidv4(), text: "", rowSpan: 1, colSpan: 1 };
   if (type === AitCellType.header) cell.colWidth = 60;
   return cell;
 }
@@ -226,17 +226,6 @@ export const repeatRows = (
     }
   }
   return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
-}
-
-export const setCellOption = (cell: AitCellData, optionName: AitCellOptionNames, label: string, type: AioOptionType, value: any, readOnly?: boolean): void => {
-  let optionIndex = cell.options.findIndex(o => o.optionName === optionName);
-  if (optionIndex === -1) cell.options.push({ optionName: optionName, label: label, type: type, value: value, readOnly: readOnly });
-  else cell.options[optionIndex].value = value;
-}
-
-export const removeCellOption = (cell: AitCellData, optionName: AitCellOptionNames): void => {
-  let optionIndex = cell?.options.findIndex(o => o.optionName === optionName);
-  if (optionIndex > -1) cell.options.splice(optionIndex, 1);
 }
 
 export const removeRowRepeatInfo = (row: AitRowData): AitRowData => {

@@ -6,7 +6,7 @@ import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AioOptionGroup } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { objEqual } from "./processes";
-import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitCellOptionNames } from "./aitInterface";
+import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitRowType } from "./aitInterface";
 import { AioNumber } from "components/aio/aioNumber";
 
 
@@ -17,7 +17,6 @@ interface AitCellProps {
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
-  options: AioOptionGroup,
   columnIndex: number,
   setCellData: (ret: AitCellData) => void,
   readOnly: boolean,
@@ -47,7 +46,6 @@ export const AitCell = ({
   rowSpan,
   colSpan,
   colWidth,
-  options,
   columnIndex,
   setCellData,
   readOnly,
@@ -80,7 +78,6 @@ export const AitCell = ({
     rowSpan: rowSpan,
     colSpan: colSpan,
     colWidth: colWidth,
-    options: options
   }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const [showRowOptions, setShowRowOptions] = useState(false);
@@ -90,21 +87,20 @@ export const AitCell = ({
   const currentReadOnly = useMemo(() => {
     return readOnly
       || typeof (setCellData) !== "function"
-      || (options?.find(o => o.optionName === AitCellOptionNames.readOnly)?.value ?? false)
       || displayText === replacedText
-  }, [displayText, options, readOnly, replacedText, setCellData]);
+  }, [displayText, readOnly, replacedText, setCellData]);
 
   const cellType = useMemo(() => {
-    let cellType =
-      options?.find(o => o.optionName === AitCellOptionNames.cellType)?.value
-      ??
-      (higherOptions.tableSection === AitCellType.body && columnIndex < higherOptions.rowHeaderColumns
-        ?
-        AitCellType.rowHeader
-        :
-        higherOptions.tableSection);
+    let cellType = (higherOptions.tableSection === AitRowType.body) && (columnIndex < higherOptions.rowHeaderColumns)
+      ?
+      AitCellType.rowHeader
+      :
+      higherOptions.tableSection === AitRowType.header
+        ? AitCellType.header
+        : AitCellType.body
+      ;
     return cellType;
-  }, [options, columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
+  }, [columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
 
   const location: AitLocation = useMemo(() => {
     return {
@@ -153,7 +149,6 @@ export const AitCell = ({
       rowSpan: rowSpan,
       colSpan: colSpan,
       colWidth: cellUpdate.colWidth ?? colWidth,
-      options: cellUpdate.options ?? options,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
@@ -162,7 +157,7 @@ export const AitCell = ({
       setCellData(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, options, replacedText, rowSpan, setCellData, text]);
+  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };

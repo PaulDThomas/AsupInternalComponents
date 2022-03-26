@@ -5,7 +5,7 @@ import { AioOptionDisplay } from "components/aio/aioOptionDisplay";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitCellType, AitOptionList, AitRowGroupOptionNames } from "./aitInterface";
+import { AitTableOptionNames, AitRowGroupData, AitTableBodyData, AitTableData, AitOptionList, AitRowGroupOptionNames, AitRowType } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell, processOptions } from "./processes";
 import './ait.css';
@@ -37,6 +37,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
     console.log("processing options");
     tableData.options = processOptions(tableData.options, defaultTableOptions);
+    //if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1;
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -184,7 +185,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 setHeaderData={(ret) => returnData({ headerData: ret })}
                 higherOptions={{
                   ...higherOptions,
-                  tableSection: AitCellType.header,
+                  tableSection: AitRowType.header,
                   rowGroup: 0,
                 }}
               />
@@ -231,7 +232,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
                     higherOptions={{
                       ...higherOptions,
-                      tableSection: AitCellType.body,
+                      tableSection: AitRowType.body,
                       rowGroup: rgi,
                     }}
                     addRowGroup={(rgi) => { addRowGroup(rgi) }}

@@ -7,7 +7,6 @@ export interface AitCellData {
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
-  options: AioOptionGroup,
 };
 
 export interface AitRowData {
@@ -35,7 +34,7 @@ export interface AitTableData {
 
 
 export interface AitLocation {
-  tableSection: AitCellType,
+  tableSection: AitRowType,
   rowGroup: number,
   row: number,
   column: number,
@@ -60,18 +59,6 @@ export enum AitRowType {
   "body",
 }
 
-export enum AitCellOptionNames {
-  // cellWidth = "cellWidth",
-  cellStatistic = "cellStatisic",
-  cellText = "cellText",
-  // colSpan = "colSpan",
-  // rowSpan = "rowSpan",
-  cellType = "cellType",
-  readOnly = "readOnly",
-};
-export enum AitRowOptionNames {
-
-};
 export enum AitRowGroupOptionNames {
   rgName = "rgName",
   replacements = "replacements",
@@ -85,7 +72,7 @@ export enum AitTableOptionNames {
   columnRepeatList = "columnRepeatList",
 };
 export interface AitOptionList {
-  tableSection: AitCellType,
+  tableSection: AitRowType,
   noRepeatProcessing: boolean,
   rowHeaderColumns: number,
   headerRows: number,
