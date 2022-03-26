@@ -58,7 +58,7 @@ export const TablePage = () => {
   }, [updateRow]);
   const updateTable = useCallback((table) => {
     table.headerData = updateRowGroup(table.headerData);
-    table.bodyData.rowGroups = table.bodyData.rowGroups.map((rowGroup) => updateRowGroup(rowGroup));
+    table.bodyData = table.bodyData.map((rowGroup) => updateRowGroup(rowGroup));
     return table;
   }, [updateRowGroup]);
   const loadData = useCallback(() => {
