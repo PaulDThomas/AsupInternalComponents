@@ -94,36 +94,50 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   }, [showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
-  const addCol = useCallback((col: number) => {
+  const addCol = useCallback((ci: number) => {
     let newBody: AitRowGroupData[] = [...tableData.bodyData];
     newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
-        r.cells.splice(col + 1, 0, newCell());
+        r.cells.splice(ci + 1, 0, newCell());
         return r;
       });
       return rg;
     });
     let newHeader: AitRowGroupData = { ...tableData.headerData };
     tableData.headerData.rows = newHeader.rows.map(r => {
-      r.cells.splice(col + 1, 0, newCell());
+      r.cells.splice(ci + 1, 0, newCell());
       return r;
     });
     returnData({ headerData: newHeader, bodyData: newBody });
   }, [tableData.bodyData, tableData.headerData, returnData]);
 
   // Remove column 
-  const remCol = useCallback((col: number) => {
+  const remCol = useCallback((ci: number) => {
     let newBody: AitRowGroupData[] = [...tableData.bodyData];
     newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
-        r.cells.splice(col, 1);
+        r.cells.splice(ci, 1);
         return r;
       });
       return rg;
     });
     let newHeader: AitRowGroupData = { ...tableData.headerData };
     tableData.headerData.rows = newHeader.rows.map(r => {
-      r.cells.splice(col, 1);
+      console.log("Colspan check");
+      // Check for colSpan 
+      let c = r.cells[ci];
+      let found = false;
+      if (c.colSpan === 0) {
+        let ciUp = 1;
+        while (!found && ciUp <= ci) {
+          if (r.cells[ci - ciUp].colSpan > 1) {
+            r.cells[ci - ciUp].colSpan--;
+            found = true;
+          }
+          ciUp++;
+        }
+      }
+      r.cells.splice(ci, 1);
       return r;
     });
     returnData({ headerData: newHeader, bodyData: newBody });

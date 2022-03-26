@@ -70,7 +70,7 @@
   min-width: 16px;
   width: 16px;
   height: 16px;
-  margin: 2px 4px 0 0;
+  margin: 0;
   border: 0;
   background-repeat: no-repeat no-repeat;
   background-position: center center;
@@ -88,7 +88,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-list {
@@ -96,7 +95,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-up {
@@ -104,7 +102,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-down {
@@ -112,7 +109,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-plus {
@@ -120,7 +116,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-minus {
@@ -128,7 +123,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-explode {
@@ -136,7 +130,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-implode {
@@ -144,7 +137,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-addDown {
@@ -152,7 +144,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 .aiox-removeUp {
@@ -160,7 +151,6 @@
   background-repeat: no-repeat no-repeat;
   background-position: center center;
   background-size: cover;
-  margin: 0;
 }
 
 

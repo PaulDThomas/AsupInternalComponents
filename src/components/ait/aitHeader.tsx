@@ -66,6 +66,21 @@ export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOpti
 
   const removeRow = useCallback((ri) => {
     let newRows = [...rows];
+    // Check for any cells with no row span
+    newRows[ri].cells.map((c, ci) => {
+      let found = false;
+      if (c.rowSpan === 0) {
+        let riUp = 1;
+        while (!found && riUp <= ri) {
+          if (newRows[ri - riUp].cells[ci].rowSpan > 1) {
+            newRows[ri - riUp].cells[ci].rowSpan--;
+            found = true;
+          }
+          riUp++;
+        }
+      }
+      return found;
+    });
     newRows.splice(ri, 1);
     returnData({ rows: newRows });
   }, [returnData, rows])

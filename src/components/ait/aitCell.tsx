@@ -243,7 +243,7 @@ export const AitCell = ({
                 :
                 null
               }
-              {(location.column === higherOptions.columns -1)
+              {(location.column === higherOptions.columns - 1)
                 ?
                 <>
                   {/* <div className="ait-tip ait-tip-rhs">
@@ -310,8 +310,8 @@ export const AitCell = ({
                 <div className="aiw-body-row">
                   <AioReplacementDisplay
                     replacements={replacements!}
-                    setReplacements={typeof setReplacements === "function" ? ret => {setReplacements(ret, location)} : undefined}
-                    />
+                    setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
+                  />
                 </div>
               </AsupInternalWindow>
             }
@@ -348,7 +348,10 @@ export const AitCell = ({
                   <div className={"aio-label"}>Row span: </div>
                   <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(typeof addRowSpan === "function" && colSpan === 1) && <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />}
+                    {(typeof addRowSpan === "function" && colSpan === 1)
+                      ? <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
+                      : <div className="aiox-button" />
+                    }
                     {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
                   </div>
                 </div>
@@ -356,7 +359,10 @@ export const AitCell = ({
                   <div className={"aio-label"}>Column span: </div>
                   <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(typeof addColSpan === "function" && rowSpan === 1) && <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />}
+                    {(typeof addColSpan === "function" && rowSpan === 1)
+                      ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
+                      : <div className="aiox-button" />
+                    }
                     {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
                   </div>
                 </div>
