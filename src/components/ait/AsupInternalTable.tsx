@@ -147,7 +147,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   const addRowHeaderColumn = useCallback(() => {
     // Check new column has not colspan
     if (tableData.rowHeaderColumns === tableData.bodyData[0].rows[0].cells.length - 1) return;
-    if (tableData.headerData.rows.some(r => r.cells[tableData.rowHeaderColumns + 1].colSpan !== 1)) return;
+    if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns + 1].colSpan ?? 1) !== 1)) return;
     let newHeaderColumns = tableData.rowHeaderColumns + 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
@@ -156,7 +156,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   const removeRowHeaderColumn = useCallback(() => {
     // Check new column has not colspan
     if (tableData.rowHeaderColumns === 0) return;
-    if (tableData.headerData.rows.some(r => r.cells[tableData.rowHeaderColumns - 1].colSpan !== 1)) return;
+    if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     let newHeaderColumns = tableData.rowHeaderColumns - 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
@@ -252,7 +252,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
                 /** Default row group options */
                 if (rowGroup.replacements === undefined) rowGroup.replacements = [{
-                  replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
+                  replacementTexts: [{ text: "", spaceAfter: false }],
                   replacementValues: [{ newText: "" }]
                 }];
 

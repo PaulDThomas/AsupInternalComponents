@@ -11,7 +11,6 @@ export interface AioOptionGroup extends Array<AioOption> { };
 
 /** Individual text replacements */
 export interface AioReplacementText {
-  level: number,
   text: string,
   spaceAfter: boolean,
 }

@@ -60,7 +60,7 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
 
   const addLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementTexts];
-    newRT.push({ level: newRT.length, text: "", spaceAfter: false });
+    newRT.push({ text: "", spaceAfter: false });
     setTextArray(newRT);
 
     let newValues = [...props.replacement.replacementValues!.map(rv => addSubList(rv))];
