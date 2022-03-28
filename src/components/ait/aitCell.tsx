@@ -298,7 +298,7 @@ export const AitCell = ({
 
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
-          textAlignment={(cellType === AitCellType.rowHeader ? "left" : "center")}
+          textAlignment={(columnIndex < higherOptions.rowHeaderColumns ? "left" : "center")}
           showStyleButtons={false}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
