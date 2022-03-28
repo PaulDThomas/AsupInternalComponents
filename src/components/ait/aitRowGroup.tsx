@@ -4,7 +4,7 @@ import structuredClone from '@ungap/structured-clone';
 import { AioRepeats, AioReplacement } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { getRepeats, newCell, objEqual, repeatRows } from "./processes";
+import { newCell, objEqual, repeatRows } from "./processes";
 
 interface AitRowGroupProps {
   aitid: string,
@@ -88,10 +88,9 @@ export const AitRowGroup = ({
   const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
     return repeatRows(
       rows,
+      replacements,
       higherOptions.noRepeatProcessing,
-      replacements.map(rep => rep.replacementTexts).flat(),
-      getRepeats(replacements, { numbers: [], values: [], last: [] }),
-      higherOptions.rowHeaderColumns
+      higherOptions.rowHeaderColumns,
     );
   }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
 
