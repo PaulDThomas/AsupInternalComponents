@@ -124,7 +124,7 @@ export const AitRow = ({
           );
         })}
       </tr>
-      {spaceAfter && <AitBorderRow rowCells={cells} spaceAfter={true} noBorder={true} />}
+      {spaceAfter && <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />}
     </>
   );
 }

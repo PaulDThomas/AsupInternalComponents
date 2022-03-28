@@ -24,12 +24,11 @@ interface AsupInteralTableProps {
 export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
 
-  // Initial processing, only ever run once!
-  useEffect(() => {
-    if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1;
-    if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
+  // Basic data checking... useful on load/reload
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1; }, [tableData.rowHeaderColumns]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -201,7 +200,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           {tableData.headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
-                rowCells={tableData.bodyData[0].rows[0].cells}
+                rowLength={tableData.bodyData[0].rows[0].cells.length}
                 spaceAfter={true}
                 changeColumns={{
                   addColumn: addCol,
@@ -226,13 +225,13 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                   rowGroup: 0,
                 }}
               />
-              <AitBorderRow rowCells={tableData.bodyData[0].rows[0].cells} spaceBefore={true} noBorder={true} />
+              <AitBorderRow rowLength={tableData.bodyData[0].rows[0].cells.length} spaceBefore={true} noBorder={true} />
             </thead>
           }
 
           <tbody>
             <AitBorderRow
-              rowCells={tableData.bodyData[0].rows[0].cells}
+              rowLength={tableData.bodyData[0].rows[0].cells.length}
               spaceAfter={true}
               changeColumns={tableData.headerData.rows.length === 0
                 ?
@@ -274,7 +273,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 );
               })
             }
-            <AitBorderRow rowCells={tableData.bodyData[0].rows[0].cells} />
+            <AitBorderRow rowLength={tableData.bodyData[0].rows[0].cells.length} />
           </tbody>
         </table>
       </div>

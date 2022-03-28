@@ -1,8 +1,7 @@
 import React from "react";
-import { AitCellData } from "./aitInterface";
 
 interface AitBorderRowProps {
-  rowCells: Array<AitCellData>
+  rowLength: number,
   spaceBefore?: boolean,
   spaceAfter?: boolean,
   noBorder?: boolean,
@@ -15,11 +14,12 @@ interface AitBorderRowProps {
 }
 
 export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
+  let cis = Array.from(Array(props.rowLength).keys());
   return (
     <>
       {props.changeColumns &&
         <tr>
-          {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
+          {cis.map((ci: number): JSX.Element =>
             <td className="ait-cell" key={ci}>
               <div className="ait-tip ait-tip-rhs">
                 <div
@@ -47,24 +47,24 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
       {
         props.spaceBefore &&
         <tr>
-          {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-space-cell" colSpan={cell.colSpan ?? 1} key={ci} />
+          {cis.map((ci: number): JSX.Element =>
+            <td className="ait-space-cell" key={ci} />
           )}
         </tr>
       }
       {
         !props.noBorder &&
         <tr>
-          {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-border-cell" colSpan={cell.colSpan ?? 1} key={ci} />
+          {cis.map((ci: number): JSX.Element =>
+            <td className="ait-border-cell" key={ci} />
           )}
         </tr>
       }
       {
         props.spaceAfter &&
         <tr>
-          {props.rowCells.map((cell: AitCellData, ci: number): JSX.Element =>
-            <td className="ait-space-cell" colSpan={cell.colSpan ?? 1} key={ci} />
+          {cis.map((ci: number): JSX.Element =>
+            <td className="ait-space-cell" key={ci} />
           )}
         </tr>
       }
