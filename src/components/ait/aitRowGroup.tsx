@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import structuredClone from '@ungap/structured-clone';
-import { AioRepeats, AioReplacement, AioReplacementText } from "components/aio/aioInterface";
+import { AioRepeats, AioReplacement } from "components/aio/aioInterface";
 import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { getRepeats, newCell, objEqual, repeatRows } from "./processes";
@@ -16,8 +16,16 @@ interface AitRowGroupProps {
   removeRowGroup?: (rgi: number) => void,
 }
 
-export const AitRowGroup = ({ aitid, rows, replacements, setRowGroupData, higherOptions, addRowGroup, removeRowGroup }: AitRowGroupProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements}));
+export const AitRowGroup = ({
+  aitid,
+  rows,
+  replacements,
+  setRowGroupData,
+  higherOptions,
+  addRowGroup,
+  removeRowGroup,
+}: AitRowGroupProps): JSX.Element => {
+  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
 
   const location: AitLocation = useMemo(() => {
     return {
@@ -77,25 +85,14 @@ export const AitRowGroup = ({ aitid, rows, replacements, setRowGroupData, higher
   }, [returnData, rows])
 
   // Get rows after repeat processing
-  const processed: { rows: AitRowData[], repeats: AioRepeats } = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
-
-    let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
-    // Find first of replacments if there are any
-    let r: AioReplacement[] = replacements;
-    if (!r) return { rows: rows, repeats: newRepeats };
-    let replacementText: AioReplacementText[] = r.map(r => r.replacementTexts).flat();
-
-    // Get repNo list
-    newRepeats = getRepeats(r, newRepeats);
-
-    let x = repeatRows(
+  const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
+    return repeatRows(
       rows,
       higherOptions.noRepeatProcessing,
-      replacementText,
-      newRepeats,
-      higherOptions.rowHeaderColumns,
+      replacements.map(rep => rep.replacementTexts).flat(),
+      getRepeats(replacements, { numbers: [], values: [], last: [] }),
+      higherOptions.rowHeaderColumns
     );
-    return x;
   }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
 
   // Output the rows
