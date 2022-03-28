@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitCellType, AitCellData } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitCellType, AitCellData, AitColumnRepeat } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { newCell, objEqual } from "./processes";
 
@@ -12,9 +12,17 @@ interface AitHeaderProps {
   replacements: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
+  columnRepeats?: AitColumnRepeat[],
 }
 
-export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOptions }: AitHeaderProps): JSX.Element => {
+export const AitHeader = ({ 
+  aitid, 
+  rows, 
+  replacements, 
+  setHeaderData, 
+  higherOptions,
+  columnRepeats,
+}: AitHeaderProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
 
   const location: AitLocation = useMemo(() => {
@@ -186,6 +194,7 @@ export const AitHeader = ({ aitid, rows, replacements, setHeaderData, higherOpti
               removeColSpan={removeColSpan}
               addRowSpan={addRowSpan}
               removeRowSpan={removeRowSpan}
+              columnRepeats={columnRepeats}
             />
           );
         }

@@ -39,11 +39,9 @@ export interface AitLocation extends AitCoord {
   repeat: string
 }
 
-export enum AitOptionLocation {
-  tableSection = "tableSection",
-  rowGroup = "rowGroup",
-  row = "row",
-  cell = "cell",
+export interface AitColumnRepeat {
+  columnIndex: number,
+  repeatNumbers?: number[],
 }
 
 export enum AitCellType {
@@ -70,4 +68,5 @@ export interface AitOptionList {
   replacements?: AioReplacement[],
   repeatNumber?: number[],
   repeatValues?: string[],
+  columnRepeats?: AitColumnRepeat[],
 }

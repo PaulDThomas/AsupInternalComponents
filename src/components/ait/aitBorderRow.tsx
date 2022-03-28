@@ -19,6 +19,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
     <>
       {props.changeColumns &&
         <tr>
+          <td></td>
           {cis.map((ci: number): JSX.Element =>
             <td className="ait-cell" key={ci}>
               <div className="ait-tip ait-tip-rhs">
@@ -30,42 +31,49 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 </div>
               </div>
 
-              {ci > 0 && ci !== props.rowHeaderColumns && 
-              <div className="ait-tip ait-tip-lhs">
-                <div
-                  className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                  onClick={(e) => { props.changeColumns!.removeColumn!(ci) }}
-                >
-                  <span className="ait-tiptext ait-tip-top">Remove&nbsp;column</span>
-                </div>
+              {ci > 0 && ci !== props.rowHeaderColumns &&
+                <div className="ait-tip ait-tip-lhs">
+                  <div
+                    className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
+                    onClick={(e) => { props.changeColumns!.removeColumn!(ci) }}
+                  >
+                    <span className="ait-tiptext ait-tip-top">Remove&nbsp;column</span>
+                  </div>
                 </div>
               }
             </td>
           )}
+          <td></td>
         </tr>
       }
       {
         props.spaceBefore &&
         <tr>
+          <td></td>
           {cis.map((ci: number): JSX.Element =>
             <td className="ait-space-cell" key={ci} />
           )}
+          <td></td>
         </tr>
       }
       {
         !props.noBorder &&
         <tr>
+          <td></td>
           {cis.map((ci: number): JSX.Element =>
             <td className="ait-border-cell" key={ci} />
           )}
+          <td></td>
         </tr>
       }
       {
         props.spaceAfter &&
         <tr>
+          <td></td>
           {cis.map((ci: number): JSX.Element =>
             <td className="ait-space-cell" key={ci} />
           )}
+          <td></td>
         </tr>
       }
     </>

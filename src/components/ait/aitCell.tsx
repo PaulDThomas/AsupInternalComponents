@@ -2,12 +2,10 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
-import { AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { objEqual } from "./processes";
-import { AitCellData, AitLocation, AitCellType, AitOptionLocation, AitOptionList, AitRowType } from "./aitInterface";
+import { AitCellData, AitLocation, AitCellType, AitOptionList, AitRowType } from "./aitInterface";
 import { AioNumber } from "components/aio/aioNumber";
-import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
 
 
 interface AitCellProps {
@@ -19,18 +17,9 @@ interface AitCellProps {
   colWidth?: number,
   columnIndex: number,
   textIndents?: number,
-  setCellData: (ret: AitCellData) => void,
+  setCellData?: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
-  replacements?: AioReplacement[],
-  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
-  rowGroupWindowTitle?: string
-  addRowGroup?: (rgi: number) => void,
-  removeRowGroup?: (rgi: number) => void,
-  // rowOptions?: AioOptionGroup,
-  // setRowOptions?: (ret: AioOptionGroup, location: AitLocation) => void,
-  addRow?: (ret: number) => void,
-  removeRow?: (ret: number) => void,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
@@ -52,15 +41,6 @@ export const AitCell = ({
   setCellData,
   readOnly,
   higherOptions,
-  replacements,
-  setReplacements,
-  rowGroupWindowTitle,
-  addRowGroup,
-  removeRowGroup,
-  // rowOptions,
-  // setRowOptions,
-  addRow,
-  removeRow,
   addColSpan,
   removeColSpan,
   addRowSpan,
@@ -82,8 +62,7 @@ export const AitCell = ({
     colWidth: colWidth,
     textIndents: textIndents
   }));
-  const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
-  // const [showRowOptions, setShowRowOptions] = useState(false);
+
   const [showCellOptions, setShowCellOptions] = useState(false);
 
   // Static options/variables
@@ -159,7 +138,7 @@ export const AitCell = ({
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
       console.log(`Diffs:${diffs}`);
-      setCellData(r);
+      setCellData!(r);
       setLastSend(structuredClone(r));
     }
   }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text, textIndents]);
@@ -167,25 +146,6 @@ export const AitCell = ({
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
   const aitHideButtons = () => { setButtonState("hidden"); };
-
-  // Show windows
-  const onShowOptionClick = (optionType: AitOptionLocation) => {
-    switch (optionType) {
-      case (AitOptionLocation.rowGroup): setShowRowGroupOptions(true); break;
-      // case (AitOptionLocation.row): setShowRowOptions(true); break;
-      case (AitOptionLocation.cell): setShowCellOptions(true); break;
-      default: break;
-    }
-  }
-  // Hide windows
-  const onCloseOption = (optionType: AitOptionLocation) => {
-    switch (optionType) {
-      case (AitOptionLocation.rowGroup): setShowRowGroupOptions(false); break;
-      // case (AitOptionLocation.row): setShowRowOptions(false); break;
-      case (AitOptionLocation.cell): setShowCellOptions(false); break;
-      default: break;
-    }
-  }
 
   // Do not render if there is no rowSpan or colSpan
   if (colSpan === 0 || rowSpan === 0) return <></>;
@@ -210,86 +170,12 @@ export const AitCell = ({
         onMouseLeave={aitHideButtons}
       >
 
-        {/* Option buttons  */}
         <>
-          {readOnly === false &&
-            <>
-              {(replacements)
-                ?
-                (<>
-                  {typeof (addRowGroup) === "function" &&
-                    <div className="ait-tip">
-                      <div
-                        className={`ait-options-button ait-options-button-add-row-group`}
-                        onClick={(e) => { addRowGroup(location.rowGroup) }}
-                      >
-                        <span className="ait-tiptext ait-tip-top">Add&nbsp;row&nbsp;group</span>
-                      </div>
-                    </div>
-                  }
-                  {typeof (removeRowGroup) === "function" &&
-                    <div className="ait-tip">
-                      <div
-                        className={`ait-options-button ait-options-button-remove-row-group`}
-                        onClick={(e) => { removeRowGroup(location.rowGroup) }}
-                      >
-                        <span className="ait-tiptext ait-tip-top">Remove&nbsp;row&nbsp;group</span>
-                      </div>
-                    </div>
-                  }
-                  <div className="ait-tip">
-                    <div
-                      className={`ait-options-button ait-options-button-row-group`}
-                      onClick={(e) => { onShowOptionClick(AitOptionLocation.rowGroup) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Row&nbsp;group&nbsp;options</span>
-                    </div>
-                  </div>
-                </>)
-                :
-                null
-              }
-              {(location.column === higherOptions.columns - 1)
-                ?
-                <>
-                  {/* <div className="ait-tip ait-tip-rhs">
-                    <div
-                      className={`ait-options-button ait-options-button-row`}
-                      onClick={(e) => { onShowOptionClick(AitOptionLocation.row) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Row&nbsp;options</span>
-                    </div>
-                  </div> */}
-                  {typeof addRow === "function" &&
-                    <div className="ait-tip ait-tip-rhs">
-                      <div
-                        className={`ait-options-button ait-options-button-add-row`}
-                        onClick={(e) => { addRow(location.row) }}
-                      >
-                        <span className="ait-tiptext ait-tip-top">Add&nbsp;row</span>
-                      </div>
-                    </div>
-                  }
-                  {typeof removeRow === "function" &&
-                    <div className="ait-tip ait-tip-rhs">
-                      <div
-                        className={`ait-options-button ait-options-button-remove-row`}
-                        onClick={(e) => { removeRow(location.row) }}
-                      >
-                        <span className="ait-tiptext ait-tip-top">Remove&nbsp;row</span>
-                      </div>
-                    </div>
-                  }
-                </>
-                :
-                null
-              }
-            </>
-          }
+          {/* Option buttons  */}
           <div className="ait-tip ait-tip-rhs">
             <div
               className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
-              onClick={(e) => { onShowOptionClick(AitOptionLocation.cell) }}
+              onClick={() => { setShowCellOptions(true); }}
             >
               <span className="ait-tiptext ait-tip-top">Cell&nbsp;options</span>
             </div>
@@ -307,38 +193,10 @@ export const AitCell = ({
         />
       </div>
 
-      {/* Option windows */}
       <div>
-        {readOnly === false &&
-          <>
-            {showRowGroupOptions && replacements !== undefined &&
-              <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { onCloseOption(AitOptionLocation.rowGroup); }}>
-                <div className="aiw-body-row">
-                  <AioReplacementDisplay
-                    replacements={replacements!}
-                    setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
-                  />
-                </div>
-              </AsupInternalWindow>
-            }
-
-            {/* {showRowOptions &&
-              <AsupInternalWindow key="Row" Title={"Row options"} Visible={showRowOptions} onClose={() => { onCloseOption(AitOptionLocation.row); }}>
-                <AioOptionDisplay
-                  options={rowOptions}
-                  setOptions={(ret) => {
-                    if (!rowOptions) return;
-                    let rl = { tableSection: higherOptions.tableSection, rowGroup: higherOptions.rowGroup, row: higherOptions.row, column: -1 } as AitLocation;
-                    setRowOptions!(ret, rl);
-                  }}
-                />
-              </AsupInternalWindow> 
-            } */}
-          </>
-        }
         {/* Cell options window */}
         {showCellOptions &&
-          <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { onCloseOption(AitOptionLocation.cell); }}>
+          <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { setShowCellOptions(false); }}>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Cell location: </div>
               <div className={"aio-value"}><AioExpander inputObject={location} /></div>

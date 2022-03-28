@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import structuredClone from '@ungap/structured-clone';
 import { AioRepeats, AioReplacement } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation } from "./aitInterface";
+import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitColumnRepeat } from "./aitInterface";
 import { AitRow } from "./aitRow";
 import { newCell, objEqual, repeatRows } from "./processes";
 
@@ -14,6 +14,7 @@ interface AitRowGroupProps {
   higherOptions: AitOptionList,
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
+  columnRepeats?: AitColumnRepeat[],
 }
 
 export const AitRowGroup = ({
@@ -24,6 +25,7 @@ export const AitRowGroup = ({
   higherOptions,
   addRowGroup,
   removeRowGroup,
+  columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
 
@@ -131,6 +133,7 @@ export const AitRowGroup = ({
             addRow={addRow}
             removeRow={ri > 0 ? removeRow : undefined}
             spaceAfter={spaceAfter}
+            columnRepeats={columnRepeats}
           />
         );
       })}

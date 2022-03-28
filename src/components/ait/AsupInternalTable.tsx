@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitRowGroupData, AitTableData, AitOptionList, AitRowType } from "./aitInterface";
+import { AitRowGroupData, AitTableData, AitOptionList, AitRowType, AitColumnRepeat } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
@@ -23,12 +23,23 @@ interface AsupInteralTableProps {
  */
 export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
+  const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>([]);
 
   // Basic data checking... useful on load/reload
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1; }, [tableData.rowHeaderColumns]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
+
+  useEffect(() => {
+    let cr = Array.from(tableData.headerData.rows[tableData.headerData.rows.length - 1].cells.keys())
+      .map(n => { return { columnIndex: n } as AitColumnRepeat })
+      ;
+    // Simulate repeat of last column
+    cr[cr.length-1].repeatNumbers=[0];
+    cr.push({columnIndex:tableData.headerData.rows[0].cells.length-1, repeatNumbers:[1]});
+    setColumnRepeats(cr);
+  }, [tableData.headerData.rows]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -160,7 +171,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
 
-
   // Print the table
   return (
     <>
@@ -200,7 +210,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           {tableData.headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
-                rowLength={tableData.bodyData[0].rows[0].cells.length}
+                rowLength={columnRepeats.length}
                 spaceAfter={true}
                 changeColumns={{
                   addColumn: addCol,
@@ -224,14 +234,15 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                   tableSection: AitRowType.header,
                   rowGroup: 0,
                 }}
+                columnRepeats={columnRepeats}
               />
-              <AitBorderRow rowLength={tableData.bodyData[0].rows[0].cells.length} spaceBefore={true} noBorder={true} />
+              <AitBorderRow rowLength={columnRepeats.length} spaceBefore={true} noBorder={true} />
             </thead>
           }
 
           <tbody>
             <AitBorderRow
-              rowLength={tableData.bodyData[0].rows[0].cells.length}
+              rowLength={columnRepeats.length}
               spaceAfter={true}
               changeColumns={tableData.headerData.rows.length === 0
                 ?
@@ -269,11 +280,12 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                     }}
                     addRowGroup={(rgi) => { addRowGroup(rgi) }}
                     removeRowGroup={rgi > 0 ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                    columnRepeats={columnRepeats}
                   />
                 );
               })
             }
-            <AitBorderRow rowLength={tableData.bodyData[0].rows[0].cells.length} />
+            <AitBorderRow rowLength={columnRepeats.length} />
           </tbody>
         </table>
       </div>
