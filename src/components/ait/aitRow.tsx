@@ -145,6 +145,7 @@ export const AitRow = ({
 
           // Get cell from column repeat
           let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
+          if (isColumnRepeat && !cells[cr.columnIndex]) return (<td key={ci}>Cell {ci} not found!</td>);
           let cell: AitCellData = !isColumnRepeat
             ? cells[cr.columnIndex]
             : {
@@ -158,18 +159,15 @@ export const AitRow = ({
               replacedText: cells[cr.columnIndex].replacedText,
             } as AitCellData
             ;
-          if (!cell) return (<td>Cell not found!</td>);
+          if (!cell) return (<td key={ci}>Cell {ci} not defined</td>);
 
           // Sort out static options
           let cellHigherOptions: AitOptionList = {
             ...higherOptions,
-            columns: columnRepeats.length,
-            columnRepeats: columnRepeats,
           } as AitOptionList;
           // Add defaults - can happen on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
           if (isColumnRepeat) { cell.aitid = `${JSON.stringify(cr.repeatNumbers)}`; }
-          console.log(`Printing cell ${JSON.stringify(location)} - ${isColumnRepeat} - ci:${ci} = crsl:${crs.length - 1}`);
           if (cell.rowSpan === undefined) cell.rowSpan = 1;
           if (cell.colSpan === undefined) cell.colSpan = 1;
           if (cell.textIndents === undefined) cell.textIndents = 0;

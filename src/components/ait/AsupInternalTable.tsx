@@ -8,6 +8,7 @@ import { AitRowGroup } from "./aitRowGroup";
 import { newCell } from "./processes";
 import './ait.css';
 import { AioBoolean } from "components/aio/aioBoolean";
+import structuredClone from "@ungap/structured-clone";
 
 interface AsupInteralTableProps {
   tableData: AitTableData,
@@ -38,8 +39,9 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     // Simulate repeat of last column
     cr[cr.length-1].repeatNumbers=[0];
     cr.push({columnIndex:tableData.headerData.rows[0].cells.length-1, repeatNumbers:[1]});
+    console.log("Setting column repeats");
     setColumnRepeats(cr);
-  }, [tableData.headerData.rows]);
+  }, [tableData.headerData]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -171,6 +173,11 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
 
+  const headerData = useMemo(() => {
+    let headerData = structuredClone(tableData.headerData);
+    return headerData;
+  }, [tableData.headerData]);
+
   // Print the table
   return (
     <>
@@ -207,7 +214,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           }
         </div>
         <table className="ait-table">
-          {tableData.headerData.rows.length > 0 &&
+          {headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
                 rowLength={columnRepeats.length}
@@ -218,11 +225,12 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                   showButtons: true,
                 }}
                 rowHeaderColumns={tableData.rowHeaderColumns}
+                columnRepeats={columnRepeats}
               />
               <AitHeader
-                aitid={tableData.headerData.aitid}
-                rows={tableData.headerData.rows}
-                replacements={tableData.headerData.replacements ??
+                aitid={headerData.aitid}
+                rows={headerData.rows}
+                replacements={headerData.replacements ??
                   [{
                     replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
                     replacementValues: [{ newText: "" }],
