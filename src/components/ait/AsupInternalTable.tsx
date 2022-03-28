@@ -25,6 +25,7 @@ interface AsupInteralTableProps {
 export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>([]);
+  const [headerData, setHeaderData] = useState<AitRowGroupData>(tableData.headerData);
 
   // Basic data checking... useful on load/reload
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,14 +34,16 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
 
   useEffect(() => {
+    let headerData: AitRowGroupData = structuredClone(tableData.headerData);
     let cr = Array.from(tableData.headerData.rows[tableData.headerData.rows.length - 1].cells.keys())
       .map(n => { return { columnIndex: n } as AitColumnRepeat })
       ;
     // Simulate repeat of last column
-    cr[cr.length-1].repeatNumbers=[0];
-    cr.push({columnIndex:tableData.headerData.rows[0].cells.length-1, repeatNumbers:[1]});
+    cr[cr.length - 1].repeatNumbers = [0];
+    cr.push({ columnIndex: tableData.headerData.rows[0].cells.length - 1, repeatNumbers: [1] });
     console.log("Setting column repeats");
     setColumnRepeats(cr);
+    setHeaderData(headerData);
   }, [tableData.headerData]);
 
   // Return data
@@ -54,13 +57,13 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
     console.log("Sending table return");
     const r = {
-      headerData: tableUpdate.headerData ?? tableData.headerData,
+      headerData: tableUpdate.headerData ?? headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? tableData.rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
-    };
+    } as AitTableData;
     setTableData(r);
-  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
+  }, [setTableData, headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
@@ -172,11 +175,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     let newHeaderColumns = tableData.rowHeaderColumns - 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
-
-  const headerData = useMemo(() => {
-    let headerData = structuredClone(tableData.headerData);
-    return headerData;
-  }, [tableData.headerData]);
 
   // Print the table
   return (
