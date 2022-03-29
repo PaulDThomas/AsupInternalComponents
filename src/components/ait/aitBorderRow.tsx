@@ -35,7 +35,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 <div className="ait-tip ait-tip-rhs">
                   <div
                     className={`ait-options-button ait-options-button-add-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                    onClick={(e) => { props.changeColumns!.addColumn!(ci) }}
+                    onClick={(e) => { props.changeColumns!.addColumn!(props.columnRepeats![ci].columnIndex) }}
                   >
                     <span className="ait-tiptext ait-tip-top">Add&nbsp;column</span>
                   </div>
@@ -45,7 +45,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                   <div className="ait-tip ait-tip-lhs">
                     <div
                       className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                      onClick={(e) => { props.changeColumns!.removeColumn!(ci) }}
+                      onClick={(e) => { props.changeColumns!.removeColumn!(props.columnRepeats![ci].columnIndex) }}
                     >
                       <span className="ait-tiptext ait-tip-top">Remove&nbsp;column</span>
                     </div>

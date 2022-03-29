@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "components/aio/aioInterface";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
-import { AitRowData, AitCellData, AitOptionList, AitLocation, AitColumnRepeat } from "./aitInterface";
+import { AitRowData, AitCellData, AitOptionList, AitLocation, AitColumnRepeat, AitRowType } from "./aitInterface";
 import { AitCell } from "./aitCell";
 import { objEqual } from "./processes";
 import { AitBorderRow } from "./aitBorderRow";
@@ -66,15 +66,22 @@ export const AitRow = ({
     if (typeof (setRowData) !== "function") return;
     let r: AitRowData = {
       aitid: aitid,
-      cells: rowUpdate.cells ?? cells,
+      cells: rowUpdate.cells?.filter((c, ci) => (
+        location.tableSection === AitRowType.body
+        || !columnRepeats
+        || !columnRepeats[ci]
+        || !columnRepeats[ci].repeatNumbers 
+        || columnRepeats[ci].repeatNumbers?.reduce((r,a) => r+a, 0) === 0
+        )) ?? cells,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
+      console.log(`ROWRETURN: ${diffs}`);
       setRowData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [setRowData, aitid, cells, lastSend, location]);
+  }, [setRowData, aitid, cells, lastSend, location, columnRepeats]);
 
   const updateCell = useCallback((ret, ci) => {
     // Create new object to send back
@@ -146,20 +153,23 @@ export const AitRow = ({
           // Get cell from column repeat
           let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
           if (isColumnRepeat && !cells[cr.columnIndex]) return (<td key={ci}>Cell {ci} not found!</td>);
-          let cell: AitCellData = !isColumnRepeat
-            ? cells[cr.columnIndex]
-            : {
-              aitid: `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`,
-              text: cells[cr.columnIndex].text,
-              rowSpan: cells[cr.columnIndex].rowSpan,
-              colSpan: cells[cr.columnIndex].colSpan,
-              colWidth: cells[cr.columnIndex].colWidth,
-              replaceText: cells[cr.columnIndex].replacedText,
-              textIndents: cells[cr.columnIndex].textIndents,
-              replacedText: cells[cr.columnIndex].replacedText,
-            } as AitCellData
+          // Take the cell from the processed array in headers, unprocessed in body
+          let cell: AitCellData = location.tableSection === AitRowType.header
+            ? cells[ci]
+            : !isColumnRepeat
+              ? cells[cr.columnIndex]
+              : {
+                aitid: `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`,
+                text: cells[cr.columnIndex].text,
+                rowSpan: cells[cr.columnIndex].rowSpan,
+                colSpan: cells[cr.columnIndex].colSpan,
+                colWidth: cells[cr.columnIndex].colWidth,
+                replaceText: cells[cr.columnIndex].replacedText,
+                textIndents: cells[cr.columnIndex].textIndents,
+                replacedText: cells[cr.columnIndex].replacedText,
+              } as AitCellData
             ;
-          if (!cell) return (<td key={ci}>Cell {ci} not defined</td>);
+          if (!cell) return (<td key={ci}>Cell {location.tableSection === AitRowType.header ? ci : cr.columnIndex} not defined</td>);
 
           // Sort out static options
           let cellHigherOptions: AitOptionList = {
@@ -184,13 +194,13 @@ export const AitRow = ({
               colWidth={cell.colWidth}
               textIndents={cell.textIndents}
               higherOptions={cellHigherOptions}
-              columnIndex={ci} /* This needs to be calculated after row/colspan! */
-              setCellData={(ret) => updateCell(ret, ci)}
+              columnIndex={cr.columnIndex} /* This needs to be calculated after row/colspan! */
+              setCellData={(ret) => updateCell(ret, cr.columnIndex)}
               readOnly={(
                 (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
                 || isColumnRepeat
               ) ?? false}
-              addColSpan={ci + cell.colSpan < cells.length ? addColSpan : undefined}
+              addColSpan={cr.columnIndex + cell.colSpan < cells.length ? addColSpan : undefined}
               removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
               addRowSpan={cellHigherOptions.row + cell.rowSpan < cellHigherOptions.headerRows ? addRowSpan : undefined}
               removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}

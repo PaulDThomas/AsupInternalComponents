@@ -5,10 +5,11 @@ import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
 import { AitRowGroupData, AitTableData, AitOptionList, AitRowType, AitColumnRepeat } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { newCell } from "./processes";
+import { newCell, repeatHeaders } from "./processes";
 import './ait.css';
 import { AioBoolean } from "components/aio/aioBoolean";
 import structuredClone from "@ungap/structured-clone";
+import { AioExpander } from "components/aio/aioExpander";
 
 interface AsupInteralTableProps {
   tableData: AitTableData,
@@ -25,7 +26,7 @@ interface AsupInteralTableProps {
 export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>([]);
-  const [headerData, setHeaderData] = useState<AitRowGroupData>(tableData.headerData);
+  const [processedHeader, setProcessedHeader] = useState<AitRowGroupData>(tableData.headerData);
 
   // Basic data checking... useful on load/reload
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -33,18 +34,23 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
 
+  // Header data processing
   useEffect(() => {
     let headerData: AitRowGroupData = structuredClone(tableData.headerData);
-    let cr = Array.from(tableData.headerData.rows[tableData.headerData.rows.length - 1].cells.keys())
-      .map(n => { return { columnIndex: n } as AitColumnRepeat })
-      ;
-    // Simulate repeat of last column
-    cr[cr.length - 1].repeatNumbers = [0];
-    cr.push({ columnIndex: tableData.headerData.rows[0].cells.length - 1, repeatNumbers: [1] });
-    console.log("Setting column repeats");
-    setColumnRepeats(cr);
-    setHeaderData(headerData);
-  }, [tableData.headerData]);
+
+    let headerDataUpdate = repeatHeaders(
+      tableData.headerData.rows,
+      tableData.headerData.replacements,
+      tableData.noRepeatProcessing,
+      tableData.rowHeaderColumns,
+    );
+    setProcessedHeader({
+      aitid: "processedHeader",
+      rows: headerDataUpdate.rows,
+      replacements: headerData.replacements
+    });
+    setColumnRepeats(headerDataUpdate.columnRepeats);
+  }, [tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -57,13 +63,13 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
     console.log("Sending table return");
     const r = {
-      headerData: tableUpdate.headerData ?? headerData,
+      headerData: tableUpdate.headerData ?? tableData.headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? tableData.rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
     } as AitTableData;
     setTableData(r);
-  }, [setTableData, headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
+  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
@@ -122,8 +128,16 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       r.cells.splice(ci + 1, 0, newCell());
       return r;
     });
-    returnData({ headerData: newHeader, bodyData: newBody });
-  }, [tableData.bodyData, tableData.headerData, returnData]);
+    returnData({
+      headerData: newHeader,
+      bodyData: newBody,
+      rowHeaderColumns: (
+        ci < tableData.rowHeaderColumns - 1
+          ? tableData.rowHeaderColumns + 1
+          : tableData.rowHeaderColumns
+      )
+    });
+  }, [tableData.bodyData, tableData.headerData, tableData.rowHeaderColumns, returnData]);
 
   // Remove column 
   const remCol = useCallback((ci: number) => {
@@ -212,7 +226,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
           }
         </div>
         <table className="ait-table">
-          {headerData.rows.length > 0 &&
+          {tableData.headerData.rows.length > 0 &&
             <thead>
               <AitBorderRow
                 rowLength={columnRepeats.length}
@@ -226,9 +240,9 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 columnRepeats={columnRepeats}
               />
               <AitHeader
-                aitid={headerData.aitid}
-                rows={headerData.rows}
-                replacements={headerData.replacements ??
+                aitid={processedHeader.aitid}
+                rows={processedHeader.rows}
+                replacements={processedHeader.replacements ??
                   [{
                     replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
                     replacementValues: [{ newText: "" }],
@@ -243,6 +257,26 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 columnRepeats={columnRepeats}
               />
               <AitBorderRow rowLength={columnRepeats.length} spaceBefore={true} noBorder={true} />
+
+              {/* Section to show what's going on with the unprocessed headerData */}
+              <AitBorderRow rowLength={columnRepeats.length} spaceBefore={true} />
+              {tableData.headerData.rows.map((r, i) =>
+                <tr key={i}>
+                  <td></td>
+                  {r.cells.map((c, i) =>
+                    <td key={i}>{c.text} {c.replacedText !== undefined ? `to ${c.replacedText}` : ""}</td>
+                  )}
+                  <td></td>
+                </tr>
+              )}
+              <tr>
+                <td></td>
+                <td colSpan={columnRepeats.length}>
+                  {JSON.stringify(columnRepeats)}
+                  <AioExpander inputObject={columnRepeats} label="Column repeats" />
+                </td>
+              </tr>
+
             </thead>
           }
 
