@@ -124,12 +124,14 @@ export const AitRow = ({
                     </div>
                   </div>
                 }
+                {/* Row group options window */}
                 {showRowGroupOptions && replacements !== undefined &&
                   <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
                     <div className="aiw-body-row">
                       <AioReplacementDisplay
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
+                        dontAskSpace={location.tableSection === AitRowType.header}
                       />
                     </div>
                   </AsupInternalWindow>
