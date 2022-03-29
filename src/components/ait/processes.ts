@@ -1,40 +1,7 @@
 import structuredClone from "@ungap/structured-clone";
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup, AioOptionType, AioRepeats, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
-import { AitCellData, AitCellOptionNames, AitRowData } from "./aitInterface";
-
-/**
- * Update options with another set of options
- * @param incomingOptions 
- * @param previousOptions 
- * @returns Updated option group
- */
-export const processOptions = (incomingOptions: AioOptionGroup, previousOptions: AioOptionGroup) => {
-  // Return updated options if there is nothing to process against  
-  if (previousOptions === undefined) {
-    return incomingOptions ?? [];
-  }
-
-  // Create new options to update
-  var newOptions = previousOptions.map(a => { return { ...a } });
-
-  // Get each value, or add blank
-  for (let uo of incomingOptions ?? []) {
-    let i = newOptions.findIndex(no => no.optionName === uo.optionName);
-    if (i >= 0) {
-      newOptions[i].type = uo.type;
-      newOptions[i].value = uo.value;
-      newOptions[i].label = uo.label ?? newOptions[i].label;
-      newOptions[i].availableValues = uo.availableValues ?? newOptions[i].availableValues;
-      newOptions[i].readOnly = uo.readOnly ?? newOptions[i].readOnly;
-    }
-    else {
-      newOptions.push({ ...uo });
-    }
-    uo.value = incomingOptions?.find((i) => { return i.optionName === uo.optionName; })?.value ?? uo.value;
-  }
-  return newOptions;
-};
+import { AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "../aio/aioInterface";
+import { AitCellData, AitCellType, AitColumnRepeat, AitCoord, AitRowData } from "./aitInterface";
 
 export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
   if (a === b) return [true, ""];
@@ -57,7 +24,7 @@ export const objEqual = (a: any, b: any, path?: string): [boolean, string] => {
   return checkObjectR;
 }
 
-export const getReplacementValues = (rvs: AioReplacementValue[]): AioRepeats => {
+const getReplacementValues = (rvs: AioReplacementValue[]): AioRepeats => {
   if (!rvs || rvs.length === 0) return { numbers: [], values: [], last: [] };
   let thisNumbers: number[][] = [];
   let thisValues: string[][] = [];
@@ -93,18 +60,22 @@ const firstUnequal = (a: number[], b: number[]): number => {
   else return 0;
 }
 
-export const newCell = (): AitCellData => { return { aitid: uuidv4(), text: "", options: [] }; }
+export const newCell = (type?: AitCellType): AitCellData => {
+  let cell: AitCellData = { aitid: uuidv4(), text: "", rowSpan: 1, colSpan: 1 };
+  if (type === AitCellType.header) cell.colWidth = 60;
+  return cell;
+}
 
 /** Find which row replacementText first appears in */
-const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[]): number[] => {
-  let targetArray: number[] = [];
-  if (!replacementText || replacementText.length === 0) return targetArray;
+const findTargets = (rows: AitRowData[], replacementTexts?: AioReplacementText[]): AitCoord[] => {
+  let targetArray: AitCoord[] = [];
+  if (!replacementTexts || replacementTexts.length === 0) return targetArray;
 
-  textSearch: for (let i = 0; i < replacementText.length; i++) {
+  textSearch: for (let i = 0; i < replacementTexts.length; i++) {
     rowSearch: for (let ri = 0; ri < rows.length; ri++) {
       for (let ci = 0; ci < rows[ri].cells.length; ci++) {
-        if (rows[ri].cells[ci].text.includes(replacementText[i].text)) {
-          targetArray.push(ri);
+        if (rows[ri].cells[ci].text.includes(replacementTexts[i].text)) {
+          targetArray.push({ row: ri, column: ci });
           break rowSearch;
         }
       }
@@ -115,135 +86,322 @@ const findTargets = (rows: AitRowData[], replacementText?: AioReplacementText[])
 }
 
 /**
- * Repeat rows based on repeat number array with potential for partial repeats 
+ * Repeat rows based on repeat number array with potential for partial repeats
  * @param rows 
  * @param noProcessing 
- * @param replacementTexts 
- * @param repeats 
+ * @param replacements
+ * @param rowHeaderColumns 
  * @returns 
  */
 export const repeatRows = (
   rows: AitRowData[],
+  replacements?: AioReplacement[],
   noProcessing?: boolean,
-  replacementTexts?: AioReplacementText[],
-  repeats?: AioRepeats,
   rowHeaderColumns?: number,
 ): { rows: AitRowData[], repeats: AioRepeats } => {
 
-  /** Strip repeat data if flagged */
-  if (noProcessing) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: { numbers: [[]], values: [[]], last: [[]] } };
+  // Strip repeat data if flagged 
+  if (noProcessing
+    || rows.length === 0
+    || !replacements
+    || replacements.length === 0
+    || !replacements[0].replacementTexts
+    || replacements[0].replacementTexts.length === 0
+    || !replacements[0].replacementValues
+    || replacements[0].replacementValues.length === 0
+  ) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: { numbers: [[]], values: [[]], last: [[]] } };
 
-  /** Stop processing if there is nothing to repeat */
+  // Process parts of replacements into single objects
+  let replacementTexts: AioReplacementText[] = replacements.map(rep => rep.replacementTexts).flat();
+  let repeats = getRepeats(replacements);
+
+  // Stop processing if there is nothing to repeat 
   if (!repeats?.numbers || repeats.numbers.length === 0) return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: repeats ?? { numbers: [[]], values: [[]], last: [[]] } };
 
-  /** Get ros numbers that contain the repeat texts */
+  // Get row numbers that contain the repeat texts 
   let targetArray = findTargets(rows, replacementTexts);
 
-  /** Rows to the returned by this function */
+  // Rows to the returned by this function 
+  let { newRows, newRepeatValues, newRepeatNumbers, newLast } = createRepeats(repeats, rows, targetArray);
+
+  // Update text based on repeats */
+  replaceText(newRows, replacementTexts, newRepeatValues);
+
+  // Process newRows add rowSpan in rowHeaders */
+  updateRowSpans(newRows, rowHeaderColumns ?? 0);
+
+  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
+}
+
+export const repeatHeaders = (
+  rows: AitRowData[],
+  replacements?: AioReplacement[],
+  noProcessing?: boolean,
+  rowHeaderColumns?: number,
+): { rows: AitRowData[], columnRepeats: AitColumnRepeat[][] } => {
+
+  let defaultRepeat = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat });
+
+  // Strip repeat data if flagged 
+  if (noProcessing
+    || rows.length === 0
+    || !replacements
+    || replacements.length === 0
+    || !replacements[0].replacementTexts
+    || replacements[0].replacementTexts.length === 0
+    || !replacements[0].replacementValues
+    || replacements[0].replacementValues.length === 0
+  ) return {
+    rows: rows.map(r => removeRowRepeatInfo(r)),
+    columnRepeats: [defaultRepeat]
+  };
+
+  // Process parts of replacements into single objects
+  let replacementTexts: AioReplacementText[] = replacements.map(rep => rep.replacementTexts).flat();
+  let repeats = getRepeats(replacements);
+
+  // Stop processing if there is nothing to repeat 
+  if (!repeats?.numbers
+    || repeats.numbers.length === 0
+  )
+    return {
+      rows: rows.map(r => removeRowRepeatInfo(r)),
+      columnRepeats: [defaultRepeat]
+    };
+
+  // Get row numbers that contain the repeat texts 
+  let targetArray = findTargets(rows, replacementTexts);
+
+  // Stop if first level is inside the rowHeaderColumns
+  if (targetArray.length === 0
+    || targetArray[0].column < (rowHeaderColumns ?? 0)
+  )
+    return {
+      rows: rows.map(r => removeRowRepeatInfo(r)),
+      columnRepeats: [defaultRepeat]
+    };
+
+  // Work out which columns are repeating
+  let columnsToRepeat = rows[targetArray[0].row].cells[targetArray[0].column].colSpan ?? 1;
+
+  // Get column headers as a row object to process
+  let targetBlock = transposeCells(
+    rows.map(r => {
+      let rowSlice: AitRowData = {
+        aitid: r.aitid,
+        cells: r.cells.slice(targetArray[0].column, targetArray[0].column + columnsToRepeat),
+      }
+      return rowSlice;
+    })
+  );
+
+  // Rows to the returned by this function 
+  let { newRows, newRepeatValues, newRepeatNumbers, originalRow } = createRepeats(repeats, targetBlock, targetArray);
+
+  // Update text based on repeats
+  replaceText(newRows, replacementTexts, newRepeatValues);
+
+  // Process newRows add rowSpan in rowHeaders
+  updateRowSpans(newRows, columnsToRepeat);
+
+  // Change back to column headers
+  let newBlock = transposeCells(newRows);
+  let newHeaderInfo: [AitRowData, AitColumnRepeat[]][] = rows.map((r, ri) => {
+    let newRow: AitRowData = { aitid: r.aitid, cells: [] };
+    let columnRepeat: AitColumnRepeat[] = []
+    // Add cells before
+    if (targetArray[0].column > 0) {
+      newRow.cells.push(...r.cells.slice(0, targetArray[0].column));
+      columnRepeat.push(...Array.from(r.cells.slice(0, targetArray[0].column).keys()).map(n => {
+        return { columnIndex: n } as AitColumnRepeat
+      }));
+    }
+    // Add new block
+    newRow.cells.push(...newBlock[ri].cells);
+    columnRepeat.push(...Array.from(originalRow).map((n, i) => {
+      return { columnIndex: n + targetArray[0].column, repeatNumbers: newRepeatNumbers[i] } as AitColumnRepeat
+    }));
+    // Add cells after
+    if (targetArray[0].column + columnsToRepeat < r.cells.length) {
+      newRow.cells.push(...r.cells.slice(targetArray[0].column + columnsToRepeat))
+      columnRepeat.push(...Array.from(r.cells.slice(targetArray[0].column + columnsToRepeat).keys()).map(n => {
+        return { columnIndex: n + targetArray[0].column + columnsToRepeat } as AitColumnRepeat
+      }));
+    }
+    return [newRow, columnRepeat];
+  });
+
+  return {
+    rows: newHeaderInfo.map(i => i[0]),
+    columnRepeats: newHeaderInfo.map(i => i[1]),
+  };
+};
+
+const removeRowRepeatInfo = (row: AitRowData): AitRowData => {
+  let newRow: AitRowData = {
+    aitid: row.aitid,
+    cells: row.cells.map(c => {
+      if (c.replacedText !== undefined) delete (c.replacedText);
+      c.rowSpan = 1;
+      return c;
+    }),
+  };
+  return newRow;
+}
+
+const getRepeats = (r: AioReplacement[]): AioRepeats => {
+  let newRepeats: AioRepeats = { numbers: [], values: [], last: [] }
+  if (!r || r.length === 0) return newRepeats;
+  for (let i = 0; i < r.length; i++) {
+    if (i === 0)
+      newRepeats = getReplacementValues(r[i].replacementValues);
+    else {
+      let thisRepeat = getReplacementValues(r[i].replacementValues);
+      let newRepeatNumbers: number[][] = [];
+      let newLast: boolean[][] = [];
+      let newRepeatValues: string[][] = [];
+      for (let j = 0; j < newRepeats.numbers.length; j++) {
+        for (let k = 0; k < thisRepeat.numbers.length; k++) {
+          newRepeatNumbers.push([...newRepeats.numbers[j], ...thisRepeat.numbers[k]]);
+          newLast.push([...newRepeats.last[j].map(l => l && k === thisRepeat.numbers.length - 1), ...thisRepeat.last[k]]);
+          newRepeatValues.push([...newRepeats.values[j], ...thisRepeat.values[k]]);
+        }
+      }
+      newRepeats = {
+        numbers: newRepeatNumbers,
+        values: newRepeatValues,
+        last: newLast,
+      };
+    }
+  }
+  return newRepeats;
+}
+
+const createRepeats = (
+  repeats: AioRepeats,
+  rows: AitRowData[],
+  targetArray: AitCoord[]
+): {
+  newRows: AitRowData[],
+  newRepeatValues: string[][],
+  newRepeatNumbers: number[][],
+  newLast: boolean[][],
+  originalRow: number[],
+} => {
   let newRows: AitRowData[] = [];
   /** Row repeat number signature to be returned by this function */
   let newRepeatNumbers: number[][] = [];
-  /** Last value indicator be returned by this function */
+  /** Last value indicator be returned by this function, used for spaceAfter indicators */
   let newLast: boolean[][] = [];
   /** Row repeat values to be returned by this function */
   let newRepeatValues: string[][] = [];
-  /** Value of the previous repeat signature, used to check which rows need to be repeated */
-  let lastRepeat: number[] = [];
+  /** Original row numbers used */
+  let originalRow: number[] = [];
   /** Loop through each of the repeat levels */
-  for (let repi = 0; repi < repeats.numbers.length; repi++) {
-    /** Current repeat signature */
-    let repNo: number[] = repeats.numbers[repi];
+  repeats.numbers.map((repNo, repi) => {
     /** Current last repeat value indicator */
     let repLast: boolean[] = repeats.last[repi];
     /** Current repeat values */
     let repVal: string[] = repeats.values !== undefined ? repeats.values[repi] : [];
     /** First row number that needs to be repeated for this level */
-    let firstLevel: number = firstUnequal(repNo, lastRepeat);
+    let firstLevel: number = repi > 0 ? firstUnequal(repNo, repeats.numbers[repi - 1]) : 0;
     /** Rows that need to be repeated for this level */
-    let slice = rows.slice(targetArray[firstLevel]);
+    let slice = repi === 0 ? rows : rows.slice(targetArray[firstLevel].row);
+    if (slice.length === 0) return false;
     /** Push current repeats into the output */
-    newRows.push(...(repi === 0 ? slice : structuredClone(slice)));
+    newRows.push(...structuredClone(slice));
     newRepeatNumbers.push(...Array(slice.length).fill(repNo));
     newLast.push(...Array(slice.length - 1).fill(Array(repLast.length).fill(false)), repLast);
     newRepeatValues.push(...Array(slice.length).fill(repVal));
-    /** Update for the next loop */
-    lastRepeat = [...repNo];
-  }
+    originalRow.push(...Array.from(slice.keys()).map(ri => ri + targetArray[firstLevel].row));
+    return true;
+  });
+  return { newRows, newRepeatValues, newRepeatNumbers, newLast, originalRow };
+}
 
-  /** Update text based on repeats */
-  for (let r = 0; r < newRows.length; r++) {
-    for (let c = 0; c < newRows[r].cells.length; c++) {
-      let cell = newRows[r].cells[c];
+const replaceText = (
+  rows: AitRowData[],
+  replacementTexts: AioReplacementText[],
+  newRepeatValues: string[][]
+) => {
+  for (let r = 0; r < rows.length; r++) {
+    for (let c = 0; c < rows[r].cells.length; c++) {
+      let cell = rows[r].cells[c];
       let replacedText = cell.text;
       for (let rt = 0; rt < (replacementTexts?.length ?? 0); rt++) {
         // Replace if there in old and new text
         let o = replacementTexts![rt].text;
         let n = newRepeatValues[r][rt];
-        if (n) replacedText = replacedText.replace(o, n);
+        if (n)
+          replacedText = replacedText.replace(o, n);
       }
-      if (replacedText !== cell.text) cell.replacedText = replacedText;
-      else delete (cell.replacedText);
+      if (replacedText !== cell.text)
+        cell.replacedText = replacedText;
+      else
+        delete (cell.replacedText);
     }
   }
+}
 
-  // /** Process newRows add rowSpan in rowHeaders */
-  for (let r = 0; r < newRows.length; r++) {
+const updateRowSpans = (
+  rows: AitRowData[],
+  rowHeaderColumns: number
+) => {
+  for (let r = 0; r < rows.length; r++) {
     let col = 0;
     while (col < (rowHeaderColumns ?? 0)) {
-      /** Get cell to check */
-      let currentCell = newRows[r].cells[col];
-      /** Ensure it has not already been udpated */
-      if (currentCell.options.find(o => o.optionName === AitCellOptionNames.rowSpan)?.value === 0) {
+      // Get cell to check 
+      let currentCell = rows[r].cells[col];
+      // Ensure it has not already been udpated 
+      if (currentCell?.rowSpan === 0) {
         col++;
         continue;
       }
-      /** Start checking */
+      // Start checking 
       let rowSpan = 1;
-      /** Look for duplicate text in the next row */
+      // Look for duplicate text in the next row 
       while (
-        currentCell.replacedText !== undefined
-        && newRows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
+        currentCell?.replacedText !== undefined
+        && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) rowSpan++;
-      /** Update rowSpans if duplicates have been found */
+      // Update rowSpans if duplicates have been found 
       if (rowSpan > 1) {
-        setCellOption(currentCell, AitCellOptionNames.rowSpan, "Row span", AioOptionType.number, rowSpan, true);
+        currentCell.rowSpan = rowSpan;
         for (let _r = 1; _r < rowSpan; _r++) {
-          setCellOption(newRows[r + _r].cells[col], AitCellOptionNames.rowSpan, "Row span", AioOptionType.number, 0, true);
+          rows[r + _r].cells[col].rowSpan = 0;
         }
       }
       else {
-        removeCellOption(currentCell, AitCellOptionNames.rowSpan);
+        currentCell.rowSpan = 1;
       }
       col++;
     }
-    while (col < newRows[r].cells.length) {
-      removeCellOption(newRows[r].cells[col], AitCellOptionNames.rowSpan);
+    while (col < rows[r].cells.length) {
+      rows[r].cells[col].rowSpan = 1;
       col++;
     }
   }
-  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
 }
 
-export const setCellOption = (cell: AitCellData, optionName: AitCellOptionNames, label: string, type: AioOptionType, value: any, readOnly?: boolean): void => {
-  let optionIndex = cell.options.findIndex(o => o.optionName === optionName);
-  if (optionIndex === -1) cell.options.push({ optionName: optionName, label: label, type: type, value: value, readOnly: readOnly });
-  else cell.options[optionIndex].value = value;
-}
-
-export const removeCellOption = (cell: AitCellData, optionName: AitCellOptionNames): void => {
-  let optionIndex = cell.options.findIndex(o => o.optionName === optionName);
-  if (optionIndex > -1) cell.options.splice(optionIndex, 1);
-}
-
-export const removeRowRepeatInfo = (row: AitRowData):AitRowData => {
-  let newRow:AitRowData = {
-    aitid: row.aitid,
-    cells: row.cells.map(c => {
-      if (c.replacedText !== undefined) delete (c.replacedText);
-      removeCellOption(c, AitCellOptionNames.rowSpan);
-      return c;      
-    }),
-    options: row.options,
-  };
-  return newRow;
+const transposeCells = (t: AitRowData[], flipFn?: (target: AitCellData) => AitCellData): AitRowData[] => {
+  let newRows: AitRowData[] = [];
+  for (let r = 0; r < t.length; r++) {
+    for (let c = 0; c < t[r].cells.length; c++) {
+      let target = t[r].cells[c];
+      if (target === undefined) {
+        console.warn("Undefined target in transpose");
+        continue;
+      }
+      if (typeof flipFn === "function") {
+        target = flipFn(target);
+      }
+      if (r === 0) {
+        newRows.push({ aitid: t[r].aitid ?? uuidv4(), cells: [target] });
+      }
+      else {
+        newRows[c].cells.push(target);
+      }
+    }
+  }
+  return newRows;
 }

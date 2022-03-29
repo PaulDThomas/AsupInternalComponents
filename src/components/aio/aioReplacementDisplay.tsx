@@ -31,7 +31,6 @@ export const AioReplacementDisplay = (props: AioReplacementsProps): JSX.Element 
     let newReplacements = [...props.replacements];
     newReplacements.push({
       replacementTexts: [{
-        level: 0,
         text: "",
         spaceAfter: false,
       }],

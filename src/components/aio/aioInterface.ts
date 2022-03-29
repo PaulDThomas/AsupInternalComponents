@@ -1,8 +1,6 @@
-import { AitCellOptionNames, AitRowGroupOptionNames, AitRowOptionNames, AitTableOptionNames } from "components/ait/aitInterface";
-
 /** Individual options */
 export interface AioOption {
-  optionName: AitCellOptionNames | AitRowOptionNames | AitRowGroupOptionNames | AitTableOptionNames | AioNewItem,
+  optionName?: AioNewItem,
   type: AioOptionType,
   value: any,
   label?: string,
@@ -13,7 +11,6 @@ export interface AioOptionGroup extends Array<AioOption> { };
 
 /** Individual text replacements */
 export interface AioReplacementText {
-  level: number,
   text: string,
   spaceAfter: boolean,
 }

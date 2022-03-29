@@ -1,107 +1,236 @@
 import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { v4 as uuidv4 } from "uuid";
-import { AioOptionGroup } from "components/aio/aioInterface";
-import { AitRowData, AitCellData, AitOptionList, AitLocation } from "./aitInterface";
+import { AioReplacement } from "components/aio/aioInterface";
+import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
+import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
+import { AitRowData, AitCellData, AitOptionList, AitLocation, AitColumnRepeat, AitRowType } from "./aitInterface";
 import { AitCell } from "./aitCell";
 import { objEqual } from "./processes";
 import { AitBorderRow } from "./aitBorderRow";
 
-
 interface AitRowProps {
   aitid: string,
-  rowData: AitRowData,
+  cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  rowGroupOptions: { options: AioOptionGroup, setOptions: (ret: AioOptionGroup) => void },
+  replacements: AioReplacement[],
+  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
+  rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number) => void,
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
   spaceAfter: boolean,
+  addColSpan?: (loc: AitLocation) => void,
+  removeColSpan?: (loc: AitLocation) => void,
+  addRowSpan?: (loc: AitLocation) => void,
+  removeRowSpan?: (loc: AitLocation) => void,
+  columnRepeats?: AitColumnRepeat[],
 }
 
-
-export const AitRow = (props: AitRowProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone(props.rowData));
+export const AitRow = ({
+  aitid,
+  cells,
+  setRowData,
+  higherOptions,
+  replacements,
+  setReplacements,
+  rowGroupWindowTitle,
+  addRowGroup,
+  removeRowGroup,
+  addRow,
+  removeRow,
+  spaceAfter,
+  addColSpan,
+  removeColSpan,
+  addRowSpan,
+  removeRowSpan,
+  columnRepeats,
+}: AitRowProps): JSX.Element => {
+  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells }));
+  const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: props.higherOptions.tableSection,
-      rowGroup: props.higherOptions.rowGroup,
-      row: props.higherOptions.row,
+      tableSection: higherOptions.tableSection,
+      rowGroup: higherOptions.rowGroup,
+      row: higherOptions.row,
       column: -1,
-      repeat: (props.higherOptions.repeatNumber ?? []).join(",")
+      repeat: (higherOptions.repeatNumber ?? []).join(",")
     }
-  }, [props.higherOptions]);
+  }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((cells: AitCellData[], options: AioOptionGroup) => {
+  const returnData = useCallback((rowUpdate: { cells?: AitCellData[] }) => {
+    if (typeof (setRowData) !== "function") return;
     let r: AitRowData = {
-      aitid: props.rowData.aitid ?? props.aitid,
-      cells: cells,
-      options: options,
+      aitid: aitid,
+      cells: rowUpdate.cells ?? cells,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      props.setRowData!(r);
+      // console.log(`ROWRETURN: ${diffs}`);
+      setRowData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [props.rowData, props.aitid, props.setRowData, lastSend, location]);
+  }, [setRowData, aitid, cells, lastSend, location]);
 
   const updateCell = useCallback((ret, ci) => {
-    // Do nothing if readonly
-    if (typeof (props.setRowData) !== "function") return;
-
     // Create new object to send back
-    let newCells = [...props.rowData.cells];
+    let newCells = [...cells];
     newCells[ci] = ret;
-    returnData(newCells, props.rowData.options);
-  }, [props.rowData.cells, props.rowData.options, props.setRowData, returnData]);
-
-  const updateOptions = useCallback((ret: AioOptionGroup) => {
-    // Do nothing if readonly
-    if (typeof (props.setRowData) !== "function") return;
-    returnData(props.rowData.cells, ret);
-  }, [props.rowData.cells, props.setRowData, returnData]);
+    returnData({ cells: newCells });
+  }, [cells, returnData]);
 
   return (
     <>
       <tr>
-        {props.rowData.cells.map((cell: AitCellData, ci: number): JSX.Element => {
+
+        {/* Row group options */}
+        <td className="ait-cell">
+          <div className="ait-aie-holder">
+            {higherOptions.row === 0
+              ?
+              (<>
+                {replacements !== undefined &&
+                  <div className="ait-tip">
+                    <div
+                      className={`ait-options-button ait-options-button-row-group`}
+                      onClick={(e) => { setShowRowGroupOptions(true) }}
+                    >
+                      <span className="ait-tiptext ait-tip-top">Row&nbsp;group&nbsp;options</span>
+                    </div>
+                  </div>
+                }
+                {typeof (addRowGroup) === "function" &&
+                  <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
+                    <div
+                      className={`ait-options-button ait-options-button-add-row-group`}
+                      onClick={(e) => { addRowGroup(location.rowGroup) }}
+                    >
+                      <span className="ait-tiptext ait-tip-top">Add&nbsp;row&nbsp;group</span>
+                    </div>
+                  </div>
+                }
+                {typeof (removeRowGroup) === "function" &&
+                  <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
+                    <div
+                      className={`ait-options-button ait-options-button-remove-row-group`}
+                      onClick={(e) => { removeRowGroup(location.rowGroup) }}
+                    >
+                      <span className="ait-tiptext ait-tip-top">Remove&nbsp;row&nbsp;group</span>
+                    </div>
+                  </div>
+                }
+                {showRowGroupOptions && replacements !== undefined &&
+                  <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
+                    <div className="aiw-body-row">
+                      <AioReplacementDisplay
+                        replacements={replacements!}
+                        setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
+                      />
+                    </div>
+                  </AsupInternalWindow>
+                }
+              </>)
+              :
+              null
+            }
+          </div>
+        </td>
+
+        {/* All cells from row */}
+        {columnRepeats?.map((cr: AitColumnRepeat, ci: number, crs): JSX.Element => {
+
+          // Get cell from column repeat
+          let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
+          if (isColumnRepeat && !cells[cr.columnIndex]) return (<td key={ci}>Cell {ci} not found!</td>);
+          // Take the cell from the processed array in headers, unprocessed in body
+          let cell: AitCellData = location.tableSection === AitRowType.header
+            ? cells[ci]
+            : !isColumnRepeat
+              ? cells[cr.columnIndex]
+              : {
+                aitid: `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`,
+                text: cells[cr.columnIndex].text,
+                rowSpan: cells[cr.columnIndex].rowSpan,
+                colSpan: cells[cr.columnIndex].colSpan,
+                colWidth: cells[cr.columnIndex].colWidth,
+                replaceText: cells[cr.columnIndex].replacedText,
+                textIndents: cells[cr.columnIndex].textIndents,
+                replacedText: cells[cr.columnIndex].replacedText,
+              } as AitCellData
+            ;
+          if (isColumnRepeat && location.tableSection === AitRowType.header) {
+            cell.aitid = `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`;
+          }
+          if (!cell) return (<td key={ci}>Cell {location.tableSection === AitRowType.header ? ci : cr.columnIndex} not defined</td>);
 
           // Sort out static options
-          let higherOptions = {
-            ...props.higherOptions
+          let cellHigherOptions: AitOptionList = {
+            ...higherOptions,
           } as AitOptionList;
+          // Add defaults - can happen on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
+          if (cell.rowSpan === undefined) cell.rowSpan = 1;
+          if (cell.colSpan === undefined) cell.colSpan = 1;
+          if (cell.textIndents === undefined) cell.textIndents = 0;
 
           // Render object
           return (
             <AitCell
               key={cell.aitid}
               aitid={cell.aitid}
-              higherOptions={higherOptions}
-              columnIndex={ci} /* This needs to be calculated after row/colspan! */
-              cellData={cell}
-              setCellData={(ret) => updateCell(ret, ci)}
-              readOnly={((higherOptions.repeatNumber && higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)) ?? false}
-              rowGroupOptions={ci === 0 && props.higherOptions.row === 0 ? props.rowGroupOptions : undefined}
-              addRowGroup={ci === 0 && props.higherOptions.row === 0 ? props.addRowGroup : undefined}
-              removeRowGroup={ci === 0 && props.higherOptions.row === 0 && props.higherOptions.rowGroup > 0 ? props.removeRowGroup : undefined}
-              rowOptions={(ci === props.rowData.cells.length - 1
-                ? {
-                  options: props.rowData.options,
-                  setOptions: updateOptions,
-                  addRow: props.addRow,
-                  removeRow: location.row > 0 ? props.removeRow : undefined
-                } : undefined)}
+              text={cell.text}
+              replacedText={cell.replacedText}
+              colSpan={cell.colSpan}
+              rowSpan={cell.rowSpan}
+              colWidth={cell.colWidth}
+              textIndents={cell.textIndents}
+              higherOptions={cellHigherOptions}
+              columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
+              setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
+              readOnly={(
+                (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
+                || isColumnRepeat
+              ) ?? false}
+              addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + cell.colSpan < cells.length ? addColSpan : undefined}
+              removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
+              addRowSpan={cellHigherOptions.row + cell.rowSpan < cellHigherOptions.headerRows ? addRowSpan : undefined}
+              removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}
             />
           );
         })}
+        {/* Row buttons */}
+        <td className="ait-cell">
+          <div className="ait-aie-holder">
+            {typeof addRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
+              <div className="ait-tip ait-tip-rhs">
+                <div
+                  className={`ait-options-button ait-options-button-add-row`}
+                  onClick={() => { addRow(location.row) }}
+                >
+                  <span className="ait-tiptext ait-tip-top">Add&nbsp;row</span>
+                </div>
+              </div>
+            }
+            {typeof removeRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
+              <div className="ait-tip ait-tip-rhs">
+                <div
+                  className={`ait-options-button ait-options-button-remove-row`}
+                  onClick={() => { removeRow(location.row) }}
+                >
+                  <span className="ait-tiptext ait-tip-top">Remove&nbsp;row</span>
+                </div>
+              </div>
+            }
+          </div>
+        </td>
       </tr>
-      {props.spaceAfter && <AitBorderRow rowCells={props.rowData.cells} spaceAfter={true} noBorder={true} />}
+      {/* Additional row if required */}
+      {spaceAfter && <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />}
     </>
   );
 }

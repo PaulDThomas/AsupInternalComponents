@@ -17,7 +17,7 @@ export const AioBoolean = (props: AioBooleanProps): JSX.Element => {
           <span>{props.value}</span>
           :
           <input
-            className={"aio-input"}
+            className={"aio-input-checkbox"}
             checked={props.value}
             type={"checkbox"}
             onChange={typeof (props.setValue) === "function"

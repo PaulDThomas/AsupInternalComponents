@@ -1,49 +1,47 @@
-import { AioOptionGroup, AioReplacement } from "components/aio/aioInterface";
+import { AioReplacement } from "components/aio/aioInterface";
 
 export interface AitCellData {
   aitid: string,
   text: string,
+  rowSpan: number,
+  colSpan: number,
+  colWidth?: number,
+  textIndents?: number,
   replacedText?: string,
-  options: AioOptionGroup,
 };
 
 export interface AitRowData {
   aitid: string,
   cells: AitCellData[],
-  options: AioOptionGroup,
 };
 
 export interface AitRowGroupData {
   aitid: string,
   rows: Array<AitRowData>,
-  options: AioOptionGroup,
-};
-
-export interface AitTableBodyData {
-  rowGroups: Array<AitRowGroupData>,
-  options: AioOptionGroup,
+  replacements: AioReplacement[],
 };
 
 export interface AitTableData {
   headerData: AitRowGroupData,
-  bodyData: AitTableBodyData,
-  options: AioOptionGroup,
+  bodyData: AitRowGroupData[],
+  rowHeaderColumns: number,
+  noRepeatProcessing: boolean,
 };
 
-
-export interface AitLocation {
-  tableSection: AitCellType,
-  rowGroup: number,
+export interface AitCoord {
   row: number,
   column: number,
+}
+
+export interface AitLocation extends AitCoord {
+  tableSection: AitRowType,
+  rowGroup: number,
   repeat: string
 }
 
-export enum AitOptionLocation {
-  tableSection = "tableSection",
-  rowGroup = "rowGroup",
-  row = "row",
-  cell = "cell",
+export interface AitColumnRepeat {
+  columnIndex: number,
+  repeatNumbers?: number[],
 }
 
 export enum AitCellType {
@@ -53,37 +51,15 @@ export enum AitCellType {
 }
 
 export enum AitRowType {
-  "header",
-  "body",
+  header = "header",
+  body = "body",
 }
 
-export enum AitCellOptionNames {
-  cellWidth = "cellWidth",
-  cellStatistic = "cellStatisic",
-  cellText = "cellText",
-  colSpan = "colSpan",
-  rowSpan = "rowSpan",
-  cellType = "cellType",
-  readOnly = "readOnly",
-};
-export enum AitRowOptionNames {
-
-};
-export enum AitRowGroupOptionNames {
-  rgName = "rgName",
-  replacements = "replacements",
-};
-export enum AitTableOptionNames {
-  tableName = "tableName",
-  tableDescription = "tableDescription",
-  noRepeatProcessing = "noRepeatProcessing",
-  rowHeaderColumns = "rowHeaderColumns",
-  repeatingColumns = "repeatingColumns",
-  columnRepeatList = "columnRepeatList",
-};
 export interface AitOptionList {
-  tableSection: AitCellType,
+  tableSection: AitRowType,
   noRepeatProcessing: boolean,
+  headerRows: number,
+  columns: number,
   rowHeaderColumns: number,
   rowGroup: number,
   row: number,
@@ -92,4 +68,5 @@ export interface AitOptionList {
   replacements?: AioReplacement[],
   repeatNumber?: number[],
   repeatValues?: string[],
+  columnRepeats?: AitColumnRepeat[],
 }

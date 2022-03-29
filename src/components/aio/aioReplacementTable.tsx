@@ -26,6 +26,7 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
       replacementTexts: textArray,
       replacementValues: values,
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `Replacement.join(',')}-`);
     if (!chkObj) {
       props.setReplacement(r);
@@ -59,7 +60,7 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
 
   const addLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementTexts];
-    newRT.push({ level: newRT.length, text: "", spaceAfter: false });
+    newRT.push({ text: "", spaceAfter: false });
     setTextArray(newRT);
 
     let newValues = [...props.replacement.replacementValues!.map(rv => addSubList(rv))];
