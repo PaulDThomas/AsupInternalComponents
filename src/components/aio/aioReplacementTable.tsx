@@ -7,6 +7,7 @@ import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 interface AioReplacmentTableProps {
   replacement: AioReplacement,
   setReplacement: (ret: AioReplacement) => void,
+  dontAskSpace?: boolean,
 }
 
 /**
@@ -113,14 +114,16 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
                 </>
               }
             </div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <label><small>Space after group</small></label>
-              <input
-                style={{ margin: "6px" }}
-                type='checkbox'
-                checked={r.spaceAfter}
-                onChange={(e) => updateSpaceAfter(e.currentTarget.checked, l)} />
-            </div>
+            {!props.dontAskSpace &&
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <label><small>Space after group</small></label>
+                <input
+                  style={{ margin: "6px" }}
+                  type='checkbox'
+                  checked={r.spaceAfter}
+                  onChange={(e) => updateSpaceAfter(e.currentTarget.checked, l)} />
+              </div>
+            }
           </div>
         )}
         <div>
