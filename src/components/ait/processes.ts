@@ -138,7 +138,9 @@ export const repeatHeaders = (
   replacements?: AioReplacement[],
   noProcessing?: boolean,
   rowHeaderColumns?: number,
-): { rows: AitRowData[], columnRepeats: AitColumnRepeat[] } => {
+): { rows: AitRowData[], columnRepeats: AitColumnRepeat[][] } => {
+
+  let defaultRepeat = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat });
 
   // Strip repeat data if flagged 
   if (noProcessing
@@ -151,7 +153,7 @@ export const repeatHeaders = (
     || replacements[0].replacementValues.length === 0
   ) return {
     rows: rows.map(r => removeRowRepeatInfo(r)),
-    columnRepeats: Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat })
+    columnRepeats: [defaultRepeat]
   };
 
   // Process parts of replacements into single objects
@@ -164,7 +166,7 @@ export const repeatHeaders = (
   )
     return {
       rows: rows.map(r => removeRowRepeatInfo(r)),
-      columnRepeats: Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat })
+      columnRepeats: [defaultRepeat]
     };
 
   // Get row numbers that contain the repeat texts 
@@ -176,7 +178,7 @@ export const repeatHeaders = (
   )
     return {
       rows: rows.map(r => removeRowRepeatInfo(r)),
-      columnRepeats: Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat })
+      columnRepeats: [defaultRepeat]
     };
 
   // Work out which columns are repeating
@@ -203,20 +205,7 @@ export const repeatHeaders = (
   updateRowSpans(newRows, columnsToRepeat);
 
   // Change back to column headers
-  let newBlock = transposeCells(newRows, (c) => {
-    let newRS = c.colSpan;
-    let newCS = c.rowSpan;
-    return {
-      aitid: uuidv4(),
-      text: c.text,
-      replacedText: c.replacedText,
-      colSpan: newCS,
-      rowSpan: newRS,
-      colWidth: c.colWidth,
-      textIndents: c.textIndents,
-    } as AitCellData;
-  });
-  console.log(`newBlock:\n ${newBlock.map(r => r.cells.map(c => c.text).join(',')).join("\n")}`);
+  let newBlock = transposeCells(newRows);
   let newHeaderInfo: [AitRowData, AitColumnRepeat[]][] = rows.map((r, ri) => {
     let newRow: AitRowData = { aitid: r.aitid, cells: [] };
     let columnRepeat: AitColumnRepeat[] = []
@@ -244,7 +233,7 @@ export const repeatHeaders = (
 
   return {
     rows: newHeaderInfo.map(i => i[0]),
-    columnRepeats: newHeaderInfo.map(i => i[1]).flat(),
+    columnRepeats: newHeaderInfo.map(i => i[1]),
   };
 };
 
@@ -324,7 +313,7 @@ const createRepeats = (
     newRepeatNumbers.push(...Array(slice.length).fill(repNo));
     newLast.push(...Array(slice.length - 1).fill(Array(repLast.length).fill(false)), repLast);
     newRepeatValues.push(...Array(slice.length).fill(repVal));
-    originalRow.push(repi = 0 ? 0 : targetArray[firstLevel].row);
+    originalRow.push(...Array.from(slice.keys()).map(ri => ri + targetArray[firstLevel].row));
     return true;
   });
   return { newRows, newRepeatValues, newRepeatNumbers, newLast, originalRow };
@@ -407,7 +396,7 @@ const transposeCells = (t: AitRowData[], flipFn?: (target: AitCellData) => AitCe
         target = flipFn(target);
       }
       if (r === 0) {
-        newRows.push({ aitid: `[${c}]`, cells: [target] });
+        newRows.push({ aitid: t[r].aitid ?? uuidv4(), cells: [target] });
       }
       else {
         newRows[c].cells.push(target);

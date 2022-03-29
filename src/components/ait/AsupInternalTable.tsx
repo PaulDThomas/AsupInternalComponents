@@ -9,7 +9,6 @@ import { newCell, repeatHeaders } from "./processes";
 import './ait.css';
 import { AioBoolean } from "components/aio/aioBoolean";
 import structuredClone from "@ungap/structured-clone";
-import { AioExpander } from "components/aio/aioExpander";
 
 interface AsupInteralTableProps {
   tableData: AitTableData,
@@ -49,7 +48,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       rows: headerDataUpdate.rows,
       replacements: headerData.replacements
     });
-    setColumnRepeats(headerDataUpdate.columnRepeats);
+    setColumnRepeats(headerDataUpdate.columnRepeats[headerDataUpdate.columnRepeats.length - 1]);
   }, [tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
@@ -70,6 +69,25 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     } as AitTableData;
     setTableData(r);
   }, [setTableData, tableData.headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
+
+  const updateHeader = useCallback((ret: AitRowGroupData) => {
+    let retMinusRepeats = {
+      aitid: ret.aitid,
+      replacements: ret.replacements,
+      rows: ret.rows.map(r => {
+        return {
+          aitid: r.aitid,
+          cells: r.cells.filter((c, ci) => (
+            !columnRepeats
+            || !columnRepeats[ci]
+            || !columnRepeats[ci].repeatNumbers 
+            || columnRepeats[ci].repeatNumbers?.reduce((r,a) => r+a, 0) === 0
+            ))
+        };
+      })
+    } as AitRowGroupData;
+    returnData({ headerData: retMinusRepeats })
+  }, [columnRepeats, returnData]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
@@ -248,7 +266,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                     replacementValues: [{ newText: "" }],
                   }]
                 }
-                setHeaderData={(ret) => returnData({ headerData: ret })}
+              setHeaderData={(ret) => updateHeader(ret)}
                 higherOptions={{
                   ...higherOptions,
                   tableSection: AitRowType.header,
@@ -257,26 +275,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 columnRepeats={columnRepeats}
               />
               <AitBorderRow rowLength={columnRepeats.length} spaceBefore={true} noBorder={true} />
-
-              {/* Section to show what's going on with the unprocessed headerData */}
-              <AitBorderRow rowLength={columnRepeats.length} spaceBefore={true} />
-              {tableData.headerData.rows.map((r, i) =>
-                <tr key={i}>
-                  <td></td>
-                  {r.cells.map((c, i) =>
-                    <td key={i}>{c.text} {c.replacedText !== undefined ? `to ${c.replacedText}` : ""}</td>
-                  )}
-                  <td></td>
-                </tr>
-              )}
-              <tr>
-                <td></td>
-                <td colSpan={columnRepeats.length}>
-                  {JSON.stringify(columnRepeats)}
-                  <AioExpander inputObject={columnRepeats} label="Column repeats" />
-                </td>
-              </tr>
-
             </thead>
           }
 

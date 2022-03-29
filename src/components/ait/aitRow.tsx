@@ -66,22 +66,16 @@ export const AitRow = ({
     if (typeof (setRowData) !== "function") return;
     let r: AitRowData = {
       aitid: aitid,
-      cells: rowUpdate.cells?.filter((c, ci) => (
-        location.tableSection === AitRowType.body
-        || !columnRepeats
-        || !columnRepeats[ci]
-        || !columnRepeats[ci].repeatNumbers 
-        || columnRepeats[ci].repeatNumbers?.reduce((r,a) => r+a, 0) === 0
-        )) ?? cells,
+      cells: rowUpdate.cells ?? cells,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      console.log(`ROWRETURN: ${diffs}`);
+      // console.log(`ROWRETURN: ${diffs}`);
       setRowData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [setRowData, aitid, cells, lastSend, location, columnRepeats]);
+  }, [setRowData, aitid, cells, lastSend, location]);
 
   const updateCell = useCallback((ret, ci) => {
     // Create new object to send back
@@ -169,6 +163,9 @@ export const AitRow = ({
                 replacedText: cells[cr.columnIndex].replacedText,
               } as AitCellData
             ;
+          if (isColumnRepeat && location.tableSection === AitRowType.header) {
+            cell.aitid = `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`;
+          }
           if (!cell) return (<td key={ci}>Cell {location.tableSection === AitRowType.header ? ci : cr.columnIndex} not defined</td>);
 
           // Sort out static options
@@ -177,7 +174,6 @@ export const AitRow = ({
           } as AitOptionList;
           // Add defaults - can happen on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
-          if (isColumnRepeat) { cell.aitid = `${JSON.stringify(cr.repeatNumbers)}`; }
           if (cell.rowSpan === undefined) cell.rowSpan = 1;
           if (cell.colSpan === undefined) cell.colSpan = 1;
           if (cell.textIndents === undefined) cell.textIndents = 0;
@@ -194,13 +190,13 @@ export const AitRow = ({
               colWidth={cell.colWidth}
               textIndents={cell.textIndents}
               higherOptions={cellHigherOptions}
-              columnIndex={cr.columnIndex} /* This needs to be calculated after row/colspan! */
-              setCellData={(ret) => updateCell(ret, cr.columnIndex)}
+              columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
+              setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
               readOnly={(
                 (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
                 || isColumnRepeat
               ) ?? false}
-              addColSpan={cr.columnIndex + cell.colSpan < cells.length ? addColSpan : undefined}
+              addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + cell.colSpan < cells.length ? addColSpan : undefined}
               removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
               addRowSpan={cellHigherOptions.row + cell.rowSpan < cellHigherOptions.headerRows ? addRowSpan : undefined}
               removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}
