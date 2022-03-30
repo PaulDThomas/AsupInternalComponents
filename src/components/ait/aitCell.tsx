@@ -220,29 +220,29 @@ export const AitCell = ({
                   <div className={"aio-label"}>Row span: </div>
                   <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(typeof addRowSpan === "function" && colSpan === 1)
+                    {(!currentReadOnly && typeof addRowSpan === "function" && colSpan === 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
                       : <div className="aiox-button" />
                     }
-                    {(typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
+                    {(!currentReadOnly && typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
                   </div>
                 </div>
                 <div className="aiw-body-row">
                   <div className={"aio-label"}>Column span: </div>
                   <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(typeof addColSpan === "function" && rowSpan === 1)
+                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
                       : <div className="aiox-button" />
                     }
-                    {(typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
+                    {(!currentReadOnly && typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
                   </div>
                 </div>
                 <div className="aiw-body-row">
                   <AioNumber
                     label="Width (mm)"
                     value={colWidth ?? 60}
-                    setValue={(ret) => returnData({ colWidth: ret })}
+                    setValue={!currentReadOnly ? (ret) => returnData({ colWidth: ret }) : undefined}
                   />
                 </div>
               </>
