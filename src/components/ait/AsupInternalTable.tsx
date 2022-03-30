@@ -35,8 +35,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
 
   // Header data processing
   useEffect(() => {
-    let headerData: AitRowGroupData = structuredClone(tableData.headerData);
-
     let headerDataUpdate = repeatHeaders(
       tableData.headerData.rows,
       tableData.headerData.replacements,
@@ -46,7 +44,7 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     setProcessedHeader({
       aitid: "processedHeader",
       rows: headerDataUpdate.rows,
-      replacements: headerData.replacements
+      replacements: tableData.headerData.replacements
     });
     setColumnRepeats(headerDataUpdate.columnRepeats[headerDataUpdate.columnRepeats.length - 1]);
   }, [tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
