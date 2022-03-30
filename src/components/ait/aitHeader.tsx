@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
-import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "components/aio/aioInterface";
-import { AitRowGroupData, AitRowData, AitOptionList, AitLocation, AitCellType, AitCellData, AitColumnRepeat } from "./aitInterface";
+import { newCell } from "components/functions/firstUnequal";
+import { objEqual } from "components/functions/objEqual";
+import React, { useCallback, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { newCell, objEqual } from "./processes";
 
 interface AitHeaderProps {
   aitid: string,
@@ -15,11 +16,11 @@ interface AitHeaderProps {
   columnRepeats?: AitColumnRepeat[],
 }
 
-export const AitHeader = ({ 
-  aitid, 
-  rows, 
-  replacements, 
-  setHeaderData, 
+export const AitHeader = ({
+  aitid,
+  rows,
+  replacements,
+  setHeaderData,
   higherOptions,
   columnRepeats,
 }: AitHeaderProps): JSX.Element => {

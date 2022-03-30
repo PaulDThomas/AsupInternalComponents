@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import { AioExpander } from "components/aio/aioExpander";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { objEqual } from "./processes";
-import { AitCellData, AitLocation, AitCellType, AitOptionList, AitRowType } from "./aitInterface";
 import { AioNumber } from "components/aio/aioNumber";
-
+import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
+import { objEqual } from "components/functions/objEqual";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
 
 interface AitCellProps {
   aitid: string,

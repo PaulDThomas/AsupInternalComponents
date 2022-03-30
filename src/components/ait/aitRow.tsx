@@ -1,13 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
 import structuredClone from '@ungap/structured-clone';
-import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "components/aio/aioInterface";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
-import { AitRowData, AitCellData, AitOptionList, AitLocation, AitColumnRepeat, AitRowType } from "./aitInterface";
-import { AitCell } from "./aitCell";
-import { objEqual } from "./processes";
+import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
+import { objEqual } from 'components/functions/objEqual';
+import React, { useCallback, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { AitBorderRow } from "./aitBorderRow";
+import { AitCell } from "./aitCell";
+import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
 
 interface AitRowProps {
   aitid: string,

@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
 import structuredClone from '@ungap/structured-clone';
-import { objEqual } from 'components/ait/processes';
+import { objEqual } from 'components/functions/objEqual';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
 import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 
