@@ -5,36 +5,44 @@ export const TablePage = () => {
 
   const ta = useRef();
   const [tableData, setTableData] = useState({
+    rowHeaderColumns:0,
     headerData: {
       rows: [
         {
           cells: [
-            { text: "A", options: [] },
-            { text: "B", options: [] },
-            { text: "C", options: [] },
-            { text: "D", options: [] },
+            { text: "A", colSpan: 2 },
+            { text: "B", colSpan: 0 },
+            // { text: "C"},
+            // { text: "D"},
           ],
         },
-      ],
-      options: []
+        {
+          cells: [
+            { text: "E1" },
+            { text: "F1" },
+            // { text: "G1"},
+            // { text: "H1"},
+          ],
+        },
+      ]
     },
     bodyData: [
       {
         rows: [
+          // {
+          //   cells: [
+          //     { text: "E1"},
+          //     { text: "F1"},
+          //     { text: "G1"},
+          //     { text: "H1"},
+          //   ],
+          // },
           {
             cells: [
-              { text: "E1", options: [] },
-              { text: "F1", options: [] },
-              { text: "G1", options: [] },
-              { text: "H1", options: [] },
-            ],
-          },
-          {
-            cells: [
-              { text: "E2", options: [] },
-              { text: "F3", options: [] },
-              { text: "G4", options: [] },
-              { text: "H5", options: [] },
+              { text: "E2" },
+              { text: "F3" },
+              // { text: "G4"},
+              // { text: "H5"},
             ],
           },
         ],
