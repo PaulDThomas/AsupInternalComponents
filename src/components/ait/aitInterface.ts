@@ -3,11 +3,13 @@ import { AioReplacement } from "components/aio/aioInterface";
 export interface AitCellData {
   aitid: string,
   text: string,
-  rowSpan: number,
   colSpan: number,
+  rowSpan: number,
   colWidth?: number,
   textIndents?: number,
   replacedText?: string,
+  repeatColSpan?: number,
+  repeatRowSpan?: number,
 };
 
 export interface AitRowData {

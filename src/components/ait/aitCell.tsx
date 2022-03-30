@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
@@ -11,12 +12,14 @@ import { AioNumber } from "components/aio/aioNumber";
 interface AitCellProps {
   aitid: string,
   text: string,
-  replacedText?: string,
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
-  columnIndex: number,
   textIndents?: number,
+  replacedText?: string,
+  repeatColSpan?: number,
+  repeatRowSpan?: number,
+  columnIndex: number,
   setCellData?: (ret: AitCellData) => void,
   readOnly: boolean,
   higherOptions: AitOptionList,
@@ -32,11 +35,13 @@ interface AitCellProps {
 export const AitCell = ({
   aitid,
   text,
-  replacedText,
-  rowSpan,
   colSpan,
+  rowSpan,
   colWidth,
   textIndents,
+  replacedText,
+  repeatColSpan,
+  repeatRowSpan,
   columnIndex,
   setCellData,
   readOnly,
@@ -56,11 +61,13 @@ export const AitCell = ({
   const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({
     aitid: aitid,
     text: text,
-    replacedText: replacedText,
-    rowSpan: rowSpan,
     colSpan: colSpan,
+    rowSpan: rowSpan,
     colWidth: colWidth,
-    textIndents: textIndents
+    textIndents: textIndents,
+    replacedText: replacedText,
+    repeatColSpan: repeatColSpan,
+    repeatRowSpan: repeatRowSpan,
   }));
 
   const [showCellOptions, setShowCellOptions] = useState(false);
@@ -128,11 +135,13 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
-      replacedText: replacedText,
-      rowSpan: rowSpan,
       colSpan: colSpan,
+      rowSpan: rowSpan,
       colWidth: cellUpdate.colWidth ?? colWidth,
       textIndents: cellUpdate.textIndents ?? textIndents ?? 0,
+      replacedText: replacedText,
+      repeatColSpan: repeatColSpan,
+      repeatRowSpan: repeatRowSpan,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
@@ -157,8 +166,8 @@ export const AitCell = ({
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (currentReadOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
-      colSpan={colSpan ?? 1}
-      rowSpan={rowSpan ?? 1}
+      colSpan={repeatColSpan ?? colSpan ?? 1}
+      rowSpan={repeatRowSpan ?? rowSpan ?? 1}
       style={cellStyle}
       data-location-table-section={higherOptions.tableSection}
       data-location-row-group={higherOptions.rowGroup}

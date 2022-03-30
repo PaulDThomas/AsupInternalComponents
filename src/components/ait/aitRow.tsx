@@ -180,11 +180,13 @@ export const AitRow = ({
               key={cell.aitid}
               aitid={cell.aitid}
               text={cell.text}
-              replacedText={cell.replacedText}
               colSpan={cell.colSpan}
               rowSpan={cell.rowSpan}
               colWidth={cell.colWidth}
               textIndents={cell.textIndents}
+              replacedText={cell.replacedText}
+              repeatColSpan={cell.repeatColSpan}
+              repeatRowSpan={cell.repeatRowSpan}
               higherOptions={cellHigherOptions}
               columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
