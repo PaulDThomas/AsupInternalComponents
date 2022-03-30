@@ -148,36 +148,40 @@ export const AitRow = ({
 
           // Get cell from column repeat
           let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
-          if (isColumnRepeat && !cells[cr.columnIndex]) return (<td key={ci}>Cell {ci} not found!</td>);
-          // Take the cell from the processed array in headers, unprocessed in body
+          // Get cell depending on column repeats;
           let cell: AitCellData = location.tableSection === AitRowType.header
             ? cells[ci]
-            : !isColumnRepeat
-              ? cells[cr.columnIndex]
-              : {
-                ...cells[cr.columnIndex],
-                aitid: `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`,
-              } as AitCellData
+            : cells[cr.columnIndex]
             ;
-          if (isColumnRepeat && location.tableSection === AitRowType.header) {
-            cell.aitid = `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`;
-          }
-          if (!cell) return (<td key={ci}>Cell {location.tableSection === AitRowType.header ? ci : cr.columnIndex} not defined</td>);
+
+          // Missing cell for some reason
+          if (!cell) return (
+            <>
+              {location.tableSection === AitRowType.body &&
+                <td key={ci}>Body cell {cr.columnIndex} not defined</td>
+              }
+              {location.tableSection === AitRowType.header &&
+                <td key={ci}>Header cell {ci} not defined</td>
+              }
+            </>
+          );
 
           // Sort out static options
           let cellHigherOptions: AitOptionList = {
             ...higherOptions,
           } as AitOptionList;
-          // Add defaults - can happen on loaded information
+
+          // Add defaults - can be undefined on loaded information
           if (cell.aitid === undefined) cell.aitid = uuidv4();
-          if (cell.rowSpan === undefined) cell.rowSpan = 1;
+          if (cell.text === undefined) cell.text = "";
           if (cell.colSpan === undefined) cell.colSpan = 1;
+          if (cell.rowSpan === undefined) cell.rowSpan = 1;
           if (cell.textIndents === undefined) cell.textIndents = 0;
 
           // Render object
           return (
             <AitCell
-              key={cell.aitid}
+              key={isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid}
               aitid={cell.aitid}
               text={cell.text}
               colSpan={cell.colSpan}
