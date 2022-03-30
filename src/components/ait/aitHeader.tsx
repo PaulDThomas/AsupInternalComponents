@@ -1,6 +1,6 @@
 import structuredClone from '@ungap/structured-clone';
 import { AioReplacement } from "components/aio/aioInterface";
-import { newCell } from "components/functions/firstUnequal";
+import { newCell } from "components/functions/newCell";
 import { objEqual } from "components/functions/objEqual";
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";

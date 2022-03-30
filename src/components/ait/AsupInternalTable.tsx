@@ -1,6 +1,6 @@
 import { AioBoolean } from "components/aio/aioBoolean";
 import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { newCell } from "components/functions/firstUnequal";
+import { newCell } from "components/functions/newCell";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { repeatHeaders } from "../functions/repeatHeaders";

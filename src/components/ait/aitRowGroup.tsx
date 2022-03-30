@@ -1,6 +1,6 @@
 import structuredClone from '@ungap/structured-clone';
 import { AioRepeats, AioReplacement } from "components/aio/aioInterface";
-import { newCell } from "components/functions/firstUnequal";
+import { newCell } from "components/functions/newCell";
 import { objEqual } from "components/functions/objEqual";
 import { repeatRows } from "components/functions/repeatRows";
 import React, { useCallback, useMemo, useState } from "react";
@@ -52,6 +52,7 @@ export const AitRowGroup = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
+      // console.log(`ROWGROUPRETURN: ${diffs}`);
       setRowGroupData!(r);
       setLastSend(structuredClone(r));
     }
