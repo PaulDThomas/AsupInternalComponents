@@ -155,14 +155,8 @@ export const AitRow = ({
             : !isColumnRepeat
               ? cells[cr.columnIndex]
               : {
+                ...cells[cr.columnIndex],
                 aitid: `${cells[cr.columnIndex].aitid}-${JSON.stringify(cr.repeatNumbers)}`,
-                text: cells[cr.columnIndex].text,
-                rowSpan: cells[cr.columnIndex].rowSpan,
-                colSpan: cells[cr.columnIndex].colSpan,
-                colWidth: cells[cr.columnIndex].colWidth,
-                replaceText: cells[cr.columnIndex].replacedText,
-                textIndents: cells[cr.columnIndex].textIndents,
-                replacedText: cells[cr.columnIndex].replacedText,
               } as AitCellData
             ;
           if (isColumnRepeat && location.tableSection === AitRowType.header) {
