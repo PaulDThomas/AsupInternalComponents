@@ -52,9 +52,17 @@ export const AitCell = ({
 }: AitCellProps) => {
 
   // Data holder
-  const [displayText, setDisplayText] = useState(replacedText ?? text);
+  const [displayText, setDisplayText] = useState(
+    replacedText !== undefined 
+    ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+    : text
+    );
   /* Need to update if these change */
-  useEffect(() => setDisplayText(replacedText ?? text), [replacedText, text]);
+  useEffect(() => setDisplayText(
+    replacedText !== undefined 
+    ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+    : text
+  ), [replacedText, text]);
 
   const [buttonState, setButtonState] = useState("hidden");
   const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({
