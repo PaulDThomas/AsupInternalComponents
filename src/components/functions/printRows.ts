@@ -8,7 +8,7 @@ import { AitRowData } from "components/ait/aitInterface";
 export const printRows = (rs: AitRowData[]): string => {
   return "\t" + rs
     .map(r => r.cells
-      .map(c => `${c.text} ${c.replacedText ? " => " + c.replacedText : ""}`)
+      .map(c => c !== undefined ? `${c.text} ${c.replacedText ? " => " + c.replacedText : ""}` : "!!UNDEF!!")
       .join(",")
     )
     .join("\n\t");
