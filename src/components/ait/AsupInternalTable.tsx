@@ -36,10 +36,10 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   // Header data processing
   useEffect(() => {
     let headerDataUpdate = repeatHeaders(
-      tableData.headerData.rows,
-      tableData.headerData.replacements,
-      tableData.noRepeatProcessing,
-      tableData.rowHeaderColumns,
+      tableData.headerData.rows ?? [],
+      tableData.headerData.replacements ?? [],
+      tableData.noRepeatProcessing ?? false,
+      tableData.rowHeaderColumns ?? 0,
     );
     setProcessedHeader({
       aitid: "processedHeader",
