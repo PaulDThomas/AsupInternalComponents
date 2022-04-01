@@ -21,9 +21,19 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
     <>
       {props.changeColumns &&
         <tr>
-          <td></td>
+          <td className="ait-cell">
+            <div className="ait-tip ait-tip-rhs">
+              <div
+                className={`ait-options-button ait-options-button-add-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
+                onClick={(e) => { props.changeColumns!.addColumn!(-1) }}
+              >
+                <span className="ait-tiptext ait-tip-top">Add&nbsp;column</span>
+              </div>
+            </div>
+          </td>
           {cis.map((ci: number): JSX.Element => {
-            let isColumnRepeat = props.columnRepeats
+            let isColumnRepeat =
+              props.columnRepeats
               && props.columnRepeats.length > ci
               && props.columnRepeats[ci]!.repeatNumbers !== undefined
               && props.columnRepeats[ci]!.repeatNumbers!.length > 0
@@ -41,7 +51,9 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                   </div>
                 </div>
 
-                {ci > 0 && ci !== props.rowHeaderColumns &&
+                {!(props.rowHeaderColumns === 1 && ci === 0)
+                  && !(props.rowHeaderColumns !== (props.columnRepeats ? Math.max(...props.columnRepeats.map(crep => crep.columnIndex)) : props.rowLength) - 1 && ci === props.rowHeaderColumns)
+                  &&
                   <div className="ait-tip ait-tip-lhs">
                     <div
                       className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
@@ -55,7 +67,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
             );
           }
           )}
-          <td></td>
+          <td />
         </tr>
       }
       {

@@ -141,7 +141,27 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     });
     let newHeader: AitRowGroupData = { ...tableData.headerData };
     tableData.headerData.rows = newHeader.rows.map(r => {
-      r.cells.splice(ci + 1, 0, newCell());
+      // Check for colSpan
+      if ((r.cells[ci + 1]?.colSpan ?? 1) === 0) {
+        // Add in blank cell
+        let n = newCell();
+        n.colSpan = 0;
+        r.cells.splice(ci + 1, 0, n);
+        // Change colSpan on previous spanner
+        // Check that the target is showing
+        let lookback = 0;
+        let targetCellBefore = r.cells[ci];
+        while ((targetCellBefore?.colSpan ?? 0) === 0) {
+          // Move to previous cell
+          lookback++;
+          targetCellBefore = r.cells[ci - lookback];
+        }
+        targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
+
+      }
+      else {
+        r.cells.splice(ci + 1, 0, newCell());
+      }
       return r;
     });
     returnData({
@@ -166,18 +186,22 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
       return rg;
     });
     let newHeader: AitRowGroupData = { ...tableData.headerData };
+    // Update header group
     tableData.headerData.rows = newHeader.rows.map(r => {
       // Check for colSpan 
       let c = r.cells[ci];
-      let found = false;
+      // Reduce where a hidden cell has been removed
       if (c.colSpan === 0) {
-        let ciUp = 1;
-        while (!found && ciUp <= ci) {
-          if (r.cells[ci - ciUp].colSpan > 1) {
-            r.cells[ci - ciUp].colSpan--;
-            found = true;
-          }
-          ciUp++;
+        let lookBack = 1;
+        while (r.cells[ci - lookBack].colSpan === 0) {
+          lookBack++;
+        }
+        r.cells[ci - lookBack].colSpan--;
+      }
+      // Reveal where an expanded cell has been removed
+      else if (c.colSpan > 1) {
+        for (let cj = 1; cj < c.colSpan; cj++) {
+          r.cells[ci+cj].colSpan = 1;
         }
       }
       r.cells.splice(ci, 1);

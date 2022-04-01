@@ -123,7 +123,6 @@ export const replaceHeaders = (
             );
 
             // Work out new repeat for this cell
-            console.log("Add lower column repeats");
             if (lowerColumnRepeats.length > 0) {
               midRepeats = [
                 ...midRepeats,
