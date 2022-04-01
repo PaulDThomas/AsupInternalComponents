@@ -108,14 +108,13 @@ export const replaceHeaders = (
             // Add new trailing cells
             if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan) {
               let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan;
-              targetRow.cells.push(
-                ...Array<AitCellData>(nIns).fill(newCell()).map(c => {
-                  c.replacedText = "filler";
-                  c.colSpan = 0;
-                  c.repeatColSpan = 0;
-                  return c;
-                })
-              );
+              for (let nci = 0; nci < nIns; nci++) {
+                let n = newCell();
+                n.colSpan = 0;
+                n.repeatColSpan = 0;
+                n.replacedText = "filler1";
+                targetRow.cells.push(n);
+              }
             }
 
             midRows = appendCells(
@@ -180,12 +179,15 @@ export const replaceHeaders = (
               // Update the target to have minimum repeatColSpan
               if (targetCellAbove !== undefined) {
                 targetCellAbove.repeatColSpan = (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan) + nIns;
-                newHeaderRows[rj].cells.splice(ci - lookback + 1, 0, ...Array<AitCellData>(nIns).fill(newCell()).map(c => {
-                  c.replacedText = "filler";
-                  c.colSpan = 0;
-                  c.repeatColSpan = 0;
-                  return c;
-                }));
+                let newCells2: AitCellData[] = [];
+                for (let nci = 0; nci < nIns; nci++) {
+                  let n = newCell();
+                  n.colSpan = 0;
+                  n.repeatColSpan = 0;
+                  n.replacedText = "filler2";
+                  newCells2.push(n);
+                }
+                newHeaderRows[rj].cells.splice(ci - lookback + 1, 0, ...newCells2);
               }
 
               // Not found !!!
