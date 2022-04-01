@@ -86,7 +86,7 @@ export const replaceHeaders = (
               0,
               nextReplacement,
               lowerRows,
-              Array.from(rows[lowerRows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; })
+              lowerRows.length > 0 ? Array.from(rows[lowerRows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : []
             );
 
             // Create new cell
