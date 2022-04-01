@@ -1,7 +1,11 @@
 import { AioRepeats, AioReplacement } from "../aio/aioInterface";
 import { getReplacementValues } from "./getReplacementValues";
 
-
+/**
+ * Change replacements into repeats for row processing
+ * @param r Replacements array
+ * @returns repeats
+ */
 export const getRepeats = (r: AioReplacement[]): AioRepeats => {
   let newRepeats: AioRepeats = { numbers: [], values: [], last: [] };
   if (!r || r.length === 0)
