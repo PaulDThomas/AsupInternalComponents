@@ -99,6 +99,7 @@ export const TablePage = () => {
       >
         Save
       </button>
+      <span style={{paddingLeft:"1rem"}}>(browser storage)</span>
       <pre>
         <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
       </pre>
