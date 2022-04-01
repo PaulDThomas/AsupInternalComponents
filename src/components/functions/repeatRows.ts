@@ -50,8 +50,23 @@ export const repeatRows = (
   // Update text based on repeats */
   replaceText(newRows, replacementTexts, newRepeatValues);
 
+  // Process space after
+  newRows.map((row, ri) => {
+    row.spaceAfter = false;
+    // Always add space after at the end of the group 
+    if (ri === newRows.length - 1) row.spaceAfter = true;
+    // Check for spaceAfter highest level  for within group 
+    else if (newRepeatNumbers.length > 0) {
+      let replacementTexts = replacements.map(r => r.replacementTexts).flat();
+      let checkSpaceLevel: number = replacementTexts?.reduce((r, a, i) => a.spaceAfter === true ? i : r, -1) ?? -1;
+      let isLastLevel: number = newLast[ri]?.reduce((l, a, i) => a ? Math.min(l, i) : i + 1, 1);
+      row.spaceAfter = checkSpaceLevel >= isLastLevel;
+    }
+    return true;
+  });
+
   // Process newRows add rowSpan in rowHeaders */
-  updateRowSpans(newRows, rowHeaderColumns ?? 0);
+  updateRowSpans(newRows, newRepeatNumbers, rowHeaderColumns ?? 0);
 
   return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
 };

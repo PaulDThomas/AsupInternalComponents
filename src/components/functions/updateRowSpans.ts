@@ -2,6 +2,7 @@ import { AitRowData } from "../ait/aitInterface";
 
 export const updateRowSpans = (
   rows: AitRowData[],
+  repeatNumbers: number[][],
   rowHeaderColumns: number
 ) => {
   for (let r = 0; r < rows.length; r++) {
@@ -17,9 +18,18 @@ export const updateRowSpans = (
       // Start checking 
       let rowSpan = 1;
       // Look for duplicate text in the next row 
-      while (currentCell?.replacedText !== undefined
-        && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText)
+      while (
+        // This is a repeat
+        currentCell?.replacedText !== undefined
+        // There is no space after the current target row
+        && !rows[r + (rowSpan - 1)].spaceAfter
+        // The rowSpan is less than the previous column
+        && rowSpan < (col > 0 ? rows[r].cells[col - 1].rowSpan : rowSpan + 1)
+        // The next target row has the same text
+        && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
+      ) {
         rowSpan++;
+      }
       // Update rowSpans if duplicates have been found 
       if (rowSpan > 1) {
         currentCell.rowSpan = rowSpan;

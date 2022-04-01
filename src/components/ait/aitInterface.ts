@@ -15,6 +15,7 @@ export interface AitCellData {
 export interface AitRowData {
   aitid: string,
   cells: AitCellData[],
+  spaceAfter?: boolean,
 };
 
 export interface AitRowGroupData {

@@ -21,7 +21,7 @@ interface AitRowProps {
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
-  spaceAfter: boolean,
+  spaceAfter?: boolean,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,

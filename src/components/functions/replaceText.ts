@@ -17,9 +17,9 @@ export const replaceText = (
         if (n)
           replacedText = replacedText.replace(o, n);
       }
-      if (replacedText !== cell.text)
+      if (replacedText !== cell.text) {
         cell.replacedText = replacedText;
-
+      }
       else
         delete (cell.replacedText);
     }
