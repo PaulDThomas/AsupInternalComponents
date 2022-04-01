@@ -86,7 +86,7 @@ export const replaceHeaders = (
               0,
               nextReplacement,
               lowerRows,
-              columnRepeats.slice(ci, ci + targetCell.colSpan)
+              Array.from(rows[lowerRows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; })
             );
 
             // Create new cell
@@ -123,12 +123,13 @@ export const replaceHeaders = (
             );
 
             // Work out new repeat for this cell
+            console.log("Add lower column repeats");
             if (lowerColumnRepeats.length > 0) {
               midRepeats = [
                 ...midRepeats,
                 ...lowerColumnRepeats.map(crep => {
                   return {
-                    columnIndex: crep.columnIndex,
+                    columnIndex: ci + crep.columnIndex,
                     repeatNumbers: [rvi, ...(crep.repeatNumbers ?? [])]
                   } as AitColumnRepeat;
                 })
