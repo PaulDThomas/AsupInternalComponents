@@ -42,7 +42,7 @@ export const repeatHeaders = (
 
   let replacement = flattenReplacements(replacements);
 
-  let afterReplacement = replaceHeaders(replacement, newHeaderRows, newColumnRepeats);
+  let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, replacement, newHeaderRows, newColumnRepeats);
   newHeaderRows = afterReplacement.newHeaderRows;
   newColumnRepeats = afterReplacement.newColumnRepeats;
 

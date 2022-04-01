@@ -11,6 +11,7 @@ import { newCell } from "./newCell";
  * @returns Updated rows
  */
 export const replaceHeaders = (
+  rowHeaderColumns: number,
   replacement: AioReplacement,
   rows: AitRowData[],
   columnRepeats: AitColumnRepeat[]
@@ -38,7 +39,7 @@ export const replaceHeaders = (
     colsProcessed = 1;
 
     // Add next column if the text is already found
-    if (found) {
+    if (found || ci < rowHeaderColumns) {
       newHeaderRows = appendCells(
         newHeaderRows,
         rows.map(r => {
@@ -50,7 +51,6 @@ export const replaceHeaders = (
       );
       newColumnRepeats = [...newColumnRepeats, columnRepeats[ci]];
     }
-
 
     // Go through each row if we are still looking
     else {
@@ -83,6 +83,7 @@ export const replaceHeaders = (
             let {
               newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats
             } = replaceHeaders(
+              0,
               nextReplacement,
               lowerRows,
               columnRepeats.slice(ci, ci + targetCell.colSpan)
