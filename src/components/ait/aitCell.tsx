@@ -163,7 +163,7 @@ export const AitCell = ({
   const aitHideButtons = () => { setButtonState("hidden"); };
 
   // Do not render if there is no rowSpan or colSpan
-  if (colSpan === 0 || rowSpan === 0) return <></>;
+  if (colSpan === 0 || rowSpan === 0 || repeatColSpan === 0 || repeatRowSpan === 0) return <></>;
 
   // Render element
   return (
