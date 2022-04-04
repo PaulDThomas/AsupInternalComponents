@@ -1,4 +1,4 @@
-import { AitRowData } from "components/ait/aitInterface";
+import { AitRowData } from "../ait/aitInterface";
 
 /**
  * Print row data as a character print with new lines, tabs

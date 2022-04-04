@@ -1,11 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
-import { AioExpander } from "components/aio/aioExpander";
-import { AioNumber } from "components/aio/aioNumber";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { objEqual } from "components/functions/objEqual";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { AioExpander } from "../aio/aioExpander";
+import { AioNumber } from "../aio/aioNumber";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { objEqual } from "../functions/objEqual";
 import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
 
 interface AitCellProps {
@@ -157,7 +156,7 @@ export const AitCell = ({
       setCellData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, replacedText, rowSpan, setCellData, text, textIndents]);
+  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };

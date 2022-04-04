@@ -1,5 +1,5 @@
-import { AitCellType, AitCellData } from "components/ait/aitInterface";
 import { v4 as uuidv4 } from "uuid";
+import { AitCellData, AitCellType } from "../ait/aitInterface";
 
 /**
  * Create a blank new cell

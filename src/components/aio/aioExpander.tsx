@@ -1,10 +1,10 @@
-import React, { useState } from "react"
-import { AioPrintOption } from "./aioPrintOption";
-import { AioLabel } from "./aioLabel";
+import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioArraySortable } from "./aioArraySortable";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { AioNewItem, AioOptionGroup, AioOptionType } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
 import { AioOptionDisplay } from "./aioOptionDisplay";
+import { AioPrintOption } from "./aioPrintOption";
 
 interface AioExpanderProps {
   inputObject: { [key: string]: any },

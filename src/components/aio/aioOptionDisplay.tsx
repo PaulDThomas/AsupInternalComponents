@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import { AioOption, AioOptionGroup } from "./aioInterface";
-import { AioPrintOption } from "./aioPrintOption";
 import "./aio.css";
+import { AioOption, AioOptionGroup } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
+import { AioPrintOption } from "./aioPrintOption";
 
 interface AioOptionDisplayProps {
   options?: AioOptionGroup,

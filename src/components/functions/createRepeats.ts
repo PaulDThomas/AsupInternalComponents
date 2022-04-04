@@ -1,6 +1,6 @@
 import structuredClone from "@ungap/structured-clone";
-import { AitCoord, AitRowData } from "components/ait/aitInterface";
 import { AioRepeats } from "../aio/aioInterface";
+import { AitCoord, AitRowData } from "../ait/aitInterface";
 import { firstUnequal } from "./firstUnequal";
 
 export const createRepeats = (

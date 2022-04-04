@@ -1,4 +1,4 @@
-import { AioReplacement } from "components/aio/aioInterface";
+import { AioReplacement } from "../aio/aioInterface";
 
 export interface AitCellData {
   aitid: string,

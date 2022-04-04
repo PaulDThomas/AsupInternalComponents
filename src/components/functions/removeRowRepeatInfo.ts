@@ -1,4 +1,4 @@
-import { AitRowData } from "components/ait/aitInterface";
+import { AitRowData } from "../ait/aitInterface";
 
 export const removeRowRepeatInfo = (row: AitRowData): AitRowData => {
   let newRow: AitRowData = {

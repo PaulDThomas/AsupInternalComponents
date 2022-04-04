@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { AsupInteralTable } from '../components/ait/AsupInternalTable';
+import { AsupInternalTable } from '../components/ait/AsupInternalTable';
 
 export const TablePage = () => {
 
@@ -72,7 +72,7 @@ export const TablePage = () => {
       display: "flex",
       justifyContent: "center",
     }}>
-      <AsupInteralTable
+      <AsupInternalTable
         tableData={tableData}
         setTableData={setTableData}
         style={{ margin: "1rem" }}

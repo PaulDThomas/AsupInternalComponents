@@ -1,9 +1,9 @@
 import structuredClone from '@ungap/structured-clone';
-import { AioReplacement } from "components/aio/aioInterface";
-import { newCell } from "components/functions/newCell";
-import { objEqual } from "components/functions/objEqual";
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { AioReplacement } from "../aio/aioInterface";
+import { newCell } from "../functions/newCell";
+import { objEqual } from "../functions/objEqual";
 import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 

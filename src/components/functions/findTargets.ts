@@ -1,5 +1,5 @@
-import { AitRowData, AitCoord } from "components/ait/aitInterface";
 import { AioReplacementText } from "../aio/aioInterface";
+import { AitCoord, AitRowData } from "../ait/aitInterface";
 
 /** Find which row replacementText first appears in */
 export const findTargets = (rows: AitRowData[], replacementTexts?: AioReplacementText[]): AitCoord[] => {

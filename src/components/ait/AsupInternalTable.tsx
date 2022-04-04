@@ -1,8 +1,8 @@
-import { AioBoolean } from "components/aio/aioBoolean";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { newCell } from "components/functions/newCell";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { AioBoolean } from "../aio/aioBoolean";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { newCell } from "../functions/newCell";
 import { repeatHeaders } from "../functions/repeatHeaders";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
@@ -10,7 +10,7 @@ import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
-interface AsupInteralTableProps {
+interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
   style?: React.CSSProperties,
@@ -22,7 +22,7 @@ interface AsupInteralTableProps {
  * @param props 
  * @returns 
  */
-export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
+export const AsupInternalTable = ({ tableData, setTableData, style, showCellBorders }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
   const [processedHeader, setProcessedHeader] = useState<AitRowGroupData>(tableData.headerData);

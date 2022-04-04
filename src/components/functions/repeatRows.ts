@@ -1,11 +1,11 @@
-import { AitRowData } from "components/ait/aitInterface";
 import { AioRepeats, AioReplacement, AioReplacementText } from "../aio/aioInterface";
-import { updateRowSpans } from "./updateRowSpans";
+import { AitRowData } from "../ait/aitInterface";
 import { createRepeats } from "./createRepeats";
 import { findTargets } from "./findTargets";
 import { getRepeats } from "./getRepeats";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceText } from "./replaceText";
+import { updateRowSpans } from "./updateRowSpans";
 
 /**
  * Repeat rows based on repeat number array with potential for partial repeats

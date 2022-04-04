@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { AieStyleButton } from './AieStyleButton';
 import './aie.css';
+import { AieStyleButton } from './AieStyleButton';
 
 interface AieStyleButtonRowProps { 
   styleList: string[], 

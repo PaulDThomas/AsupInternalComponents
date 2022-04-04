@@ -1,10 +1,10 @@
 import structuredClone from '@ungap/structured-clone';
-import { AioReplacement } from "components/aio/aioInterface";
-import { AioReplacementDisplay } from "components/aio/aioReplacementDisplay";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { AioReplacement } from "../aio/aioInterface";
+import { AioReplacementDisplay } from "../aio/aioReplacementDisplay";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
