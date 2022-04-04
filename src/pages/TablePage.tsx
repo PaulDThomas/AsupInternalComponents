@@ -6,52 +6,49 @@ export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [tableData, setTableData] = useState<AitTableData>({
-    rowHeaderColumns:1,
+    rowHeaderColumns: 1,
     noRepeatProcessing: false,
     headerData: {
-      aitid: "H1",
       replacements: [],
       rows: [
         {
-          aitid: "R1",
           cells: [
-            { text: "A", aitid:"C1", rowSpan:1, colSpan:1},
-            { text: "B", aitid:"C2", rowSpan:1, colSpan:1},
-            { text: "C", aitid:"C3", rowSpan:1, colSpan:1},
-            { text: "D", aitid:"C4", rowSpan:1, colSpan:1},
+            { text: "A" },
+            { text: "B" },
+            { text: "C" },
+            { text: "D" },
           ],
         },
-        // {
-        //   cells: [
-        //     { text: "E1" },
-        //     { text: "F1" },
-        //     { text: "G1"},
-        //     { text: "H1"},
-        //   ],
-        // },
+        {
+          aitid: "H1",
+          cells: [
+            { text: "E1" },
+            { text: "F1" },
+            { text: "G1" },
+            { text: "H1" },
+          ],
+        },
       ]
     },
     bodyData: [
       {
-        aitid: "RG1",
         rows: [
           {
-            aitid: "R2",
             cells: [
-              { text: "E1", aitid:"C1", rowSpan:1, colSpan:1},
-              { text: "F1", aitid:"C2", rowSpan:1, colSpan:1},
-              { text: "G1", aitid:"C3", rowSpan:1, colSpan:1},
-              { text: "H1", aitid:"C4", rowSpan:1, colSpan:1},
+              { text: "E1" },
+              { text: "F1" },
+              { text: "G1" },
+              { text: "H1" },
             ],
           },
-          // {
-          //   cells: [
-          //     { text: "E2" },
-          //     { text: "F3" },
-          //     { text: "G4"},
-          //     { text: "H5"},
-          //   ],
-          // },
+          {
+            cells: [
+              { text: "E2" },
+              { text: "F3" },
+              { text: "G4" },
+              { text: "H5" },
+            ],
+          },
         ],
         replacements: [],
       },
@@ -110,7 +107,7 @@ export const TablePage = () => {
       >
         Save
       </button>
-      <span style={{paddingLeft:"1rem"}}>(browser storage)</span>
+      <span style={{ paddingLeft: "1rem" }}>(browser storage)</span>
       <pre>
         <textarea style={{ width: "98%", height: "200px" }} ref={ta} />
       </pre>

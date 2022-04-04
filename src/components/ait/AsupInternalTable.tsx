@@ -150,10 +150,12 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
         // Check that the target is showing
         let lookback = 0;
         let targetCellBefore = r.cells[ci];
+        if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
         while ((targetCellBefore?.colSpan ?? 0) === 0) {
           // Move to previous cell
           lookback++;
           targetCellBefore = r.cells[ci - lookback];
+          if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
         }
         targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
 
@@ -189,13 +191,14 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
     tableData.headerData.rows = newHeader.rows.map(r => {
       // Check for colSpan 
       let c = r.cells[ci];
+      if (c.colSpan === undefined) c.colSpan = 1;
       // Reduce where a hidden cell has been removed
       if (c.colSpan === 0) {
         let lookBack = 1;
         while (r.cells[ci - lookBack].colSpan === 0) {
           lookBack++;
         }
-        r.cells[ci - lookBack].colSpan--;
+        r.cells[ci - lookBack].colSpan!--;
       }
       // Reveal where an expanded cell has been removed
       else if (c.colSpan > 1) {
@@ -279,11 +282,11 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
                 columnRepeats={columnRepeats}
               />
               <AitHeader
-                aitid={processedHeader.aitid}
+                aitid={processedHeader.aitid!}
                 rows={processedHeader.rows}
                 replacements={processedHeader.replacements ??
                   [{
-                    replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
+                    replacementTexts: [{ text: "", spaceAfter: false }],
                     replacementValues: [{ newText: "" }],
                   }]
                 }

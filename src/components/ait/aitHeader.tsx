@@ -81,8 +81,8 @@ export const AitHeader = ({
       if (c.rowSpan === 0) {
         let riUp = 1;
         while (!found && riUp <= ri) {
-          if (newRows[ri - riUp].cells[ci].rowSpan > 1) {
-            newRows[ri - riUp].cells[ci].rowSpan--;
+          if (newRows[ri - riUp].cells[ci].rowSpan! > 1) {
+            newRows[ri - riUp].cells[ci].rowSpan!--;
             found = true;
           }
           riUp++;
@@ -100,6 +100,7 @@ export const AitHeader = ({
     // Get things to change
     let newRows = [...rows];
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
     let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
@@ -122,9 +123,9 @@ export const AitHeader = ({
     // Get things to change
     let newRows = [...rows];
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
-    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan - 1];
+    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan! - 1];
     // Update target cell
-    targetCell.colSpan--;
+    targetCell.colSpan!--;
     targetCell.colWidth = (targetCell.colWidth ?? 60) - (hideCell.colWidth ?? 60);
     // Show next cell
     hideCell.colSpan = 1;
@@ -136,6 +137,7 @@ export const AitHeader = ({
     // Get things to change
     let newRows = [...rows];
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    if (targetCell.rowSpan === undefined) targetCell.rowSpan = 1;
     let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[loc.column];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
@@ -155,11 +157,11 @@ export const AitHeader = ({
     let newRows = [...rows];
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
     // Check before getting hidden cell
-    if (!newRows[loc.row + targetCell.rowSpan - 1]?.cells.length) return;
-    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan - 1].cells[loc.column];
+    if (!newRows[loc.row + targetCell.rowSpan! - 1]?.cells.length) return;
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column];
     if (hideCell.rowSpan !== 0) return;
     // Update target cell
-    targetCell.rowSpan--;
+    targetCell.rowSpan!--;
     // Show hidden cell
     hideCell.rowSpan = 1;
     // Done
