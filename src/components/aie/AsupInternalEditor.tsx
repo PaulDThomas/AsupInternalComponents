@@ -1,7 +1,6 @@
 import { ContentState, convertFromHTML, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import 'draft-js/dist/Draft.css';
-import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import './aie.css';
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 
