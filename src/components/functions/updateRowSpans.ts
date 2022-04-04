@@ -17,6 +17,13 @@ export const updateRowSpans = (
       }
       // Start checking 
       let rowSpan = 1;
+      // Previous column rowSpan
+      let prevSpan = Infinity;
+      if (col > 0) {
+        let lookback = 0;
+        while (rows[r - lookback].cells[col - 1].rowSpan === 0) lookback++;
+        prevSpan = rows[r - lookback].cells[col - 1].rowSpan - lookback;
+      }
       // Look for duplicate text in the next row 
       while (
         // This is a repeat
@@ -24,7 +31,7 @@ export const updateRowSpans = (
         // There is no space after the current target row
         && !rows[r + (rowSpan - 1)].spaceAfter
         // The rowSpan is less than the previous column
-        && rowSpan < (col > 0 ? rows[r].cells[col - 1].rowSpan : rowSpan + 1)
+        && rowSpan < prevSpan
         // The next target row has the same text
         && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) {
