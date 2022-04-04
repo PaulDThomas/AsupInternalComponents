@@ -1,27 +1,31 @@
-import { useCallback, useRef, useState } from 'react';
-import { AsupInteralTable } from '../components/ait/AsupInternalTable';
+import { AitTableData } from 'components';
+import React, { useCallback, useRef, useState } from 'react';
+import { AsupInternalTable } from '../components/ait/AsupInternalTable';
 
 export const TablePage = () => {
 
-  const ta = useRef();
-  const [tableData, setTableData] = useState({
-    rowHeaderColumns:0,
+  const ta = useRef<HTMLTextAreaElement | null>(null);
+  const [tableData, setTableData] = useState<AitTableData>({
+    rowHeaderColumns: 1,
+    noRepeatProcessing: false,
     headerData: {
+      replacements: [],
       rows: [
         {
           cells: [
-            { text: "A", colSpan: 2 },
-            { text: "B", colSpan: 0 },
-            // { text: "C"},
-            // { text: "D"},
+            { text: "A" },
+            { text: "B" },
+            { text: "C" },
+            { text: "D" },
           ],
         },
         {
+          aitid: "H1",
           cells: [
             { text: "E1" },
             { text: "F1" },
-            // { text: "G1"},
-            // { text: "H1"},
+            { text: "G1" },
+            { text: "H1" },
           ],
         },
       ]
@@ -29,35 +33,38 @@ export const TablePage = () => {
     bodyData: [
       {
         rows: [
-          // {
-          //   cells: [
-          //     { text: "E1"},
-          //     { text: "F1"},
-          //     { text: "G1"},
-          //     { text: "H1"},
-          //   ],
-          // },
+          {
+            cells: [
+              { text: "E1" },
+              { text: "F1" },
+              { text: "G1" },
+              { text: "H1" },
+            ],
+          },
           {
             cells: [
               { text: "E2" },
               { text: "F3" },
-              // { text: "G4"},
-              // { text: "H5"},
+              { text: "G4" },
+              { text: "H5" },
             ],
           },
         ],
+        replacements: [],
       },
     ]
   });
 
   const loadData = useCallback(() => {
     try {
-      if (ta.current.value === "") {
-        ta.current.value = window.localStorage.getItem('tableContent');
+      if (ta.current && ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem('tableContent') ?? "";
       }
-      const j = JSON.parse(ta.current.value);
-      setTableData(j);
-      ta.current.value = JSON.stringify(j, null, 2);
+      if (ta.current) {
+        const j = JSON.parse(ta.current!.value?.toString() ?? "{}");
+        setTableData(j);
+        ta.current.value = JSON.stringify(j, null, 2);
+      }
     }
     catch (e) {
       console.log("JSON parse failed");
@@ -72,7 +79,7 @@ export const TablePage = () => {
       display: "flex",
       justifyContent: "center",
     }}>
-      <AsupInteralTable
+      <AsupInternalTable
         tableData={tableData}
         setTableData={setTableData}
         style={{ margin: "1rem" }}
@@ -91,6 +98,7 @@ export const TablePage = () => {
       </button>
       <button
         onClick={() => {
+          if (!ta.current) return;
           // Show intended data
           ta.current.value = JSON.stringify(tableData, null, 2);
           // Save string
@@ -99,8 +107,9 @@ export const TablePage = () => {
       >
         Save
       </button>
+      <span style={{ paddingLeft: "1rem" }}>(browser storage)</span>
       <pre>
-        <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
+        <textarea style={{ width: "98%", height: "200px" }} ref={ta} />
       </pre>
     </div>
   </>);

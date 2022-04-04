@@ -1,8 +1,8 @@
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
 import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { AioNewItem, AioOptionType } from "./aioInterface";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
-import { AioNewItem, AioOptionType } from "./aioInterface";
 
 interface AioArraySortableProps {
   inputArray: any[],

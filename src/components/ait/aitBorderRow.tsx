@@ -39,6 +39,10 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
               && props.columnRepeats[ci]!.repeatNumbers!.length > 0
               && props.columnRepeats[ci]!.repeatNumbers!.reduce((r, a) => r + a, 0) > 0;
             if (isColumnRepeat) return (<td key={ci}></td>);
+            let maxColumnIndex = props.columnRepeats
+              ? Math.max(...props.columnRepeats.map(crep => crep.columnIndex))
+              : props.rowLength
+              ;
 
             return (
               <td className="ait-cell" key={ci}>
@@ -52,7 +56,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 </div>
 
                 {!(props.rowHeaderColumns === 1 && ci === 0)
-                  && !(props.rowHeaderColumns !== (props.columnRepeats ? Math.max(...props.columnRepeats.map(crep => crep.columnIndex)) : props.rowLength) - 1 && ci === props.rowHeaderColumns)
+                  && !((props.rowHeaderColumns === maxColumnIndex) && ci === props.rowHeaderColumns)
                   &&
                   <div className="ait-tip ait-tip-lhs">
                     <div

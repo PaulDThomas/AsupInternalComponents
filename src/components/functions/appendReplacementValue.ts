@@ -1,5 +1,5 @@
 import structuredClone from "@ungap/structured-clone";
-import { AioReplacementValue } from "components/aio/aioInterface";
+import { AioReplacementValue } from "../aio/aioInterface";
 
 /**
  * Append a replacementValues list to a replacementValue, after recursion

@@ -1,4 +1,4 @@
-import { AitRowData } from "components/ait/aitInterface";
+import { AitRowData } from "../ait/aitInterface";
 
 /**
  * Add another block of cells onto the right of a row

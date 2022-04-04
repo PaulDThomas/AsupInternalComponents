@@ -1,11 +1,11 @@
-import { AitRowData } from "components/ait/aitInterface";
 import { AioRepeats, AioReplacement, AioReplacementText } from "../aio/aioInterface";
-import { updateRowSpans } from "./updateRowSpans";
+import { AitRowData } from "../ait/aitInterface";
 import { createRepeats } from "./createRepeats";
 import { findTargets } from "./findTargets";
 import { getRepeats } from "./getRepeats";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceText } from "./replaceText";
+import { updateRowSpans } from "./updateRowSpans";
 
 /**
  * Repeat rows based on repeat number array with potential for partial repeats
@@ -31,7 +31,14 @@ export const repeatRows = (
     || replacements[0].replacementTexts.length === 0
     || !replacements[0].replacementValues
     || replacements[0].replacementValues.length === 0)
-    return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: { numbers: [[]], values: [[]], last: [[]] } };
+    return {
+      rows: rows.map((r, ri) => {
+        let _r = removeRowRepeatInfo(r);
+        if (ri === rows.length - 1) _r.spaceAfter = true;
+        return _r;
+      }),
+      repeats: { numbers: [[]], values: [[]], last: [[]] }
+    };
 
   // Process parts of replacements into single objects
   let replacementTexts: AioReplacementText[] = replacements.map(rep => rep.replacementTexts).flat();
@@ -39,7 +46,14 @@ export const repeatRows = (
 
   // Stop processing if there is nothing to repeat 
   if (!repeats?.numbers || repeats.numbers.length === 0)
-    return { rows: rows.map(r => removeRowRepeatInfo(r)), repeats: repeats ?? { numbers: [[]], values: [[]], last: [[]] } };
+    return {
+      rows: rows.map((r, ri) => {
+        let _r = removeRowRepeatInfo(r);
+        if (ri === rows.length - 1) _r.spaceAfter = true;
+        return _r;
+      }),
+      repeats: { numbers: [[]], values: [[]], last: [[]] }
+    };
 
   // Get row numbers that contain the repeat texts 
   let targetArray = findTargets(rows, replacementTexts);

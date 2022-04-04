@@ -1,8 +1,8 @@
-import { AioBoolean } from "components/aio/aioBoolean";
-import { AsupInternalWindow } from "components/aiw/AsupInternalWindow";
-import { newCell } from "components/functions/newCell";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
+import { AioBoolean } from "../aio/aioBoolean";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { newCell } from "../functions/newCell";
 import { repeatHeaders } from "../functions/repeatHeaders";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
@@ -10,7 +10,7 @@ import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
-interface AsupInteralTableProps {
+interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
   style?: React.CSSProperties,
@@ -22,7 +22,7 @@ interface AsupInteralTableProps {
  * @param props 
  * @returns 
  */
-export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorders }: AsupInteralTableProps) => {
+export const AsupInternalTable = ({ tableData, setTableData, style, showCellBorders }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
   const [processedHeader, setProcessedHeader] = useState<AitRowGroupData>(tableData.headerData);
@@ -58,7 +58,6 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
   }) => {
     if (typeof (setTableData) !== "function") return;
 
-    console.log("Sending table return");
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
@@ -151,10 +150,12 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
         // Check that the target is showing
         let lookback = 0;
         let targetCellBefore = r.cells[ci];
+        if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
         while ((targetCellBefore?.colSpan ?? 0) === 0) {
           // Move to previous cell
           lookback++;
           targetCellBefore = r.cells[ci - lookback];
+          if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
         }
         targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
 
@@ -190,13 +191,14 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
     tableData.headerData.rows = newHeader.rows.map(r => {
       // Check for colSpan 
       let c = r.cells[ci];
+      if (c.colSpan === undefined) c.colSpan = 1;
       // Reduce where a hidden cell has been removed
       if (c.colSpan === 0) {
         let lookBack = 1;
         while (r.cells[ci - lookBack].colSpan === 0) {
           lookBack++;
         }
-        r.cells[ci - lookBack].colSpan--;
+        r.cells[ci - lookBack].colSpan!--;
       }
       // Reveal where an expanded cell has been removed
       else if (c.colSpan > 1) {
@@ -280,11 +282,11 @@ export const AsupInteralTable = ({ tableData, setTableData, style, showCellBorde
                 columnRepeats={columnRepeats}
               />
               <AitHeader
-                aitid={processedHeader.aitid}
+                aitid={processedHeader.aitid!}
                 rows={processedHeader.rows}
                 replacements={processedHeader.replacements ??
                   [{
-                    replacementTexts: [{ level: 0, text: "", spaceAfter: false }],
+                    replacementTexts: [{ text: "", spaceAfter: false }],
                     replacementValues: [{ newText: "" }],
                   }]
                 }

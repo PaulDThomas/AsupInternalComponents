@@ -1,9 +1,8 @@
-import * as React from 'react';
-import { useState, useRef, useEffect, useCallback } from "react";
-import { EditorState, Editor, ContentState, convertToRaw, Modifier, convertFromHTML, DraftStyleMap, RawDraftContentBlock, RawDraftContentState } from "draft-js";
-import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { ContentState, convertFromHTML, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import 'draft-js/dist/Draft.css';
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import './aie.css';
+import { AieStyleButtonRow } from "./AieStyleButtonRow";
 
 export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
 interface AieStyleExcludeMap { [styleName: string]: string[] };

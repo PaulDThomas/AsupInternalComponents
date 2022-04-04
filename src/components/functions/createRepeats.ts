@@ -1,6 +1,6 @@
 import structuredClone from "@ungap/structured-clone";
-import { AitCoord, AitRowData } from "components/ait/aitInterface";
 import { AioRepeats } from "../aio/aioInterface";
+import { AitCoord, AitRowData } from "../ait/aitInterface";
 import { firstUnequal } from "./firstUnequal";
 
 export const createRepeats = (
@@ -31,6 +31,8 @@ export const createRepeats = (
     let repVal: string[] = repeats.values !== undefined ? repeats.values[repi] : [];
     /** First row number that needs to be repeated for this level */
     let firstLevel: number = repi > 0 ? firstUnequal(repNo, repeats.numbers[repi - 1]) : 0;
+    if (targetArray[firstLevel] === undefined)
+      return false;
     /** Rows that need to be repeated for this level */
     let slice = repi === 0 ? rows : rows.slice(targetArray[firstLevel].row);
     if (slice.length === 0)

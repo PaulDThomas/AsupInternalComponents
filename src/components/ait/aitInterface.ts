@@ -1,10 +1,10 @@
-import { AioReplacement } from "components/aio/aioInterface";
+import { AioReplacement } from "../aio/aioInterface";
 
 export interface AitCellData {
-  aitid: string,
+  aitid?: string,
   text: string,
-  colSpan: number,
-  rowSpan: number,
+  colSpan?: number,
+  rowSpan?: number,
   colWidth?: number,
   textIndents?: number,
   replacedText?: string,
@@ -13,15 +13,15 @@ export interface AitCellData {
 };
 
 export interface AitRowData {
-  aitid: string,
+  aitid?: string,
   cells: AitCellData[],
   spaceAfter?: boolean,
 };
 
 export interface AitRowGroupData {
-  aitid: string,
+  aitid?: string,
   rows: Array<AitRowData>,
-  replacements: AioReplacement[],
+  replacements?: AioReplacement[],
 };
 
 export interface AitTableData {

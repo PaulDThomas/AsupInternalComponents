@@ -1,12 +1,12 @@
 import * as React from "react";
-import { AioExpander } from "./aioExpander";
-import { AioNumber } from "./aioNumber";
-import { AioString } from "./aioString";
-import { AioSelect } from "./aioSelect";
-import { AioReplacementDisplay } from "./aioReplacementDisplay";
-import { AioReplacement, AioOptionType } from "./aioInterface";
-import { AioLabel } from "./aioLabel";
 import { AioBoolean } from "./aioBoolean";
+import { AioExpander } from "./aioExpander";
+import { AioOptionType, AioReplacement } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
+import { AioNumber } from "./aioNumber";
+import { AioReplacementDisplay } from "./aioReplacementDisplay";
+import { AioSelect } from "./aioSelect";
+import { AioString } from "./aioString";
 
 interface AioPrintOptionProps {
   id: string,

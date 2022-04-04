@@ -59,6 +59,7 @@ export const replaceHeaders = (
         // React if found
         if (rows[ri].cells[ci].text.includes(replacement.replacementTexts[0].text)) {
           let targetCell = rows[ri].cells[ci];
+          if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
           found = true;
 
           let midRows: AitRowData[] = rows.slice(ri).map(r => { return { aitid: r.aitid, cells: [] }; });
@@ -73,11 +74,10 @@ export const replaceHeaders = (
               replacementTexts: replacement.replacementTexts.slice(1),
               replacementValues: rv.subList ?? []
             };
-            // eslint-disable-next-line no-loop-func
             let lowerRows: AitRowData[] = rows.slice(ri + 1).map(r => {
               return {
                 aitid: r.aitid,
-                cells: r.cells.slice(ci, ci + targetCell.colSpan)
+                cells: r.cells.slice(ci, ci + targetCell.colSpan!)
               };
             });
             let {
@@ -95,19 +95,19 @@ export const replaceHeaders = (
               replacedText: targetCell.text.replaceAll(replacement.replacementTexts[0].text, rv.newText)
             } as AitCellData;
             // Expand to cover all lower columns
-            if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan) {
+            if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {
               thisRepeat.repeatColSpan = lowerProcessed[0].cells.length;
             }
 
             // Add into mid cells
             let targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
             // Add usual trailing cells
-            if (thisRepeat.colSpan > 1) {
+            if (thisRepeat.colSpan! > 1) {
               targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
             }
             // Add new trailing cells
-            if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan) {
-              let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan;
+            if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan!) {
+              let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan!;
               for (let nci = 0; nci < nIns; nci++) {
                 let n = newCell();
                 n.colSpan = 0;
@@ -169,6 +169,7 @@ export const replaceHeaders = (
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
               let targetCellAbove = newHeaderRows[rj].cells[ci];
+              if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
               // Check that the target is showing
               let lookback = 0;
               while (targetCellAbove.colSpan === 0 && lookback < ci) {
@@ -178,7 +179,7 @@ export const replaceHeaders = (
               }
               // Update the target to have minimum repeatColSpan
               if (targetCellAbove !== undefined) {
-                targetCellAbove.repeatColSpan = (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan) + nIns;
+                targetCellAbove.repeatColSpan = (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan!) + nIns;
                 let newCells2: AitCellData[] = [];
                 for (let nci = 0; nci < nIns; nci++) {
                   let n = newCell();

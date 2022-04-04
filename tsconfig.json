@@ -16,11 +16,14 @@
       "allowSyntheticDefaultImports": true,
       "strict": true,
       "forceConsistentCasingInFileNames": true,
-      "module": "esnext",
+      "module": "ESnext",
       "moduleResolution": "node",
       "resolveJsonModule": true,
       "isolatedModules": true,
       "noEmit": true,
+      "declaration": true,
+      "declarationDir": "types",
+      "sourceMap": true,
     },
     "include": [
       "src"

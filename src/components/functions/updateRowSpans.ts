@@ -11,12 +11,19 @@ export const updateRowSpans = (
       // Get cell to check 
       let currentCell = rows[r].cells[col];
       // Ensure it has not already been udpated 
-      if (currentCell?.rowSpan === 0) {
+      if (currentCell?.repeatRowSpan === 0 ) {
         col++;
         continue;
       }
       // Start checking 
       let rowSpan = 1;
+      // Previous column rowSpan
+      let prevSpan = Infinity;
+      if (col > 0) {
+        let lookback = 0;
+        while (rows[r - lookback].cells[col - 1].repeatRowSpan === 0) lookback++;
+        prevSpan = rows[r - lookback].cells[col - 1].repeatRowSpan! - lookback;
+      }
       // Look for duplicate text in the next row 
       while (
         // This is a repeat
@@ -24,7 +31,7 @@ export const updateRowSpans = (
         // There is no space after the current target row
         && !rows[r + (rowSpan - 1)].spaceAfter
         // The rowSpan is less than the previous column
-        && rowSpan < (col > 0 ? rows[r].cells[col - 1].rowSpan : rowSpan + 1)
+        && rowSpan < prevSpan
         // The next target row has the same text
         && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) {
@@ -32,9 +39,9 @@ export const updateRowSpans = (
       }
       // Update rowSpans if duplicates have been found 
       if (rowSpan > 1) {
-        currentCell.rowSpan = rowSpan;
+        currentCell.repeatRowSpan = rowSpan;
         for (let _r = 1; _r < rowSpan; _r++) {
-          rows[r + _r].cells[col].rowSpan = 0;
+          rows[r + _r].cells[col].repeatRowSpan = 0;
         }
       }
       else {
