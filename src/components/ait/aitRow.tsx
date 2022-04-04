@@ -155,15 +155,11 @@ export const AitRow = ({
             ;
 
           // Missing cell for some reason
-          if (!cell) return (
-            <>
-              {location.tableSection === AitRowType.body &&
-                <td key={ci}>Body cell {cr.columnIndex} not defined</td>
-              }
-              {location.tableSection === AitRowType.header &&
-                <td key={ci}>Header cell {ci} not defined</td>
-              }
-            </>
+          if (!cell && location.tableSection === AitRowType.body) return (
+            <td key={`${ci}-b`}>Body cell {cr.columnIndex} not defined</td>
+          );
+          if (!cell && location.tableSection === AitRowType.header) return (
+            <td key={`${ci}-h`}>Header cell {ci} not defined</td>
           );
 
           // Sort out static options
