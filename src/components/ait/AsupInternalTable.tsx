@@ -66,6 +66,7 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
+    console.log("Send table data");
 
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
