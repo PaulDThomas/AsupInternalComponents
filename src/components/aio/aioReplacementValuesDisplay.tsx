@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
@@ -7,56 +7,50 @@ interface AioReplacementValueDisplayProps {
   level: number,
 }
 
-export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProps): JSX.Element => {
+export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplacementValueDisplayProps): JSX.Element => {
 
-  const [currentText, setCurrentText] = useState(props.values && props.values.length > 0 ? props.values.map(rv => rv.newText).join("\n") : "");
-  const [lastSend, setLastSend] = useState(props.values && props.values.length > 0 ? props.values.map(rv => rv.newText).join("\n") : "");
-
-  useEffect(() => {
-    if ((typeof props.setValues) !== "function") return;
-    if (currentText !== lastSend) {
-      props.setValues!(currentText.split("\n").map(t => { return { newText: t }; }));
-      setLastSend(currentText);
-    }
-  }, [currentText, lastSend, props.setValues]);
+  const returnData = useCallback((newValues:AioReplacementValue[]) => {
+    if ((typeof setValues) !== "function") return;
+    setValues!(newValues);
+  }, [setValues]);
 
   const updateNewText = useCallback((ret: string, i: number) => {
-    if ((typeof props.setValues) !== "function") return;
-    let newValues = [...(props.values ?? [])];
+    let newValues = [...(values ?? [])];
     newValues[i].newText = ret;
-    props.setValues!(newValues);
-  }, [props]);
+    returnData(newValues);
+  }, [returnData, values]);
 
   const updateSubList = useCallback((ret: AioReplacementValue[], i: number) => {
-    if ((typeof props.setValues) !== "function") return;
-    let newValues = [...(props.values ?? [])];
+    let newValues = [...(values ?? [])];
     newValues[i].subList = ret;
-    props.setValues!(newValues);
-  }, [props]);
+    returnData(newValues);
+  }, [returnData, values]);
 
   const addEntry = useCallback(() => {
-    let newValues = [...(props.values ?? [])];
+    let newValues = [...(values ?? [])];
     newValues.push({ newText: "", subList: [{ newText: "" }] });
-    props.setValues!(newValues);
-  }, [props]);
+    returnData(newValues);
+  }, [returnData, values]);
 
   const removeEntry = useCallback(() => {
-    let newValues = [...(props.values ?? [])];
+    let newValues = [...(values ?? [])];
     newValues.pop();
-    props.setValues!(newValues);
-  }, [props]);
+    returnData(newValues);
+  }, [returnData, values]);
 
-  if (props.values === undefined) return (<></>);
+  if (values === undefined) return (<></>);
 
-  if (!props.values.some(rv => rv.subList !== undefined)) {
+  if (!values.some(rv => rv.subList !== undefined)) {
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
         <div style={{ minWidth: "180px", width: "180px" }}>
           <textarea
             className={"aio-input"}
             rows={4}
-            value={currentText}
-            onChange={(e) => { setCurrentText(e.currentTarget.value); }}
+            value={values?.map(rv => rv.newText).join("\n") ?? ""}
+            onChange={e => { 
+              returnData(e.currentTarget.value.split("\n").map(t => { return { newText: t }; }));
+            }}
             style={{ width: "168px", minWidth: "168px" }}
           />
         </div>
@@ -64,7 +58,7 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
     );
   }
   return (<>
-    {props.values.map((rv, i) => {
+    {values.map((rv, i) => {
       return (
         <div key={i} style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "169px", minWidth: "169px" }}>
@@ -86,17 +80,17 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
             <AioReplacementValueDisplay
               values={rv.subList ?? [{ newText: "" }]}
               setValues={(ret) => updateSubList(ret, i)}
-              level={props.level + 1}
+              level={level + 1}
             />
           </div>
         </div>)
         ;
     })}
-    {(typeof (props.setValues) === "function") &&
+    {(typeof (setValues) === "function") &&
       <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
         <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", display: "flex", justifyContent: "center" }}>
           <div className={"aiox-button aiox-plus"} onClick={addEntry} />
-          {props.values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
+          {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
         </div>
       </div>
     }

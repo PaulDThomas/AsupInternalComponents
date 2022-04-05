@@ -1,7 +1,5 @@
-import structuredClone from '@ungap/structured-clone';
 import { assignSubListLevel } from 'components/functions/assignSubListLevel';
-import { objEqual } from 'components/functions/objEqual';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
 import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 
@@ -16,26 +14,17 @@ interface AioReplacmentTableProps {
  * Render an individuial AioReplacement
  * @param props value/setValue pair
  */
-export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element => {
-
-  const [values, setValues] = useState<AioReplacementValue[]>(props.replacement.replacementValues);
-  const [textArray, setTextArray] = useState(props.replacement.replacementTexts);
-  const [lastSend, setLastSend] = useState<AioReplacement>(structuredClone(props.replacement));
+export const AioReplacementTable = ({ replacement, setReplacement, dontAskSpace, dontShowText }: AioReplacmentTableProps): JSX.Element => {
 
   /** Send back updates */
-  useEffect(() => {
-    if (typeof (props.setReplacement) !== "function") return;
+  const returnData = useCallback((newReplacement: { replacementTexts?: AioReplacementText[], replacementValues?: AioReplacementValue[] }) => {
+    if (typeof (setReplacement) !== "function") return;
     let r: AioReplacement = {
-      replacementTexts: textArray,
-      replacementValues: values,
+      replacementTexts: newReplacement.replacementTexts ?? replacement.replacementTexts,
+      replacementValues: newReplacement.replacementValues ?? replacement.replacementValues,
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `Replacement.join(',')}-`);
-    if (!chkObj) {
-      props.setReplacement(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [lastSend, props, textArray, values]);
+    setReplacement(r);
+  }, [replacement.replacementTexts, replacement.replacementValues, setReplacement]);
 
   /**
    * Update text in a replacement
@@ -43,32 +32,30 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
    * @param level Level number of the replacement
    */
   const updateText = useCallback((ret: string, i: number) => {
-    let newRT: AioReplacementText[] = [...props.replacement.replacementTexts];
+    let newRT: AioReplacementText[] = [...replacement.replacementTexts];
     newRT[i].text = ret;
-    setTextArray(newRT);
-  }, [props.replacement.replacementTexts]);
+    returnData({ replacementTexts: newRT });
+  }, [replacement.replacementTexts, returnData]);
 
   const updateSpaceAfter = useCallback((ret: boolean, i: number) => {
-    let newRT: AioReplacementText[] = [...props.replacement.replacementTexts];
+    let newRT: AioReplacementText[] = [...replacement.replacementTexts];
     newRT[i].spaceAfter = ret;
-    setTextArray(newRT);
-  }, [props.replacement.replacementTexts]);
+    returnData({ replacementTexts: newRT });
+  }, [replacement.replacementTexts, returnData]);
 
   const addLevel = useCallback(() => {
-    let newRT = [...props.replacement.replacementTexts];
+    let newRT = [...replacement.replacementTexts];
     newRT.push({ text: "", spaceAfter: false });
-    setTextArray(newRT);
-    let newValues = assignSubListLevel(props.replacement.replacementValues, newRT.length);
-    setValues!(newValues);
-  }, [props.replacement.replacementTexts, props.replacement.replacementValues]);
+    let newValues = assignSubListLevel(replacement.replacementValues, newRT.length);
+    returnData({ replacementTexts: newRT, replacementValues: newValues });
+  }, [replacement.replacementTexts, replacement.replacementValues, returnData]);
 
   const removeLevel = useCallback(() => {
-    let newRT = [...props.replacement.replacementTexts];
+    let newRT = [...replacement.replacementTexts];
     newRT.pop();
-    setTextArray(newRT);
-    let newValues = assignSubListLevel(props.replacement.replacementValues, newRT.length);
-    setValues!(newValues);
-  }, [props.replacement.replacementTexts, props.replacement.replacementValues]);
+    let newValues = assignSubListLevel(replacement.replacementValues, newRT.length);
+    returnData({ replacementTexts: newRT, replacementValues: newValues });
+  }, [replacement.replacementTexts, replacement.replacementValues, returnData]);
 
   /**
    * Update the list
@@ -76,16 +63,16 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
    */
   return (
     <div>
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: "row" ,
-        height: `${props.dontShowText ? '2px' : undefined}`
-        }}>
-        {props.replacement.replacementTexts.map((r, l) =>
+      <div style={{
+        display: 'flex',
+        flexDirection: "row",
+        height: `${dontShowText ? '2px' : undefined}`
+      }}>
+        {replacement.replacementTexts.map((r, l) =>
           <div key={l} style={{ width: "180px", minWidth: "180px" }}>
-            {!props.dontShowText &&
+            {!dontShowText &&
               <div>
-                {(typeof (props.setReplacement) !== "function")
+                {(typeof (setReplacement) !== "function")
                   ?
                   <span key={l} className={"aio-replaceText"}>{r.text === "" ? r.text : <em>Nothing</em>}</span>
                   :
@@ -102,7 +89,7 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
                 }
               </div>
             }
-            {!(props.dontAskSpace || props.dontShowText) &&
+            {!(dontAskSpace || dontShowText) &&
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <label><small>Space after group</small></label>
                 <input
@@ -116,17 +103,17 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
         )}
         <div>
           <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px", paddingTop: "6px" }}>
-            {props.replacement.replacementTexts.length > 1 && <div className={"aiox-button aiox-implode"} onClick={removeLevel} />}
+            {replacement.replacementTexts.length > 1 && <div className={"aiox-button aiox-implode"} onClick={removeLevel} />}
             <div className={"aiox-button aiox-explode"} onClick={addLevel} />
           </div>
         </div>
       </div>
 
-      {!props.dontShowText && <div>with...</div>}
+      {!dontShowText && <div>with...</div>}
 
       <AioReplacementValueDisplay
-        values={props.replacement.replacementValues}
-        setValues={(ret) => setValues(assignSubListLevel(ret, textArray.length))}
+        values={replacement.replacementValues}
+        setValues={(ret) => returnData({ replacementValues: assignSubListLevel(ret, replacement.replacementTexts.length) })}
         level={0}
       />
     </div>
