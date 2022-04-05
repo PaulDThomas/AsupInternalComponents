@@ -68,7 +68,7 @@ export const AioReplacementDisplay = (props: AioReplacementsProps): JSX.Element 
         {typeof props.setReplacements === "function" &&
           <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px" }}>
             <div className={"aiox-button aiox-addDown"} onClick={addReplacement} />
-            {props.replacements.length > 1 && <div className={"aiox-button aiox-removeUp"} onClick={removeReplacement} />}
+            {props.replacements.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={removeReplacement} />}
           </div>
         }
       </div>
