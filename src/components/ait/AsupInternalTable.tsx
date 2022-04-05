@@ -322,6 +322,7 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
 
                 /** Protect against missing information on load */
                 if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
+                rowGroup.rows = rowGroup.rows.map(r => { if (r.aitid === undefined) r.aitid = uuidv4(); return r; });
                 /** Default row group options */
                 if (rowGroup.replacements === undefined) rowGroup.replacements = [{
                   replacementTexts: [{ text: "", spaceAfter: false }],
