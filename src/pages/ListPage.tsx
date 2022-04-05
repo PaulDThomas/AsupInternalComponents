@@ -11,15 +11,16 @@ export const ListPage = (): JSX.Element => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [li, setLi] = useState<NamedList[]>([]);
-  const [currentL, setCurrentL] = useState<number>(0);
+  const [currentL, setCurrentL] = useState<number>(-1);
 
   const loadData = useCallback(() => {
     try {
       if (ta.current && ta.current.value === "") {
-        ta.current.value = window.localStorage.getItem('tableContent') ?? "";
+        ta.current.value = window.localStorage.getItem('listContent') ?? "";
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current!.value?.toString() ?? "{}");
+        const j = JSON.parse(ta.current.value?.toString() ?? "[]");
+        setLi(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }
@@ -42,7 +43,7 @@ export const ListPage = (): JSX.Element => {
         <div>
           {li.map((l, i) =>
             <div key={i}>
-              <span onFocus={e => { setCurrentL(i + 1); }}>
+              <span onFocus={e => { setCurrentL(i); }}>
                 <AioString
                   value={li[i].name}
                   setValue={(ret) => {
@@ -59,11 +60,11 @@ export const ListPage = (): JSX.Element => {
                   let newLi = [...li];
                   newLi.splice(i, 1);
                   setLi(newLi);
-                  setCurrentL(i);
+                  setCurrentL(i-1);
                 }}
               />
-              {i === currentL - 1 &&
-              <div style={{display: "inline-block", marginLeft:"0.5rem", height:"1rem", width:"1rem", backgroundColor:"green"}} />
+              {i === currentL &&
+                <div style={{ display: "inline-block", marginLeft: "0.5rem", height: "1rem", width: "1rem", backgroundColor: "green" }} />
               }
             </div>
           )}
@@ -71,7 +72,7 @@ export const ListPage = (): JSX.Element => {
         <div
           className='aiox-button aiox-plus'
           onClick={e => {
-            let newL: NamedList = { name: "New list", list: {replacementTexts:[], replacementValues:[]} };
+            let newL: NamedList = { name: "New list", list: { replacementTexts: [{ text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] } };
             let newLi = [...li];
             newLi.push(newL);
             setLi(newLi);
@@ -83,13 +84,13 @@ export const ListPage = (): JSX.Element => {
       <div style={{ width: "70%" }}>
         <h4>List values</h4>
         <div>
-          {currentL > 0 &&
+          {currentL >= 0 &&
             <AioReplacementTable
-              replacement={li[currentL - 1].list}
+              replacement={li[currentL].list}
               setReplacement={ret => {
-                let newL: NamedList = { ...li[currentL - 1], list: ret };
+                let newL: NamedList = { ...li[currentL], list: ret };
                 let newLi = [...li];
-                newLi.splice(currentL - 1, 1, newL);
+                newLi.splice(currentL, 1, newL);
                 setLi(newLi);
               }}
               dontShowText={true}
@@ -107,10 +108,7 @@ export const ListPage = (): JSX.Element => {
       backgroundColor: "rgb(220, 220, 220)",
       borderRadius: "8px",
     }}>
-      <button
-        onClick={loadData}>
-        Load
-      </button>
+      <button onClick={loadData}>Load</button>
       <button
         onClick={() => {
           if (!ta.current) return;
