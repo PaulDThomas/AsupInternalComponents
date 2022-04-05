@@ -67,14 +67,14 @@ export const AioReplacementValueDisplay = (props: AioReplacementValueDisplayProp
     {props.values.map((rv, i) => {
       return (
         <div key={i} style={{ display: "flex", flexDirection: "row" }}>
-          <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "180px", minWidth: "180px" }}>
+          <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "169px", minWidth: "169px" }}>
             <input
               key={`t${i}`}
               className={"aio-input"}
               value={rv.newText}
               type="text"
               onChange={(e) => updateNewText(e.currentTarget.value, i)}
-              style={{ width: "168px", minWidth: "168px" }}
+              style={{ width: "157px", minWidth: "157px" }}
             />
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>

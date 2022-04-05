@@ -1,4 +1,5 @@
 import structuredClone from '@ungap/structured-clone';
+import { assignSubListLevel } from 'components/functions/assignSubListLevel';
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useEffect, useState } from 'react';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
@@ -8,6 +9,7 @@ interface AioReplacmentTableProps {
   replacement: AioReplacement,
   setReplacement: (ret: AioReplacement) => void,
   dontAskSpace?: boolean,
+  dontShowText?: boolean,
 }
 
 /**
@@ -52,41 +54,21 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
     setTextArray(newRT);
   }, [props.replacement.replacementTexts]);
 
-
-  const addSubList = useCallback((rv: AioReplacementValue): AioReplacementValue => {
-    if (!rv.subList) rv.subList = [{ newText: "" }];
-    else rv.subList = rv.subList.map(sub => addSubList(sub));
-    return rv;
-  }, []);
-
   const addLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementTexts];
     newRT.push({ text: "", spaceAfter: false });
     setTextArray(newRT);
-
-    let newValues = [...props.replacement.replacementValues!.map(rv => addSubList(rv))];
+    let newValues = assignSubListLevel(props.replacement.replacementValues, newRT.length);
     setValues!(newValues);
-
-  }, [addSubList, props.replacement.replacementTexts, props.replacement.replacementValues]);
-
-  const removeSubList = useCallback((rv: AioReplacementValue): AioReplacementValue => {
-    if (rv.subList && rv.subList.map(sub => sub.subList?.length ?? 0).reduce((s, a) => s + a, 0) === 0) {
-      return { newText: rv.newText };
-    }
-    else {
-      rv.subList = rv.subList!.map(sub => removeSubList(sub));
-      return rv;
-    }
-  }, []);
+  }, [props.replacement.replacementTexts, props.replacement.replacementValues]);
 
   const removeLevel = useCallback(() => {
     let newRT = [...props.replacement.replacementTexts];
     newRT.pop();
     setTextArray(newRT);
-    let newValues = [...props.replacement.replacementValues!.map(rv => removeSubList(rv))];
+    let newValues = assignSubListLevel(props.replacement.replacementValues, newRT.length);
     setValues!(newValues);
-
-  }, [props.replacement.replacementTexts, props.replacement.replacementValues, removeSubList]);
+  }, [props.replacement.replacementTexts, props.replacement.replacementValues]);
 
   /**
    * Update the list
@@ -94,27 +76,33 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
    */
   return (
     <div>
-      <div style={{ display: 'flex', flexDirection: "row" }}>
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: "row" ,
+        height: `${props.dontShowText ? '2px' : undefined}`
+        }}>
         {props.replacement.replacementTexts.map((r, l) =>
           <div key={l} style={{ width: "180px", minWidth: "180px" }}>
-            <div>
-              {(typeof (props.setReplacement) !== "function")
-                ?
-                <span key={l} className={"aio-replaceText"}>{r.text === "" ? r.text : <em>Nothing</em>}</span>
-                :
-                <>
-                  <input
-                    key={`t${l}`}
-                    className={"aio-input"}
-                    value={r.text ?? ""}
-                    type="text"
-                    onChange={(e) => updateText(e.currentTarget.value, l)}
-                    style={{ minWidth: 0, width: "170px" }}
-                  />
-                </>
-              }
-            </div>
-            {!props.dontAskSpace &&
+            {!props.dontShowText &&
+              <div>
+                {(typeof (props.setReplacement) !== "function")
+                  ?
+                  <span key={l} className={"aio-replaceText"}>{r.text === "" ? r.text : <em>Nothing</em>}</span>
+                  :
+                  <>
+                    <input
+                      key={`t${l}`}
+                      className={"aio-input"}
+                      value={r.text ?? ""}
+                      type="text"
+                      onChange={(e) => updateText(e.currentTarget.value, l)}
+                      style={{ minWidth: 0, width: "170px" }}
+                    />
+                  </>
+                }
+              </div>
+            }
+            {!(props.dontAskSpace || props.dontShowText) &&
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <label><small>Space after group</small></label>
                 <input
@@ -134,11 +122,11 @@ export const AioReplacementTable = (props: AioReplacmentTableProps): JSX.Element
         </div>
       </div>
 
-      <div>with...</div>
+      {!props.dontShowText && <div>with...</div>}
 
       <AioReplacementValueDisplay
         values={props.replacement.replacementValues}
-        setValues={(ret) => setValues(ret)}
+        setValues={(ret) => setValues(assignSubListLevel(ret, textArray.length))}
         level={0}
       />
     </div>
