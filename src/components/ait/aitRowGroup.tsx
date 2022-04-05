@@ -125,7 +125,7 @@ export const AitRowGroup = ({
             addRowGroup={addRowGroup}
             removeRowGroup={removeRowGroup}
             addRow={addRow}
-            removeRow={ri > 0 ? removeRow : undefined}
+            removeRow={rows.length > 1 ? removeRow : undefined}
             spaceAfter={row.spaceAfter}
             columnRepeats={columnRepeats}
           />

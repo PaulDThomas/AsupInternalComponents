@@ -383,7 +383,7 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
                       rowGroup: rgi,
                     }}
                     addRowGroup={(rgi) => { addRowGroup(rgi) }}
-                    removeRowGroup={rgi > 0 ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                    removeRowGroup={tableData.bodyData.length > 1 ? (rgi) => { removeRowGroup(rgi) } : undefined}
                     columnRepeats={columnRepeats}
                   />
                 );
