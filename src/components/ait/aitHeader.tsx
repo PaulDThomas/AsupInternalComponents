@@ -75,11 +75,13 @@ export const AitHeader = ({
 
   const removeRow = useCallback((ri) => {
     let newRows = [...rows];
-    // Check for any cells with no row span
+    // Look for any cells with no row span
     newRows[ri].cells.map((c, ci) => {
       let found = false;
+      // Found hidden cell
       if (c.rowSpan === 0) {
         let riUp = 1;
+        // Adjust the rowSpan of the cell above
         while (!found && riUp <= ri) {
           if (newRows[ri - riUp].cells[ci].rowSpan! > 1) {
             newRows[ri - riUp].cells[ci].rowSpan!--;
@@ -90,7 +92,13 @@ export const AitHeader = ({
       }
       return found;
     });
+    // Remove the row
     newRows.splice(ri, 1);
+    // Check that the bottom row has no colSpan
+    if (ri === newRows.length) {
+      newRows[ri - 1].cells = newRows[ri - 1].cells.map(c => { c.colSpan = 1; return c });
+    }
+    // Return updated rows
     returnData({ rows: newRows });
   }, [returnData, rows])
 

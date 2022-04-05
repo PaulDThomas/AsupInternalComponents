@@ -52,15 +52,15 @@ export const AitCell = ({
 
   // Data holder
   const [displayText, setDisplayText] = useState(
-    replacedText !== undefined 
-    ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
-    : text
-    );
+    replacedText !== undefined
+      ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+      : text
+  );
   /* Need to update if these change */
   useEffect(() => setDisplayText(
-    replacedText !== undefined 
-    ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
-    : text
+    replacedText !== undefined
+      ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+      : text
   ), [replacedText, text]);
 
   const [buttonState, setButtonState] = useState("hidden");
@@ -238,7 +238,7 @@ export const AitCell = ({
                   <div className={"aio-label"}>Column span: </div>
                   <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1)
+                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1 && location.row < higherOptions.headerRows - 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
                       : <div className="aiox-button" />
                     }
