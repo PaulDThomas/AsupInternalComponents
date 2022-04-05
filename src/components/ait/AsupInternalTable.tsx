@@ -7,7 +7,7 @@ import { repeatHeaders } from "../functions/repeatHeaders";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
 interface AsupInternalTableProps {
@@ -35,19 +35,28 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
 
   // Header data processing
   useEffect(() => {
-    let headerDataUpdate = repeatHeaders(
-      tableData.headerData.rows ?? [],
-      tableData.headerData.replacements ?? [],
-      tableData.noRepeatProcessing ?? false,
-      tableData.rowHeaderColumns ?? 0,
-    );
-    setProcessedHeader({
-      aitid: "processedHeader",
-      rows: headerDataUpdate.rows,
-      replacements: tableData.headerData.replacements
-    });
-    setColumnRepeats(headerDataUpdate.columnRepeats);
-  }, [tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
+    if (tableData.headerData.rows.length > 0) {
+
+      let headerDataUpdate = repeatHeaders(
+        tableData.headerData.rows ?? [],
+        tableData.headerData.replacements ?? [],
+        tableData.noRepeatProcessing ?? false,
+        tableData.rowHeaderColumns ?? 0,
+      );
+      setProcessedHeader({
+        aitid: "processedHeader",
+        rows: headerDataUpdate.rows,
+        replacements: tableData.headerData.replacements
+      });
+      setColumnRepeats(headerDataUpdate.columnRepeats);
+    }
+    // There is no header... 
+    else {
+      setColumnRepeats(Array.from(
+        tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }
+        ))
+    }
+  }, [tableData.bodyData, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -203,7 +212,7 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
       // Reveal where an expanded cell has been removed
       else if (c.colSpan > 1) {
         for (let cj = 1; cj < c.colSpan; cj++) {
-          r.cells[ci+cj].colSpan = 1;
+          r.cells[ci + cj].colSpan = 1;
         }
       }
       r.cells.splice(ci, 1);
@@ -231,6 +240,19 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
     let newHeaderColumns = tableData.rowHeaderColumns - 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+
+  // Add header if is is not there
+  const addNewHeader = useCallback(() => {
+    console.log("Adding new header");
+    let newRow: AitRowData = {
+      aitid: uuidv4(),
+      cells: [],
+    };
+    let cols = tableData.bodyData[0].rows[0].cells.length;
+    for (let i = 0; i < cols; i++) newRow.cells.push(newCell(AitCellType.header));
+    let newHeader: AitRowGroupData = { ...tableData.headerData, rows: [newRow] };
+    returnData({ headerData: newHeader });
+  }, [returnData, tableData.bodyData, tableData.headerData]);
 
   // Print the table
   return (
@@ -268,7 +290,7 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
           }
         </div>
         <table className="ait-table">
-          {tableData.headerData.rows.length > 0 &&
+          {tableData.headerData.rows.length > 0 ?
             <thead>
               <AitBorderRow
                 rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length}
@@ -300,6 +322,23 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
               />
               <AitBorderRow rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length} spaceBefore={true} noBorder={true} />
             </thead>
+            :
+            <thead>
+              <tr>
+                <td className="ait-cell">
+                  <div className="ait-aie-holder">
+                    <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
+                      <div
+                        className={`ait-options-button ait-options-button-add-row-group`}
+                        onClick={addNewHeader}
+                      >
+                        <span className="ait-tiptext ait-tip-top">Add&nbsp;header</span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </thead>
           }
 
           <tbody>
@@ -316,6 +355,8 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
                 : undefined
               }
               rowHeaderColumns={tableData.rowHeaderColumns}
+              columnRepeats={tableData.headerData.rows.length === 0 ? columnRepeats : undefined}
+              minWidth={tableData.headerData.rows.length === 0 ? 120 : undefined}
             />
             {
               tableData.bodyData?.map((rowGroup: AitRowGroupData, rgi: number) => {

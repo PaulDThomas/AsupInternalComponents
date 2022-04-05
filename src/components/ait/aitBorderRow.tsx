@@ -12,7 +12,8 @@ interface AitBorderRowProps {
     addColumn: (col: number) => void,
     removeColumn: (col: number) => void,
     showButtons: boolean,
-  }
+  },
+  minWidth?: number,
 }
 
 export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
@@ -89,7 +90,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         <tr>
           <td></td>
           {cis.map((ci: number): JSX.Element =>
-            <td className="ait-border-cell" key={ci} />
+            <td className="ait-border-cell" key={ci} style={{minWidth:`${props.minWidth}px`}} />
           )}
           <td></td>
         </tr>

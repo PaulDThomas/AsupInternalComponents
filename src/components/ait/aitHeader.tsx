@@ -95,7 +95,7 @@ export const AitHeader = ({
     // Remove the row
     newRows.splice(ri, 1);
     // Check that the bottom row has no colSpan
-    if (ri === newRows.length) {
+    if (ri === newRows.length && ri > 0) {
       newRows[ri - 1].cells = newRows[ri - 1].cells.map(c => { c.colSpan = 1; return c });
     }
     // Return updated rows
@@ -200,7 +200,7 @@ export const AitHeader = ({
               setReplacements={(ret) => returnData({ replacements: ret })}
               rowGroupWindowTitle={"Header options"}
               addRow={addRow}
-              removeRow={ri > 0 ? removeRow : undefined}
+              removeRow={removeRow}
               addColSpan={addColSpan}
               removeColSpan={removeColSpan}
               addRowSpan={addRowSpan}
