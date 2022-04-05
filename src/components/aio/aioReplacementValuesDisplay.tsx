@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
@@ -8,6 +8,8 @@ interface AioReplacementValueDisplayProps {
 }
 
 export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplacementValueDisplayProps): JSX.Element => {
+
+  const [currentText, setCurrentText] = useState(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
 
   const returnData = useCallback((newValues:AioReplacementValue[]) => {
     if ((typeof setValues) !== "function") return;
@@ -47,8 +49,9 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
           <textarea
             className={"aio-input"}
             rows={4}
-            value={values?.map(rv => rv.newText).join("\n") ?? ""}
+            value={currentText}
             onChange={e => { 
+              setCurrentText(e.currentTarget.value)
               returnData(e.currentTarget.value.split("\n").map(t => { return { newText: t }; }));
             }}
             style={{ width: "168px", minWidth: "168px" }}
