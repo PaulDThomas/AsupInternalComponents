@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
@@ -10,38 +10,52 @@ interface AioReplacementValueDisplayProps {
 export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplacementValueDisplayProps): JSX.Element => {
 
   const [currentText, setCurrentText] = useState(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
+  
+  // Needed for when values are pushed down
+  useEffect(() => {
+    if (currentText !== (values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "")) {
+      setCurrentText(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
+    }
+  }, [currentText, values])
 
+  // Return data from the component
   const returnData = useCallback((newValues:AioReplacementValue[]) => {
     if ((typeof setValues) !== "function") return;
     setValues!(newValues);
   }, [setValues]);
 
+  // Update entry in an input
   const updateNewText = useCallback((ret: string, i: number) => {
     let newValues = [...(values ?? [])];
     newValues[i].newText = ret;
     returnData(newValues);
   }, [returnData, values]);
 
+  // Update from a sublist
   const updateSubList = useCallback((ret: AioReplacementValue[], i: number) => {
     let newValues = [...(values ?? [])];
     newValues[i].subList = ret;
     returnData(newValues);
   }, [returnData, values]);
 
+  // Add a new input
   const addEntry = useCallback(() => {
     let newValues = [...(values ?? [])];
     newValues.push({ newText: "", subList: [{ newText: "" }] });
     returnData(newValues);
   }, [returnData, values]);
 
+  // Remove an input
   const removeEntry = useCallback(() => {
     let newValues = [...(values ?? [])];
     newValues.pop();
     returnData(newValues);
   }, [returnData, values]);
 
+  // Show nothing if there is nothing to show
   if (values === undefined) return (<></>);
 
+  // Create textarea if there are no sublists
   if (!values.some(rv => rv.subList !== undefined)) {
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
@@ -60,6 +74,8 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
       </div>
     );
   }
+
+  // Create inputs with sublists if at least one sublist exists
   return (<>
     {values.map((rv, i) => {
       return (
@@ -89,6 +105,7 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
         </div>)
         ;
     })}
+    {/* Buttons to add or remove inputs */}
     {(typeof (setValues) === "function") &&
       <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
         <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", display: "flex", justifyContent: "center" }}>
