@@ -20,7 +20,6 @@ export const TablePage = () => {
           ],
         },
         {
-          aitid: "H1",
           cells: [
             { text: "E1" },
             { text: "F1" },
@@ -90,7 +89,8 @@ export const TablePage = () => {
       margin: "1rem",
       padding: "1rem",
       border: "solid black 3px",
-      backgroundColor: "rgb(240, 240, 240)"
+      backgroundColor: "rgb(220, 220, 220)",
+      borderRadius: "8px",
     }}>
       <button
         onClick={loadData}>
