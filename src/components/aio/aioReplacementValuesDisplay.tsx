@@ -80,7 +80,6 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
         </div>
       </div>
     );
-
   }
 
   // Create inputs with sublists if at least one sublist exists
@@ -102,6 +101,7 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
               :
               <div className='aio-input' style={{
                 padding: "2px 4px",
+                marginBottom: "2px",
                 width: "155px",
                 minWidth: "155px",
               }}>
