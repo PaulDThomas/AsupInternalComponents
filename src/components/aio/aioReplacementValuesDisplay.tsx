@@ -41,16 +41,16 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
   }, [returnData, values]);
 
   // Add a new input
-  const addEntry = useCallback(() => {
+  const addEntry = useCallback((i: number) => {
     let newValues = [...(values ?? [])];
-    newValues.push({ newText: "", subList: [{ newText: "" }] });
+    newValues.splice(i + 1, 0, { newText: "", subList: [{ newText: "" }] })
     returnData(newValues);
   }, [returnData, values]);
 
   // Remove an input
-  const removeEntry = useCallback(() => {
+  const removeEntry = useCallback((i: number) => {
     let newValues = [...(values ?? [])];
-    newValues.pop();
+    newValues.splice(i, 1);
     returnData(newValues);
   }, [returnData, values]);
 
@@ -90,14 +90,21 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
           <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "169px", minWidth: "169px" }}>
             {typeof setValues === "function"
               ?
-              <input
-                key={`t${i}`}
-                className={"aio-input"}
-                value={rv.newText}
-                type="text"
-                onChange={(e) => updateNewText(e.currentTarget.value, i)}
-                style={{ width: "157px", minWidth: "157px" }}
-              />
+              <>
+                <input
+                  key={`t${i}`}
+                  className={"aio-input"}
+                  value={rv.newText}
+                  type="text"
+                  onChange={(e) => updateNewText(e.currentTarget.value, i)}
+                  style={{ width: "157px", minWidth: "157px" }}
+                />
+                {/* Buttons to add or remove inputs */}
+                <div className="aiox-button-holder" style={{ minWidth: "155px", width: "155px", display: "flex", marginTop:"2px", justifyContent: "center" }}>
+                  <div className={"aiox-button aiox-plus"} onClick={() => addEntry(i)} />
+                  {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={() => removeEntry(i)} />}
+                </div>
+              </>
               :
               <div className='aio-input' style={{
                 padding: "2px 4px",
@@ -132,14 +139,5 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
         </div>)
         ;
     })}
-    {/* Buttons to add or remove inputs */}
-    {(typeof (setValues) === "function") &&
-      <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
-        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", display: "flex", justifyContent: "center" }}>
-          <div className={"aiox-button aiox-plus"} onClick={addEntry} />
-          {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
-        </div>
-      </div>
-    }
   </>);
 }
