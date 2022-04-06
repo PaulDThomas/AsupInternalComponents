@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "../aio/aioInterface";
 import { newCell } from "../functions/newCell";
 import { objEqual } from "../functions/objEqual";
-import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
+import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitHeaderProps {
@@ -28,8 +28,8 @@ export const AitHeader = ({
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: higherOptions.tableSection,
-      rowGroup: higherOptions.rowGroup,
+      tableSection: higherOptions.tableSection ?? AitRowType.header,
+      rowGroup: higherOptions.rowGroup ?? 0,
       row: -1,
       column: -1,
       repeat: "",

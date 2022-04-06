@@ -53,9 +53,9 @@ export const AitRow = ({
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: higherOptions.tableSection,
-      rowGroup: higherOptions.rowGroup,
-      row: higherOptions.row,
+      tableSection: higherOptions.tableSection ?? AitRowType.body,
+      rowGroup: higherOptions.rowGroup ?? 0,
+      row: higherOptions.row ?? 0,
       column: -1,
       repeat: (higherOptions.repeatNumber ?? []).join(",")
     }
@@ -196,7 +196,7 @@ export const AitRow = ({
               ) ?? false}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + cell.colSpan < cells.length ? addColSpan : undefined}
               removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
-              addRowSpan={cellHigherOptions.row + cell.rowSpan < cellHigherOptions.headerRows ? addRowSpan : undefined}
+              addRowSpan={cellHigherOptions.row! + cell.rowSpan < (cellHigherOptions.headerRows ?? 0) ? addRowSpan : undefined}
               removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}
             />
           );

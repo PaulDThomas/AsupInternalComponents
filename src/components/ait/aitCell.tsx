@@ -86,7 +86,7 @@ export const AitCell = ({
   }, [readOnly, replacedText, setCellData]);
 
   const cellType = useMemo(() => {
-    let cellType = (higherOptions.tableSection === AitRowType.body) && (columnIndex < higherOptions.rowHeaderColumns)
+    let cellType = (higherOptions.tableSection === AitRowType.body) && (columnIndex < (higherOptions.rowHeaderColumns ?? 0))
       ?
       AitCellType.rowHeader
       :
@@ -99,9 +99,9 @@ export const AitCell = ({
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: higherOptions.tableSection,
-      rowGroup: higherOptions.rowGroup,
-      row: higherOptions.row,
+      tableSection: higherOptions.tableSection ?? AitRowType.body,
+      rowGroup: higherOptions.rowGroup ?? 0,
+      row: higherOptions.row ?? 0,
       column: columnIndex,
       repeat: (higherOptions.repeatNumber ?? []).join(",")
     }
@@ -117,7 +117,7 @@ export const AitCell = ({
         : undefined,
       borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderRight: higherOptions.showCellBorders && (location.column === higherOptions.rowHeaderColumns - colSpan)
+      borderRight: higherOptions.showCellBorders && (location.column === (higherOptions.rowHeaderColumns ?? 0) - colSpan)
         ? "1px solid burlywood"
         : higherOptions.showCellBorders
           ? "1px dashed burlywood"
@@ -199,7 +199,7 @@ export const AitCell = ({
 
         <AsupInternalEditor
           addStyle={{ width: "100%", height: "100%", border: "none" }}
-          textAlignment={(columnIndex < higherOptions.rowHeaderColumns ? "left" : "center")}
+          textAlignment={(columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center")}
           showStyleButtons={false}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
@@ -238,7 +238,7 @@ export const AitCell = ({
                   <div className={"aio-label"}>Column span: </div>
                   <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1 && location.row < higherOptions.headerRows - 1)
+                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1 && location.row < (higherOptions.headerRows ?? 1) - 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
                       : <div className="aiox-button" />
                     }
