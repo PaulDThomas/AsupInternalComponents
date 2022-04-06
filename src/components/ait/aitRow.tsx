@@ -131,6 +131,7 @@ export const AitRow = ({
                       <AioReplacementDisplay
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
+                        externalLists={higherOptions.externalLists}
                         dontAskSpace={location.tableSection === AitRowType.header}
                       />
                     </div>

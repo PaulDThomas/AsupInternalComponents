@@ -11,7 +11,8 @@ import { AioReplacementTable } from "./aioReplacementTable";
 interface AioReplacementsProps {
   replacements: AioReplacement[],
   setReplacements?: (value: AioReplacement[]) => void,
-  dontAskSpace?: boolean
+  dontAskSpace?: boolean,
+  externalLists?: AioReplacement[],
 }
 
 /**
@@ -60,6 +61,7 @@ export const AioReplacementDisplay = (props: AioReplacementsProps): JSX.Element 
                 replacement={repl}
                 setReplacement={(ret) => updateReplacement(ret, i)}
                 dontAskSpace={props.dontAskSpace}
+                externalLists={props.externalLists}
               />
             </div>
           )

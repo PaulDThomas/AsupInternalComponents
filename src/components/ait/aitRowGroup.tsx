@@ -96,8 +96,9 @@ export const AitRowGroup = ({
       replacements,
       higherOptions.noRepeatProcessing,
       higherOptions.rowHeaderColumns,
+      higherOptions.externalLists,
     );
-  }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
+  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
 
   // Output the rows
   return (

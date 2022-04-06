@@ -1,11 +1,13 @@
 import { assignSubListLevel } from 'components/functions/assignSubListLevel';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
+import { AioDropSelect } from './aioDropSelect';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
 import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 
 interface AioReplacmentTableProps {
   replacement: AioReplacement,
   setReplacement: (ret: AioReplacement) => void,
+  externalLists?: AioReplacement[],
   dontAskSpace?: boolean,
   dontShowText?: boolean,
 }
@@ -14,17 +16,35 @@ interface AioReplacmentTableProps {
  * Render an individuial AioReplacement
  * @param props value/setValue pair
  */
-export const AioReplacementTable = ({ replacement, setReplacement, dontAskSpace, dontShowText }: AioReplacmentTableProps): JSX.Element => {
+export const AioReplacementTable = ({ replacement, setReplacement, externalLists, dontAskSpace, dontShowText }: AioReplacmentTableProps): JSX.Element => {
+
+  const availableListNames = useMemo<string[]>(() => {
+    let a: string[] = ["with..."];
+    let exl: string[] = [];
+    externalLists?.map(rep => { if (rep.givenName !== undefined) { exl.push(rep.givenName); }; return true; });
+    a.push(...exl.sort((a, b) => a.localeCompare(b)));
+    return a;
+  }, [externalLists]);
 
   /** Send back updates */
-  const returnData = useCallback((newReplacement: { replacementTexts?: AioReplacementText[], replacementValues?: AioReplacementValue[] }) => {
+  const returnData = useCallback((newReplacement: {
+    replacementTexts?: AioReplacementText[],
+    replacementValues?: AioReplacementValue[],
+    externalName?: string,
+  }) => {
     if (typeof (setReplacement) !== "function") return;
+    // Create new object
     let r: AioReplacement = {
       replacementTexts: newReplacement.replacementTexts ?? replacement.replacementTexts,
       replacementValues: newReplacement.replacementValues ?? replacement.replacementValues,
+      externalName: newReplacement.externalName ?? replacement.externalName,
+      givenName: replacement.givenName,
     }
+    // Remove default
+    if (r.externalName === "with...") delete (r.externalName);
+    // Update existing object
     setReplacement(r);
-  }, [replacement.replacementTexts, replacement.replacementValues, setReplacement]);
+  }, [replacement.externalName, replacement.givenName, replacement.replacementTexts, replacement.replacementValues, setReplacement]);
 
   /**
    * Update text in a replacement
@@ -109,13 +129,38 @@ export const AioReplacementTable = ({ replacement, setReplacement, dontAskSpace,
         </div>
       </div>
 
-      {!dontShowText && <div>with...</div>}
+      {!dontShowText &&
+        <div>
+          <AioDropSelect
+            value={replacement.externalName ?? "with..."}
+            availableValues={availableListNames}
+            setValue={(ret) => {
+              returnData({ externalName: ret });
+              console.log(`${ret}`);
+            }}
+          />
+        </div>
+      }
 
-      <AioReplacementValueDisplay
-        values={replacement.replacementValues}
-        setValues={(ret) => returnData({ replacementValues: assignSubListLevel(ret, replacement.replacementTexts.length) })}
-        level={0}
-      />
+      {replacement.externalName === undefined ?
+        <AioReplacementValueDisplay
+          values={replacement.replacementValues}
+          setValues={(ret) => returnData({ replacementValues: assignSubListLevel(ret, replacement.replacementTexts.length) })}
+          level={0}
+        />
+        :
+        <>
+          {externalLists?.find(e => e.givenName === replacement.externalName) !== undefined
+            ?
+            <AioReplacementValueDisplay
+              values={externalLists?.find(e => e.givenName === replacement.externalName)?.replacementValues}
+              level={0}
+            />
+            :
+            <span><em>WARNING: List missing</em></span>
+          }
+        </>
+      }
     </div>
   );
 }

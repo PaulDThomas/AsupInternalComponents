@@ -19,7 +19,8 @@ export const repeatRows = (
   rows: AitRowData[],
   replacements?: AioReplacement[],
   noProcessing?: boolean,
-  rowHeaderColumns?: number
+  rowHeaderColumns?: number,
+  externalLists?: AioReplacement[],
 ): { rows: AitRowData[]; repeats: AioRepeats; } => {
 
   // Strip repeat data if flagged 
@@ -42,7 +43,7 @@ export const repeatRows = (
 
   // Process parts of replacements into single objects
   let replacementTexts: AioReplacementText[] = replacements.map(rep => rep.replacementTexts).flat();
-  let repeats = getRepeats(replacements);
+  let repeats = getRepeats(replacements, externalLists);
 
   // Stop processing if there is nothing to repeat 
   if (!repeats?.numbers || repeats.numbers.length === 0)
