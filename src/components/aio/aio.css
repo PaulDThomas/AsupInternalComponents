@@ -179,7 +179,7 @@
 
 .aio-drop-item {
   background-color: rgb(214, 139, 25);
-  color: rgb(240,255,250);
+  color: rgb(240, 255, 250);
   padding: 1px 4px;
 }
 
@@ -191,6 +191,7 @@
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
 }
+
 .aio-drop-item:last-child {
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
