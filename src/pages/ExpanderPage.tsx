@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { useState, useRef } from 'react';
 import { AioExpander } from 'components/aio/aioExpander';
+import { AioDropSelect } from 'components/aio/aioDropSelect';
 
 export const ExpanderPage = () => {
 
-  const ta = useRef("");
+  const ta = useRef<HTMLTextAreaElement | null>(null);
   const [showBorders, setShowBorders] = useState(false);
   const [currentData, setCurrentData] = useState({
     someText: "Hello",
@@ -122,6 +123,8 @@ export const ExpanderPage = () => {
       ]
     },
   });
+  const [dropValue, setDropValue] = useState<string>("Nowt");
+
 
   return (
     <>
@@ -139,6 +142,20 @@ export const ExpanderPage = () => {
           canRemoveItems={true}
           canMoveItems={true}
         />
+
+      </div>
+      <div style={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "left",
+        margin: "2rem",
+      }}>
+        <AioDropSelect
+          value={dropValue}
+          setValue={setDropValue}
+          availableValues={["Nowt", "Summat", "Owt", "Reyt"]}
+        />
+
       </div>
       <div style={{
         margin: "1rem",
@@ -158,10 +175,10 @@ export const ExpanderPage = () => {
         <button
           onClick={() => {
             try {
-              if (ta.current.value === "") {
-                ta.current.value = window.localStorage.getItem('expanderContent');
+              if (ta.current && ta.current.value === "") {
+                ta.current.value = window.localStorage.getItem('expanderContent') ?? "";
               }
-              const j = JSON.parse(ta.current.value);
+              const j = JSON.parse(ta.current!.value ?? "[]");
               setCurrentData(j);
             }
             catch (e) {
@@ -174,14 +191,14 @@ export const ExpanderPage = () => {
         </button>
         <button
           onClick={() => {
-            ta.current.value = JSON.stringify(currentData, null, 2);
-            window.localStorage.setItem('expanderContent', ta.current.value);
+            ta.current!.value = JSON.stringify(currentData, null, 2);
+            window.localStorage.setItem('expanderContent', ta.current!.value);
           }}
         >
           Save
         </button>
         <pre>
-          <textarea lines={6} ref={ta} style={{ width: "98%", height: "200px" }} />
+          <textarea ref={ta} style={{ width: "98%", height: "200px" }} rows={6} />
         </pre>
       </div>
     </>

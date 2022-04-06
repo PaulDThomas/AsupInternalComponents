@@ -6,7 +6,7 @@ body {
 
 nav ul {
     list-style: none;
-    background-color: #444;
+    background-color: rgb(68,68,68);
     text-align: left;
     padding: 0 0.5rem;
     margin: 0 0 0.5rem 0;
