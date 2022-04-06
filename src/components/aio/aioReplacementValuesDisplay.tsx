@@ -1,16 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AioReplacementValue } from './aioInterface';
+import { AioReplacement, AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
   values?: AioReplacementValue[],
   setValues?: (ret: AioReplacementValue[]) => void,
+  externalLists?: AioReplacement[],
+  externalName?: string,
   level: number,
 }
 
-export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplacementValueDisplayProps): JSX.Element => {
+export const AioReplacementValueDisplay = ({ values, setValues, level, externalLists, externalName }: AioReplacementValueDisplayProps): JSX.Element => {
 
   const [currentText, setCurrentText] = useState(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
-  
+
   // Needed for when values are pushed down
   useEffect(() => {
     if (currentText !== (values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "")) {
@@ -19,7 +21,7 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
   }, [currentText, values])
 
   // Return data from the component
-  const returnData = useCallback((newValues:AioReplacementValue[]) => {
+  const returnData = useCallback((newValues: AioReplacementValue[]) => {
     if ((typeof setValues) !== "function") return;
     setValues!(newValues);
   }, [setValues]);
@@ -39,16 +41,16 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
   }, [returnData, values]);
 
   // Add a new input
-  const addEntry = useCallback(() => {
+  const addEntry = useCallback((i: number) => {
     let newValues = [...(values ?? [])];
-    newValues.push({ newText: "", subList: [{ newText: "" }] });
+    newValues.splice(i + 1, 0, { newText: "", subList: [{ newText: "" }] })
     returnData(newValues);
   }, [returnData, values]);
 
   // Remove an input
-  const removeEntry = useCallback(() => {
+  const removeEntry = useCallback((i: number) => {
     let newValues = [...(values ?? [])];
-    newValues.pop();
+    newValues.splice(i, 1);
     returnData(newValues);
   }, [returnData, values]);
 
@@ -60,16 +62,21 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
     return (
       <div style={{ display: "flex", flexDirection: "row" }}>
         <div style={{ minWidth: "180px", width: "180px" }}>
-          <textarea
-            className={"aio-input"}
-            rows={4}
-            value={currentText}
-            onChange={e => { 
-              setCurrentText(e.currentTarget.value)
-              returnData(e.currentTarget.value.split("\n").map(t => { return { newText: t }; }));
-            }}
-            style={{ width: "168px", minWidth: "168px" }}
-          />
+          {typeof setValues === "function"
+            ?
+            <textarea
+              className={"aio-input"}
+              rows={4}
+              value={currentText}
+              onChange={e => {
+                setCurrentText(e.currentTarget.value)
+                returnData(e.currentTarget.value.split("\n").map(t => { return { newText: t }; }));
+              }}
+              style={{ width: "168px", minWidth: "168px" }}
+            />
+            :
+            <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>{values.map(rep => <div style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{rep.newText}</div>)}</div>
+          }
         </div>
       </div>
     );
@@ -81,14 +88,33 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
       return (
         <div key={i} style={{ display: "flex", flexDirection: "row" }}>
           <div style={{ display: 'flex', flexDirection: "column", justifyContent: "center", width: "169px", minWidth: "169px" }}>
-            <input
-              key={`t${i}`}
-              className={"aio-input"}
-              value={rv.newText}
-              type="text"
-              onChange={(e) => updateNewText(e.currentTarget.value, i)}
-              style={{ width: "157px", minWidth: "157px" }}
-            />
+            {typeof setValues === "function"
+              ?
+              <>
+                <input
+                  key={`t${i}`}
+                  className={"aio-input"}
+                  value={rv.newText}
+                  type="text"
+                  onChange={(e) => updateNewText(e.currentTarget.value, i)}
+                  style={{ width: "157px", minWidth: "157px" }}
+                />
+                {/* Buttons to add or remove inputs */}
+                <div className="aiox-button-holder" style={{ minWidth: "155px", width: "155px", display: "flex", marginTop:"2px", justifyContent: "center" }}>
+                  <div className={"aiox-button aiox-plus"} onClick={() => addEntry(i)} />
+                  {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={() => removeEntry(i)} />}
+                </div>
+              </>
+              :
+              <div className='aio-input' style={{
+                padding: "2px 4px",
+                marginBottom: "2px",
+                width: "155px",
+                minWidth: "155px",
+              }}>
+                <div style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{rv.newText}</div>
+              </div>
+            }
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={{ flexGrow: 1, minWidth: "5px", width: "5px", borderBottom: "1px burlywood solid", borderBottomRightRadius: "4px", }} />
@@ -96,23 +122,22 @@ export const AioReplacementValueDisplay = ({values, setValues, level}: AioReplac
           </div>
           <div style={{ minWidth: "5px", width: "5px", marginTop: "6px", marginBottom: "6px", borderLeft: "1px burlywood solid", borderTop: "1px burlywood solid", borderBottom: "1px burlywood solid", borderTopLeftRadius: "4px", borderBottomLeftRadius: "4px", }} />
           <div>
-            <AioReplacementValueDisplay
-              values={rv.subList ?? [{ newText: "" }]}
-              setValues={(ret) => updateSubList(ret, i)}
-              level={level + 1}
-            />
+            {typeof setValues === "function"
+              ?
+              <AioReplacementValueDisplay
+                values={rv.subList ?? [{ newText: "" }]}
+                setValues={(ret) => updateSubList(ret, i)}
+                level={level + 1}
+              />
+              :
+              <AioReplacementValueDisplay
+                values={rv.subList ?? [{ newText: "" }]}
+                level={level + 1}
+              />
+            }
           </div>
         </div>)
         ;
     })}
-    {/* Buttons to add or remove inputs */}
-    {(typeof (setValues) === "function") &&
-      <div style={{ display: "flex", flexDirection: "column", alignContent: "flex-start", marginBottom: "4px" }}>
-        <div className="aiox-button-holder" style={{ minWidth: "180px", width: "180px", display: "flex", justifyContent: "center" }}>
-          <div className={"aiox-button aiox-plus"} onClick={addEntry} />
-          {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={removeEntry} />}
-        </div>
-      </div>
-    }
   </>);
 }

@@ -5,7 +5,7 @@ import { AioRepeats, AioReplacement } from "../aio/aioInterface";
 import { newCell } from "../functions/newCell";
 import { objEqual } from "../functions/objEqual";
 import { repeatRows } from "../functions/repeatRows";
-import { AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
+import { AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
@@ -33,8 +33,8 @@ export const AitRowGroup = ({
 
   const location: AitLocation = useMemo(() => {
     return {
-      tableSection: higherOptions.tableSection,
-      rowGroup: higherOptions.rowGroup,
+      tableSection: higherOptions.tableSection ?? AitRowType.body,
+      rowGroup: higherOptions.rowGroup ?? 0,
       row: -1,
       column: -1,
       repeat: "na",
@@ -96,8 +96,9 @@ export const AitRowGroup = ({
       replacements,
       higherOptions.noRepeatProcessing,
       higherOptions.rowHeaderColumns,
+      higherOptions.externalLists,
     );
-  }, [higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
+  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
 
   // Output the rows
   return (

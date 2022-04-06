@@ -25,6 +25,8 @@ export interface AioReplacementValue {
 export interface AioReplacement {
   replacementTexts: AioReplacementText[],
   replacementValues: AioReplacementValue[],
+  givenName?: string,
+  externalName?: string,
 }
 
 export interface AioRepeats { numbers: number[][], values: string[][], last: boolean[][] };

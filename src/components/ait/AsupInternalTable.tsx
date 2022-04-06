@@ -1,3 +1,4 @@
+import { AioReplacement } from "components/aio/aioInterface";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { AioBoolean } from "../aio/aioBoolean";
@@ -13,6 +14,7 @@ import { AitRowGroup } from "./aitRowGroup";
 interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
+  externalLists?: AioReplacement[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
 }
@@ -22,7 +24,13 @@ interface AsupInternalTableProps {
  * @param props 
  * @returns 
  */
-export const AsupInternalTable = ({ tableData, setTableData, style, showCellBorders }: AsupInternalTableProps) => {
+export const AsupInternalTable = ({ 
+  tableData, 
+  setTableData, 
+  externalLists,
+  style, 
+  showCellBorders 
+}: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
   const [processedHeader, setProcessedHeader] = useState<AitRowGroupData>(tableData.headerData);
@@ -32,6 +40,11 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
   useEffect(() => { if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1; }, [tableData.rowHeaderColumns]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
+
+  // External repeat list processing
+  useEffect(() => {
+
+  }, []);
 
   // Header data processing
   useEffect(() => {
@@ -130,13 +143,14 @@ export const AsupInternalTable = ({ tableData, setTableData, style, showCellBord
   }, [returnData, tableData.bodyData]);
 
   // Set up higher options, defaults need to be set
-  let higherOptions = useMemo(() => {
+  let higherOptions = useMemo<AitOptionList>(() => {
     return {
       showCellBorders: showCellBorders,
       noRepeatProcessing: tableData.noRepeatProcessing ?? false,
       rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
+      externalLists: externalLists ?? [],
     };
-  }, [showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
+  }, [externalLists, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {
