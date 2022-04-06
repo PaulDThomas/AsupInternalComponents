@@ -48,6 +48,7 @@ export const ListPage = (): JSX.Element => {
                   value={li[i].name}
                   setValue={(ret) => {
                     let newL: NamedList = { ...li[i], name: ret };
+                    newL.list.givenName = ret;
                     let newLi = [...li];
                     newLi.splice(i, 1, newL);
                     setLi(newLi);
