@@ -17,6 +17,7 @@ interface AsupInternalTableProps {
   externalLists?: AioReplacement[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
+  groupTemplates?: AitRowGroupData[] | false,
 }
 
 /**
@@ -24,12 +25,13 @@ interface AsupInternalTableProps {
  * @param props 
  * @returns 
  */
-export const AsupInternalTable = ({ 
-  tableData, 
-  setTableData, 
+export const AsupInternalTable = ({
+  tableData,
+  setTableData,
   externalLists,
-  style, 
-  showCellBorders 
+  style,
+  showCellBorders,
+  groupTemplates,
 }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
@@ -40,11 +42,6 @@ export const AsupInternalTable = ({
   useEffect(() => { if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1; }, [tableData.rowHeaderColumns]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
-
-  // External repeat list processing
-  useEffect(() => {
-
-  }, []);
 
   // Header data processing
   useEffect(() => {
@@ -116,9 +113,11 @@ export const AsupInternalTable = ({
     returnData({ bodyData: newBody });
   }, [tableData.bodyData, returnData]);
 
-  // Add a new row group to the table body
-  const addRowGroup = useCallback((rgi: number) => {
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+  /**
+   * Add a new row group to the table body
+   */
+  const addRowGroup = useCallback((rgi: number, templateName?: string) => {
+    // Add default new body
     let newRowGroup: AitRowGroupData = {
       aitid: uuidv4(),
       rows: [{
@@ -127,11 +126,13 @@ export const AsupInternalTable = ({
       }],
       replacements: [],
     };
-    let cols = tableData.bodyData[0].rows[0].cells
-      .map(c => c.colSpan ?? 1)
-      .reduce((sum, a) => sum + a, 0);
+    // Ensure new template has the right number of cells
+    let cols = tableData.bodyData[0].rows[0].cells.length;
     for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
+    // Copy existing body and splice in new data
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
     newBody.splice(rgi + 1, 0, newRowGroup);
+    // Update table body
     returnData({ bodyData: newBody });
   }, [tableData.bodyData, returnData]);
 
@@ -149,8 +150,9 @@ export const AsupInternalTable = ({
       noRepeatProcessing: tableData.noRepeatProcessing ?? false,
       rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
       externalLists: externalLists ?? [],
+      groupTemplates: groupTemplates,
     };
-  }, [externalLists, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
+  }, [externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {

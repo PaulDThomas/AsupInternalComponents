@@ -20,6 +20,7 @@ export interface AitRowData {
 
 export interface AitRowGroupData {
   aitid?: string,
+  name?: string,
   rows: Array<AitRowData>,
   replacements?: AioReplacement[],
 };
@@ -69,6 +70,7 @@ export interface AitOptionList {
   row?: number,
   column?: number,
   showCellBorders?: boolean,
+  groupTemplateNames?: string[],
   replacements?: AioReplacement[],
   repeatNumber?: number[],
   repeatValues?: string[],

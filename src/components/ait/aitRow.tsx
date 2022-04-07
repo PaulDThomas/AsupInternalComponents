@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "../aio/aioInterface";
 import { AioReplacementDisplay } from "../aio/aioReplacementDisplay";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { AitAddButton } from './aitAddButton';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
@@ -17,7 +18,7 @@ interface AitRowProps {
   replacements: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
-  addRowGroup?: (rgi: number) => void,
+  addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
@@ -105,14 +106,11 @@ export const AitRow = ({
                   </div>
                 }
                 {typeof (addRowGroup) === "function" &&
-                  <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
-                    <div
-                      className={`ait-options-button ait-options-button-add-row-group`}
-                      onClick={(e) => { addRowGroup(location.rowGroup) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Add&nbsp;row&nbsp;group</span>
-                    </div>
-                  </div>
+                  <AitAddButton
+                    tipText={"Add row group"}
+                    onClick={(ret) => addRowGroup(location.rowGroup, ret)}
+                    dropDownOptions={higherOptions.groupTemplateNames}
+                  />
                 }
                 {typeof (removeRowGroup) === "function" &&
                   <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
