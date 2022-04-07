@@ -52,6 +52,7 @@ export const AsupInternalTable = ({
         tableData.headerData.replacements ?? [],
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
+        externalLists,
       );
       setProcessedHeader({
         aitid: "processedHeader",

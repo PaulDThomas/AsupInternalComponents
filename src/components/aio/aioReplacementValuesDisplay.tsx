@@ -75,7 +75,9 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
               style={{ width: "168px", minWidth: "168px" }}
             />
             :
-            <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>{values.map(rep => <div style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{rep.newText}</div>)}</div>
+            <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>{values.map((rep, repi) =>
+              <div key={repi} style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{rep.newText}</div>
+            )}</div>
           }
         </div>
       </div>
@@ -100,7 +102,7 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
                   style={{ width: "157px", minWidth: "157px" }}
                 />
                 {/* Buttons to add or remove inputs */}
-                <div className="aiox-button-holder" style={{ minWidth: "155px", width: "155px", display: "flex", marginTop:"2px", justifyContent: "center" }}>
+                <div className="aiox-button-holder" style={{ minWidth: "155px", width: "155px", display: "flex", marginTop: "2px", justifyContent: "center" }}>
                   <div className={"aiox-button aiox-plus"} onClick={() => addEntry(i)} />
                   {values.length > 1 && <div className={"aiox-button aiox-minus"} onClick={() => removeEntry(i)} />}
                 </div>

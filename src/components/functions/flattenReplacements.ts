@@ -4,23 +4,32 @@ import { appendReplacementValue } from "./appendReplacementValue";
 
 /**
  * Consolidate replacements array into a single replacement
- * @param replacements Input replacements array
+ * @param reps Input replacements array
+ * @param exts External replacements array
  * @returns single replacement
  */
-export const flattenReplacements = (replacements: AioReplacement[]): AioReplacement => {
+export const flattenReplacements = (reps: AioReplacement[], exts?: AioReplacement[]): AioReplacement => {
   let newReplacement: AioReplacement = { replacementTexts: [], replacementValues: [] };
 
   // Check append is ok
-  replacements.map((rep, repi) => {
+  reps.map((rep, repi) => {
     // Just apppend the texts
     newReplacement.replacementTexts.push(...rep.replacementTexts);
 
     if (repi === 0) {
-      newReplacement.replacementValues = structuredClone(rep.replacementValues);
+      newReplacement.replacementValues = rep.externalName === undefined
+        ? structuredClone(rep.replacementValues)
+        : structuredClone(exts?.find(e => e.givenName === rep.externalName)?.replacementValues ?? [])
+        ;
     }
     else {
       newReplacement.replacementValues = newReplacement.replacementValues.map(
-        rv => appendReplacementValue(rv, rep.replacementValues)
+        rv => appendReplacementValue(
+          rv,
+          rep.externalName === undefined
+            ? rep.replacementValues
+            : exts?.find(e => e.givenName === rep.externalName)?.replacementValues ?? []
+        )
       );
     }
 

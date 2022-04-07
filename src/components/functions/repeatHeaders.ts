@@ -15,7 +15,8 @@ export const repeatHeaders = (
   rows: AitRowData[],
   replacements: AioReplacement[],
   noProcessing?: boolean,
-  rowHeaderColumns?: number
+  rowHeaderColumns?: number,
+  externalLists?: AioReplacement[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
@@ -40,7 +41,9 @@ export const repeatHeaders = (
     columnRepeats: newColumnRepeats
   };
 
-  let replacement = flattenReplacements(replacements);
+  console.log("repeatHeaders");
+
+  let replacement = flattenReplacements(replacements, externalLists);
 
   let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, replacement, newHeaderRows, newColumnRepeats);
   newHeaderRows = afterReplacement.newHeaderRows;
