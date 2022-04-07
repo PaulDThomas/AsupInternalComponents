@@ -91,7 +91,7 @@ export const AitRow = ({
 
         {/* Row group options */}
         <td className="ait-cell">
-          <div className="ait-aie-holder" style={{display:'flex', justifyContent:"flex-end", flexDirection:"row"}}>
+          <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
             {higherOptions.row === 0
               ?
               (<>
@@ -106,7 +106,7 @@ export const AitRow = ({
                   <AioIconButton
                     tipText={"Add row group"}
                     iconName={"aiox-plus"}
-                    onClick={(ret) => addRowGroup(location.rowGroup, ret)}
+                    onClick={(ret) => { addRowGroup(location.rowGroup, ret) }}
                     menuItems={higherOptions.groupTemplateNames}
                   />
                 }

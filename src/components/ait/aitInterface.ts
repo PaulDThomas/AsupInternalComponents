@@ -62,7 +62,6 @@ export enum AitRowType {
 export interface AitOptionList {
   noRepeatProcessing?: boolean,
   headerRows?: number,
-  columns?: number,
   rowHeaderColumns?: number,
   externalLists?: AioReplacement[],
   tableSection?: AitRowType,
@@ -71,8 +70,6 @@ export interface AitOptionList {
   column?: number,
   showCellBorders?: boolean,
   groupTemplateNames?: string[],
-  replacements?: AioReplacement[],
   repeatNumber?: number[],
   repeatValues?: string[],
-  columnRepeats?: AitColumnRepeat[],
 }

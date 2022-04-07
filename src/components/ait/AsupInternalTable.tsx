@@ -8,7 +8,7 @@ import { repeatHeaders } from "../functions/repeatHeaders";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitCellData, AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
 interface AsupInternalTableProps {
@@ -45,8 +45,8 @@ export const AsupInternalTable = ({
 
   // Header data processing
   useEffect(() => {
+    console.log("Header recalc");
     if (tableData.headerData.rows.length > 0) {
-
       let headerDataUpdate = repeatHeaders(
         tableData.headerData.rows ?? [],
         tableData.headerData.replacements ?? [],
@@ -66,7 +66,8 @@ export const AsupInternalTable = ({
         tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }
         ))
     }
-  }, [tableData.bodyData, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableData.bodyData[0].rows[0].cells.length, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -117,24 +118,37 @@ export const AsupInternalTable = ({
    * Add a new row group to the table body
    */
   const addRowGroup = useCallback((rgi: number, templateName?: string) => {
-    // Add default new body
-    let newRowGroup: AitRowGroupData = {
-      aitid: uuidv4(),
-      rows: [{
-        aitid: uuidv4(),
-        cells: [],
-      }],
-      replacements: [],
-    };
-    // Ensure new template has the right number of cells
+    // Create new body, take template if it can be found
+    let newRowGroupTemplate: AitRowGroupData = templateName && groupTemplates && groupTemplates.find(g => g.name === templateName)
+      ? groupTemplates.find(g => g.name === templateName)!
+      : { rows: [{ cells: [] }] }
+      ;
+    // Ensure new template meets requirements
     let cols = tableData.bodyData[0].rows[0].cells.length;
-    for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
+    let newRowGroup = {
+      aitid: uuidv4(),
+      replacements: newRowGroupTemplate.replacements,
+      rows: newRowGroupTemplate.rows.map(row => {
+        let newCells: AitCellData[] = [];
+        for (let ci = 0; ci < cols; ci++) {
+          newCells.push(
+            row.cells[ci] !== undefined
+              ? { ...row.cells[ci], aitid: uuidv4() }
+              : newCell()
+          );
+        }
+        return {
+          aitid: uuidv4(),
+          cells: newCells,
+        }
+      })
+    };
     // Copy existing body and splice in new data
     let newBody: AitRowGroupData[] = [...tableData.bodyData];
     newBody.splice(rgi + 1, 0, newRowGroup);
     // Update table body
     returnData({ bodyData: newBody });
-  }, [tableData.bodyData, returnData]);
+  }, [groupTemplates, tableData.bodyData, returnData]);
 
   // Remove a row group from the table body
   const removeRowGroup = useCallback((rgi: number) => {
@@ -145,12 +159,19 @@ export const AsupInternalTable = ({
 
   // Set up higher options, defaults need to be set
   let higherOptions = useMemo<AitOptionList>(() => {
+    let groupTemplateNames =
+      groupTemplates === false
+        ? ["None"]
+        : groupTemplates !== undefined
+          ? groupTemplates.filter(g => g.name !== undefined).map(g => g.name).sort((a, b) => a!.localeCompare(b!)) as string[]
+          : undefined
+      ;
     return {
       showCellBorders: showCellBorders,
       noRepeatProcessing: tableData.noRepeatProcessing ?? false,
       rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
       externalLists: externalLists ?? [],
-      groupTemplates: groupTemplates,
+      groupTemplateNames: groupTemplateNames,
     };
   }, [externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
@@ -399,8 +420,8 @@ export const AsupInternalTable = ({
                       tableSection: AitRowType.body,
                       rowGroup: rgi,
                     }}
-                    addRowGroup={(rgi) => { addRowGroup(rgi) }}
-                    removeRowGroup={tableData.bodyData.length > 1 ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                    addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
+                    removeRowGroup={(groupTemplates !== false && tableData.bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
                     columnRepeats={columnRepeats}
                   />
                 );
