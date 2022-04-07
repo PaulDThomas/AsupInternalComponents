@@ -1,0 +1,260 @@
+/* Tooltip container, https://www.w3schools.com/css/css_tooltip.asp */
+.aio-tip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted #ccc;
+  color: #006080;
+}
+
+.aio-tip-lhs {
+  position: absolute;
+  left: 0;
+}
+
+.aio-tip-rhs {
+  position: absolute;
+  right: 0;
+}
+
+.aio-tip .aio-tiptext {
+  visibility: hidden;
+  position: absolute;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity .6s;
+}
+
+.aio-tip:hover .aio-tiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.aio-tip .aio-tiptext2 {
+  visibility: hidden;
+  position: absolute;
+  width: max-content;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 6px;
+  z-index: 1;
+}
+
+.aio-tip:hover .aio-tiptext2 {
+  visibility: visible;
+}
+
+.aio-tip-right {
+  top: -5px;
+  left: 125%;
+}
+
+.aio-tip-right2 {
+  top: -5px;
+  left: 105%;
+}
+
+.aio-tip-right::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent #555 transparent transparent;
+}
+
+.aio-tip-bottom {
+  top: 135%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.aio-tip-bottom2 {
+  top: 125%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.aio-tip-bottom::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #555 transparent;
+}
+
+.aio-tip-top {
+  bottom: 125%;
+  left: 50%;
+  margin-left: -65px;
+}
+
+.aio-tip-top2 {
+  bottom: 115%;
+  left: 50%;
+  margin-left: -65px;
+}
+
+.aio-tip-top::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.aio-tip-left {
+  top: -5px;
+  bottom: auto;
+  right: 128%;
+}
+
+.aio-tip-left2 {
+  top: -5px;
+  bottom: auto;
+  right: 105%;
+}
+
+.aio-tip-left::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #555;
+}
+
+.aio-tip .aio-tiptext-bottomarrow {
+  visibility: hidden;
+  width: 120px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 130%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.aio-tip .aio-tiptext-bottomarrow::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.aio-tip:hover .aio-tiptext-bottomarrow {
+  visibility: visible;
+}
+
+ .aio-tip .aio-tiptext-toparrow {
+  visibility: hidden;
+  width: 120px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: 150%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.aio-tip .aio-tiptext-toparrow::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+} 
+
+.aio-tip:hover .aio-tiptext-toparrow {
+  visibility: visible;
+}
+
+.aio-tip .aio-tiptext-leftarrow {
+  visibility: hidden;
+  width: 120px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  left: 110%;
+}
+
+.aio-tip .aio-tiptext-leftarrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent black transparent transparent;
+}
+
+.aio-tip:hover .aio-tiptext-leftarrow {
+  visibility: visible;
+}
+
+.aio-tip .aio-tiptext-rightarrow {
+  visibility: hidden;
+  width: 120px;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 110%;
+}
+
+.aio-tip .aio-tiptext-rightarrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+
+.aio-tip:hover .aio-tiptext-rightarrow {
+  visibility: visible;
+}

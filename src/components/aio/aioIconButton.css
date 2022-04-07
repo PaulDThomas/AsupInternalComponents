@@ -4,6 +4,10 @@
   display: inline-flex;
 }
 
+.aio-button-holder:not(:first-child) {
+  margin-left: 2px;
+}
+
 /* Holders for position */
 .aio-drop-items-holder {
   position: absolute;
