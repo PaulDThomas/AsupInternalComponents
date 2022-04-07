@@ -56,7 +56,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         <AioLabel label={props.label} />
         <div className="aio-input-holder">
           <span className="aiox closed">
-            <div className="aiox-button" onClick={(e) => setIsExpanded(true)} />
+            <div className="aiox-button aiox-open-close" onClick={(e) => setIsExpanded(true)} />
             <span className="aiox-value">{
               Array.isArray(props.inputObject)
                 ? Object.values(props.inputObject).filter(el => typeof (el) === "object").length > 0
@@ -79,7 +79,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         <AioLabel label={props.label} />
         <div className="aio-input-holder">
           <span className="aiox open">
-            <div className="aiox-button" onClick={(e) => setIsExpanded(false)} />
+            <div className="aiox-button aiox-open-close" onClick={(e) => setIsExpanded(false)} />
             <div className={`aiox-table ${props.showBorders && "show-borders"}`}>
               {Array.isArray(props.inputObject)
                 ?

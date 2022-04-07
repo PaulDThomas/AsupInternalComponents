@@ -1,14 +1,14 @@
-import { AioReplacement } from "components/aio/aioInterface";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { AioBoolean } from "../aio/aioBoolean";
+import { AioReplacement } from "../aio/aioInterface";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { newCell } from "../functions/newCell";
 import { repeatHeaders } from "../functions/repeatHeaders";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitCellData, AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
 interface AsupInternalTableProps {
@@ -17,6 +17,7 @@ interface AsupInternalTableProps {
   externalLists?: AioReplacement[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
+  groupTemplates?: AitRowGroupData[] | false,
 }
 
 /**
@@ -24,12 +25,13 @@ interface AsupInternalTableProps {
  * @param props 
  * @returns 
  */
-export const AsupInternalTable = ({ 
-  tableData, 
-  setTableData, 
+export const AsupInternalTable = ({
+  tableData,
+  setTableData,
   externalLists,
-  style, 
-  showCellBorders 
+  style,
+  showCellBorders,
+  groupTemplates,
 }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
@@ -41,15 +43,10 @@ export const AsupInternalTable = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
 
-  // External repeat list processing
-  useEffect(() => {
-
-  }, []);
-
   // Header data processing
   useEffect(() => {
+    console.log("Header recalc");
     if (tableData.headerData.rows.length > 0) {
-
       let headerDataUpdate = repeatHeaders(
         tableData.headerData.rows ?? [],
         tableData.headerData.replacements ?? [],
@@ -69,7 +66,8 @@ export const AsupInternalTable = ({
         tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }
         ))
     }
-  }, [tableData.bodyData, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tableData.bodyData[0].rows[0].cells.length, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -116,24 +114,41 @@ export const AsupInternalTable = ({
     returnData({ bodyData: newBody });
   }, [tableData.bodyData, returnData]);
 
-  // Add a new row group to the table body
-  const addRowGroup = useCallback((rgi: number) => {
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
-    let newRowGroup: AitRowGroupData = {
+  /**
+   * Add a new row group to the table body
+   */
+  const addRowGroup = useCallback((rgi: number, templateName?: string) => {
+    // Create new body, take template if it can be found
+    let newRowGroupTemplate: AitRowGroupData = templateName && groupTemplates && groupTemplates.find(g => g.name === templateName)
+      ? groupTemplates.find(g => g.name === templateName)!
+      : { rows: [{ cells: [] }] }
+      ;
+    // Ensure new template meets requirements
+    let cols = tableData.bodyData[0].rows[0].cells.length;
+    let newRowGroup = {
       aitid: uuidv4(),
-      rows: [{
-        aitid: uuidv4(),
-        cells: [],
-      }],
-      replacements: [],
+      replacements: newRowGroupTemplate.replacements,
+      rows: newRowGroupTemplate.rows.map(row => {
+        let newCells: AitCellData[] = [];
+        for (let ci = 0; ci < cols; ci++) {
+          newCells.push(
+            row.cells[ci] !== undefined
+              ? { ...row.cells[ci], aitid: uuidv4() }
+              : newCell()
+          );
+        }
+        return {
+          aitid: uuidv4(),
+          cells: newCells,
+        }
+      })
     };
-    let cols = tableData.bodyData[0].rows[0].cells
-      .map(c => c.colSpan ?? 1)
-      .reduce((sum, a) => sum + a, 0);
-    for (let i = 0; i < cols; i++) newRowGroup.rows[0].cells.push(newCell());
+    // Copy existing body and splice in new data
+    let newBody: AitRowGroupData[] = [...tableData.bodyData];
     newBody.splice(rgi + 1, 0, newRowGroup);
+    // Update table body
     returnData({ bodyData: newBody });
-  }, [tableData.bodyData, returnData]);
+  }, [groupTemplates, tableData.bodyData, returnData]);
 
   // Remove a row group from the table body
   const removeRowGroup = useCallback((rgi: number) => {
@@ -144,13 +159,21 @@ export const AsupInternalTable = ({
 
   // Set up higher options, defaults need to be set
   let higherOptions = useMemo<AitOptionList>(() => {
+    let groupTemplateNames =
+      groupTemplates === false
+        ? ["None"]
+        : groupTemplates !== undefined
+          ? groupTemplates.filter(g => g.name !== undefined).map(g => g.name).sort((a, b) => a!.localeCompare(b!)) as string[]
+          : undefined
+      ;
     return {
       showCellBorders: showCellBorders,
       noRepeatProcessing: tableData.noRepeatProcessing ?? false,
       rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
       externalLists: externalLists ?? [],
+      groupTemplateNames: groupTemplateNames,
     };
-  }, [externalLists, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
+  }, [externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {
@@ -397,8 +420,8 @@ export const AsupInternalTable = ({
                       tableSection: AitRowType.body,
                       rowGroup: rgi,
                     }}
-                    addRowGroup={(rgi) => { addRowGroup(rgi) }}
-                    removeRowGroup={tableData.bodyData.length > 1 ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                    addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
+                    removeRowGroup={(groupTemplates !== false && tableData.bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
                     columnRepeats={columnRepeats}
                   />
                 );

@@ -1,0 +1,43 @@
+/* Button */
+.aio-button-holder {
+  position: relative;
+  display: inline-flex;
+}
+
+.aio-button-holder:not(:first-child) {
+  margin-left: 2px;
+}
+
+/* Holders for position */
+.aio-drop-items-holder {
+  position: absolute;
+  z-index: 2000;
+  left: 1.25rem;
+}
+
+.aio-drop-items-inner-holder {
+  position: relative;
+}
+
+/* Drop items */
+.aio-drop-item {
+  background-color: rgb(214, 139, 25);
+  color: rgb(240, 255, 250);
+  padding: 2px 6px;
+  box-shadow: 4px 4px 4px rgb(64,64,64, 0.5);
+}
+
+.aio-drop-item:hover {
+  background-color: orangered;
+}
+
+.aio-drop-item:first-child {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.aio-drop-item:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  padding-bottom: 6px;
+}

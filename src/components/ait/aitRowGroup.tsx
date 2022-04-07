@@ -14,7 +14,7 @@ interface AitRowGroupProps {
   replacements: AioReplacement[],
   setRowGroupData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
-  addRowGroup?: (rgi: number) => void,
+  addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   columnRepeats?: AitColumnRepeat[],
 }

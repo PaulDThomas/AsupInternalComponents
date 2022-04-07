@@ -1,4 +1,5 @@
 import structuredClone from '@ungap/structured-clone';
+import { AioIconButton } from 'components/aio/aioIconButton';
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -17,7 +18,7 @@ interface AitRowProps {
   replacements: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
-  addRowGroup?: (rgi: number) => void,
+  addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
@@ -90,39 +91,31 @@ export const AitRow = ({
 
         {/* Row group options */}
         <td className="ait-cell">
-          <div className="ait-aie-holder">
+          <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
             {higherOptions.row === 0
               ?
               (<>
-                {replacements !== undefined &&
-                  <div className="ait-tip">
-                    <div
-                      className={`ait-options-button ait-options-button-row-group`}
-                      onClick={(e) => { setShowRowGroupOptions(true) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Row&nbsp;group&nbsp;options</span>
-                    </div>
-                  </div>
+                {typeof (removeRowGroup) === "function" &&
+                  <AioIconButton
+                    tipText={"Remove row group"}
+                    iconName={"aiox-minus"}
+                    onClick={() => removeRowGroup(location.rowGroup)}
+                  />
                 }
                 {typeof (addRowGroup) === "function" &&
-                  <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
-                    <div
-                      className={`ait-options-button ait-options-button-add-row-group`}
-                      onClick={(e) => { addRowGroup(location.rowGroup) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Add&nbsp;row&nbsp;group</span>
-                    </div>
-                  </div>
+                  <AioIconButton
+                    tipText={"Add row group"}
+                    iconName={"aiox-plus"}
+                    onClick={(ret) => { addRowGroup(location.rowGroup, ret) }}
+                    menuItems={higherOptions.groupTemplateNames}
+                  />
                 }
-                {typeof (removeRowGroup) === "function" &&
-                  <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
-                    <div
-                      className={`ait-options-button ait-options-button-remove-row-group`}
-                      onClick={(e) => { removeRowGroup(location.rowGroup) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Remove&nbsp;row&nbsp;group</span>
-                    </div>
-                  </div>
+                {replacements !== undefined &&
+                  <AioIconButton
+                    tipText='Row group options'
+                    iconName='ait-options-button-row-group'
+                    onClick={() => { setShowRowGroupOptions(true) }}
+                  />
                 }
                 {/* Row group options window */}
                 {showRowGroupOptions && replacements !== undefined &&
