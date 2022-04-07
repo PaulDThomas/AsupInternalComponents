@@ -1,7 +1,7 @@
-import { AioReplacement } from "components/aio/aioInterface";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { AioBoolean } from "../aio/aioBoolean";
+import { AioReplacement } from "../aio/aioInterface";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { newCell } from "../functions/newCell";
 import { repeatHeaders } from "../functions/repeatHeaders";

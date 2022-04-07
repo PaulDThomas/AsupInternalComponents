@@ -1,14 +1,11 @@
-import { AsupInternalEditor } from "./aie/AsupInternalEditor";
-import { AioDropSelect } from "./aio/aioDropSelect";
-import { AioExpander } from "./aio/aioExpander";
-import { AioOption, AioOptionGroup, AioReplacement, AioReplacementText, AioReplacementValue } from "./aio/aioInterface";
-import { AioReplacementTable } from "./aio/aioReplacementTable";
-import { AitCellData, AitRowData, AitRowGroupData, AitTableData } from "./ait/aitInterface";
-import { AsupInternalTable } from "./ait/AsupInternalTable";
-import { AsupInternalWindow } from "./aiw/AsupInternalWindow";
+
+import { AsupInternalEditor } from "./aie";
+import { AioDropSelect, AioExpander, AioIconButton, AioOption, AioOptionGroup, AioReplacement, AioReplacementTable, AioReplacementText, AioReplacementValue } from "./aio";
+import { AsupInternalTable, AitCellData, AitRowData, AitRowGroupData, AitTableData } from "./ait";
+import { AsupInternalWindow } from "./aiw";
 
 export { AsupInternalEditor, AsupInternalTable, AsupInternalWindow };
-export { AioExpander, AioReplacementTable, AioDropSelect };
+export { AioExpander, AioReplacementTable, AioDropSelect, AioIconButton };
 export type { AioOption, AioOptionGroup, AioReplacement, AioReplacementText, AioReplacementValue };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
 
