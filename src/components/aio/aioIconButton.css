@@ -23,7 +23,8 @@
 .aio-drop-item {
   background-color: rgb(214, 139, 25);
   color: rgb(240, 255, 250);
-  padding: 1px 4px;
+  padding: 2px 6px;
+  box-shadow: 4px 4px 4px rgb(64,64,64, 0.5);
 }
 
 .aio-drop-item:hover {
@@ -31,12 +32,12 @@
 }
 
 .aio-drop-item:first-child {
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 .aio-drop-item:last-child {
-  border-bottom-left-radius: 3px;
-  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
   padding-bottom: 6px;
 }
