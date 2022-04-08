@@ -2,6 +2,7 @@ import { AioReplacement } from "../aio/aioInterface";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { flattenReplacements } from "./flattenReplacements";
 import { replaceHeaders } from "./replaceHeaders";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Entry function to process headers with replacements
@@ -26,6 +27,7 @@ export const repeatHeaders = (
       cells: r.cells.map(c => {
         return {
           ...c,
+          aitid: c.aitid ?? uuidv4(),
           replacedText: undefined,
           repeatColSpan: undefined,
           repeatRowSpan: undefined,

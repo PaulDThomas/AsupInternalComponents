@@ -2,7 +2,6 @@ import structuredClone from '@ungap/structured-clone';
 import { AioIconButton } from 'components/aio/aioIconButton';
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { AioReplacement } from "../aio/aioInterface";
 import { AioReplacementDisplay } from "../aio/aioReplacementDisplay";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
@@ -162,7 +161,6 @@ export const AitRow = ({
           } as AitOptionList;
 
           // Add defaults - can be undefined on loaded information
-          if (cell.aitid === undefined) cell.aitid = uuidv4();
           if (cell.text === undefined) cell.text = "";
           if (cell.colSpan === undefined) cell.colSpan = 1;
           if (cell.rowSpan === undefined) cell.rowSpan = 1;
@@ -171,8 +169,8 @@ export const AitRow = ({
           // Render object
           return (
             <AitCell
-              key={isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid}
-              aitid={cell.aitid}
+              key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
+              aitid={cell.aitid ?? ci.toString()}
               text={cell.text}
               colSpan={cell.colSpan}
               rowSpan={cell.rowSpan}

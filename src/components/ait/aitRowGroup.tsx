@@ -111,13 +111,10 @@ export const AitRowGroup = ({
           repeatValues: processed.repeats.values[ri],
         } as AitOptionList;
 
-        // Ensure aitid has been assignede
-        if (!row.aitid) row.aitid = uuidv4();
-
         return (
           <AitRow
             key={rowHigherOptions.repeatNumber === undefined || rowHigherOptions.repeatNumber?.reduce((s, a) => s + a, 0) === 0 ? row.aitid : `${row.aitid}-${rowHigherOptions.repeatNumber?.join(',')}`}
-            aitid={row.aitid}
+            aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
             higherOptions={rowHigherOptions}
