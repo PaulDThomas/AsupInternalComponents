@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AioReplacement, AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
@@ -12,13 +12,6 @@ interface AioReplacementValueDisplayProps {
 export const AioReplacementValueDisplay = ({ values, setValues, level, externalLists, externalName }: AioReplacementValueDisplayProps): JSX.Element => {
 
   const [currentText, setCurrentText] = useState(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
-
-  // Needed for when values are pushed down
-  useEffect(() => {
-    if (currentText !== (values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "")) {
-      setCurrentText(values && values.length > 0 ? values.map(rv => rv.newText).join("\n") : "");
-    }
-  }, [currentText, values])
 
   // Return data from the component
   const returnData = useCallback((newValues: AioReplacementValue[]) => {
