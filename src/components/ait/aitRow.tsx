@@ -77,7 +77,7 @@ export const AitRow = ({
     }
   }, [setRowData, aitid, cells, lastSend, location]);
 
-  const updateCell = useCallback((ret, ci) => {
+  const updateCell = useCallback((ret:AitCellData, ci:number) => {
     // Create new object to send back
     let newCells = [...cells];
     newCells[ci] = ret;

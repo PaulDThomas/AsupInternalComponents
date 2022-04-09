@@ -52,14 +52,14 @@ export const AitHeader = ({
   }, [setHeaderData, aitid, rows, replacements, lastSend, location]);
 
   // Update row
-  const updateRow = useCallback((ret, ri) => {
+  const updateRow = useCallback((ret:AitRowData, ri:number) => {
     // Create new object to send back
-    let newRows = [...rows];
+    let newRows:AitRowData[] = [...rows];
     newRows[ri] = ret;
     returnData({ rows: newRows });
   }, [rows, returnData]);
 
-  const addRow = useCallback((ri) => {
+  const addRow = useCallback((ri:number) => {
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
@@ -73,7 +73,7 @@ export const AitHeader = ({
     returnData({ rows: newRows });
   }, [returnData, rows])
 
-  const removeRow = useCallback((ri) => {
+  const removeRow = useCallback((ri:number) => {
     let newRows = [...rows];
     // Look for any cells with no row span
     newRows[ri].cells.map((c, ci) => {

@@ -59,7 +59,7 @@ export const AitRowGroup = ({
   }, [setRowGroupData, aitid, rows, replacements, lastSend, location]);
 
   // Update row
-  const updateRow = useCallback((ret, ri) => {
+  const updateRow = useCallback((ret:AitRowData, ri:number) => {
     // Do nothing if readonly
     if (typeof (setRowGroupData) !== "function") return;
 
@@ -69,7 +69,7 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [setRowGroupData, rows, returnData]);
 
-  const addRow = useCallback((ri) => {
+  const addRow = useCallback((ri:number) => {
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
@@ -83,7 +83,7 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [returnData, rows])
 
-  const removeRow = useCallback((ri) => {
+  const removeRow = useCallback((ri:number) => {
     let newRows = [...rows];
     newRows.splice(ri, 1);
     returnData({ rows: newRows });
