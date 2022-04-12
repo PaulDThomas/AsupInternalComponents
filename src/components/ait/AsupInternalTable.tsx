@@ -45,7 +45,6 @@ export const AsupInternalTable = ({
 
   // Header data processing
   useEffect(() => {
-    console.log("Header recalc");
     if (tableData.headerData.rows.length > 0) {
       let headerDataUpdate = repeatHeaders(
         tableData.headerData.rows ?? [],
@@ -78,7 +77,6 @@ export const AsupInternalTable = ({
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
-    console.log("Send table data");
 
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
@@ -282,7 +280,6 @@ export const AsupInternalTable = ({
 
   // Add header if is is not there
   const addNewHeader = useCallback(() => {
-    console.log("Adding new header");
     let newRow: AitRowData = {
       aitid: uuidv4(),
       cells: [],

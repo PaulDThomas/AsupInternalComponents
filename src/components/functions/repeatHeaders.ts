@@ -43,8 +43,6 @@ export const repeatHeaders = (
     columnRepeats: newColumnRepeats
   };
 
-  console.log("repeatHeaders");
-
   let replacement = flattenReplacements(replacements, externalLists);
 
   let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, replacement, newHeaderRows, newColumnRepeats);

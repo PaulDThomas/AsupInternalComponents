@@ -160,7 +160,6 @@ export const AitHeader = ({
   }, [returnData, rows]);
 
   const removeRowSpan = useCallback((loc: AitLocation) => {
-    // console.log(`Removing to rowspan for cell ${JSON.stringify(loc)}`);
     // Get things to change
     let newRows = [...rows];
     let targetCell: AitCellData = newRows[loc.row].cells[loc.column];

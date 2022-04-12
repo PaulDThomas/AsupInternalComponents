@@ -136,7 +136,6 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
             availableValues={availableListNames}
             setValue={(ret) => {
               returnData({ externalName: ret });
-              console.log(`${ret}`);
             }}
           />
         </div>

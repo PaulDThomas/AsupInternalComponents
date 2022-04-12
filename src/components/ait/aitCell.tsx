@@ -152,7 +152,7 @@ export const AitCell = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
     if (!chkObj) {
-      // console.log(`Diffs:${diffs}`);
+      // console.log(`CELLRETURN:${diffs}`);
       setCellData!(r);
       setLastSend(structuredClone(r));
     }

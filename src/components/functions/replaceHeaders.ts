@@ -193,7 +193,7 @@ export const replaceHeaders = (
 
               // Not found !!!
               else {
-                console.log("Have not found the target cell above the column header replacement");
+                console.warn("Have not found the target cell above the column header replacement");
               }
             }
           }
