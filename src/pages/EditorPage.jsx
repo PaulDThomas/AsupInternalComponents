@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components/aie/AsupInternalEditor';
 
 export const EditorPage = () => {
@@ -24,8 +25,11 @@ export const EditorPage = () => {
   const thisStyleMap = {
     Editable: { css: { color: "red", fontFamily: "courier", fontSize: "16pt" }, aieExclude: ["Optional", "Notes"] },
     Optional: { css: { color: "green", fontWeight: "100", fontFamily: "serif", fontSize: "16pt" }, aieExclude: ["Editable", "Notes"] },
-    Notes: { css: { color: "blue", fontSize: "16pt" }, aieExclude: ["Editable", "Notes"] },
+    Notes: { css: { color: "blue", fontSize: "16pt" }, aieExclude: ["Editable", "Optional"] },
   };
+
+
+  let locn = useLocation();
 
   return (
     <div
@@ -48,6 +52,7 @@ export const EditorPage = () => {
         padding: "1rem",
         border: "solid black 3px"
       }}>
+        <div>Current location is... {locn.pathname}</div>
         <button onClick={dothing}>set</button>
         <button onClick={save}>save</button>
         <button onClick={load}>load</button>

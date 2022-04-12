@@ -27,12 +27,12 @@ let sampleGroupTemplates: AitRowGroupData[] = [
           { text: "!!xval!!", spaceAfter: false }
         ],
         replacementValues: [
-          { newText: "n", subList: [{ newText: "xxxx" }] },
-          { newText: "Mean", subList: [{ newText: "xx.x" }] },
-          { newText: "SD", subList: [{ newText: "x.xx" }] },
-          { newText: "Min", subList: [{ newText: "x" }] },
-          { newText: "Median", subList: [{ newText: "xx.x" }] },
-          { newText: "Max", subList: [{ newText: "xx" }] }
+          { newText: "n", subList: [{ newText: "xxx" }] },
+          { newText: "Mean", subList: [{ newText: " xx.x" }] },
+          { newText: "SD", subList: [{ newText: " xx.x" }] },
+          { newText: "Median", subList: [{ newText: " xx.x" }] },
+          { newText: "Min", subList: [{ newText: "  x" }] },
+          { newText: "Max", subList: [{ newText: "xxx" }] }
         ],
       }
     ]
@@ -76,7 +76,7 @@ let sampleGroupTemplates: AitRowGroupData[] = [
           { text: "!!xval!!", spaceAfter: false }
         ],
         replacementValues: [
-          { newText: "n (%)", subList: [{ newText: "xx (xx.x%)" }] },
+          { newText: "n (%)", subList: [{ newText: "xx (xx.x)" }] },
         ],
       }
     ]
