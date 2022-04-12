@@ -11,12 +11,13 @@ export const updateRowSpans = (
       // Get cell to check 
       let currentCell = rows[r].cells[col];
       // Ensure it has not already been udpated 
-      if (currentCell?.repeatRowSpan === 0 ) {
+      if (currentCell?.repeatRowSpan === 0) {
         col++;
         continue;
       }
       // Start checking 
       let rowSpan = 1;
+      let rowSpanX = rows[r].spaceAfter! !== false && rows[r].spaceAfter! >= 0 ? 1 : 0;
       // Previous column rowSpan
       let prevSpan = Infinity;
       if (col > 0) {
@@ -29,17 +30,21 @@ export const updateRowSpans = (
         // This is a repeat
         currentCell?.replacedText !== undefined
         // There is no space after the current target row
-        && !rows[r + (rowSpan - 1)].spaceAfter
+        // && !rows[r + (rowSpan - 1)].spaceAfter
         // The rowSpan is less than the previous column
         && rowSpan < prevSpan
         // The next target row has the same text
         && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) {
         rowSpan++;
+        // Add another row if the spaceAfter is on a future column
+        if (rows[r + rowSpan - 1].spaceAfter! !== false && rows[r + rowSpan - 1].spaceAfter! > col) {
+          rowSpanX++;
+        }
       }
       // Update rowSpans if duplicates have been found 
       if (rowSpan > 1) {
-        currentCell.repeatRowSpan = rowSpan;
+        currentCell.repeatRowSpan = rowSpan + rowSpanX;
         for (let _r = 1; _r < rowSpan; _r++) {
           rows[r + _r].cells[col].repeatRowSpan = 0;
         }

@@ -412,6 +412,7 @@ export const AsupInternalTable = ({
                     aitid={rowGroup.aitid}
                     rows={rowGroup.rows}
                     replacements={rowGroup.replacements}
+                    spaceAfter={rowGroup.spaceAfter}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
                     higherOptions={{
                       ...higherOptions,

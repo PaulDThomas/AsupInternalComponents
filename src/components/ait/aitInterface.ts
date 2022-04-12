@@ -15,12 +15,13 @@ export interface AitCellData {
 export interface AitRowData {
   aitid?: string,
   cells: AitCellData[],
-  spaceAfter?: boolean,
+  spaceAfter?: number | false,
 };
 
 export interface AitRowGroupData {
   aitid?: string,
   name?: string,
+  spaceAfter?: boolean,
   rows: Array<AitRowData>,
   replacements?: AioReplacement[],
 };

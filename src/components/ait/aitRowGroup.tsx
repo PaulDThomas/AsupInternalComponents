@@ -17,12 +17,14 @@ interface AitRowGroupProps {
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   columnRepeats?: AitColumnRepeat[],
+  spaceAfter?: boolean,
 }
 
 export const AitRowGroup = ({
   aitid,
   rows,
   replacements,
+  spaceAfter,
   setRowGroupData,
   higherOptions,
   addRowGroup,
@@ -42,12 +44,13 @@ export const AitRowGroup = ({
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rowGroupUpdate: { rows?: AitRowData[], replacements?: AioReplacement[] }) => {
+  const returnData = useCallback((rowGroupUpdate: { rows?: AitRowData[], replacements?: AioReplacement[], spaceAfter?: boolean }) => {
     if (typeof setRowGroupData !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
       rows: rowGroupUpdate.rows ?? rows,
-      replacements: rowGroupUpdate.replacements ?? replacements
+      replacements: rowGroupUpdate.replacements ?? replacements,
+      spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
     };
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
@@ -56,10 +59,10 @@ export const AitRowGroup = ({
       setRowGroupData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [setRowGroupData, aitid, rows, replacements, lastSend, location]);
+  }, [setRowGroupData, aitid, rows, replacements, spaceAfter, lastSend, location]);
 
   // Update row
-  const updateRow = useCallback((ret:AitRowData, ri:number) => {
+  const updateRow = useCallback((ret: AitRowData, ri: number) => {
     // Do nothing if readonly
     if (typeof (setRowGroupData) !== "function") return;
 
@@ -69,7 +72,7 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [setRowGroupData, rows, returnData]);
 
-  const addRow = useCallback((ri:number) => {
+  const addRow = useCallback((ri: number) => {
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
@@ -83,7 +86,7 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [returnData, rows])
 
-  const removeRow = useCallback((ri:number) => {
+  const removeRow = useCallback((ri: number) => {
     let newRows = [...rows];
     newRows.splice(ri, 1);
     returnData({ rows: newRows });
@@ -124,8 +127,11 @@ export const AitRowGroup = ({
             removeRowGroup={removeRowGroup}
             addRow={addRow}
             removeRow={rows.length > 1 ? removeRow : undefined}
-            spaceAfter={row.spaceAfter}
+            // spaceAfter={row.spaceAfter }
+            spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? 0 : false)}
             columnRepeats={columnRepeats}
+            rowGroupSpace={spaceAfter}
+            setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
           />
         );
       })}

@@ -97,14 +97,14 @@
 
 .aio-tip-top {
   bottom: 125%;
-  left: 50%;
-  margin-left: -60px;
+  /* left: 50%; */
+  margin-left: -57px;
 }
 
 .aio-tip-top2 {
   bottom: 115%;
-  left: 50%;
-  margin-left: -60px;
+  /* left: 50%; */
+  margin-left: -57px;
 }
 
 .aio-tip-top::after {

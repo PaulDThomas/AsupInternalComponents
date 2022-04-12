@@ -1,4 +1,5 @@
 import structuredClone from '@ungap/structured-clone';
+import { AioBoolean } from 'components/aio/aioBoolean';
 import { AioIconButton } from 'components/aio/aioIconButton';
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
@@ -21,12 +22,14 @@ interface AitRowProps {
   removeRowGroup?: (rgi: number) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
-  spaceAfter?: boolean,
+  spaceAfter?: number | false,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
   removeRowSpan?: (loc: AitLocation) => void,
   columnRepeats?: AitColumnRepeat[],
+  rowGroupSpace?: boolean,
+  setRowGroupSpace?: (ret: boolean) => void,
 }
 
 export const AitRow = ({
@@ -47,6 +50,8 @@ export const AitRow = ({
   addRowSpan,
   removeRowSpan,
   columnRepeats,
+  rowGroupSpace,
+  setRowGroupSpace,
 }: AitRowProps): JSX.Element => {
   const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
@@ -119,6 +124,9 @@ export const AitRow = ({
                 {/* Row group options window */}
                 {showRowGroupOptions && replacements !== undefined &&
                   <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
+                    <div className="aiw-body-row">
+                      <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                    </div>
                     <div className="aiw-body-row">
                       <AioReplacementDisplay
                         replacements={replacements!}
@@ -220,7 +228,9 @@ export const AitRow = ({
         </td>
       </tr>
       {/* Additional row if required */}
-      {spaceAfter && <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />}
+      {spaceAfter !== false && 
+      <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
+      }
     </>
   );
 }
