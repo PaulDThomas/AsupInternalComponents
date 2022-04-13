@@ -54,7 +54,7 @@ export const AifLineDisplay = ({
 
   return (
     <div className="aif-line" style={{ ...style }}>
-      {typeof setLine === "function" && showOptions &&
+      {showOptions &&
         <AsupInternalWindow
           Title="Line options"
           Visible={showOptions}
@@ -73,7 +73,7 @@ export const AifLineDisplay = ({
                       ? "Left only"
                       : "Centre only"
               }
-              setValue={(ret) => {
+              setValue={typeof setLine === "function" ? (ret) => {
                 switch (ret) {
                   case ("Left only"):
                     left = left || "";
@@ -98,7 +98,7 @@ export const AifLineDisplay = ({
                     break;
                 }
                 returnData({ left: left, centre: centre, right: right });
-              }}
+              } : undefined}
             />
           </div>
         </AsupInternalWindow>
@@ -137,7 +137,7 @@ export const AifLineDisplay = ({
       </div>
 
       <div className="aif-line-buttons">
-        <AioIconButton onClick={() => setShowOptions(true)} iconName={"aio-button-row-options"} tipText="Options" />
+        <AioIconButton onClick={() => setShowOptions(!showOptions)} iconName={"aio-button-row-options"} tipText="Options" />
         {typeof addLine === "function" ? <AioIconButton onClick={addLine} iconName={"aiox-plus"} tipText="Add line" /> : <div style={{ width: "18px" }} />}
         {typeof removeLine === "function" && <AioIconButton onClick={removeLine} iconName={"aiox-minus"} tipText="Remove line" />}
       </div>
