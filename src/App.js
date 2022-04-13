@@ -29,7 +29,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Navigate replace to="/ait/" />} />
-          <Route path="/ait/" element={<BlockPage />} />
+          <Route path="/ait/" element={<TablePage />} />
           <Route path="/ait/block" element={<BlockPage />} />
           <Route path="/ait/editor" element={<EditorPage />} />
           <Route path="/ait/expander" element={<ExpanderPage />} />
