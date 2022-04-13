@@ -12,9 +12,9 @@
 }
 
 .aie-button-holder {
-    z-index: 1;
+    z-index: 10;
     position: absolute;
-    bottom: -30px;
+    bottom: -29px;
     height: 26px;
     min-width: max-content;
     overflow: auto;
@@ -22,7 +22,6 @@
     border: 2px solid darkorange;
     border-radius: 4px;
     background-color: darkorange;
-    transition: all 250ms linear;
   }
 
 .aie-button-holder.hidden {

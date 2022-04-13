@@ -138,36 +138,38 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
   return (
     <div
       className="aie-holder"
-      onMouseOver={aieShowButtons}
+      onMouseOver={!(props.editable === false || typeof props.setValue !== "function") ? aieShowButtons : undefined}
       onMouseLeave={aieHideButtons}
       style={{
         ...props.style,
-        alignItems: props.textAlignment === "left" 
-        ? "flex-start"
-        : props.textAlignment === "right" 
-        ? "flex-end"
-        : props.textAlignment
+        alignItems: props.textAlignment === "left"
+          ? "flex-start"
+          : props.textAlignment === "right"
+            ? "flex-end"
+            : props.textAlignment
       }}
     >
-      <div className={[
-        "aie-button-holder",
-        "aie-style-button-holder",
-        buttonState === "hidden" ? "hidden" : "",
-      ].join(" ")}
-      >
-        <AieStyleButtonRow
-          styleList={Object.keys(currentStyleMap.current)}
-          currentStyle={editorState.getCurrentInlineStyle()}
-          applyStyleFunction={aieApplyStyle}
-          disabled={editorState.getSelection().isCollapsed()}
-        />
-      </div>
+      {!(props.editable === false || typeof props.setValue !== "function") &&
+        <div className={[
+          "aie-button-holder",
+          "aie-style-button-holder",
+          buttonState === "hidden" ? "hidden" : "",
+        ].join(" ")}
+        >
+          <AieStyleButtonRow
+            styleList={Object.keys(currentStyleMap.current)}
+            currentStyle={editorState.getCurrentInlineStyle()}
+            applyStyleFunction={aieApplyStyle}
+            disabled={editorState.getSelection().isCollapsed()}
+          />
+        </div>
+      }
       <Editor
         customStyleMap={currentStyleMap.current}
         editorState={editorState}
         onChange={onChange}
         textAlignment={props.textAlignment}
-        readOnly={props.editable === false}
+        readOnly={props.editable === false || typeof props.setValue !== "function"}
       />
     </div>
   );

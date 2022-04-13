@@ -1,9 +1,6 @@
 /* Tooltip container, https://www.w3schools.com/css/css_tooltip.asp */
 .aio-tip {
   position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted #ccc;
-  color: #006080;
 }
 
 .aio-tip-lhs {

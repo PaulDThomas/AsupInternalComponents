@@ -39,7 +39,6 @@ export const AifLineDisplay = ({
 
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback((lineUpdate: { left?: string | false, centre?: string | false, right?: string | false }) => {
-
     if (typeof setLine !== "function") return;
     let newLine = {
       aifid: aifid,
@@ -55,8 +54,7 @@ export const AifLineDisplay = ({
 
   return (
     <div className="aif-line" style={{ ...style }}>
-      <div className="aif-line-item-holder">
-
+      {typeof setLine === "function" && showOptions &&
         <AsupInternalWindow
           Title="Line options"
           Visible={showOptions}
@@ -104,11 +102,14 @@ export const AifLineDisplay = ({
             />
           </div>
         </AsupInternalWindow>
+      }
+
+      <div className="aif-line-item-holder">
         {typeof left === "string" &&
           <AsupInternalEditor
             value={left}
-            setValue={(ret) => returnData({ left: ret })}
-            style={{ flexGrow: 1, fontFamily: "courier" }}
+            setValue={typeof setLine === "function" ? (ret) => returnData({ left: ret }) : undefined}
+            style={{ width: typeof centre !== "string" && typeof right !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
             showStyleButtons={true}
             styleMap={styleMap}
           />
@@ -116,9 +117,9 @@ export const AifLineDisplay = ({
         {typeof centre === "string" &&
           <AsupInternalEditor
             value={centre}
-            setValue={(ret) => returnData({ centre: ret })}
+            setValue={typeof setLine === "function" ? (ret) => returnData({ centre: ret }) : undefined}
             textAlignment={"center"}
-            style={{ flexGrow: 1, fontFamily: "courier" }}
+            style={{ flexGrow: 1 }}
             showStyleButtons={true}
             styleMap={styleMap}
           />
@@ -126,19 +127,20 @@ export const AifLineDisplay = ({
         {typeof right === "string" &&
           <AsupInternalEditor
             value={right}
-            setValue={(ret) => returnData({ right: ret })}
+            setValue={typeof setLine === "function" ? (ret) => returnData({ right: ret }) : undefined}
             textAlignment={"right"}
-            style={{ flexGrow: 1, fontFamily: "courier" }}
-            showStyleButtons={true}
+            style={{ width: typeof centre !== "string" && typeof left !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
+            showStyleButtons={styleMap !== undefined}
             styleMap={styleMap}
           />
         }
-        <div className="aif-line-buttons aio-button-holder">
-          <AioIconButton onClick={() => setShowOptions(true)} iconName={"aio-button-row-options"} tipText="Options" />
-          {typeof addLine === "function" && <AioIconButton onClick={addLine} iconName={"aiox-plus"} tipText="Add line" />}
-          {typeof removeLine === "function" && <AioIconButton onClick={removeLine} iconName={"aiox-minus"} tipText="Remove line" />}
-        </div>
       </div>
-    </div >
+
+      <div className="aif-line-buttons">
+        <AioIconButton onClick={() => setShowOptions(true)} iconName={"aio-button-row-options"} tipText="Options" />
+        {typeof addLine === "function" ? <AioIconButton onClick={addLine} iconName={"aiox-plus"} tipText="Add line" /> : <div style={{ width: "18px" }} />}
+        {typeof removeLine === "function" && <AioIconButton onClick={removeLine} iconName={"aiox-minus"} tipText="Remove line" />}
+      </div>
+    </div>
   );
 }

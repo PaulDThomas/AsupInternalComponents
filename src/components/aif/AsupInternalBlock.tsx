@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap } from '../aie';
 import "./aif.css";
@@ -8,15 +8,45 @@ import { AifBlockLine } from './aifInterface';
 interface AsupInternalBlockProps {
   lines: AifBlockLine[]
   setLines?: (ret: AifBlockLine[]) => void
+  minLines?: number,
   maxLines?: number,
   styleMap?: AieStyleMap
 }
 export const AsupInternalBlock = ({
   lines,
   setLines,
+  minLines,
   maxLines,
   styleMap,
 }: AsupInternalBlockProps): JSX.Element => {
+
+  /** Check lines object min/max rule */
+  useEffect(() => {
+    if (typeof setLines !== "function") return;
+    let newLines = [...lines];
+    if (newLines.length < Math.min(minLines ?? 1, maxLines ?? 1)) {
+      let reqlines = (minLines ?? 1) - lines.length;
+      for (let i = 0; i < reqlines; i++) {
+        let newLine: AifBlockLine = {
+          aifid: uuidv4(),
+          left: "",
+          centre: "",
+          right: "",
+          canEdit: true,
+          canMove: true,
+          canRemove: true,
+        };
+        newLines.push(newLine);
+      }
+    }
+    else if (newLines.length > Math.max(minLines ?? 10, maxLines ?? 10)) {
+      newLines = newLines.slice(0, maxLines ?? 10);
+    }
+    setLines(newLines.map((l, li) => {
+      if (l.aifid === undefined) l.aifid = uuidv4();
+      return l;
+    }));
+  }, [minLines, maxLines, setLines, lines])
 
   // General function to return complied object
   const returnData = useCallback((linesUpdate: { lines: AifBlockLine[] }) => {
@@ -38,7 +68,7 @@ export const AsupInternalBlock = ({
 
   const addLine = useCallback((li: number) => {
     let newLines = [...lines];
-    let newRow: AifBlockLine = {
+    let newLine: AifBlockLine = {
       aifid: uuidv4(),
       left: "",
       centre: "",
@@ -47,7 +77,7 @@ export const AsupInternalBlock = ({
       canMove: true,
       canRemove: true,
     };
-    newLines.splice(li + 1, 0, newRow);
+    newLines.splice(li + 1, 0, newLine);
     returnData({ lines: newLines });
   }, [lines, returnData])
 
@@ -57,17 +87,9 @@ export const AsupInternalBlock = ({
     returnData({ lines: newLines });
   }, [lines, returnData])
 
-  /** lines, ensuring all aifids are assigend */
-  const processed = useMemo((): AifBlockLine[] => {
-    return lines.map((l, li) => {
-      if (l.aifid === undefined) l.aifid = uuidv4();
-      return l;
-    });
-  }, [lines]);
-
   return (
     <div className="aif-block" >
-      {processed.map((l: AifBlockLine, li: number) => (
+      {lines.map((l: AifBlockLine, li: number) => (
         <AifLineDisplay
           key={l.aifid}
           aifid={l.aifid}
@@ -77,9 +99,9 @@ export const AsupInternalBlock = ({
           canEdit={l.canEdit}
           canMove={l.canMove}
           canRemove={l.canRemove}
-          setLine={(ret) => updateLine(ret, li)}
+          setLine={l.canEdit !== false ? (ret) => updateLine(ret, li) : undefined}
           addLine={lines.length < (maxLines ?? 10) ? () => addLine(li) : undefined}
-          removeLine={(lines.length > 1 && l.canRemove !== false) ? () => removeLine(li) : undefined}
+          removeLine={(lines.length > (minLines ?? 1) && l.canEdit !== false && l.canRemove !== false) ? () => removeLine(li) : undefined}
           styleMap={styleMap}
         />
       ))}

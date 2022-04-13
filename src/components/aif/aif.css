@@ -35,4 +35,7 @@
 .aif-line-buttons {
   right: 0;
   margin-left: 0.25rem;
+  width: 52px;
+  display:flex;
+  flex-direction: row;
 }

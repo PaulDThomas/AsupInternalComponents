@@ -44,7 +44,7 @@ export const AioIconButton = ({
   return (
     <div className="aio-button-holder">
       <div className="aio-tip" style={{ display: "flex", alignContent: "flex-center" }}>
-        <button className={`aiox-button ${iconName ?? "aiox-down"}`}
+        <div className={`aiox-button ${iconName ?? "aiox-down"}`}
           aria-label={tipText}
           title={tipText}
           onClick={() => {

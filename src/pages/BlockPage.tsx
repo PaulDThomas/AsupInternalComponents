@@ -6,27 +6,30 @@ import { useRef, useState } from 'react';
 export const BlockPage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lines, setLines] = useState<AifBlockLine[]>([{left:"One line"}]);
+  const [lines, setLines] = useState<AifBlockLine[]>([{ left: "One line", canEdit: false }]);
 
 
   return (
     <>
       <div style={{
-        width: "calc(vw - 4rem)",
+        width: "calc(vw - 4rem - 2px)",
         display: "flex",
         justifyContent: "center",
-        padding: "2rem",
+        padding: "1rem",
+        backgroundColor: "white",
+        border: "1px solid black",
+        margin: "1rem",
+
       }}>
         <AsupInternalBlock
           lines={lines}
           setLines={setLines}
+          minLines={4}
           maxLines={10}
-          styleMap={
-            {
-              Optional: { css: { color: "green", }, aieExclude: ["Notes"] },
-              Notes: { css: { color: "blue", }, aieExclude: ["Optional"] },
-            } 
-          }
+          styleMap={{
+            Optional: { css: { color: "green", }, aieExclude: ["Notes"] },
+            Notes: { css: { color: "blue", }, aieExclude: ["Optional"] },
+          }}
         />
       </div>
 
@@ -61,8 +64,8 @@ export const BlockPage = () => {
         >
           Save
         </button>
-        <pre>
-          <textarea ref={ta} style={{ width: "98%", height: "200px" }} rows={6} />
+        <pre style={{ width: "100%" }}>
+          <textarea ref={ta} style={{ width: "100%", height: "220px" }} rows={6} />
         </pre>
       </div>
     </>
