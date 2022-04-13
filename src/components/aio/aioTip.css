@@ -19,7 +19,7 @@
 .aio-tip .aio-tiptext {
   visibility: hidden;
   position: absolute;
-  width: 120px;
+  width: 121px;
   background-color: #555;
   color: #fff;
   text-align: center;
@@ -96,13 +96,13 @@
 }
 
 .aio-tip-top {
-  bottom: 125%;
+  bottom: 150%;
   /* left: 50%; */
   margin-left: -57px;
 }
 
 .aio-tip-top2 {
-  bottom: 115%;
+  bottom: 150%;
   /* left: 50%; */
   margin-left: -57px;
 }

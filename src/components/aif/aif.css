@@ -1,0 +1,38 @@
+.aif-block {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.aif-line {
+  display: inline-flex;
+}
+
+.aif-line-item-holder {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+}
+
+.aif-line-item {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.aif-line-item.left {
+  align-content:flex-start;
+}
+
+.aif-line-item.centre {
+  align-content:center;
+}
+
+.aif-line-item.right {
+  align-content:flex-end;
+}
+
+.aif-line-buttons {
+  right: 0;
+  margin-left: 0.25rem;
+}

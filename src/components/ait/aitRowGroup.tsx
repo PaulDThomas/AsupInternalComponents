@@ -127,7 +127,6 @@ export const AitRowGroup = ({
             removeRowGroup={removeRowGroup}
             addRow={addRow}
             removeRow={rows.length > 1 ? removeRow : undefined}
-            // spaceAfter={row.spaceAfter }
             spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? 0 : false)}
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}

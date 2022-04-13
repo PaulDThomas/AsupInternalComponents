@@ -1,9 +1,14 @@
 .aie-holder {
     border: 1px dashed rgb(190, 190, 189);
     border-radius: 1px; 
-    display: inline-block;
     position: relative;
     min-width: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.aie-holder .DraftEditor-root {
+  width: 100%
 }
 
 .aie-button-holder {
@@ -13,7 +18,6 @@
     height: 26px;
     min-width: max-content;
     overflow: auto;
-    left: 0;
     margin: 0px;
     border: 2px solid darkorange;
     border-radius: 4px;

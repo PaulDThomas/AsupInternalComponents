@@ -43,7 +43,7 @@ export const EditorPage = () => {
         value={text}
         setValue={setText}
         showStyleButtons={true}
-        addStyle={{ width: "298px", height: "100%" }}
+        style={{ width: "298px", height: "100%" }}
         textAlignment={"left"}
         styleMap={thisStyleMap}
       />

@@ -56,7 +56,7 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
  * @param dsm Style map that has been applied
  * @returns URI encoded HTML string of the content 
  */
-const convertToHTML = (d: RawDraftContentState, dsm:DraftStyleMap): string => {
+const convertToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
   return d.blocks.map(b => htmlBlock(b, dsm)).join("<br/>");
 }
 
@@ -64,7 +64,7 @@ const convertToHTML = (d: RawDraftContentState, dsm:DraftStyleMap): string => {
 interface AsupInternalEditorProps {
   value: string,
   setValue?: (ret: string) => void,
-  addStyle?: React.CSSProperties,
+  style?: React.CSSProperties,
   styleMap?: AieStyleMap,
   highlightChanges?: boolean,
   textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment,
@@ -77,7 +77,7 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   /** Current button state */
   const [buttonState, setButtonState] = useState("hidden");
-  
+
   // Add default style map
   const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(props.styleMap));
   const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(props.styleMap));
@@ -140,9 +140,21 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
       className="aie-holder"
       onMouseOver={aieShowButtons}
       onMouseLeave={aieHideButtons}
-      style={props.addStyle}
+      style={{
+        ...props.style,
+        alignItems: props.textAlignment === "left" 
+        ? "flex-start"
+        : props.textAlignment === "right" 
+        ? "flex-end"
+        : props.textAlignment
+      }}
     >
-      <div className={`aie-button-holder aie-style-button-holder ${buttonState === "hidden" ? "hidden" : ""}`}>
+      <div className={[
+        "aie-button-holder",
+        "aie-style-button-holder",
+        buttonState === "hidden" ? "hidden" : "",
+      ].join(" ")}
+      >
         <AieStyleButtonRow
           styleList={Object.keys(currentStyleMap.current)}
           currentStyle={editorState.getCurrentInlineStyle()}
