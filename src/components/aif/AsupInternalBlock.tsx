@@ -46,7 +46,8 @@ export const AsupInternalBlock = ({
       if (l.aifid === undefined) l.aifid = uuidv4();
       return l;
     }));
-  }, [minLines, maxLines, setLines, lines])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minLines, maxLines])
 
   // General function to return complied object
   const returnData = useCallback((linesUpdate: { lines: AifBlockLine[] }) => {
