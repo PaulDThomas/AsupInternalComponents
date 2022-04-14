@@ -1,4 +1,5 @@
 import { assignSubListLevel } from 'components/functions/assignSubListLevel';
+import { fromHtml, toHtml } from 'components/functions/tofromHtml';
 import React, { useCallback, useMemo } from 'react';
 import { AioDropSelect } from './aioDropSelect';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
@@ -100,9 +101,9 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
                     <input
                       key={`t${l}`}
                       className={"aio-input"}
-                      value={r.text ?? ""}
+                      value={fromHtml(r.text) ?? ""}
                       type="text"
-                      onChange={(e) => updateText(e.currentTarget.value, l)}
+                      onChange={(e) => updateText(toHtml(e.currentTarget.value), l)}
                       style={{ minWidth: 0, width: "170px" }}
                     />
                   </>

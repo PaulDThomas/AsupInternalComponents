@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components/aie/AsupInternalEditor';
 
 export const EditorPage = () => {
-  const [text, setText] = useState("hello? world!<>");
+  const [text, setText] = useState("<div><span>&nbsp;&nbsp;hello?&nbsp;wor<br/>ld!&lt;&gt;</span></div>");
 
   const dothing = () => {
     console.log("Update");

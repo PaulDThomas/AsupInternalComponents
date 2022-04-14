@@ -53,13 +53,13 @@ export const AitCell = ({
   // Data holder
   const [displayText, setDisplayText] = useState(
     replacedText !== undefined
-      ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+      ? replacedText
       : text
   );
   /* Need to update if these change */
   useEffect(() => setDisplayText(
     replacedText !== undefined
-      ? replacedText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+      ? replacedText
       : text
   ), [replacedText, text]);
 
@@ -197,6 +197,7 @@ export const AitCell = ({
           </div>
         </>
 
+        {/* Cell text editor */}
         <AsupInternalEditor
           style={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center")}

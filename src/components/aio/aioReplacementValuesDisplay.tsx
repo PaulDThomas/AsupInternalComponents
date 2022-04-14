@@ -1,3 +1,4 @@
+import { fromHtml, toHtml } from 'components/functions/tofromHtml';
 import React, { useCallback, useState } from 'react';
 import { AioReplacement, AioReplacementValue } from './aioInterface';
 
@@ -60,10 +61,10 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
             <textarea
               className={"aio-input"}
               rows={4}
-              value={currentText}
+              value={fromHtml(currentText)}
               onChange={e => {
-                setCurrentText(e.currentTarget.value)
-                returnData(e.currentTarget.value.split("\n").map(t => { return { newText: t }; }));
+                setCurrentText(toHtml(e.currentTarget.value))
+                returnData(e.currentTarget.value.split("\n").map(t => { return { newText: toHtml(t) }; }));
               }}
               style={{ width: "168px", minWidth: "168px" }}
             />
@@ -89,9 +90,9 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
                 <input
                   key={`t${i}`}
                   className={"aio-input"}
-                  value={rv.newText}
+                  value={fromHtml(rv.newText)}
                   type="text"
-                  onChange={(e) => updateNewText(e.currentTarget.value, i)}
+                  onChange={(e) => updateNewText(toHtml(e.currentTarget.value), i)}
                   style={{ width: "157px", minWidth: "157px" }}
                 />
                 {/* Buttons to add or remove inputs */}
