@@ -12,6 +12,7 @@ interface AifLineDisplayProps {
   left?: string | false,
   centre?: string | false,
   right?: string | false,
+  addBelow?: boolean,
   canEdit?: boolean,
   canRemove?: boolean,
   canMove?: boolean,
@@ -27,6 +28,7 @@ export const AifLineDisplay = ({
   left,
   centre,
   right,
+  addBelow,
   canEdit,
   canRemove,
   canMove,
@@ -45,12 +47,13 @@ export const AifLineDisplay = ({
       left: lineUpdate.left ?? left,
       centre: lineUpdate.centre ?? centre,
       right: lineUpdate.right ?? right,
+      addBelow: addBelow,
       canEdit: canEdit,
       canRemove: canRemove,
       canMove: canMove,
     }
     setLine(newLine);
-  }, [aifid, canEdit, canMove, canRemove, centre, left, right, setLine]);
+  }, [addBelow, aifid, canEdit, canMove, canRemove, centre, left, right, setLine]);
 
   return (
     <div className="aif-line" style={{ ...style }}>

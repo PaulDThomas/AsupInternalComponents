@@ -6,7 +6,7 @@ import { useRef, useState } from 'react';
 export const BlockPage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lines, setLines] = useState<AifBlockLine[]>([{ left: "One line", canEdit: false }]);
+  const [lines, setLines] = useState<AifBlockLine[]>([{ left: "One line", canEdit: true }]);
 
 
   return (
@@ -24,7 +24,7 @@ export const BlockPage = () => {
         <AsupInternalBlock
           lines={lines}
           setLines={setLines}
-          minLines={4}
+          minLines={3}
           maxLines={10}
           styleMap={{
             Optional: { css: { color: "green", }, aieExclude: ["Notes"] },

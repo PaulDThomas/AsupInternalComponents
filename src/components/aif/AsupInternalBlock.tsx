@@ -96,11 +96,12 @@ export const AsupInternalBlock = ({
           left={l.left}
           centre={l.centre}
           right={l.right}
+          addBelow={l.addBelow}
           canEdit={l.canEdit}
           canMove={l.canMove}
           canRemove={l.canRemove}
           setLine={l.canEdit !== false ? (ret) => updateLine(ret, li) : undefined}
-          addLine={lines.length < (maxLines ?? 10) ? () => addLine(li) : undefined}
+          addLine={(l.addBelow !== false && lines.length < (maxLines ?? 10)) ? () => addLine(li) : undefined}
           removeLine={(lines.length > (minLines ?? 1) && l.canEdit !== false && l.canRemove !== false) ? () => removeLine(li) : undefined}
           styleMap={styleMap}
         />
