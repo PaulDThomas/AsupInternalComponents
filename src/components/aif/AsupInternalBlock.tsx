@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap } from '../aie';
 import "./aif.css";
-import { AifLineDisplay } from './aifBlockLine';
+import { AifLineDisplay } from './aifLineDisplay';
 import { AifBlockLine } from './aifInterface';
 
 interface AsupInternalBlockProps {
@@ -91,7 +91,7 @@ export const AsupInternalBlock = ({
     <div className="aif-block" >
       {lines.map((l: AifBlockLine, li: number) => (
         <AifLineDisplay
-          key={l.aifid}
+          key={l.aifid ?? li}
           aifid={l.aifid}
           left={l.left}
           centre={l.centre}
