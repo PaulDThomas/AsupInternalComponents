@@ -78,6 +78,8 @@ export const AsupInternalTable = ({
   }) => {
     if (typeof (setTableData) !== "function") return;
 
+    console.log("Table return");
+
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
@@ -299,7 +301,7 @@ export const AsupInternalTable = ({
       >
         <div>
           <div className="ait-tip">
-            <div className={`ait-table-options visible`} onClick={() => { setShowOptions(true); }}>
+            <div className={`ait-table-options visible`} onClick={() => { setShowOptions(!showOptions); }}>
               <span className="ait-tip-top ait-tiptext">Table settings</span>
             </div>
           </div>

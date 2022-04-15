@@ -1,3 +1,4 @@
+import { toHtml } from "components/functions/tofromHtml";
 import { ContentState, convertFromHTML, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -42,7 +43,7 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
   // Explode string
   var chars = b.text.split("");
   // Swap out HTML characters for safety
-  chars = chars.map(c => c.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;"));
+  chars = chars.map(c => toHtml(c));
   // Add inline style starts and ends
   for (const s of b.inlineStyleRanges) {
     chars[s.offset] = `<span className='${s.style}' style='${Object.entries(dsm[s.style]).map(([k, v]) => `${k.replace(/[A-Z]/g, "-$&").toLowerCase()}:${v}`).join(';')}'>${chars[s.offset]}`;
@@ -66,45 +67,53 @@ interface AsupInternalEditorProps {
   setValue?: (ret: string) => void,
   style?: React.CSSProperties,
   styleMap?: AieStyleMap,
-  highlightChanges?: boolean,
   textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment,
   showStyleButtons?: boolean,
   editable?: boolean,
 };
 
-export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
+export const AsupInternalEditor = ({
+  value,
+  setValue,
+  style,
+  styleMap,
+  textAlignment,
+  showStyleButtons,
+  editable,
+}: AsupInternalEditorProps) => {
   /** Current editor state */
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   /** Current button state */
   const [buttonState, setButtonState] = useState("hidden");
 
   // Add default style map
-  const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(props.styleMap));
-  const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(props.styleMap));
+  const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(styleMap));
+  const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(styleMap));
 
   // Show or hide style buttons
-  const aieShowButtons = useCallback(() => { if (props.showStyleButtons) { setButtonState(""); } }, [props.showStyleButtons]);
+  const aieShowButtons = useCallback(() => { if (showStyleButtons) { setButtonState(""); } }, [showStyleButtons]);
   const aieHideButtons = useCallback(() => { setButtonState("hidden"); }, []);
 
-  // Update editorState, and feed back to holder
-  const onChange = useCallback((e: EditorState) => {
-    setEditorState(e);
-    // Update value externally
-    if (typeof (props.setValue) === "function") props.setValue(convertToHTML(convertToRaw(e.getCurrentContent()), currentStyleMap.current));
-  }, [props]);
+  // Only send data base onBlur of editor
+  const onBlur = useCallback(() => {
+    if (typeof (setValue) === "function") {
+      setValue(
+        convertToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
+      );
+    }
+
+  }, [editorState, setValue]);
 
   // Initial Text loading/update
   useEffect(() => {
-    // Stop if the content is the same
-    if (props.value === convertToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)) return;
     // Update the content
-    const initialBlocks = convertFromHTML(props.value);
+    const initialBlocks = convertFromHTML(value);
     const state = ContentState.createFromBlockArray(
       initialBlocks.contentBlocks,
       initialBlocks.entityMap,
     )
-    onChange(EditorState.createWithContent(state));
-  }, [editorState, onChange, props.value]);
+    setEditorState(EditorState.createWithContent(state));
+  }, [value]);
 
   /**
    * Apply style to current selection on button press
@@ -131,25 +140,25 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
     // Put selection back
     nextEditorState = EditorState.acceptSelection(nextEditorState, selection);
     // Update editor
-    onChange(nextEditorState);
+    setEditorState(nextEditorState);
   }
 
   // Render the component
   return (
     <div
       className="aie-holder"
-      onMouseOver={!(props.editable === false || typeof props.setValue !== "function") ? aieShowButtons : undefined}
+      onMouseOver={!(editable === false || typeof setValue !== "function") ? aieShowButtons : undefined}
       onMouseLeave={aieHideButtons}
       style={{
-        ...props.style,
-        alignItems: props.textAlignment === "left"
+        ...style,
+        alignItems: textAlignment === "left"
           ? "flex-start"
-          : props.textAlignment === "right"
+          : textAlignment === "right"
             ? "flex-end"
-            : props.textAlignment
+            : textAlignment
       }}
     >
-      {!(props.editable === false || typeof props.setValue !== "function") &&
+      {!(editable === false || typeof setValue !== "function") &&
         <div className={[
           "aie-button-holder",
           "aie-style-button-holder",
@@ -167,9 +176,10 @@ export const AsupInternalEditor = (props: AsupInternalEditorProps) => {
       <Editor
         customStyleMap={currentStyleMap.current}
         editorState={editorState}
-        onChange={onChange}
-        textAlignment={props.textAlignment}
-        readOnly={props.editable === false || typeof props.setValue !== "function"}
+        onChange={setEditorState}
+        onBlur={onBlur}
+        textAlignment={textAlignment}
+        readOnly={editable === false || typeof setValue !== "function"}
       />
     </div>
   );

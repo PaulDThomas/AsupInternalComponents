@@ -28,6 +28,11 @@ table.ait-table {
   height: 100%;
 }
 
+/* Stop content editable border, not currently used... but might be later */
+.ait-cell input {
+  outline: 0;
+}
+
 .ait-cell.ait-readonly-cell {
   background-color: rgb(240, 221, 168);
   color: rgb(87, 63, 23);

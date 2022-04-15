@@ -50,6 +50,16 @@ export const AitCell = ({
   removeRowSpan,
 }: AitCellProps) => {
 
+  // // Cell height
+  // const tdRef = useRef<HTMLTableCellElement | null>(null);
+  // const [height, setHeight] = useState<number | undefined>();
+  // useEffect(() => {
+  //   setHeight(tdRef.current
+  //     ? parseFloat(window.getComputedStyle(tdRef.current).getPropertyValue("height"))
+  //     : undefined
+  //   );
+  // }, []);
+
   // Data holder
   const [displayText, setDisplayText] = useState(
     replacedText !== undefined
@@ -168,6 +178,7 @@ export const AitCell = ({
   // Render element
   return (
     <td
+      // ref={tdRef}
       className={["ait-cell",
         (cellType === AitCellType.header ? "ait-header-cell" : cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell"),
         (currentReadOnly ? "ait-readonly-cell" : ""),
@@ -205,8 +216,39 @@ export const AitCell = ({
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
-          highlightChanges={true}
         />
+        {/* {currentReadOnly
+          ?
+          <span
+            style={{
+              width: "100%",
+              height: "100%",
+              textAlign: (columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center"),
+            }}
+          >{displayText}
+          </span>
+          :
+          <>{text.split('~').map((t,i) => 
+            <input
+              key={i}
+              style={{
+                backgroundColor: "inherit",
+                fontFamily: "inherit",
+                fontSize: "inherit",
+                border: "0",
+                width: "100%",
+                textAlign: (columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center"),
+              }}
+              value={fromHtml(t)}
+              onChange={(e) => { 
+                let n = text.split("~");
+                n[i] = e.currentTarget.value;
+                console.log(n);
+                returnData({ text: toHtml(n.join("~")) }); 
+              }}
+            />
+          )}</>
+        } */}
       </div>
 
       <div>
