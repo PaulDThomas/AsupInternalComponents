@@ -16,7 +16,7 @@ export const updateRowSpans = (
         continue;
       }
       // Start checking 
-      let rowSpan = 1;
+      let rowSpan = currentCell.rowSpan ?? 1;
       let rowSpanX = rows[r].spaceAfter! !== false && rows[r].spaceAfter! >= 0 ? 1 : 0;
       // Previous column rowSpan
       let prevSpan = Infinity;
@@ -36,7 +36,7 @@ export const updateRowSpans = (
         // The next target row has the same text
         && rows[r + rowSpan]?.cells[col]?.replacedText === currentCell.replacedText
       ) {
-        rowSpan++;
+        rowSpan = rowSpan + (rows[r + rowSpan].cells[col].rowSpan ?? 1);
         // Add another row if the spaceAfter is on a future column
         if (rows[r + rowSpan - 1].spaceAfter! !== false && rows[r + rowSpan - 1].spaceAfter! > col) {
           rowSpanX++;

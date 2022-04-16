@@ -6,9 +6,10 @@ export const removeRowRepeatInfo = (row: AitRowData): AitRowData => {
     aitid: row.aitid ?? uuidv4(),
     cells: row.cells.map(c => {
       if (!c.aitid) c.aitid = uuidv4();
-      if (c.replacedText !== undefined)
-        delete (c.replacedText);
-      c.rowSpan = 1;
+      if (c.replacedText !== undefined) delete (c.replacedText);
+      if (c.repeatRowSpan !== undefined) delete (c.repeatRowSpan);
+      c.rowSpan = c.rowSpan ?? 1;
+      c.colSpan = c.colSpan ?? 1;
       return c;
     }),
   };

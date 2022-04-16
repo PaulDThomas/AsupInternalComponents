@@ -68,13 +68,41 @@ export const AitHeader = ({
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
-    for (let i = 0; i < cols; i++) newRow.cells.push(newCell(AitCellType.header));
+    for (let ci = 0; ci < cols; ci++) {
+    // Create new cell
+     let c = newCell(AitCellType.header);
+     // Check rowSpans on previous row
+     if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+      let riUp = 0;
+      while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+      newRows[ri - riUp].cells[ci].rowSpan!++;
+      c.rowSpan = 0;
+     }
+     newRow.cells.push(c);
+    }
+
+
     newRows.splice(ri + 1, 0, newRow);
     returnData({ rows: newRows });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri:number) => {
     let newRows = [...rows];
+
+    // Look for any cells with multiple row span
+    newRows[ri].cells.map((c, ci) => {
+      // Found hidden cell
+      if ((c.rowSpan ?? 1) > 1) {
+        // Adjust the rowSpan of the cell above
+        for (let i=1; i < c.rowSpan!; i++) {
+          if (newRows[ri + i].cells[ci].rowSpan === 0) {
+            newRows[ri + 1].cells[ci].rowSpan = 1;
+          }
+        }
+      }
+      return true;
+    });
+
     // Look for any cells with no row span
     newRows[ri].cells.map((c, ci) => {
       let found = false;
@@ -92,8 +120,10 @@ export const AitHeader = ({
       }
       return found;
     });
+
     // Remove the row
     newRows.splice(ri, 1);
+    
     // Check that the bottom row has no colSpan
     if (ri === newRows.length && ri > 0) {
       newRows[ri - 1].cells = newRows[ri - 1].cells.map(c => { c.colSpan = 1; return c });

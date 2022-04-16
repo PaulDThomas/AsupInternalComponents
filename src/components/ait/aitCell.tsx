@@ -301,14 +301,27 @@ export const AitCell = ({
             }
             {(cellType === AitCellType.rowHeader)
               ?
-              <div className="aiw-body-row">
-                <div className={"aio-label"}>Text indents: </div>
-                <div className={"aio-ro-value"}>{textIndents ?? 0}</div>
-                <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                  <div className="aiox-button aiox-plus" onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })} />
-                  {(textIndents ?? 0) > 0 && <div className="aiox-button aiox-minus" onClick={() => returnData({ textIndents: textIndents! - 1 })} />}
+              <>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Text indents: </div>
+                  <div className={"aio-ro-value"}>{textIndents ?? 0}</div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    <div className="aiox-button aiox-plus" onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })} />
+                    {(textIndents ?? 0) > 0 && <div className="aiox-button aiox-minus" onClick={() => returnData({ textIndents: textIndents! - 1 })} />}
+                  </div>
                 </div>
-              </div>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Row span: </div>
+                  <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    {(!currentReadOnly && typeof addRowSpan === "function" && colSpan === 1)
+                      ? <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
+                      : <div className="aiox-button" />
+                    }
+                    {(!currentReadOnly && typeof removeRowSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />}
+                  </div>
+                </div>
+              </>
               :
               <></>
             }

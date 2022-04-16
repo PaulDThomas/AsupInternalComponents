@@ -276,9 +276,11 @@ export const AsupInternalTable = ({
     // Check new column has not colspan
     if (tableData.rowHeaderColumns === 0) return;
     if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
+    // Check bodyData for cells with rowSpan
+    if (tableData.bodyData.some(rg => rg.rows.some(r => (r.cells[tableData.rowHeaderColumns-1].rowSpan ?? 1) !== 1))) return;
     let newHeaderColumns = tableData.rowHeaderColumns - 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
-  }, [returnData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+  }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
 
   // Add header if is is not there
   const addNewHeader = useCallback(() => {

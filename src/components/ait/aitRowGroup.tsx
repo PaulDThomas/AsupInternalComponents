@@ -5,7 +5,7 @@ import { AioRepeats, AioReplacement } from "../aio/aioInterface";
 import { newCell } from "../functions/newCell";
 import { objEqual } from "../functions/objEqual";
 import { repeatRows } from "../functions/repeatRows";
-import { AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
+import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
@@ -81,16 +81,102 @@ export const AitRowGroup = ({
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
-    for (let i = 0; i < cols; i++) newRow.cells.push(newCell());
+    for (let ci = 0; ci < cols; ci++) {
+      // Create new cell
+      let c = newCell();
+      // Check rowSpans on previous row
+      if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+        let riUp = 0;
+        while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+        newRows[ri - riUp].cells[ci].rowSpan!++;
+        c.rowSpan = 0;
+      }
+      newRow.cells.push(c);
+    }
     newRows.splice(ri + 1, 0, newRow);
     returnData({ rows: newRows });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri: number) => {
     let newRows = [...rows];
+    
+    // Look for any cells with multiple row span
+    newRows[ri].cells.map((c, ci) => {
+      // Found hidden cell
+      if ((c.rowSpan ?? 1) > 1) {
+        // Adjust the rowSpan of the cell above
+        for (let i=1; i < c.rowSpan!; i++) {
+          if (newRows[ri + i].cells[ci].rowSpan === 0) {
+            newRows[ri + 1].cells[ci].rowSpan = 1;
+          }
+        }
+      }
+      return true;
+    });
+
+    // Look for any cells with no row span
+    newRows[ri].cells.map((c, ci) => {
+      let found = false;
+      // Found hidden cell
+      if (c.rowSpan === 0) {
+        let riUp = 1;
+        // Adjust the rowSpan of the cell above
+        while (!found && riUp <= ri) {
+          if (newRows[ri - riUp].cells[ci].rowSpan! > 1) {
+            newRows[ri - riUp].cells[ci].rowSpan!--;
+            found = true;
+          }
+          riUp++;
+        }
+      }
+      return found;
+    });
+
     newRows.splice(ri, 1);
     returnData({ rows: newRows });
   }, [returnData, rows])
+
+  const addRowSpan = useCallback((loc: AitLocation) => {
+    console.log("Click addRowSpan RowGroup");
+    // Get things to change
+    let newRows = [...rows];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    if (targetCell.rowSpan === undefined) targetCell.rowSpan = 1;
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[loc.column];
+    // Check change is ok
+    if (targetCell === undefined || hideCell === undefined) return;
+    if (targetCell.colSpan !== 1) return;
+    if (hideCell.colSpan !== 1 || hideCell.rowSpan !== 1) return;
+    // Check previous rowspan
+    let riUp = 0;
+    while (loc.column > 0 && newRows[loc.row - riUp].cells[loc.column - 1].rowSpan === 0) riUp++;
+    if (loc.column > 0 && (newRows[loc.row - riUp].cells[loc.column - 1].rowSpan ?? 1) - riUp < targetCell.rowSpan + 1) return;
+    // Update target cell
+    targetCell.rowSpan++;
+    // Hide next cell
+    hideCell.rowSpan = 0;
+    // Done
+    returnData({ rows: newRows });
+  }, [returnData, rows]);
+
+  const removeRowSpan = useCallback((loc: AitLocation) => {
+    console.log("Click remove RowSpan RowGroup");
+    // Get things to change
+    let newRows = [...rows];
+    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    // Check before getting hidden cell
+    if (!newRows[loc.row + targetCell.rowSpan! - 1]?.cells.length) return;
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column];
+    if (hideCell.rowSpan !== 0) return;
+    // Check next column is not expanded
+    if (newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column + 1].rowSpan === 0) return;
+    // Update target cell
+    targetCell.rowSpan!--;
+    // Show hidden cell
+    hideCell.rowSpan = 1;
+    // Done
+    returnData({ rows: newRows });
+  }, [returnData, rows]);
 
   // Get rows after repeat processing
   const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
@@ -131,6 +217,8 @@ export const AitRowGroup = ({
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
+            addRowSpan={addRowSpan}
+            removeRowSpan={removeRowSpan}
           />
         );
       })}

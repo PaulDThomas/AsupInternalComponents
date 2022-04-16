@@ -145,7 +145,7 @@ export const AitRow = ({
         </td>
 
         {/* All cells from row */}
-        {columnRepeats?.map((cr: AitColumnRepeat, ci: number, crs): JSX.Element => {
+        {columnRepeats?.map((cr: AitColumnRepeat, ci: number): JSX.Element => {
 
           // Get cell from column repeat
           let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
@@ -168,22 +168,16 @@ export const AitRow = ({
             ...higherOptions,
           } as AitOptionList;
 
-          // Add defaults - can be undefined on loaded information
-          if (cell.text === undefined) cell.text = "";
-          if (cell.colSpan === undefined) cell.colSpan = 1;
-          if (cell.rowSpan === undefined) cell.rowSpan = 1;
-          if (cell.textIndents === undefined) cell.textIndents = 0;
-
           // Render object
           return (
             <AitCell
               key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
               aitid={cell.aitid ?? ci.toString()}
-              text={cell.text}
-              colSpan={cell.colSpan}
-              rowSpan={cell.rowSpan}
+              text={cell.text ?? ""}
+              colSpan={cell.colSpan ?? 1}
+              rowSpan={cell.rowSpan ?? 1}
               colWidth={cell.colWidth}
-              textIndents={cell.textIndents}
+              textIndents={cell.textIndents ?? 0}
               replacedText={cell.replacedText}
               repeatColSpan={cell.repeatColSpan}
               repeatRowSpan={cell.repeatRowSpan}
@@ -194,10 +188,15 @@ export const AitRow = ({
                 (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
                 || isColumnRepeat
               ) ?? false}
-              addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + cell.colSpan < cells.length ? addColSpan : undefined}
-              removeColSpan={cell.colSpan > 1 ? removeColSpan : undefined}
-              addRowSpan={cellHigherOptions.row! + cell.rowSpan < (cellHigherOptions.headerRows ?? 0) ? addRowSpan : undefined}
-              removeRowSpan={cell.rowSpan > 1 ? removeRowSpan : undefined}
+              addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
+              removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
+              addRowSpan={
+                (cellHigherOptions.row! + (cell.rowSpan ?? 1) < (cellHigherOptions.headerRows ?? 0))
+                || (ci < (higherOptions.rowHeaderColumns ?? 0))
+                 ? addRowSpan 
+                 : 
+                 undefined}
+              removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
             />
           );
         })}
