@@ -3,6 +3,7 @@ import { AioReplacement } from "../aio/aioInterface";
 export interface AitCellData {
   aitid?: string,
   text: string,
+  comments?: string,
   colSpan?: number,
   rowSpan?: number,
   colWidth?: number,
@@ -21,6 +22,7 @@ export interface AitRowData {
 export interface AitRowGroupData {
   aitid?: string,
   name?: string,
+  comments?: string,
   spaceAfter?: boolean,
   rows: Array<AitRowData>,
   replacements?: AioReplacement[],
@@ -29,6 +31,7 @@ export interface AitRowGroupData {
 export interface AitTableData {
   headerData: AitRowGroupData,
   bodyData: AitRowGroupData[],
+  comments?: string,
   rowHeaderColumns: number,
   noRepeatProcessing: boolean,
 };
