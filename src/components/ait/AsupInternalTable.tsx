@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { AioBoolean } from "../aio/aioBoolean";
+import { AioComment } from "../aio/aioComment";
 import { AioReplacement } from "../aio/aioInterface";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { newCell } from "../functions/newCell";
@@ -56,6 +57,7 @@ export const AsupInternalTable = ({
       setProcessedHeader({
         aitid: "processedHeader",
         rows: headerDataUpdate.rows,
+        comments: tableData.headerData.comments ?? "",
         replacements: tableData.headerData.replacements
       });
       setColumnRepeats(headerDataUpdate.columnRepeats);
@@ -66,33 +68,34 @@ export const AsupInternalTable = ({
         tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }
         ))
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData.bodyData[0].rows[0].cells.length, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
     headerData?: AitRowGroupData,
     bodyData?: AitRowGroupData[],
+    comments?: string,
     rowHeaderColumns?: number,
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
-
     console.log("Table return");
-
     const r = {
       headerData: tableUpdate.headerData ?? tableData.headerData,
       bodyData: tableUpdate.bodyData ?? tableData.bodyData,
+      comments: tableUpdate.comments ?? tableData.comments,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? tableData.rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
     } as AitTableData;
     setTableData(r);
-  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
+  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.comments, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
 
   const updateHeader = useCallback((ret: AitRowGroupData) => {
     let retMinusRepeats = {
       aitid: ret.aitid,
       replacements: ret.replacements,
+      comments: ret.comments,
       rows: ret.rows.map(r => {
         return {
           aitid: r.aitid,
@@ -277,7 +280,7 @@ export const AsupInternalTable = ({
     if (tableData.rowHeaderColumns === 0) return;
     if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     // Check bodyData for cells with rowSpan
-    if (tableData.bodyData.some(rg => rg.rows.some(r => (r.cells[tableData.rowHeaderColumns-1].rowSpan ?? 1) !== 1))) return;
+    if (tableData.bodyData.some(rg => rg.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].rowSpan ?? 1) !== 1))) return;
     let newHeaderColumns = tableData.rowHeaderColumns - 1;
     returnData({ rowHeaderColumns: newHeaderColumns });
   }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
@@ -309,6 +312,9 @@ export const AsupInternalTable = ({
           </div>
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+              <div className="aiw-body-row">
+                <AioComment label={"Notes"} value={tableData.comments ?? ""} setValue={(ret) => returnData({ comments: ret })} />
+              </div>
               <div className="aiw-body-row">
                 <AioBoolean label="Suppress repeats" value={tableData.noRepeatProcessing} setValue={(ret) => returnData({ noRepeatProcessing: ret })} />
               </div>
@@ -346,6 +352,7 @@ export const AsupInternalTable = ({
               <AitHeader
                 aitid={processedHeader.aitid!}
                 rows={processedHeader.rows}
+                comments={processedHeader.comments ?? ""}
                 replacements={processedHeader.replacements ??
                   [{
                     replacementTexts: [{ text: "", spaceAfter: false }],
@@ -415,6 +422,7 @@ export const AsupInternalTable = ({
                     key={rowGroup.aitid}
                     aitid={rowGroup.aitid}
                     rows={rowGroup.rows}
+                    comments={rowGroup.comments}
                     replacements={rowGroup.replacements}
                     spaceAfter={rowGroup.spaceAfter}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}

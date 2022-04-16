@@ -22,9 +22,9 @@ export interface AitRowData {
 export interface AitRowGroupData {
   aitid?: string,
   name?: string,
+  rows: Array<AitRowData>,
   comments?: string,
   spaceAfter?: boolean,
-  rows: Array<AitRowData>,
   replacements?: AioReplacement[],
 };
 

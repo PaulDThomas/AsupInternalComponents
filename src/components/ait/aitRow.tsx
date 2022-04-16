@@ -1,5 +1,6 @@
 import structuredClone from '@ungap/structured-clone';
 import { AioBoolean } from 'components/aio/aioBoolean';
+import { AioComment } from 'components/aio/aioComment';
 import { AioIconButton } from 'components/aio/aioIconButton';
 import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
@@ -20,6 +21,8 @@ interface AitRowProps {
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
+  rowGroupComments: string,
+  updateRowGroupComments: (ret: string) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
   spaceAfter?: number | false,
@@ -42,6 +45,8 @@ export const AitRow = ({
   rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
+  rowGroupComments,
+  updateRowGroupComments,
   addRow,
   removeRow,
   spaceAfter,
@@ -82,7 +87,7 @@ export const AitRow = ({
     }
   }, [setRowData, aitid, cells, lastSend, location]);
 
-  const updateCell = useCallback((ret:AitCellData, ci:number) => {
+  const updateCell = useCallback((ret: AitCellData, ci: number) => {
     // Create new object to send back
     let newCells = [...cells];
     newCells[ci] = ret;
@@ -125,8 +130,15 @@ export const AitRow = ({
                 {showRowGroupOptions && replacements !== undefined &&
                   <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
                     <div className="aiw-body-row">
-                      <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                      <AioComment label={"Notes"} value={rowGroupComments} setValue={updateRowGroupComments} />
                     </div>
+                    <>
+                      {location.tableSection === AitRowType.body && <>
+                        <div className="aiw-body-row">
+                          <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                        </div>
+                      </>}
+                    </>
                     <div className="aiw-body-row">
                       <AioReplacementDisplay
                         replacements={replacements!}
@@ -193,10 +205,10 @@ export const AitRow = ({
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
                 (cellHigherOptions.row! + (cell.rowSpan ?? 1) < (cellHigherOptions.headerRows ?? 0))
-                || (ci < (higherOptions.rowHeaderColumns ?? 0))
-                 ? addRowSpan 
-                 : 
-                 undefined}
+                  || (ci < (higherOptions.rowHeaderColumns ?? 0))
+                  ? addRowSpan
+                  :
+                  undefined}
               removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
             />
           );
@@ -228,8 +240,8 @@ export const AitRow = ({
         </td>
       </tr>
       {/* Additional row if required */}
-      {spaceAfter !== false && 
-      <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
+      {spaceAfter !== false &&
+        <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
       }
     </>
   );

@@ -10,6 +10,7 @@ import { AitRow } from "./aitRow";
 interface AitHeaderProps {
   aitid: string,
   rows: AitRowData[],
+  comments: string,
   replacements: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
@@ -19,6 +20,7 @@ interface AitHeaderProps {
 export const AitHeader = ({
   aitid,
   rows,
+  comments,
   replacements,
   setHeaderData,
   higherOptions,
@@ -37,11 +39,16 @@ export const AitHeader = ({
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((headerUpdate: { rows?: AitRowData[], replacements?: AioReplacement[] }) => {
+  const returnData = useCallback((headerUpdate: { 
+    rows?: AitRowData[], 
+    comments?: string,
+    replacements?: AioReplacement[] 
+  }) => {
     if (typeof (setHeaderData) !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
       rows: headerUpdate.rows ?? rows,
+      comments: headerUpdate.comments ?? comments,
       replacements: headerUpdate.replacements ?? replacements,
     };
     let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
@@ -49,17 +56,17 @@ export const AitHeader = ({
       setHeaderData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [setHeaderData, aitid, rows, replacements, lastSend, location]);
+  }, [setHeaderData, aitid, rows, comments, replacements, lastSend, location]);
 
   // Update row
-  const updateRow = useCallback((ret:AitRowData, ri:number) => {
+  const updateRow = useCallback((ret: AitRowData, ri: number) => {
     // Create new object to send back
-    let newRows:AitRowData[] = [...rows];
+    let newRows: AitRowData[] = [...rows];
     newRows[ri] = ret;
     returnData({ rows: newRows });
   }, [rows, returnData]);
 
-  const addRow = useCallback((ri:number) => {
+  const addRow = useCallback((ri: number) => {
     let newRows = [...rows];
     let newRow: AitRowData = {
       aitid: uuidv4(),
@@ -69,16 +76,16 @@ export const AitHeader = ({
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
     for (let ci = 0; ci < cols; ci++) {
-    // Create new cell
-     let c = newCell(AitCellType.header);
-     // Check rowSpans on previous row
-     if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
-      let riUp = 0;
-      while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
-      newRows[ri - riUp].cells[ci].rowSpan!++;
-      c.rowSpan = 0;
-     }
-     newRow.cells.push(c);
+      // Create new cell
+      let c = newCell(AitCellType.header);
+      // Check rowSpans on previous row
+      if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+        let riUp = 0;
+        while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+        newRows[ri - riUp].cells[ci].rowSpan!++;
+        c.rowSpan = 0;
+      }
+      newRow.cells.push(c);
     }
 
 
@@ -86,7 +93,7 @@ export const AitHeader = ({
     returnData({ rows: newRows });
   }, [returnData, rows])
 
-  const removeRow = useCallback((ri:number) => {
+  const removeRow = useCallback((ri: number) => {
     let newRows = [...rows];
 
     // Look for any cells with multiple row span
@@ -94,7 +101,7 @@ export const AitHeader = ({
       // Found hidden cell
       if ((c.rowSpan ?? 1) > 1) {
         // Adjust the rowSpan of the cell above
-        for (let i=1; i < c.rowSpan!; i++) {
+        for (let i = 1; i < c.rowSpan!; i++) {
           if (newRows[ri + i].cells[ci].rowSpan === 0) {
             newRows[ri + 1].cells[ci].rowSpan = 1;
           }
@@ -123,7 +130,7 @@ export const AitHeader = ({
 
     // Remove the row
     newRows.splice(ri, 1);
-    
+
     // Check that the bottom row has no colSpan
     if (ri === newRows.length && ri > 0) {
       newRows[ri - 1].cells = newRows[ri - 1].cells.map(c => { c.colSpan = 1; return c });
@@ -228,6 +235,8 @@ export const AitHeader = ({
               replacements={replacements}
               setReplacements={(ret) => returnData({ replacements: ret })}
               rowGroupWindowTitle={"Header options"}
+              rowGroupComments={comments ?? ""}
+              updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
               addRow={addRow}
               removeRow={removeRow}
               addColSpan={addColSpan}
