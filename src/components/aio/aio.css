@@ -31,6 +31,12 @@
   margin-top: 2px;
 }
 
+.aio-comment {
+  min-width: 330px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+
 /* Expander */
 .aiox {
   padding: 0;

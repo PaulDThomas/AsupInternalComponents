@@ -174,6 +174,7 @@ export const AitRow = ({
               key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
               aitid={cell.aitid ?? ci.toString()}
               text={cell.text ?? ""}
+              comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
               colWidth={cell.colWidth}

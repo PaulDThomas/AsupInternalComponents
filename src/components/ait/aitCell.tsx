@@ -1,5 +1,6 @@
 import structuredClone from '@ungap/structured-clone';
 import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
+import { AioComment } from 'components/aio/aioComment';
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AioExpander } from "../aio/aioExpander";
 import { AioNumber } from "../aio/aioNumber";
@@ -10,6 +11,7 @@ import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from
 interface AitCellProps {
   aitid: string,
   text: string,
+  comments: string,
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
@@ -33,6 +35,7 @@ interface AitCellProps {
 export const AitCell = ({
   aitid,
   text,
+  comments,
   colSpan,
   rowSpan,
   colWidth,
@@ -144,6 +147,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
+    comments?: string,
     colWidth?: number
     textIndents?: number
   }) => {
@@ -151,6 +155,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
+      comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
       colWidth: cellUpdate.colWidth ?? colWidth,
@@ -166,7 +171,7 @@ export const AitCell = ({
       setCellData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
+  }, [aitid, colSpan, colWidth, comments, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -255,6 +260,9 @@ export const AitCell = ({
         {/* Cell options window */}
         {showCellOptions &&
           <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { setShowCellOptions(false); }}>
+            <div className="aiw-body-row">
+              <AioComment label={"Notes"} value={comments} setValue={!currentReadOnly ? (ret) => returnData({ comments: ret }) : undefined} />
+            </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Cell location: </div>
               <div className={"aio-value"}><AioExpander inputObject={location} /></div>
