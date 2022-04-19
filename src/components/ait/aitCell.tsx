@@ -1,15 +1,15 @@
 import structuredClone from '@ungap/structured-clone';
-import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AioExpander } from "../aio/aioExpander";
-import { AioNumber } from "../aio/aioNumber";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import { objEqual } from "../functions/objEqual";
+import { AsupInternalEditor } from '../aie';
+import { AioComment, AioExpander, AioNumber } from '../aio';
+import { AsupInternalWindow } from "../aiw";
+import { objEqual } from "../functions";
 import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
 
 interface AitCellProps {
   aitid: string,
   text: string,
+  comments: string,
   rowSpan: number,
   colSpan: number,
   colWidth?: number,
@@ -33,6 +33,7 @@ interface AitCellProps {
 export const AitCell = ({
   aitid,
   text,
+  comments,
   colSpan,
   rowSpan,
   colWidth,
@@ -144,6 +145,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
+    comments?: string,
     colWidth?: number
     textIndents?: number
   }) => {
@@ -151,6 +153,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
+      comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
       colWidth: cellUpdate.colWidth ?? colWidth,
@@ -166,7 +169,7 @@ export const AitCell = ({
       setCellData!(r);
       setLastSend(structuredClone(r));
     }
-  }, [aitid, colSpan, colWidth, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
+  }, [aitid, colSpan, colWidth, comments, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -212,10 +215,11 @@ export const AitCell = ({
         <AsupInternalEditor
           style={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center")}
-          showStyleButtons={false}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
+          showStyleButtons={higherOptions.cellStyles !== undefined}
+          styleMap={higherOptions.cellStyles}
         />
         {/* {currentReadOnly
           ?
@@ -256,12 +260,20 @@ export const AitCell = ({
         {showCellOptions &&
           <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { setShowCellOptions(false); }}>
             <div className="aiw-body-row">
+              <AioComment
+                label={"Notes"}
+                value={comments}
+                setValue={!currentReadOnly ? (ret) => returnData({ comments: ret }) : undefined}
+                commentStyles={higherOptions.commentStyles}
+              />
+            </div>
+            <div className="aiw-body-row">
               <div className={"aio-label"}>Cell location: </div>
               <div className={"aio-value"}><AioExpander inputObject={location} /></div>
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <div className={"aio-ro-value"}>{text}</div>
+              <AsupInternalEditor value={text} style={{border:"0"}} styleMap={higherOptions.cellStyles}/>
             </div>
             {(cellType === AitCellType.header)
               ?

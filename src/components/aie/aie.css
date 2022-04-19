@@ -1,10 +1,15 @@
+.aie-outer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .aie-holder {
-    border: 1px dashed rgb(190, 190, 189);
-    border-radius: 1px; 
-    position: relative;
-    min-width: 8px;
-    display: flex;
-    flex-direction: column;
+  border: 1px dashed rgb(190, 190, 189);
+  border-radius: 1px;
+  min-width: 8px;
+  display: flex;
+  flex-direction: column;
 }
 
 .aie-holder .DraftEditor-root {
@@ -12,53 +17,54 @@
 }
 
 .aie-button-holder {
-    z-index: 10;
-    position: absolute;
-    bottom: -29px;
-    height: 26px;
-    min-width: max-content;
-    overflow: auto;
-    margin: 0px;
-    border: 2px solid darkorange;
-    border-radius: 4px;
-    background-color: darkorange;
-  }
-
-.aie-button-holder.hidden {
-  visibility: hidden;
+  z-index: 10;
+  position: absolute;
+  bottom: -28px;
+  height: 26px;
+  min-width: max-content;
+  overflow: auto;
+  margin: 0px;
+  border: 2px solid darkorange;
+  border-radius: 4px;
+  background-color: darkorange;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .aie-button-holder::-webkit-scrollbar {
-    width: 4px;
-  }
-  
-  .aie-button-holder::-webkit-scrollbar-track {
-    background: darkorange;
-  }
-  
-  .aie-button-holder::-webkit-scrollbar-thumb {
-    background: burlywood;
-    border: none;
-  }
-  
-  .aie-button-holder::-webkit-scrollbar-thumb:hover {
-    background: orangered;
-  }
+  width: 4px;
+}
+
+.aie-button-holder::-webkit-scrollbar-track {
+  background: darkorange;
+}
+
+.aie-button-holder::-webkit-scrollbar-thumb {
+  background: burlywood;
+  border: none;
+}
+
+.aie-button-holder::-webkit-scrollbar-thumb:hover {
+  background: orangered;
+}
 
 .aie-button {
-    background-color: burlywood;
-    border: 0;
-    height: 24px;
-    border-radius: 4px;
+  background-color: burlywood;
+  border: 0;
+  height: 24px;
+  border-radius: 4px;
 }
 
 .aie-button:not(:first-child) {
-    border-left: 2px solid darkorange;
+  border-left: 2px solid darkorange;
 }
 
 .aie-button.active {
-    background-color: orangered;
-    border: 0;
-    height: 24px;
-    border-radius: 4px;
+  background-color: orangered;
+  border: 0;
+  height: 24px;
+  border-radius: 4px;
 }

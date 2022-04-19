@@ -1,7 +1,7 @@
-import { toHtml } from "components/functions/tofromHtml";
-import { ContentState, convertFromHTML, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
+import { ContentState, convertFromHTML, convertFromRaw, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toHtml } from "../functions";
 import './aie.css';
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 
@@ -49,7 +49,7 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
     chars[s.offset] = `<span className='${s.style}' style='${Object.entries(dsm[s.style]).map(([k, v]) => `${k.replace(/[A-Z]/g, "-$&").toLowerCase()}:${v}`).join(';')}'>${chars[s.offset]}`;
     chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
   }
-  return `${chars.join("")}`;
+  return `<div className='aie-text' data-key='${b.key}' data-type='${b.type}' data-inline-style-ranges='${JSON.stringify(b.inlineStyleRanges)}'>${chars.join('')}</div>`;
 }
 /**
  * Aggregate function to change editor contents into HTML string with line breaks
@@ -57,8 +57,47 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
  * @param dsm Style map that has been applied
  * @returns URI encoded HTML string of the content 
  */
-const convertToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
-  return d.blocks.map(b => htmlBlock(b, dsm)).join("<br/>");
+const saveToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
+  /** Check for just a single line with no formatting/leading spaces */
+  if (d.blocks.length === 1 
+    && d.blocks[0].inlineStyleRanges.length === 0 
+    && !d.blocks[0].text.startsWith(" ")
+    && !d.blocks[0].text.startsWith("&nbsp;")
+    && !d.blocks[0].text.startsWith("\u00A0")
+    )
+    return toHtml(d.blocks[0].text);
+  /** Otherwise save full format */
+  else 
+    return d.blocks.map(b => htmlBlock(b, dsm)).join(``);
+}
+
+const loadFromHTML = (s: string): ContentState => {
+  // There are no spans to apply
+  let initialBlocks = convertFromHTML(s);
+  if (!s.startsWith("<div className='aie-text'")) {
+    let state = ContentState.createFromBlockArray(initialBlocks.contentBlocks, initialBlocks.entityMap,);
+    return state;
+  }
+  // 
+  else {
+    let htmlIn = document.createElement('template');
+    htmlIn.innerHTML = s.trim();
+    let rawBlocks: RawDraftContentBlock[] = [];
+    for (let i = 0; i < htmlIn.content.children.length; i++) {
+      let child = htmlIn.content.children[i] as HTMLDivElement;
+      let rawBlock: RawDraftContentBlock = {
+        key: child.dataset.key ?? "",
+        type: child.dataset.type ?? "unstyled",
+        text: child.innerText,
+        depth: 0,
+        inlineStyleRanges: JSON.parse(child.dataset.inlineStyleRanges ?? "[]"),
+        entityRanges: [],
+      }
+      rawBlocks.push(rawBlock);
+    }
+    let state = convertFromRaw({ blocks: rawBlocks, entityMap: initialBlocks.entityMap });
+    return state;
+  }
 }
 
 /** Interface for the AsupInternalEditor component */
@@ -98,7 +137,7 @@ export const AsupInternalEditor = ({
   const onBlur = useCallback(() => {
     if (typeof (setValue) === "function") {
       setValue(
-        convertToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
+        saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
       );
     }
 
@@ -107,12 +146,7 @@ export const AsupInternalEditor = ({
   // Initial Text loading/update
   useEffect(() => {
     // Update the content
-    const initialBlocks = convertFromHTML(value);
-    const state = ContentState.createFromBlockArray(
-      initialBlocks.contentBlocks,
-      initialBlocks.entityMap,
-    )
-    setEditorState(EditorState.createWithContent(state));
+    setEditorState(EditorState.createWithContent(loadFromHTML(value)));
   }, [value]);
 
   /**
@@ -145,26 +179,32 @@ export const AsupInternalEditor = ({
 
   // Render the component
   return (
-    <div
-      className="aie-holder"
+    <div className="aie-outer"
       onMouseOver={!(editable === false || typeof setValue !== "function") ? aieShowButtons : undefined}
       onMouseLeave={aieHideButtons}
-      style={{
-        ...style,
-        alignItems: textAlignment === "left"
-          ? "flex-start"
-          : textAlignment === "right"
-            ? "flex-end"
-            : textAlignment
-      }}
     >
-      {!(editable === false || typeof setValue !== "function") &&
-        <div className={[
-          "aie-button-holder",
-          "aie-style-button-holder",
-          buttonState === "hidden" ? "hidden" : "",
-        ].join(" ")}
-        >
+      <div
+        className="aie-holder"
+        style={{
+          ...style,
+          alignItems: textAlignment === "left"
+            ? "flex-start"
+            : textAlignment === "right"
+              ? "flex-end"
+              : textAlignment
+        }}
+      >
+        <Editor
+          customStyleMap={currentStyleMap.current}
+          editorState={editorState}
+          onChange={setEditorState}
+          onBlur={onBlur}
+          textAlignment={textAlignment}
+          readOnly={editable === false || typeof setValue !== "function"}
+        />
+      </div>
+      {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
+        <div className="aie-button-holder aie-style-button-holder">
           <AieStyleButtonRow
             styleList={Object.keys(currentStyleMap.current)}
             currentStyle={editorState.getCurrentInlineStyle()}
@@ -173,14 +213,6 @@ export const AsupInternalEditor = ({
           />
         </div>
       }
-      <Editor
-        customStyleMap={currentStyleMap.current}
-        editorState={editorState}
-        onChange={setEditorState}
-        onBlur={onBlur}
-        textAlignment={textAlignment}
-        readOnly={editable === false || typeof setValue !== "function"}
-      />
     </div>
   );
 }

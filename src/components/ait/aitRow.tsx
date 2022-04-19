@@ -1,11 +1,8 @@
 import structuredClone from '@ungap/structured-clone';
-import { AioBoolean } from 'components/aio/aioBoolean';
-import { AioIconButton } from 'components/aio/aioIconButton';
-import { objEqual } from 'components/functions/objEqual';
 import React, { useCallback, useMemo, useState } from "react";
-import { AioReplacement } from "../aio/aioInterface";
-import { AioReplacementDisplay } from "../aio/aioReplacementDisplay";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementDisplay } from '../aio';
+import { AsupInternalWindow } from "../aiw";
+import { objEqual } from '../functions';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
@@ -20,6 +17,8 @@ interface AitRowProps {
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
+  rowGroupComments: string,
+  updateRowGroupComments: (ret: string) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
   spaceAfter?: number | false,
@@ -42,6 +41,8 @@ export const AitRow = ({
   rowGroupWindowTitle,
   addRowGroup,
   removeRowGroup,
+  rowGroupComments,
+  updateRowGroupComments,
   addRow,
   removeRow,
   spaceAfter,
@@ -82,7 +83,7 @@ export const AitRow = ({
     }
   }, [setRowData, aitid, cells, lastSend, location]);
 
-  const updateCell = useCallback((ret:AitCellData, ci:number) => {
+  const updateCell = useCallback((ret: AitCellData, ci: number) => {
     // Create new object to send back
     let newCells = [...cells];
     newCells[ci] = ret;
@@ -125,8 +126,20 @@ export const AitRow = ({
                 {showRowGroupOptions && replacements !== undefined &&
                   <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
                     <div className="aiw-body-row">
-                      <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                      <AioComment
+                        label={"Notes"}
+                        value={rowGroupComments}
+                        setValue={updateRowGroupComments}
+                        commentStyles={higherOptions.commentStyles}
+                      />
                     </div>
+                    <>
+                      {location.tableSection === AitRowType.body && <>
+                        <div className="aiw-body-row">
+                          <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                        </div>
+                      </>}
+                    </>
                     <div className="aiw-body-row">
                       <AioReplacementDisplay
                         replacements={replacements!}
@@ -174,6 +187,7 @@ export const AitRow = ({
               key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
               aitid={cell.aitid ?? ci.toString()}
               text={cell.text ?? ""}
+              comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
               colWidth={cell.colWidth}
@@ -192,10 +206,10 @@ export const AitRow = ({
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
                 (cellHigherOptions.row! + (cell.rowSpan ?? 1) < (cellHigherOptions.headerRows ?? 0))
-                || (ci < (higherOptions.rowHeaderColumns ?? 0))
-                 ? addRowSpan 
-                 : 
-                 undefined}
+                  || (ci < (higherOptions.rowHeaderColumns ?? 0))
+                  ? addRowSpan
+                  :
+                  undefined}
               removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
             />
           );
@@ -227,8 +241,8 @@ export const AitRow = ({
         </td>
       </tr>
       {/* Additional row if required */}
-      {spaceAfter !== false && 
-      <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
+      {spaceAfter !== false &&
+        <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
       }
     </>
   );

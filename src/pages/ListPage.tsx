@@ -1,5 +1,4 @@
-import { AioReplacement, AioReplacementTable } from 'components';
-import { AioString } from 'components/aio/aioString';
+import { AioReplacement, AioReplacementTable, AioString } from '../components';
 import React, { useCallback, useRef, useState } from 'react';
 
 interface NamedList {

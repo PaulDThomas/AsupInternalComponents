@@ -1,96 +1,34 @@
-import { AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from 'components';
-import React, { useCallback, useRef, useState } from 'react';
-
-let sampleGroupTemplates: AitRowGroupData[] = [
-  { name: "Empty section", rows: [{ cells: [] }], replacements: [] },
-  {
-    name: "Continuous statistics",
-    rows: [{
-      cells: [
-        { text: "!!parameter!!" },
-        { text: "!!statistic!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-        { text: "!!xval!!" },
-      ]
-    }],
-    replacements: [
-      { replacementTexts: [{ text: "!!parameter!!", spaceAfter: false }], replacementValues: [{ newText: "Enter parameter name" }] },
-      {
-        replacementTexts: [
-          { text: "!!statistic!!", spaceAfter: false },
-          { text: "!!xval!!", spaceAfter: false }
-        ],
-        replacementValues: [
-          { newText: "n", subList: [{ newText: "xxx" }] },
-          { newText: "Mean", subList: [{ newText: " xx.x" }] },
-          { newText: "SD", subList: [{ newText: " xx.x" }] },
-          { newText: "Median", subList: [{ newText: " xx.x" }] },
-          { newText: "Min", subList: [{ newText: "  x" }] },
-          { newText: "Max", subList: [{ newText: "xxx" }] }
-        ],
-      }
-    ]
-  },
-  {
-    name: "Categorical statistics",
-    rows: [
-      {
-        cells: [
-          { text: "!!parameter!!" },
-        ]
-      },
-      {
-        cells: [
-          { text: "!!category!!", textIndents: 1 },
-          { text: "!!statistic!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-          { text: "!!xval!!" },
-        ]
-      }
-    ],
-    replacements: [
-      {
-        replacementTexts: [
-          { text: "!!parameter!!", spaceAfter: true },
-          { text: "!!category!!", spaceAfter: false }
-        ],
-        replacementValues: [
-          { newText: "Enter parameter names", subList: [{ newText: "Enter categories" }] }
-        ]
-      },
-      {
-        replacementTexts: [
-          { text: "!!statistic!!", spaceAfter: false },
-          { text: "!!xval!!", spaceAfter: false }
-        ],
-        replacementValues: [
-          { newText: "n (%)", subList: [{ newText: "xx (xx.x)" }] },
-        ],
-      }
-    ]
-  },
-];
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AieStyleMap, AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
 
 export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [tableData, setTableData] = useState<AitTableData>({
-    "headerData":{"replacements":[{"replacementTexts":[{"text":"!!trt!!","spaceAfter":false}],"replacementValues":[{"newText":"<<low dose>>"},{"newText":"<<high dose>>"},{"newText":"Total"},{"newText":"Control"}]}],"rows":[{"cells":[{"text":"","colSpan":1,"rowSpan":2,"colWidth":150,"textIndents":0},{"text":"Statistic","colSpan":1,"rowSpan":2,"textIndents":0},{"text":"!!trt!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"<<low dose>>"},{"text":"Total","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"","colSpan":1,"rowSpan":0,"textIndents":0},{"text":"","rowSpan":0,"colSpan":1,"textIndents":0},{"text":"N=xxx","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"N=xxx","colSpan":1,"rowSpan":1,"textIndents":0}]}]},"bodyData":[{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false},{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"Age (<<unit>>)","subList":[{"newText":"n","subList":[{"newText":"xxx"}]},{"newText":"Mean","subList":[{"newText":" xx.x"}]},{"newText":"SD","subList":[{"newText":"  x.x"}]},{"newText":"Median","subList":[{"newText":" xx.x"}]},{"newText":"Min","subList":[{"newText":"  x"}]},{"newText":"Max","subList":[{"newText":"xxx"}]}]}]}]},{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"!!category!!","colSpan":1,"rowSpan":1,"textIndents":1},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"n (%)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false}],"replacementValues":[{"newText":"Age group (<<unit>>)"}]},{"replacementTexts":[{"text":"!!category!!","spaceAfter":false}],"replacementValues":[{"newText":"<<Category 1>>"},{"newText":"<<Category 2>>"},{"newText":"<<Category 3>>"},{"newText":"Missing"}]},{"replacementTexts":[{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"n (%)","subList":[{"newText":"xxx (xx.x)"}]}]}]},{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"!!category!!","colSpan":1,"rowSpan":1,"textIndents":1,"replacedText":"<<Category 1>>"},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"n (%)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false}],"replacementValues":[{"newText":"Sex"}]},{"replacementTexts":[{"text":"!!category!!","spaceAfter":false}],"replacementValues":[{"newText":"<<Category 1>>"},{"newText":"<<Category 2>>"},{"newText":"Missing"}]},{"replacementTexts":[{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"n (%)","subList":[{"newText":"xxx (xx.x)"}]}]}]},{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"!!category!!","colSpan":1,"rowSpan":1,"textIndents":1},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"n (%)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"xxx (xx.x)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"xxx (xx.x)"}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false}],"replacementValues":[{"newText":"Race"}]},{"replacementTexts":[{"text":"!!category!!","spaceAfter":false}],"replacementValues":[{"newText":"<<Category 1>>"},{"newText":"<<Category 2>>"},{"newText":"<<Category 3>>"},{"newText":"Missing"}]},{"replacementTexts":[{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"n (%)","subList":[{"newText":"xxx (xx.x)"}]}]}]},{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"!!category!!","colSpan":1,"rowSpan":1,"textIndents":1},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"n (%)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"xxx (xx.x)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"xxx (xx.x)"}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false}],"replacementValues":[{"newText":"Ethnicity"}]},{"replacementTexts":[{"text":"!!category!!","spaceAfter":false}],"replacementValues":[{"newText":"<<Category 1>>"},{"newText":"<<Category 2>>"},{"newText":"Missing"}]},{"replacementTexts":[{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"n (%)","subList":[{"newText":"xxx (xx.x)"}]}]}]},{"rows":[{"cells":[{"text":"!!label!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"","colSpan":1,"rowSpan":1,"textIndents":0}]},{"cells":[{"text":"!!category!!","colSpan":1,"rowSpan":1,"textIndents":1,"replacedText":"<<Category 1>>"},{"text":"!!stat!!","colSpan":1,"rowSpan":1,"textIndents":0,"replacedText":"n (%)"},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0},{"text":"!!xval!!","colSpan":1,"rowSpan":1,"textIndents":0}]}],"replacements":[{"replacementTexts":[{"text":"!!label!!","spaceAfter":false}],"replacementValues":[{"newText":"Country"}]},{"replacementTexts":[{"text":"!!category!!","spaceAfter":false}],"replacementValues":[{"newText":"<<Category 1>>"},{"newText":"<<Category 2>>"},{"newText":"<<Category 3>>"},{"newText":"Missing"}]},{"replacementTexts":[{"text":"!!stat!!","spaceAfter":false},{"text":"!!xval!!","spaceAfter":false}],"replacementValues":[{"newText":"n (%)","subList":[{"newText":"xxx (xx.x)"}]}]}]}],"rowHeaderColumns":2,"noRepeatProcessing":false
-  });
+  const [tableData, setTableData] = useState<AitTableData | undefined>();
+  const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
   const [externalReplacements, setExternalReplacements] = useState<AioReplacement[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
+  const commentStyles: AieStyleMap = {
+    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+  };
+  const cellStyles: AieStyleMap = {
+    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+  };
+
+
+  /** Load defaults */
+  useEffect(() => {
+    /** Load row group templates */
+    fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
+      .then(function (response) { return response.json(); })
+      .then(function (MyJson: AitRowGroupData[]) { setSampleGroupTempaltes(MyJson); });
+    /** Load table data */
+    fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
+      .then(function (response) { return response.json(); })
+      .then(function (MyJson: AitTableData) { setTableData(MyJson); });
+  }, []);
 
   const loadData = useCallback(() => {
     try {
@@ -129,14 +67,20 @@ export const TablePage = () => {
       display: "flex",
       justifyContent: "center",
     }}>
-      <AsupInternalTable
-        tableData={tableData}
-        setTableData={setTableData}
-        style={{ margin: "1rem" }}
-        showCellBorders={true}
-        externalLists={externalReplacements}
-        groupTemplates={sampleGroupTemplates}
-      />
+      {tableData === undefined ?
+        <span style={{ margin: "3rem" }}>Table loading</span>
+        :
+        <AsupInternalTable
+          tableData={tableData}
+          setTableData={setTableData}
+          style={{ margin: "1rem" }}
+          showCellBorders={true}
+          externalLists={externalReplacements}
+          groupTemplates={sampleGroupTemplates}
+          commentStyles={commentStyles}
+          cellStyles={cellStyles}
+        />
+      }
     </div>
     <div style={{
       margin: "1rem",

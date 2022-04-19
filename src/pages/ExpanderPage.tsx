@@ -1,129 +1,20 @@
-import * as React from 'react';
-import { useState, useRef } from 'react';
-import { AioExpander } from 'components/aio/aioExpander';
-import { AioDropSelect } from 'components/aio/aioDropSelect';
+import React, { useEffect, useRef, useState } from 'react';
+import { AioDropSelect, AioExpander } from '../components';
 
 export const ExpanderPage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [showBorders, setShowBorders] = useState(false);
-  const [currentData, setCurrentData] = useState({
-    someText: "Hello",
-    options: [
-      { optionName: "tableType", label: "Type of table", value: "AmazeBalls" }
-    ],
-    stringList: [
-      "This",
-      "is",
-      "is",
-      "a",
-      "string list"
-    ],
-    mixedList: [
-      23,
-      null,
-      "mixed list",
-      undefined,
-      3.1416,
-      0,
-      [1, 2, 3],
-      0,
-      -34,
-      "0"
-    ],
-
-
-    headerData: {
-      rows: [
-        {
-          cells: [
-            {
-              text: "A", rowSpan: 2, options: [
-                { optionName: "cellWidth", value: "150px" }
-              ]
-            },
-            { text: "B", colSpan: 3 },
-          ],
-          options: [
-            { optionName: "headerRow1", value: "this is the header row option" }
-          ]
-        },
-        {
-          cells: [
-            { text: "C", },
-            { text: "E", },
-            { text: "D", },
-          ],
-          options: [
-            { optionName: "headerRow2", value: "2nd row option" }
-          ]
-        }
-      ],
-      options: [
-        { optionName: "header1", value: "this is the header row" }
-      ]
-    },
-    bodyData: {
-      rowGroups: [
-        {
-          rows: [
-            {
-              cells: [
-                {
-                  text: "C0", rowSpan: 2, options: [
-                    { noptionNameme: "cellType", value: "rowHeader" }
-                  ]
-                },
-                { text: "D0", },
-                { text: "E0", },
-                { text: "F0", },
-              ],
-              options: [
-                { optionName: "a value" }
-              ]
-            },
-            {
-              cells: [
-                { text: "D1", },
-                { text: "E1", },
-                { text: "F1", },
-              ],
-              options: [
-                { optionName: "rowOptionA", value: "another value" }
-              ]
-            },
-          ],
-          options: [
-            { optionName: "rowGroupOption1", value: "first group" }
-          ]
-        },
-        {
-          rows: [
-            {
-              cells: [
-                {
-                  text: "C2",
-                  options: [
-                    { optionName: "cellType", value: "rowHeader" }
-                  ]
-                },
-                { text: "D2", },
-                { text: "E2", },
-                { text: "F2", },
-              ],
-              options: [
-                { optionName: "rowOptionA", value: "first row in this group" }
-              ]
-            }
-          ],
-          options: [
-            { optionName: "rowGroupOption1", value: "second group" }
-          ]
-        }
-      ]
-    },
-  });
+  const [currentData, setCurrentData] = useState<any>();
   const [dropValue, setDropValue] = useState<string>("Nowt");
+
+  /** Load defaults */
+  useEffect(() => {
+    /** Load table data as an example */
+    fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
+      .then(function (response) { return response.json(); })
+      .then(function (MyJson) { setCurrentData(MyJson); });
+  }, []);
 
 
   return (

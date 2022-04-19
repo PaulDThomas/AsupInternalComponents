@@ -1,8 +1,10 @@
-import { AioReplacement } from "../aio/aioInterface";
+import { AieStyleMap } from "../aie";
+import { AioReplacement } from "../aio";
 
 export interface AitCellData {
   aitid?: string,
   text: string,
+  comments?: string,
   colSpan?: number,
   rowSpan?: number,
   colWidth?: number,
@@ -21,14 +23,16 @@ export interface AitRowData {
 export interface AitRowGroupData {
   aitid?: string,
   name?: string,
-  spaceAfter?: boolean,
   rows: Array<AitRowData>,
+  comments?: string,
+  spaceAfter?: boolean,
   replacements?: AioReplacement[],
 };
 
 export interface AitTableData {
   headerData: AitRowGroupData,
   bodyData: AitRowGroupData[],
+  comments?: string,
   rowHeaderColumns: number,
   noRepeatProcessing: boolean,
 };
@@ -73,4 +77,6 @@ export interface AitOptionList {
   groupTemplateNames?: string[],
   repeatNumber?: number[],
   repeatValues?: string[],
+  commentStyles?: AieStyleMap,
+  cellStyles?: AieStyleMap,
 }

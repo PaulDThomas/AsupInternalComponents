@@ -7,7 +7,7 @@ import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
 
 interface AioExpanderProps {
-  inputObject: { [key: string]: any },
+  inputObject?: { [key: string]: any },
   label?: string,
   showBorders?: boolean,
   updateObject?: (value: any) => void,
@@ -21,6 +21,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
   const [showNewItemWindow, setShowNewItemWindow] = useState(false);
 
   const onClickAdd = (ret: AioOptionGroup) => {
+    if (props.inputObject === undefined) return;
     // Check value is ok
     if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
       let newItem;
@@ -47,7 +48,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
 
 
   // Show nothing
-  if (!props.inputObject) { return (<></>); }
+  if (!props.inputObject && (props.inputObject === undefined || props.inputObject === null)) { return (<></>); }
 
   // Small view
   if (!isExpanded) {
@@ -56,15 +57,22 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         <AioLabel label={props.label} />
         <div className="aio-input-holder">
           <span className="aiox closed">
-            <div className="aiox-button aiox-open-close" onClick={(e) => setIsExpanded(true)} />
+            {typeof props.inputObject === "object" &&
+              <div className="aiox-button aiox-open-close" onClick={(e) => setIsExpanded(true)} />
+            }
             <span className="aiox-value">{
               Array.isArray(props.inputObject)
                 ? Object.values(props.inputObject).filter(el => typeof (el) === "object").length > 0
                   ? `${props.inputObject.length} item${props.inputObject.length !== 1 ? "s" : ""}`
                   : Object.values(props.inputObject).join(", ")
-                : Object.keys(props.inputObject)
-                  .map((a: string) => { return typeof (props.inputObject[a]) === "object" ? a : props.inputObject[a]; })
-                  .join(", ")
+                : typeof props.inputObject === "object" && props.inputObject !== undefined && props.inputObject !== null ?
+                  Object.keys(props.inputObject)
+                    .map((a: string) => { return typeof (props.inputObject![a]) === "object" ? a : props.inputObject![a]; })
+                    .join(", ")
+                  : props.inputObject !== undefined && props.inputObject !== null ?
+                    <AioPrintOption value={props.inputObject} id={"one"} />
+                    :
+                    "Input object is not defined"
             }</span>
           </span>
         </div>
@@ -99,7 +107,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                         <AioPrintOption
                           id={k}
                           label={k}
-                          value={props.inputObject[k]}
+                          value={props.inputObject![k]}
                           setValue={
                             (props.updateObject) ? (ret) => {
                               const newObject = { ...props.inputObject };
