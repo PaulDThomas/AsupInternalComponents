@@ -16,6 +16,7 @@ export const AioComment = (props: AioCommentProps): JSX.Element => {
         {typeof props.setValue === "function"
           ?
           <AsupInternalEditor
+            style={{resize:"both", overflow:"auto"}}
             showStyleButtons={false}
             value={props.value}
             setValue={(ret) => props.setValue!(ret)}
