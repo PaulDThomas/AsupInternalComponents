@@ -78,4 +78,5 @@ export interface AitOptionList {
   repeatNumber?: number[],
   repeatValues?: string[],
   commentStyles?: AieStyleMap,
+  cellStyles?: AieStyleMap,
 }

@@ -215,10 +215,11 @@ export const AitCell = ({
         <AsupInternalEditor
           style={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={(columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center")}
-          showStyleButtons={false}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
+          showStyleButtons={higherOptions.cellStyles !== undefined}
+          styleMap={higherOptions.cellStyles}
         />
         {/* {currentReadOnly
           ?
@@ -272,7 +273,7 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <AsupInternalEditor value={text} style={{border:"0"}}/>
+              <AsupInternalEditor value={text} style={{border:"0"}} styleMap={higherOptions.cellStyles}/>
             </div>
             {(cellType === AitCellType.header)
               ?

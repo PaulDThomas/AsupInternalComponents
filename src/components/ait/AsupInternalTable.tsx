@@ -18,6 +18,7 @@ interface AsupInternalTableProps {
   showCellBorders?: boolean,
   groupTemplates?: AitRowGroupData[] | false,
   commentStyles?: AieStyleMap,
+  cellStyles?: AieStyleMap,
 }
 
 /**
@@ -33,6 +34,7 @@ export const AsupInternalTable = ({
   showCellBorders,
   groupTemplates,
   commentStyles,
+  cellStyles,
 }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
@@ -177,15 +179,9 @@ export const AsupInternalTable = ({
       externalLists: externalLists ?? [],
       groupTemplateNames: groupTemplateNames,
       commentStyles: commentStyles,
+      cellStyles: cellStyles,
     };
-  }, [
-    commentStyles,
-    externalLists,
-    groupTemplates,
-    showCellBorders,
-    tableData.noRepeatProcessing,
-    tableData.rowHeaderColumns,
-  ]) as AitOptionList;
+  }, [cellStyles, commentStyles, externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {

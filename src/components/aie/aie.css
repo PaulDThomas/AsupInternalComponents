@@ -19,7 +19,7 @@
 .aie-button-holder {
   z-index: 10;
   position: absolute;
-  bottom: -26px;
+  bottom: -28px;
   height: 26px;
   min-width: max-content;
   overflow: auto;

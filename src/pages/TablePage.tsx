@@ -12,6 +12,11 @@ export const TablePage = () => {
     Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
     Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
   };
+  const cellStyles: AieStyleMap = {
+    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+  };
+
 
   /** Load defaults */
   useEffect(() => {
@@ -73,6 +78,7 @@ export const TablePage = () => {
           externalLists={externalReplacements}
           groupTemplates={sampleGroupTemplates}
           commentStyles={commentStyles}
+          cellStyles={cellStyles}
         />
       }
     </div>
