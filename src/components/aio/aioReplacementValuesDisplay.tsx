@@ -70,7 +70,7 @@ export const AioReplacementValueDisplay = ({ values, setValues, level, externalL
             />
             :
             <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>{values.map((rep, repi) =>
-              <div key={repi} style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{rep.newText}</div>
+              <div key={repi} style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>{fromHtml(rep.newText)}</div>
             )}</div>
           }
         </div>
