@@ -58,7 +58,17 @@ const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
  * @returns URI encoded HTML string of the content 
  */
 const saveToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
-  return d.blocks.map(b => htmlBlock(b, dsm)).join(``);
+  /** Check for just a single line with no formatting/leading spaces */
+  if (d.blocks.length === 1 
+    && d.blocks[0].inlineStyleRanges.length === 0 
+    && !d.blocks[0].text.startsWith(" ")
+    && !d.blocks[0].text.startsWith("&nbsp;")
+    && !d.blocks[0].text.startsWith("\u00A0")
+    )
+    return toHtml(d.blocks[0].text);
+  /** Otherwise save full format */
+  else 
+    return d.blocks.map(b => htmlBlock(b, dsm)).join(``);
 }
 
 const loadFromHTML = (s: string): ContentState => {
