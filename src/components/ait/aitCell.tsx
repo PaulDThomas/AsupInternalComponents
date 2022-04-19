@@ -272,7 +272,7 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <div className={"aio-ro-value"}>{text}</div>
+              <AsupInternalEditor value={text} style={{border:"0"}}/>
             </div>
             {(cellType === AitCellType.header)
               ?

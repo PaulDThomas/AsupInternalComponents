@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components';
 
 export const EditorPage = () => {
-  const [text, setText] = useState("<div><span>&nbsp;&nbsp;hello?&nbsp;wor<br/>ld!&lt;&gt;</span></div>");
+  const [text, setText] = useState(`<div className='aie-text' data-inline-style-ranges='[{"offset":0,"length":5,"style":"Notes"}]'><span className='Notes' style='color:blue;font-size:16pt'>Notes</span></div>`);
 
   const dothing = () => {
     console.log("Update");
