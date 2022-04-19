@@ -107,33 +107,42 @@ export const AifLineDisplay = ({
 
       <div className="aif-line-item-holder">
         {typeof left === "string" &&
-          <AsupInternalEditor
-            value={left}
-            setValue={typeof setLine === "function" ? (ret) => returnData({ left: ret }) : undefined}
+          <div
             style={{ width: typeof centre !== "string" && typeof right !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
-            showStyleButtons={true}
-            styleMap={styleMap}
-          />
+          >
+            <AsupInternalEditor
+              value={left}
+              setValue={typeof setLine === "function" ? (ret) => returnData({ left: ret }) : undefined}
+              showStyleButtons={true}
+              styleMap={styleMap}
+            />
+          </div>
         }
         {typeof centre === "string" &&
-          <AsupInternalEditor
-            value={centre}
-            setValue={typeof setLine === "function" ? (ret) => returnData({ centre: ret }) : undefined}
-            textAlignment={"center"}
+          <div
             style={{ flexGrow: 1 }}
-            showStyleButtons={true}
-            styleMap={styleMap}
-          />
+          >
+            <AsupInternalEditor
+              value={centre}
+              setValue={typeof setLine === "function" ? (ret) => returnData({ centre: ret }) : undefined}
+              textAlignment={"center"}
+              showStyleButtons={true}
+              styleMap={styleMap}
+            />
+          </div>
         }
         {typeof right === "string" &&
-          <AsupInternalEditor
-            value={right}
-            setValue={typeof setLine === "function" ? (ret) => returnData({ right: ret }) : undefined}
-            textAlignment={"right"}
+          <div
             style={{ width: typeof centre !== "string" && typeof left !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
-            showStyleButtons={styleMap !== undefined}
-            styleMap={styleMap}
-          />
+          >
+            <AsupInternalEditor
+              value={right}
+              setValue={typeof setLine === "function" ? (ret) => returnData({ right: ret }) : undefined}
+              textAlignment={"right"}
+              showStyleButtons={styleMap !== undefined}
+              styleMap={styleMap}
+            />
+          </div>
         }
       </div>
 
