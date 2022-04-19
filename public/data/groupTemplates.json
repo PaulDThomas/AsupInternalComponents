@@ -1,0 +1,220 @@
+[
+  {
+    "name": "Empty section",
+    "rows": [
+      {
+        "cells": []
+      }
+    ],
+    "replacements": []
+  },
+  {
+    "name": "Continuous statistics",
+    "rows": [
+      {
+        "cells": [
+          {
+            "text": "!!parameter!!"
+          },
+          {
+            "text": "!!statistic!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          }
+        ]
+      }
+    ],
+    "replacements": [
+      {
+        "replacementTexts": [
+          {
+            "text": "!!parameter!!",
+            "spaceAfter": false
+          }
+        ],
+        "replacementValues": [
+          {
+            "newText": "Enter parameter name"
+          }
+        ]
+      },
+      {
+        "replacementTexts": [
+          {
+            "text": "!!statistic!!",
+            "spaceAfter": false
+          },
+          {
+            "text": "!!xval!!",
+            "spaceAfter": false
+          }
+        ],
+        "replacementValues": [
+          {
+            "newText": "n",
+            "subList": [
+              {
+                "newText": "xxx"
+              }
+            ]
+          },
+          {
+            "newText": "Mean",
+            "subList": [
+              {
+                "newText": " xx.x"
+              }
+            ]
+          },
+          {
+            "newText": "SD",
+            "subList": [
+              {
+                "newText": " xx.x"
+              }
+            ]
+          },
+          {
+            "newText": "Median",
+            "subList": [
+              {
+                "newText": " xx.x"
+              }
+            ]
+          },
+          {
+            "newText": "Min",
+            "subList": [
+              {
+                "newText": "  x"
+              }
+            ]
+          },
+          {
+            "newText": "Max",
+            "subList": [
+              {
+                "newText": "xxx"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Categorical statistics",
+    "rows": [
+      {
+        "cells": [
+          {
+            "text": "!!parameter!!"
+          }
+        ]
+      },
+      {
+        "cells": [
+          {
+            "text": "!!category!!",
+            "textIndents": 1
+          },
+          {
+            "text": "!!statistic!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          },
+          {
+            "text": "!!xval!!"
+          }
+        ]
+      }
+    ],
+    "replacements": [
+      {
+        "replacementTexts": [
+          {
+            "text": "!!parameter!!",
+            "spaceAfter": true
+          },
+          {
+            "text": "!!category!!",
+            "spaceAfter": false
+          }
+        ],
+        "replacementValues": [
+          {
+            "newText": "Enter parameter names",
+            "subList": [
+              {
+                "newText": "Enter categories"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "replacementTexts": [
+          {
+            "text": "!!statistic!!",
+            "spaceAfter": false
+          },
+          {
+            "text": "!!xval!!",
+            "spaceAfter": false
+          }
+        ],
+        "replacementValues": [
+          {
+            "newText": "n (%)",
+            "subList": [
+              {
+                "newText": "xx (xx.x)"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]
