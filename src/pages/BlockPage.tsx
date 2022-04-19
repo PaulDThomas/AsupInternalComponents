@@ -1,7 +1,5 @@
-import { AsupInternalBlock } from 'components/aif';
-import { AifBlockLine } from 'components/aif/aifInterface';
-import * as React from 'react';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { AifBlockLine, AsupInternalBlock } from '../components';
 
 export const BlockPage = () => {
 

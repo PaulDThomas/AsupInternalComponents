@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { useState, useRef } from 'react';
-import { AioExpander } from 'components/aio/aioExpander';
-import { AioDropSelect } from 'components/aio/aioDropSelect';
+import { useRef, useState } from 'react';
+import { AioDropSelect, AioExpander } from '../components';
 
 export const ExpanderPage = () => {
 

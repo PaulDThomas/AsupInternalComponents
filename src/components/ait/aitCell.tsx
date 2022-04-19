@@ -1,11 +1,9 @@
 import structuredClone from '@ungap/structured-clone';
-import { AsupInternalEditor } from 'components/aie/AsupInternalEditor';
-import { AioComment } from 'components/aio/aioComment';
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AioExpander } from "../aio/aioExpander";
-import { AioNumber } from "../aio/aioNumber";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import { objEqual } from "../functions/objEqual";
+import { AsupInternalEditor } from '../aie';
+import { AioComment, AioExpander, AioNumber } from '../aio';
+import { AsupInternalWindow } from "../aiw";
+import { objEqual } from "../functions";
 import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
 
 interface AitCellProps {

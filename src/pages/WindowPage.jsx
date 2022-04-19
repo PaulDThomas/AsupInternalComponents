@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AsupInternalWindow } from '../components/aiw/AsupInternalWindow';
+import { AsupInternalWindow } from '../components';
 
 export const WindowPage = (props) => {
   const [showWindow, setShowWindow] = useState(false);

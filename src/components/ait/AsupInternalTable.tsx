@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
-import { AioBoolean } from "../aio/aioBoolean";
-import { AioComment } from "../aio/aioComment";
-import { AioReplacement } from "../aio/aioInterface";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
-import { newCell } from "../functions/newCell";
-import { repeatHeaders } from "../functions/repeatHeaders";
+import { AieStyleMap } from "../aie";
+import { AioBoolean, AioComment, AioReplacement } from "../aio";
+import { AsupInternalWindow } from "../aiw";
+import { newCell, repeatHeaders } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
@@ -19,6 +17,7 @@ interface AsupInternalTableProps {
   style?: React.CSSProperties,
   showCellBorders?: boolean,
   groupTemplates?: AitRowGroupData[] | false,
+  commentsStyles?: AieStyleMap
 }
 
 /**

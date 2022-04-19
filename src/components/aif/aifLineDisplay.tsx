@@ -1,8 +1,6 @@
-import { AieStyleMap } from "components/aie/AsupInternalEditor";
-import { AioSelect } from "components/aio/aioSelect";
 import React, { useCallback, useState } from "react";
-import { AsupInternalEditor } from "../aie";
-import { AioIconButton } from "../aio";
+import { AieStyleMap, AsupInternalEditor } from "../aie";
+import { AioIconButton, AioSelect } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
 import { AifBlockLine } from "./aifInterface";

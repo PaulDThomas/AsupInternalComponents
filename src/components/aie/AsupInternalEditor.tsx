@@ -1,7 +1,7 @@
-import { toHtml } from "components/functions/tofromHtml";
 import { ContentState, convertFromHTML, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { toHtml } from "../functions";
 import './aie.css';
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 

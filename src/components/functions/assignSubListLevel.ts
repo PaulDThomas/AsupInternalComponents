@@ -1,4 +1,4 @@
-import { AioReplacementValue } from "components/aio/aioInterface";
+import { AioReplacementValue } from "../aio";
 
 export const assignSubListLevel = (
   rvs: AioReplacementValue[],

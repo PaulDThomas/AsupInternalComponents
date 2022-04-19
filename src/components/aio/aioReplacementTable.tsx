@@ -1,6 +1,5 @@
-import { assignSubListLevel } from 'components/functions/assignSubListLevel';
-import { fromHtml, toHtml } from 'components/functions/tofromHtml';
 import React, { useCallback, useMemo } from 'react';
+import { assignSubListLevel, fromHtml, toHtml } from '../functions';
 import { AioDropSelect } from './aioDropSelect';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
 import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';

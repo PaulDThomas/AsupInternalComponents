@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { AsupInternalEditor } from '../components/aie/AsupInternalEditor';
+import { AsupInternalEditor } from '../components';
 
 export const EditorPage = () => {
   const [text, setText] = useState("<div><span>&nbsp;&nbsp;hello?&nbsp;wor<br/>ld!&lt;&gt;</span></div>");

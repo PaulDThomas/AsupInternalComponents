@@ -1,5 +1,5 @@
-import { AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from 'components';
 import React, { useCallback, useRef, useState } from 'react';
+import { AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
 
 let sampleGroupTemplates: AitRowGroupData[] = [
   { name: "Empty section", rows: [{ cells: [] }], replacements: [] },

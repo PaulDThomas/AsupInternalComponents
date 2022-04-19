@@ -1,5 +1,5 @@
-import { fromHtml, toHtml } from 'components/functions/tofromHtml';
 import React, { useCallback, useState } from 'react';
+import { fromHtml, toHtml } from '../functions';
 import { AioReplacement, AioReplacementValue } from './aioInterface';
 
 interface AioReplacementValueDisplayProps {
