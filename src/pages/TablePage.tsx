@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
+import { AieStyleMap, AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
 
 export const TablePage = () => {
 
@@ -8,17 +8,21 @@ export const TablePage = () => {
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
   const [externalReplacements, setExternalReplacements] = useState<AioReplacement[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
+  const commentStyles: AieStyleMap = {
+    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+  };
 
   /** Load defaults */
   useEffect(() => {
     /** Load row group templates */
     fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
-    .then(function (response) { return response.json(); })
-    .then(function (MyJson: AitRowGroupData[]) { setSampleGroupTempaltes(MyJson); });
+      .then(function (response) { return response.json(); })
+      .then(function (MyJson: AitRowGroupData[]) { setSampleGroupTempaltes(MyJson); });
     /** Load table data */
     fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
-    .then(function (response) { return response.json(); })
-    .then(function (MyJson: AitTableData) { setTableData(MyJson); });
+      .then(function (response) { return response.json(); })
+      .then(function (MyJson: AitTableData) { setTableData(MyJson); });
   }, []);
 
   const loadData = useCallback(() => {
@@ -59,17 +63,18 @@ export const TablePage = () => {
       justifyContent: "center",
     }}>
       {tableData === undefined ?
-      <span style={{margin:"3rem"}}>Table loading</span>
-      :
-      <AsupInternalTable
-      tableData={tableData}
-      setTableData={setTableData}
-      style={{ margin: "1rem" }}
-      showCellBorders={true}
-      externalLists={externalReplacements}
-      groupTemplates={sampleGroupTemplates}
-      />
-    }
+        <span style={{ margin: "3rem" }}>Table loading</span>
+        :
+        <AsupInternalTable
+          tableData={tableData}
+          setTableData={setTableData}
+          style={{ margin: "1rem" }}
+          showCellBorders={true}
+          externalLists={externalReplacements}
+          groupTemplates={sampleGroupTemplates}
+          commentStyles={commentStyles}
+        />
+      }
     </div>
     <div style={{
       margin: "1rem",

@@ -259,7 +259,12 @@ export const AitCell = ({
         {showCellOptions &&
           <AsupInternalWindow key="Cell" Title={"Cell options"} Visible={showCellOptions} onClose={() => { setShowCellOptions(false); }}>
             <div className="aiw-body-row">
-              <AioComment label={"Notes"} value={comments} setValue={!currentReadOnly ? (ret) => returnData({ comments: ret }) : undefined} />
+              <AioComment
+                label={"Notes"}
+                value={comments}
+                setValue={!currentReadOnly ? (ret) => returnData({ comments: ret }) : undefined}
+                commentStyles={higherOptions.commentStyles}
+              />
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Cell location: </div>

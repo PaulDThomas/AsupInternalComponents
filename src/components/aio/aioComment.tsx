@@ -1,30 +1,32 @@
 import * as React from "react";
-import { AsupInternalEditor } from "../aie";
+import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioLabel } from "./aioLabel";
 
 interface AioCommentProps {
   label?: string,
   value: string,
   setValue?: (value: string) => void,
+  commentStyles?: AieStyleMap,
 }
 
-export const AioComment = (props: AioCommentProps): JSX.Element => {
+export const AioComment = ({
+  label,
+  value,
+  setValue,
+  commentStyles,
+}: AioCommentProps): JSX.Element => {
   return (
     <>
-      <AioLabel label={props.label} />
+      <AioLabel label={label} />
       <div className={"aio-input-holder"}>
-        {typeof props.setValue === "function"
-          ?
-          <AsupInternalEditor
-            style={{resize:"both", overflow:"auto"}}
-            showStyleButtons={false}
-            value={props.value}
-            setValue={(ret) => props.setValue!(ret)}
-            editable={true}
-          />
-          :
-          <span>{props.value}</span>
-        }
+        <AsupInternalEditor
+          style={typeof setValue === "function" ? { resize: "both", overflow: "auto" } : undefined}
+          showStyleButtons={typeof commentStyles === "object"}
+          value={value}
+          editable={typeof setValue === "function"}
+          setValue={(ret) => setValue!(ret)}
+          styleMap={commentStyles}
+        />
       </div>
     </>
   );

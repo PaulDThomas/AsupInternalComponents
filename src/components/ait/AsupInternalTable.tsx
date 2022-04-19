@@ -17,7 +17,7 @@ interface AsupInternalTableProps {
   style?: React.CSSProperties,
   showCellBorders?: boolean,
   groupTemplates?: AitRowGroupData[] | false,
-  commentsStyles?: AieStyleMap
+  commentStyles?: AieStyleMap,
 }
 
 /**
@@ -32,6 +32,7 @@ export const AsupInternalTable = ({
   style,
   showCellBorders,
   groupTemplates,
+  commentStyles,
 }: AsupInternalTableProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
@@ -175,8 +176,16 @@ export const AsupInternalTable = ({
       rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
       externalLists: externalLists ?? [],
       groupTemplateNames: groupTemplateNames,
+      commentStyles: commentStyles,
     };
-  }, [externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
+  }, [
+    commentStyles,
+    externalLists,
+    groupTemplates,
+    showCellBorders,
+    tableData.noRepeatProcessing,
+    tableData.rowHeaderColumns,
+  ]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {
@@ -312,7 +321,12 @@ export const AsupInternalTable = ({
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
               <div className="aiw-body-row">
-                <AioComment label={"Notes"} value={tableData.comments ?? ""} setValue={(ret) => returnData({ comments: ret })} />
+                <AioComment
+                  label={"Notes"}
+                  value={tableData.comments ?? ""}
+                  setValue={(ret) => returnData({ comments: ret })}
+                  commentStyles={higherOptions.commentStyles}
+                />
               </div>
               <div className="aiw-body-row">
                 <AioBoolean label="Suppress repeats" value={tableData.noRepeatProcessing} setValue={(ret) => returnData({ noRepeatProcessing: ret })} />

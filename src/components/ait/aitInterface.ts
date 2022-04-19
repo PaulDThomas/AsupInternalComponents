@@ -1,4 +1,5 @@
-import { AioReplacement } from "../aio/aioInterface";
+import { AieStyleMap } from "../aie";
+import { AioReplacement } from "../aio";
 
 export interface AitCellData {
   aitid?: string,
@@ -76,4 +77,5 @@ export interface AitOptionList {
   groupTemplateNames?: string[],
   repeatNumber?: number[],
   repeatValues?: string[],
+  commentStyles?: AieStyleMap,
 }

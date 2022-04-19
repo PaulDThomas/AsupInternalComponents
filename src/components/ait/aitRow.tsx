@@ -126,7 +126,12 @@ export const AitRow = ({
                 {showRowGroupOptions && replacements !== undefined &&
                   <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
                     <div className="aiw-body-row">
-                      <AioComment label={"Notes"} value={rowGroupComments} setValue={updateRowGroupComments} />
+                      <AioComment
+                        label={"Notes"}
+                        value={rowGroupComments}
+                        setValue={updateRowGroupComments}
+                        commentStyles={higherOptions.commentStyles}
+                      />
                     </div>
                     <>
                       {location.tableSection === AitRowType.body && <>

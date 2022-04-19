@@ -1,7 +1,12 @@
+.aie-outer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 .aie-holder {
   border: 1px dashed rgb(190, 190, 189);
   border-radius: 1px;
-  position: relative;
   min-width: 8px;
   display: flex;
   flex-direction: column;
@@ -14,7 +19,7 @@
 .aie-button-holder {
   z-index: 10;
   position: absolute;
-  bottom: -29px;
+  bottom: -26px;
   height: 26px;
   min-width: max-content;
   overflow: auto;
@@ -27,10 +32,6 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.aie-button-holder.hidden {
-  visibility: hidden;
 }
 
 .aie-button-holder::-webkit-scrollbar {

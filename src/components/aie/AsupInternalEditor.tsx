@@ -145,26 +145,32 @@ export const AsupInternalEditor = ({
 
   // Render the component
   return (
-    <div
-      className="aie-holder"
+    <div className="aie-outer"
       onMouseOver={!(editable === false || typeof setValue !== "function") ? aieShowButtons : undefined}
       onMouseLeave={aieHideButtons}
-      style={{
-        ...style,
-        alignItems: textAlignment === "left"
-          ? "flex-start"
-          : textAlignment === "right"
-            ? "flex-end"
-            : textAlignment
-      }}
     >
-      {!(editable === false || typeof setValue !== "function") &&
-        <div className={[
-          "aie-button-holder",
-          "aie-style-button-holder",
-          buttonState === "hidden" ? "hidden" : "",
-        ].join(" ")}
-        >
+      <div
+        className="aie-holder"
+        style={{
+          ...style,
+          alignItems: textAlignment === "left"
+            ? "flex-start"
+            : textAlignment === "right"
+              ? "flex-end"
+              : textAlignment
+        }}
+      >
+        <Editor
+          customStyleMap={currentStyleMap.current}
+          editorState={editorState}
+          onChange={setEditorState}
+          onBlur={onBlur}
+          textAlignment={textAlignment}
+          readOnly={editable === false || typeof setValue !== "function"}
+        />
+      </div>
+      {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
+        <div className="aie-button-holder aie-style-button-holder">
           <AieStyleButtonRow
             styleList={Object.keys(currentStyleMap.current)}
             currentStyle={editorState.getCurrentInlineStyle()}
@@ -173,14 +179,6 @@ export const AsupInternalEditor = ({
           />
         </div>
       }
-      <Editor
-        customStyleMap={currentStyleMap.current}
-        editorState={editorState}
-        onChange={setEditorState}
-        onBlur={onBlur}
-        textAlignment={textAlignment}
-        readOnly={editable === false || typeof setValue !== "function"}
-      />
     </div>
   );
 }
