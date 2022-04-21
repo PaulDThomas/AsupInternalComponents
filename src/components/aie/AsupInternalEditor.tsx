@@ -1,4 +1,4 @@
-import { convertToRaw, DraftStyleMap, Editor, EditorState, Modifier } from "draft-js";
+import { convertToRaw, DraftHandleValue, DraftStyleMap, Editor, EditorState, Modifier } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import './aie.css';
@@ -90,6 +90,27 @@ export const AsupInternalEditor = ({
     setEditorState(nextEditorState);
   }
 
+  const handlePastedText = useCallback((text: string, html:string): DraftHandleValue => {
+    let sel = editorState.getSelection();
+    let newContent: Draft.DraftModel.ImmutableData.ContentState;
+    if (sel.getAnchorOffset() === sel.getFocusOffset() && sel.getAnchorKey === sel.getFocusKey) {
+      newContent = Modifier.insertText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        text.trim()
+      );
+    }
+    else {
+      newContent = Modifier.replaceText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        text.trim()
+      )
+    }
+    setEditorState(EditorState.push(editorState, newContent, 'insert-characters'));
+    return "handled";
+  }, [editorState]);
+
   // Render the component
   return (
     <div className="aie-outer">
@@ -112,6 +133,7 @@ export const AsupInternalEditor = ({
           onFocus={onFocus}
           textAlignment={textAlignment}
           readOnly={editable === false || typeof setValue !== "function"}
+          handlePastedText={handlePastedText}
         />
       </div>
       {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
