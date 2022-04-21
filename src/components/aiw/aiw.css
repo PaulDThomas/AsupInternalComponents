@@ -4,9 +4,10 @@
     border-radius: 8px;
     margin: 0;
     padding: 4px;
-    background-color: white;
+    /* background-color: white; */
+    background-color: rgb(250, 250, 250);
     height: 100%;
-    box-shadow: 6px 6px 6px rgb(64,64,64, 0.5);
+    box-shadow: 6px 6px 6px rgb(64, 64, 64, 0.5);
 }
 
 .aiw-inner {

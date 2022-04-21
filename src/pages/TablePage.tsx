@@ -9,12 +9,12 @@ export const TablePage = () => {
   const [externalReplacements, setExternalReplacements] = useState<AioReplacement[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
-    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
-    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+    Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] }
   };
   const cellStyles: AieStyleMap = {
-    Optional: { css: { color: "green" }, aieExclude: ["Notes"] },
-    Notes: { css: { color: "blue" }, aieExclude: ["Optional"] }
+    Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] }
   };
 
 
