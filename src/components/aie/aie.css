@@ -21,6 +21,7 @@
   position: absolute;
   bottom: -28px;
   height: 29px;
+  max-height: 29px;
   min-width: max-content;
   overflow: auto;
   margin: 0px;
@@ -65,6 +66,7 @@
 
 .aie-button.active {
   background-color: orangered;
+  color: black;
   border: 0;
   height: 24px;
   border-radius: 4px;
