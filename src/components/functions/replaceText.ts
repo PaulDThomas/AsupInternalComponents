@@ -1,5 +1,6 @@
 import { AioReplacementText } from "../aio/aioInterface";
 import { AitRowData } from "../ait/aitInterface";
+import { newReplacedText } from "../aie/newReplacedText";
 
 export const replaceText = (
   rows: AitRowData[],
@@ -15,7 +16,7 @@ export const replaceText = (
         let o = replacementTexts![rt].text;
         let n = newRepeatValues[r][rt];
         if (n)
-          replacedText = replacedText.replace(o, n);
+          replacedText = newReplacedText(replacedText,o, n);
       }
       if (replacedText !== cell.text) {
         cell.replacedText = replacedText;

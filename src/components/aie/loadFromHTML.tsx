@@ -8,7 +8,7 @@ import { ContentState, convertFromHTML, convertFromRaw, RawDraftContentBlock } f
 export const loadFromHTML = (s: string): ContentState => {
   // There are no spans to apply
   let initialBlocks = convertFromHTML(s);
-  if (!s.startsWith("<div className='aie-text'")) {
+  if (!s.match(/^<div classname=["']aie-text/i)) {
     let state = ContentState.createFromBlockArray(initialBlocks.contentBlocks, initialBlocks.entityMap);
     return state;
   }
