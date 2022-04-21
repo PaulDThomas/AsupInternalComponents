@@ -105,6 +105,7 @@ export const AifLineDisplay = ({
         </AsupInternalWindow>
       }
 
+      <div className="aif-line-buttons" />
       <div className="aif-line-item-holder">
         {typeof left === "string" &&
           <div

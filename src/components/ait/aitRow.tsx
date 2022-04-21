@@ -95,7 +95,7 @@ export const AitRow = ({
       <tr>
 
         {/* Row group options */}
-        <td className="ait-cell">
+        <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
             {higherOptions.row === 0
               ?
@@ -118,7 +118,7 @@ export const AitRow = ({
                 {replacements !== undefined &&
                   <AioIconButton
                     tipText='Row group options'
-                    iconName='ait-options-button-row-group'
+                    iconName='aio-button-row-group'
                     onClick={() => { setShowRowGroupOptions(true) }}
                   />
                 }
@@ -215,27 +215,21 @@ export const AitRow = ({
           );
         })}
         {/* Row buttons */}
-        <td className="ait-cell">
-          <div className="ait-aie-holder">
+        <td className="ait-cell" width="50px">
+          <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-start", flexDirection: "row" }}>
             {typeof addRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
-              <div className="ait-tip ait-tip-rhs">
-                <div
-                  className={`ait-options-button ait-options-button-add-row`}
-                  onClick={() => { addRow(location.row) }}
-                >
-                  <span className="ait-tiptext ait-tip-top">Add&nbsp;row</span>
-                </div>
-              </div>
+              <AioIconButton
+                tipText="Add row"
+                iconName={"aiox-plus"}
+                onClick={() => { addRow(location.row) }}
+              />
             }
             {typeof removeRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
-              <div className="ait-tip ait-tip-rhs">
-                <div
-                  className={`ait-options-button ait-options-button-remove-row`}
-                  onClick={() => { removeRow(location.row) }}
-                >
-                  <span className="ait-tiptext ait-tip-top">Remove&nbsp;row</span>
-                </div>
-              </div>
+              <AioIconButton
+                tipText="Remove row"
+                iconName={"aiox-minus"}
+                onClick={() => { removeRow(location.row) }}
+              />
             }
           </div>
         </td>

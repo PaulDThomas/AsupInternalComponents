@@ -9,6 +9,7 @@ interface AioIconButtonProps {
   tipText?: string,
   menuItems?: string[],
   leftMenuOffset?: string,
+  style?: React.CSSProperties,
 }
 
 export const AioIconButton = ({
@@ -16,7 +17,8 @@ export const AioIconButton = ({
   iconName,
   tipText,
   menuItems,
-  leftMenuOffset
+  leftMenuOffset,
+  style,
 }: AioIconButtonProps): JSX.Element => {
 
   // Boolean to show menu
@@ -42,7 +44,7 @@ export const AioIconButton = ({
   }, [handleClick, showDrop]);
 
   return (
-    <div className="aio-button-holder">
+    <div className="aio-button-holder" style={style}>
       <div className="aio-tip" style={{ display: "flex", alignContent: "flex-center" }}>
         <div className={`aiox-button ${iconName ?? "aiox-down"}`}
           aria-label={tipText}

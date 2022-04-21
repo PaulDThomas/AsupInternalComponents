@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { v4 as uuidv4 } from 'uuid';
 import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioReplacement } from "../aio";
+import { AioBoolean, AioComment, AioIconButton, AioReplacement } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { newCell, repeatHeaders } from "../functions";
 import './ait.css';
@@ -308,12 +308,12 @@ export const AsupInternalTable = ({
         className="ait-holder"
         style={style}
       >
-        <div>
-          <div className="ait-tip">
-            <div className={`ait-table-options visible`} onClick={() => { setShowOptions(!showOptions); }}>
-              <span className="ait-tip-top ait-tiptext">Table settings</span>
-            </div>
-          </div>
+        <div style={{position:"absolute", top:0, zIndex:2}}>
+          <AioIconButton
+            tipText="Table settings"
+            onClick={() => setShowOptions(!showOptions)}
+            iconName={"aio-button-settings"}
+          />
           {showOptions &&
             <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
               <div className="aiw-body-row">
@@ -382,15 +382,12 @@ export const AsupInternalTable = ({
             <thead>
               <tr>
                 <td className="ait-cell">
-                  <div className="ait-aie-holder">
-                    <div className="ait-tip" style={{ display: "flex", alignContent: "flex-start" }}>
-                      <div
-                        className={`ait-options-button ait-options-button-add-row-group`}
-                        onClick={addNewHeader}
-                      >
-                        <span className="ait-tiptext ait-tip-top">Add&nbsp;header</span>
-                      </div>
-                    </div>
+                  <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "center" }}>
+                    <AioIconButton
+                      tipText={"Add header"}
+                      iconName={"aiox-plus"}
+                      onClick={addNewHeader}
+                    />
                   </div>
                 </td>
               </tr>

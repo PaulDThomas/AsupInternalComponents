@@ -1,104 +1,15 @@
-import { ContentState, convertFromHTML, convertFromRaw, convertToRaw, DraftStyleMap, Editor, EditorState, Modifier, RawDraftContentBlock, RawDraftContentState } from "draft-js";
+import { convertToRaw, DraftHandleValue, DraftStyleMap, Editor, EditorState, Modifier } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { toHtml } from "../functions";
 import './aie.css';
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { loadFromHTML } from "./loadFromHTML";
+import { saveToHTML } from "./saveToHTML";
+import { styleMapToDraft } from "./styleMapToDraft";
+import { styleMapToExclude } from "./styleMapToExclude";
 
 export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
-interface AieStyleExcludeMap { [styleName: string]: string[] };
-
-/**
- * Change AieStyle map into Draft-js version
- * @param styleMap Editor style map
- * @returns Draft-js style map
- */
-const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
-  let d: DraftStyleMap = {};
-  if (styleMap !== undefined)
-    for (let s of Object.keys(styleMap!)) {
-      d[s] = styleMap![s].css;
-    }
-  return d;
-}
-
-/**
- * Returns style maps that are excluded from the given map
- * @param styleMap Current style map
- * @returns list of excluded maps
- */
-const styleMapToExclude = (styleMap?: AieStyleMap): AieStyleExcludeMap => {
-  let e: AieStyleExcludeMap = {};
-  if (styleMap !== undefined) for (let s of Object.keys(styleMap!)) e[s] = styleMap![s].aieExclude;
-  return e;
-}
-
-/**
- * Safely change a draft block into HTML
- * @param b Raw Draft-js block
- * @param dsm Style map that has been applied
- * @returns HTML string of the content
- */
-const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
-  // Explode string
-  var chars = b.text.split("");
-  // Swap out HTML characters for safety
-  chars = chars.map(c => toHtml(c));
-  // Add inline style starts and ends
-  for (const s of b.inlineStyleRanges) {
-    chars[s.offset] = `<span className='${s.style}' style='${Object.entries(dsm[s.style]).map(([k, v]) => `${k.replace(/[A-Z]/g, "-$&").toLowerCase()}:${v}`).join(';')}'>${chars[s.offset]}`;
-    chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
-  }
-  return `<div className='aie-text' data-key='${b.key}' data-type='${b.type}' data-inline-style-ranges='${JSON.stringify(b.inlineStyleRanges)}'>${chars.join('')}</div>`;
-}
-/**
- * Aggregate function to change editor contents into HTML string with line breaks
- * @param d Raw Draft-js block
- * @param dsm Style map that has been applied
- * @returns URI encoded HTML string of the content 
- */
-const saveToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
-  /** Check for just a single line with no formatting/leading spaces */
-  if (d.blocks.length === 1 
-    && d.blocks[0].inlineStyleRanges.length === 0 
-    && !d.blocks[0].text.startsWith(" ")
-    && !d.blocks[0].text.startsWith("&nbsp;")
-    && !d.blocks[0].text.startsWith("\u00A0")
-    )
-    return toHtml(d.blocks[0].text);
-  /** Otherwise save full format */
-  else 
-    return d.blocks.map(b => htmlBlock(b, dsm)).join(``);
-}
-
-const loadFromHTML = (s: string): ContentState => {
-  // There are no spans to apply
-  let initialBlocks = convertFromHTML(s);
-  if (!s.startsWith("<div className='aie-text'")) {
-    let state = ContentState.createFromBlockArray(initialBlocks.contentBlocks, initialBlocks.entityMap,);
-    return state;
-  }
-  // 
-  else {
-    let htmlIn = document.createElement('template');
-    htmlIn.innerHTML = s.trim();
-    let rawBlocks: RawDraftContentBlock[] = [];
-    for (let i = 0; i < htmlIn.content.children.length; i++) {
-      let child = htmlIn.content.children[i] as HTMLDivElement;
-      let rawBlock: RawDraftContentBlock = {
-        key: child.dataset.key ?? "",
-        type: child.dataset.type ?? "unstyled",
-        text: child.innerText,
-        depth: 0,
-        inlineStyleRanges: JSON.parse(child.dataset.inlineStyleRanges ?? "[]"),
-        entityRanges: [],
-      }
-      rawBlocks.push(rawBlock);
-    }
-    let state = convertFromRaw({ blocks: rawBlocks, entityMap: initialBlocks.entityMap });
-    return state;
-  }
-}
+export interface AieStyleExcludeMap { [styleName: string]: string[] };
 
 /** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {
@@ -130,11 +41,13 @@ export const AsupInternalEditor = ({
   const styleMapExclude = useRef<AieStyleExcludeMap>(styleMapToExclude(styleMap));
 
   // Show or hide style buttons
-  const aieShowButtons = useCallback(() => { if (showStyleButtons) { setButtonState(""); } }, [showStyleButtons]);
-  const aieHideButtons = useCallback(() => { setButtonState("hidden"); }, []);
+  const onFocus = useCallback(() => {
+    if (showStyleButtons) { setButtonState(""); }
+  }, [showStyleButtons]);
 
   // Only send data base onBlur of editor
   const onBlur = useCallback(() => {
+    setButtonState("hidden");
     if (typeof (setValue) === "function") {
       setValue(
         saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
@@ -177,12 +90,30 @@ export const AsupInternalEditor = ({
     setEditorState(nextEditorState);
   }
 
+  const handlePastedText = useCallback((text: string, html:string): DraftHandleValue => {
+    let sel = editorState.getSelection();
+    let newContent: Draft.DraftModel.ImmutableData.ContentState;
+    if (sel.getAnchorOffset() === sel.getFocusOffset() && sel.getAnchorKey === sel.getFocusKey) {
+      newContent = Modifier.insertText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        text.trim()
+      );
+    }
+    else {
+      newContent = Modifier.replaceText(
+        editorState.getCurrentContent(),
+        editorState.getSelection(),
+        text.trim()
+      )
+    }
+    setEditorState(EditorState.push(editorState, newContent, 'insert-characters'));
+    return "handled";
+  }, [editorState]);
+
   // Render the component
   return (
-    <div className="aie-outer"
-      onMouseOver={!(editable === false || typeof setValue !== "function") ? aieShowButtons : undefined}
-      onMouseLeave={aieHideButtons}
-    >
+    <div className="aie-outer">
       <div
         className="aie-holder"
         style={{
@@ -199,8 +130,10 @@ export const AsupInternalEditor = ({
           editorState={editorState}
           onChange={setEditorState}
           onBlur={onBlur}
+          onFocus={onFocus}
           textAlignment={textAlignment}
           readOnly={editable === false || typeof setValue !== "function"}
+          handlePastedText={handlePastedText}
         />
       </div>
       {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&

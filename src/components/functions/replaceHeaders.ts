@@ -2,6 +2,7 @@ import { AioReplacement } from "../aio/aioInterface";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { appendCells } from "./appendCells";
 import { newCell } from "./newCell";
+import { newReplacedText } from "../aie/newReplacedText";
 
 /**
  * Recursive function to replace column header information
@@ -92,7 +93,7 @@ export const replaceHeaders = (
             // Create new cell
             let thisRepeat = {
               ...targetCell,
-              replacedText: targetCell.text.replaceAll(replacement.replacementTexts[0].text, rv.newText)
+              replacedText: newReplacedText(targetCell.text, replacement.replacementTexts[0].text, rv.newText)
             } as AitCellData;
             // Expand to cover all lower columns
             if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {

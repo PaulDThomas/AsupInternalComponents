@@ -1,3 +1,4 @@
+import { AioIconButton } from "components/aio";
 import React from "react";
 import { AitColumnRepeat } from "./aitInterface";
 
@@ -23,13 +24,12 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
       {props.changeColumns &&
         <tr>
           <td className="ait-cell">
-            <div className="ait-tip ait-tip-rhs">
-              <div
-                className={`ait-options-button ait-options-button-add-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                onClick={(e) => { props.changeColumns!.addColumn!(-1) }}
-              >
-                <span className="ait-tiptext ait-tip-top">Add&nbsp;column</span>
-              </div>
+            <div className="ait-aie-holder" style={{ display: "flex", justifyContent: "flex-end" }}>
+              <AioIconButton
+                tipText="Add column"
+                iconName="aiox-plus"
+                onClick={() => props.changeColumns!.addColumn!(-1)}
+              />
             </div>
           </td>
           {cis.map((ci: number): JSX.Element => {
@@ -47,27 +47,24 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
 
             return (
               <td className="ait-cell" key={ci}>
-                <div className="ait-tip ait-tip-rhs">
-                  <div
-                    className={`ait-options-button ait-options-button-add-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                    onClick={(e) => { props.changeColumns!.addColumn!(props.columnRepeats![ci].columnIndex) }}
-                  >
-                    <span className="ait-tiptext ait-tip-top">Add&nbsp;column</span>
-                  </div>
-                </div>
+                <div className="ait-aie-holder" style={{ display: "flex" }}>
+                  {!(props.rowHeaderColumns === 1 && ci === 0) &&
+                    !((props.rowHeaderColumns === maxColumnIndex) && ci === props.rowHeaderColumns) &&
+                    <AioIconButton
+                      tipText="Remove column"
+                      iconName="aiox-minus"
+                      onClick={() => props.changeColumns!.removeColumn!(props.columnRepeats![ci].columnIndex)}
+                      style={{ justifySelf: "start" }}
+                    />
+                  }
+                  <div style={{ flexGrow: 1 }} />
+                  <AioIconButton
+                    tipText="Add column"
+                    iconName="aiox-plus"
+                    onClick={() => props.changeColumns!.addColumn!(props.columnRepeats![ci].columnIndex)}
+                  />
 
-                {!(props.rowHeaderColumns === 1 && ci === 0)
-                  && !((props.rowHeaderColumns === maxColumnIndex) && ci === props.rowHeaderColumns)
-                  &&
-                  <div className="ait-tip ait-tip-lhs">
-                    <div
-                      className={`ait-options-button ait-options-button-remove-column ${props.changeColumns!.showButtons ? "" : "hidden"}`}
-                      onClick={(e) => { props.changeColumns!.removeColumn!(props.columnRepeats![ci].columnIndex) }}
-                    >
-                      <span className="ait-tiptext ait-tip-top">Remove&nbsp;column</span>
-                    </div>
-                  </div>
-                }
+                </div>
               </td>
             );
           }
@@ -90,7 +87,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         <tr>
           <td></td>
           {cis.map((ci: number): JSX.Element =>
-            <td className="ait-border-cell" key={ci} style={{minWidth:`${props.minWidth}px`}} />
+            <td className="ait-border-cell" key={ci} style={{ minWidth: `${props.minWidth}px` }} />
           )}
           <td></td>
         </tr>

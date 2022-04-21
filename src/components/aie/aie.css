@@ -20,7 +20,8 @@
   z-index: 10;
   position: absolute;
   bottom: -28px;
-  height: 26px;
+  height: 29px;
+  max-height: 29px;
   min-width: max-content;
   overflow: auto;
   margin: 0px;
@@ -32,6 +33,7 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  box-shadow: 2px 2px 2px rgb(64,64,64, 0.5);
 }
 
 .aie-button-holder::-webkit-scrollbar {
@@ -64,6 +66,7 @@
 
 .aie-button.active {
   background-color: orangered;
+  color: black;
   border: 0;
   height: 24px;
   border-radius: 4px;
