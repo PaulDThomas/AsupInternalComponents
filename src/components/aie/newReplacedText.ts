@@ -6,9 +6,10 @@
  * @returns 
  */
 export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string): string => {
+  let ret: string;
   // Do standard replace if not aie-text or no inline styles
   if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
-    return s.replaceAll(oldPhrase, newPhrase);
+    ret = s.replaceAll(oldPhrase, newPhrase);
   }
   // Otherwise work out new style points
   else {
@@ -44,6 +45,8 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
       child.dataset.inlineStyleRanges = JSON.stringify(inlineStyleRanges);
     }
     // Return processed element
-    return htmlIn.innerHTML;
+    ret = htmlIn.innerHTML;
   }
+  // Change ~ for line break for all replaced text
+  return ret.replace(/~/g, "<br/>");
 }
