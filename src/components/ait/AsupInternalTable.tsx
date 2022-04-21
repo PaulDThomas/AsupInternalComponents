@@ -308,7 +308,7 @@ export const AsupInternalTable = ({
         className="ait-holder"
         style={style}
       >
-        <div style={{position:"absolute", top:0, zIndex:2}}>
+        <div style={{position:"absolute", top:0}}>
           <AioIconButton
             tipText="Table settings"
             onClick={() => setShowOptions(!showOptions)}

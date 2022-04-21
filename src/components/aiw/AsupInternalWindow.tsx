@@ -23,9 +23,8 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
       <Rnd
         style={{
           visibility: (showWindow ? "visible" : "hidden"),
-          zIndex: 1001,
           display:"flex",
-          ...props.style
+          ...props.style,
         }}
         bounds="window"
         minWidth={(props.style && props.style.minWidth) ?? "400px"}
