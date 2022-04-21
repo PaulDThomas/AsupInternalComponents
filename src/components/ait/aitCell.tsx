@@ -1,7 +1,7 @@
 import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from '../aie';
-import { AioComment, AioExpander, AioNumber } from '../aio';
+import { AioComment, AioExpander, AioIconButton, AioNumber } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { objEqual } from "../functions";
 import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
@@ -50,16 +50,6 @@ export const AitCell = ({
   addRowSpan,
   removeRowSpan,
 }: AitCellProps) => {
-
-  // // Cell height
-  // const tdRef = useRef<HTMLTableCellElement | null>(null);
-  // const [height, setHeight] = useState<number | undefined>();
-  // useEffect(() => {
-  //   setHeight(tdRef.current
-  //     ? parseFloat(window.getComputedStyle(tdRef.current).getPropertyValue("height"))
-  //     : undefined
-  //   );
-  // }, []);
 
   // Data holder
   const [displayText, setDisplayText] = useState(
@@ -200,14 +190,13 @@ export const AitCell = ({
       >
 
         <>
-          {/* Option buttons  */}
-          <div className="ait-tip ait-tip-rhs">
-            <div
-              className={`ait-options-button ait-options-button-cell ${buttonState === "hidden" ? "hidden" : ""}`}
-              onClick={() => { setShowCellOptions(true); }}
-            >
-              <span className="ait-tiptext ait-tip-top">Cell&nbsp;options</span>
-            </div>
+          <div style={{position:"absolute", right:"-8px", visibility:(buttonState === "hidden" ? 'hidden' : 'visible')}}>
+            {/* Option buttons  */}
+            <AioIconButton
+              tipText="Cell Options"
+              onClick={() => setShowCellOptions(true)}
+              iconName="aio-button-cell"
+            />
           </div>
         </>
 
@@ -221,38 +210,6 @@ export const AitCell = ({
           showStyleButtons={higherOptions.cellStyles !== undefined}
           styleMap={higherOptions.cellStyles}
         />
-        {/* {currentReadOnly
-          ?
-          <span
-            style={{
-              width: "100%",
-              height: "100%",
-              textAlign: (columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center"),
-            }}
-          >{displayText}
-          </span>
-          :
-          <>{text.split('~').map((t,i) => 
-            <input
-              key={i}
-              style={{
-                backgroundColor: "inherit",
-                fontFamily: "inherit",
-                fontSize: "inherit",
-                border: "0",
-                width: "100%",
-                textAlign: (columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center"),
-              }}
-              value={fromHtml(t)}
-              onChange={(e) => { 
-                let n = text.split("~");
-                n[i] = e.currentTarget.value;
-                console.log(n);
-                returnData({ text: toHtml(n.join("~")) }); 
-              }}
-            />
-          )}</>
-        } */}
       </div>
 
       <div>
@@ -273,7 +230,7 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <AsupInternalEditor value={text} style={{border:"0"}} styleMap={higherOptions.cellStyles}/>
+              <AsupInternalEditor value={text} style={{ border: "0" }} styleMap={higherOptions.cellStyles} />
             </div>
             {(cellType === AitCellType.header)
               ?
