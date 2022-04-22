@@ -16,6 +16,23 @@
   width: 100%
 }
 
+.aie-button-position {
+  width: 100%;
+  display: flex;
+}
+
+.aie-button-position.left {
+  justify-content: flex-start;
+}
+
+.aie-button-position.center {
+  justify-content: center;
+}
+
+.aie-button-position.right {
+  justify-content: flex-end;
+}
+
 .aie-button-holder {
   z-index: 2;
   position: absolute;
@@ -33,7 +50,16 @@
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  box-shadow: 2px 2px 2px rgb(64,64,64, 0.5);
+  box-shadow: 2px 2px 2px rgb(64, 64, 64, 0.5);
+}
+
+.aie-button-position.center .aie-button-holder {
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.aie-button-position.right .aie-button-holder {
+  right: 0;
 }
 
 .aie-button-holder::-webkit-scrollbar {
