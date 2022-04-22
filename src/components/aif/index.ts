@@ -1,5 +1,5 @@
-import { AifBlockLine } from "./aifInterface";
+import { AifBlockLine, AifLineType } from "./aifInterface";
 import { AsupInternalBlock } from "./AsupInternalBlock";
 
 export { AsupInternalBlock };
-export type { AifBlockLine };
+export type { AifBlockLine, AifLineType };
