@@ -55,6 +55,10 @@ export const repeatRows = (
 
   // Rows to the returned by this function 
   let { newRows: newRows2, newRepeatValues, newRepeatNumbers, newLast } = createRepeats(repeats, newRows, targetArray);
+  // Stop processing if there were no repeats
+  if (newRows2.length === 0)
+    return { rows: newRows, repeats: { numbers: [[]], values: [[]], last: [[]] } };
+  else 
   newRows = newRows2;
 
   // Update text based on repeats */
@@ -63,8 +67,6 @@ export const repeatRows = (
   // Process space after
   newRows.map((row, ri) => {
     row.spaceAfter = false;
-    // Always add space after at the end of the group 
-    //if (ri === newRows.length - 1) row.spaceAfter = true;
     // Check for spaceAfter highest level  for within group 
     if (newRepeatNumbers.length > 0) {
       let replacementTexts = replacements.map(r => r.replacementTexts).flat();
@@ -77,6 +79,5 @@ export const repeatRows = (
 
   // Process newRows add rowSpan in rowHeaders */
   updateRowSpans(newRows, newRepeatNumbers, rowHeaderColumns ?? 0);
-
   return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
 };
