@@ -36,7 +36,7 @@ table.ait-table {
 .ait-cell.ait-readonly-cell {
   /* background-color: rgb(240, 221, 168); */
   background-color: #d3d3d329;
-  color: #736e6e;
+  color: #0d0d0dc7;
   font-style: italic;
   opacity: 1;
 }
