@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { AifBlockLine, AsupInternalBlock } from '../components';
+import { AifBlockLine, AsupInternalBlock, AifLineType } from '../components';
 
 export const BlockPage = () => {
 
@@ -28,6 +28,7 @@ export const BlockPage = () => {
             Optional: { css: { color: "green", }, aieExclude: ["Notes"] },
             Notes: { css: { color: "blue", }, aieExclude: ["Optional"] },
           }}
+          defaultType={AifLineType.centreOnly}
         />
       </div>
 

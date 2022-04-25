@@ -9,7 +9,7 @@ export interface AifBlockLine {
   canMove?: boolean,
 }
 
-export enum AifLineType {
+export const enum AifLineType {
   leftOnly = "Left only",
   centreOnly = "Centre only",
   leftAndRight = "Left and Right", 

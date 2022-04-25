@@ -12,6 +12,7 @@ export {
   AsupInternalBlock
 };
 export {
+  AifLineType,
   AioExpander,
   AioReplacementTable,
   AioDropSelect,
@@ -19,7 +20,7 @@ export {
   AioString,
 };
 export type { AieStyleMap };
-export type { AifBlockLine, AifLineType };
+export type { AifBlockLine };
 export type { AioOption, AioOptionGroup, AioReplacement, AioReplacementText, AioReplacementValue };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
 
