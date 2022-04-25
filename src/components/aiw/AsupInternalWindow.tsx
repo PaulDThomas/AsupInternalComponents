@@ -27,8 +27,10 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
           ...props.style,
         }}
         bounds="window"
-        minWidth={(props.style && props.style.minWidth) ?? "400px"}
         minHeight={(props.style && props.style.minHeight) ?? "150px"}
+        minWidth={(props.style && props.style.minWidth) ?? "400px"}
+        maxHeight={(props.style && props.style?.maxHeight) ?? "1000px"}
+        maxWidth={(props.style && props.style?.maxWidth) ?? "1000px"}
         className={"aiw-holder"}
         dragHandleClassName="aiw-title"
       >
@@ -40,7 +42,9 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
               if (typeof(props.onClose) === "function") { props.onClose(); }
             }}>x</div>
           </div>
-          <div className={"aiw-body"}>{props.children}</div>
+          <div className={"aiw-body"}>
+            {props.children}
+            </div>
         </div>
       </Rnd>
     </>

@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { AsupInternalWindow } from '../components';
+import React, { useState } from 'react';
+import { Rnd } from 'react-rnd';
+import { AsupInternalEditor, AsupInternalWindow } from '../components';
 
-export const WindowPage = (props) => {
-  const [showWindow, setShowWindow] = useState(false);
+export const WindowPage = () => {
+  const [showWindow, setShowWindow] = useState<boolean>(true);
+  const [someText, setSomeText] = useState<string>("");
 
   return (
     <>
@@ -33,19 +35,19 @@ export const WindowPage = (props) => {
             }
             Title={"This is the window title"}
           >
+
             <div style={{
-              border: "black solid 1px",
-              minHeight: "250px",
-              width: "500px",
-              padding: "-2px -2px -2px -2px",
-              zIndex: "500",
-              backgroundColor: "white",
-              borderRadius: "8px",
+              backgroundColor: "cyan",
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              flexGrow: 1,
+              flexDirection:"column",
             }}>
-              <p style={{ padding: "0 1rem" }}>Internal Child 1</p>
-              <p style={{ padding: "0 1rem" }}>Internal Child 2</p>
-              <p style={{ padding: "0 1rem" }}>Internal Child 3</p>
+              <span>h</span>
             </div>
+
+
           </AsupInternalWindow>
         </form>
       </div>
