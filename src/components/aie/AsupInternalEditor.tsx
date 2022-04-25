@@ -134,7 +134,7 @@ export const AsupInternalEditor = ({
       </div>
 
       {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
-        <div className={`aie-button-position ${textAlignment}`}>
+        <div className={`aie-button-position ${textAlignment !== undefined ? textAlignment : "left"}`}>
           <div className="aie-button-holder">
             <AieStyleButtonRow
               styleList={Object.keys(currentStyleMap.current)}

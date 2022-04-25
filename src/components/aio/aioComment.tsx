@@ -20,10 +20,6 @@ export const AioComment = ({
       <AioLabel label={label} />
       <div className={"aio-input-holder"}>
         <AsupInternalEditor
-          style={typeof setValue === "function"
-            ? { resize: "both", overflow: "auto" }
-            : { minWidth: "0", width: "auto", height: "auto", border: "0"}
-          }
           showStyleButtons={typeof commentStyles === "object"}
           value={value}
           editable={typeof setValue === "function"}

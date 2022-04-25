@@ -4,16 +4,39 @@
   height: 100%;
   border: 1px dashed rgb(190, 190, 189);
   border-radius: 1px;
-}
-
-.aie-holder {
-  min-width: 8px;
   display: flex;
   flex-direction: column;
 }
 
-.aie-holder .DraftEditor-root {
-  width: 100%
+.aie-holder {
+  min-width: 8px;
+  max-width: 100%;
+  max-height: 800px;
+  margin: 1px;
+  padding: 0;
+  overflow: auto;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.aio-input-holder .aie-outer {
+  max-width: 354px;
+  max-height: 800px;
+  min-width: 354px;
+  min-height: 120px;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin-right: 0.5rem;
+}
+
+/* Make sure draft elements fill the container */
+.aie-holder .DraftEditor-root,
+.aie-holder .DraftEditor-editorContainer,
+.aie-holder .public-DraftEditor-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .aie-button-position {
