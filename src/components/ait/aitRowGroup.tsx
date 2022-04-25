@@ -46,9 +46,9 @@ export const AitRowGroup = ({
   }, [higherOptions]);
 
   // General function to return complied object
-  const returnData = useCallback((rowGroupUpdate: { 
-    rows?: AitRowData[], 
-    replacements?: AioReplacement[], 
+  const returnData = useCallback((rowGroupUpdate: {
+    rows?: AitRowData[],
+    replacements?: AioReplacement[],
     spaceAfter?: boolean,
     comments?: string,
   }) => {
@@ -107,13 +107,13 @@ export const AitRowGroup = ({
 
   const removeRow = useCallback((ri: number) => {
     let newRows = [...rows];
-    
+
     // Look for any cells with multiple row span
     newRows[ri].cells.map((c, ci) => {
       // Found hidden cell
       if ((c.rowSpan ?? 1) > 1) {
         // Adjust the rowSpan of the cell above
-        for (let i=1; i < c.rowSpan!; i++) {
+        for (let i = 1; i < c.rowSpan!; i++) {
           if (newRows[ri + i].cells[ci].rowSpan === 0) {
             newRows[ri + 1].cells[ci].rowSpan = 1;
           }
@@ -188,7 +188,11 @@ export const AitRowGroup = ({
   const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
     return repeatRows(
       rows,
-      replacements,
+      replacements.map(repl => {
+        let n = { ...repl };
+        if (n.airid === undefined) n.airid = uuidv4();
+        return n;
+      }),
       higherOptions.noRepeatProcessing,
       higherOptions.rowHeaderColumns,
       higherOptions.externalLists,
@@ -218,7 +222,7 @@ export const AitRowGroup = ({
             addRowGroup={addRowGroup}
             removeRowGroup={removeRowGroup}
             rowGroupComments={comments ?? ""}
-            updateRowGroupComments={(ret) => {returnData({comments: ret})}}
+            updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
             addRow={addRow}
             removeRow={rows.length > 1 ? removeRow : undefined}
             spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? 0 : false)}

@@ -87,7 +87,12 @@ export const ListPage = (): JSX.Element => {
         <div>
           {currentL >= 0 &&
             <AioReplacementTable
-              replacement={li[currentL].list}
+              airid={li[currentL].list.airid}
+              replacementTexts={li[currentL].list.replacementTexts}
+              replacementValues={li[currentL].list.replacementValues}
+              givenName={li[currentL].list.givenName}
+              externalName={li[currentL].list.externalName}
+
               setReplacement={ret => {
                 let newL: NamedList = { ...li[currentL], list: ret };
                 let newLi = [...li];
