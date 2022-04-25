@@ -3,7 +3,7 @@ import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioIconButton, AioSelect } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
-import { AifBlockLine, AifLineType } from "./aifInterface";
+import { AifBlockLine } from "./aifInterface";
 
 interface AifLineDisplayProps {
   aifid?: string,
@@ -64,7 +64,7 @@ export const AifLineDisplay = ({
           <div className="aiw-body-row">
             <AioSelect
               label="Line type"
-              availableValues={Object.values(AifLineType)}
+              availableValues={["Left only", "Centre only", "Left, Centre and Right", "Left and Right"]}
               value={
                 typeof left === "string" && typeof centre == "string" && typeof right === "string"
                   ? "Left, Centre and Right"
