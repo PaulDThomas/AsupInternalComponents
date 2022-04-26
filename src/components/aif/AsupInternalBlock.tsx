@@ -11,7 +11,8 @@ interface AsupInternalBlockProps {
   minLines?: number,
   maxLines?: number,
   styleMap?: AieStyleMap,
-  defaultType?: AifLineType
+  defaultType?: AifLineType,
+  style?: React.CSSProperties,
 }
 export const AsupInternalBlock = ({
   lines,
@@ -20,6 +21,7 @@ export const AsupInternalBlock = ({
   maxLines,
   styleMap,
   defaultType,
+  style,
 }: AsupInternalBlockProps): JSX.Element => {
 
   /** Check lines object min/max rule */
@@ -109,7 +111,7 @@ export const AsupInternalBlock = ({
   }, [lines, returnData])
 
   return (
-    <div className="aif-block" >
+    <div className="aif-block" style={{...style}}>
       {lines.map((l: AifBlockLine, li: number) => (
         <AifLineDisplay
           key={l.aifid ?? li}
