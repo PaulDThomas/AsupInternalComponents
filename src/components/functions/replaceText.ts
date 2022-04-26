@@ -15,7 +15,7 @@ export const replaceText = (
         // Replace if there in old and new text
         let o = replacementTexts![rt].text;
         let n = newRepeatValues[r][rt];
-        if (n)
+        if (n && o)
           replacedText = newReplacedText(replacedText,o, n);
       }
       if (replacedText !== cell.text) {
