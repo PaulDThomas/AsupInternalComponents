@@ -7,30 +7,18 @@ export interface AioOption {
   availableValues?: string[],
   readOnly?: boolean,
 }
-export interface AioOptionGroup extends Array<AioOption> { };
-
-/** Individual text replacements */
-export interface AioReplacementText {
-  text: string,
-  spaceAfter: boolean,
-}
-
-/** Single replacement value, allowing for sublists */
-export interface AioReplacementValue {
-  newText: string,
-  subList?: AioReplacementValue[],
-}
 
 /** Text replacements, and their replacement matrix */
 export interface AioReplacement {
   airid?: string,
-  replacementTexts: AioReplacementText[],
-  replacementValues: AioReplacementValue[],
+  oldText: string,
+  newText: string[],
+  subLists?: AioReplacement[],
+  spaceAfter?: boolean,
+  includeTrailing?: boolean,
   givenName?: string,
   externalName?: string,
 }
-
-export interface AioRepeats { numbers: number[][], values: string[][], last: boolean[][] };
 
 export enum AioOptionType {
   string = "string",

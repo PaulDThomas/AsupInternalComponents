@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import "./aio.css";
-import { AioOption, AioOptionGroup } from "./aioInterface";
+import { AioOption } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioPrintOption } from "./aioPrintOption";
 
 interface AioOptionDisplayProps {
-  options?: AioOptionGroup,
-  setOptions?: (ret: AioOptionGroup) => void,
+  options?: AioOption[],
+  setOptions?: (ret: AioOption[]) => void,
   buttonText?: string,
 }
 

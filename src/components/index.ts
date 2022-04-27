@@ -1,7 +1,7 @@
 
 import { AieStyleMap, AsupInternalEditor } from "./aie";
 import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
-import { AioDropSelect, AioExpander, AioIconButton, AioOption, AioOptionGroup, AioReplacement, AioReplacementTable, AioReplacementText, AioReplacementValue, AioString } from "./aio";
+import { AioDropSelect, AioExpander, AioIconButton, AioOption, AioReplacement, AioReplacementDisplay, AioString } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
 import { AsupInternalWindow } from "./aiw";
 
@@ -14,13 +14,13 @@ export {
 export {
   AifLineType,
   AioExpander,
-  AioReplacementTable,
+  AioReplacementDisplay,
   AioDropSelect,
   AioIconButton,
   AioString,
 };
 export type { AieStyleMap };
 export type { AifBlockLine };
-export type { AioOption, AioOptionGroup, AioReplacement, AioReplacementText, AioReplacementValue };
+export type { AioOption, AioReplacement };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
 

@@ -3,10 +3,10 @@ import { AioComment } from "./aioComment";
 import { AioDropSelect } from "./aioDropSelect";
 import { AioExpander } from "./aioExpander";
 import { AioIconButton } from "./aioIconButton";
-import { AioOption, AioOptionGroup, AioRepeats, AioReplacement, AioReplacementText, AioReplacementValue } from "./aioInterface";
+import { AioOption, AioReplacement } from "./aioInterface";
 import { AioNumber } from "./aioNumber";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
-import { AioReplacementTable } from "./aioReplacementTable";
+import { AioReplacementList } from "./aioReplacementList";
 import { AioSelect } from "./aioSelect";
 import { AioString } from "./aioString";
 
@@ -17,17 +17,13 @@ export {
   AioExpander,
   AioIconButton,
   AioNumber,
+  AioReplacementList,
   AioReplacementDisplay,
-  AioReplacementTable,
   AioSelect,
   AioString,
 };
 export type {
   AioOption,
-  AioOptionGroup,
-  AioRepeats,
   AioReplacement,
-  AioReplacementText,
-  AioReplacementValue
 };
 

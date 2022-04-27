@@ -1,15 +1,10 @@
-import { AioReplacement, AioReplacementTable, AioString } from '../components';
+import { AioReplacement, AioReplacementDisplay, AioString } from '../components';
 import React, { useCallback, useRef, useState } from 'react';
-
-interface NamedList {
-  name: string,
-  list: AioReplacement,
-};
 
 export const ListPage = (): JSX.Element => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [li, setLi] = useState<NamedList[]>([]);
+  const [repls, setRepls] = useState<AioReplacement[]>([]);
   const [currentL, setCurrentL] = useState<number>(-1);
 
   const loadData = useCallback(() => {
@@ -19,7 +14,7 @@ export const ListPage = (): JSX.Element => {
       }
       if (ta.current) {
         const j = JSON.parse(ta.current.value?.toString() ?? "[]");
-        setLi(j);
+        setRepls(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }
@@ -40,26 +35,25 @@ export const ListPage = (): JSX.Element => {
       <div style={{ width: "30%" }}>
         <h4>Available lists</h4>
         <div>
-          {li.map((l, i) =>
+          {repls.map((l, i) =>
             <div key={i}>
               <span onFocus={e => { setCurrentL(i); }}>
                 <AioString
-                  value={li[i].name}
+                  value={repls[i].givenName}
                   setValue={(ret) => {
-                    let newL: NamedList = { ...li[i], name: ret };
-                    newL.list.givenName = ret;
-                    let newLi = [...li];
-                    newLi.splice(i, 1, newL);
-                    setLi(newLi);
+                    let newRepl: AioReplacement = { ...repls[i], givenName:ret};
+                    let newRepls = [...repls];
+                    newRepls.splice(i, 1, newRepl);
+                    setRepls(newRepls);
                   }}
                 />
               </span>
               <div
                 className='aiox-button aiox-minus'
                 onClick={e => {
-                  let newLi = [...li];
+                  let newLi = [...repls];
                   newLi.splice(i, 1);
-                  setLi(newLi);
+                  setRepls(newLi);
                   setCurrentL(i - 1);
                 }}
               />
@@ -73,11 +67,11 @@ export const ListPage = (): JSX.Element => {
         <div
           className='aiox-button aiox-plus'
           onClick={e => {
-            let newL: NamedList = { name: "New list", list: { replacementTexts: [{ text: "", spaceAfter: false }], replacementValues: [{ newText: "" }] } };
-            let newLi = [...li];
-            newLi.push(newL);
-            setLi(newLi);
-            setCurrentL(newLi.length - 1)
+            let newRepl: AioReplacement = { oldText: "", newText:[""] };
+            let newRepls = [...repls];
+            newRepls.push(newRepl);
+            setRepls(newRepls);
+            setCurrentL(newRepls.length - 1)
           }}
         />
 
@@ -86,20 +80,21 @@ export const ListPage = (): JSX.Element => {
         <h4>List values</h4>
         <div>
           {currentL >= 0 &&
-            <AioReplacementTable
-              airid={li[currentL].list.airid}
-              replacementTexts={li[currentL].list.replacementTexts}
-              replacementValues={li[currentL].list.replacementValues}
-              givenName={li[currentL].list.givenName}
-              externalName={li[currentL].list.externalName}
-
+            <AioReplacementDisplay
+              airid={repls[currentL].airid}
+              oldText={repls[currentL].oldText}
+              newText={repls[currentL].newText}
+              subLists={repls[currentL].subLists}
+              spaceAfter={repls[currentL].spaceAfter}
+              includeTrailing={repls[currentL].includeTrailing}
+              givenName={repls[currentL].givenName}
+              externalName={repls[currentL].externalName}
               setReplacement={ret => {
-                let newL: NamedList = { ...li[currentL], list: ret };
-                let newLi = [...li];
-                newLi.splice(currentL, 1, newL);
-                setLi(newLi);
+                let newRepls = [...repls];
+                newRepls.splice(currentL, 1, ret);
+                setRepls(newRepls);
               }}
-              dontShowText={true}
+              // dontShowText={true}
             />
           }
         </div>
@@ -119,9 +114,9 @@ export const ListPage = (): JSX.Element => {
         onClick={() => {
           if (!ta.current) return;
           // Show intended data
-          ta.current.value = JSON.stringify(li, null, 2);
+          ta.current.value = JSON.stringify(repls, null, 2);
           // Save string
-          window.localStorage.setItem('listContent', JSON.stringify(li));
+          window.localStorage.setItem('listContent', JSON.stringify(repls));
         }}
       >
         Save
