@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { AifBlockLine, AsupInternalBlock } from '../components';
+import { AifBlockLine, AsupInternalBlock, AifLineType } from '../components';
 
 export const BlockPage = () => {
 
@@ -24,10 +24,13 @@ export const BlockPage = () => {
           setLines={setLines}
           minLines={3}
           maxLines={10}
+          style={{fontFamily:"Courier New", fontWeight:800}}
           styleMap={{
-            Optional: { css: { color: "green", }, aieExclude: ["Notes"] },
-            Notes: { css: { color: "blue", }, aieExclude: ["Optional"] },
+            Green: { css: { color: "green", }, aieExclude: ["Blue", "Red"] },
+            Blue: { css: { color: "blue", }, aieExclude: ["Green", "Red"] },
+            Red: { css: { color: "red", }, aieExclude: ["Green", "Blue"] },
           }}
+          defaultType={AifLineType.centreOnly}
         />
       </div>
 

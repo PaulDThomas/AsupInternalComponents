@@ -20,59 +20,66 @@ interface AioReplacementsProps {
  * @param props replacement object
  * @returns JSX
  */
-export const AioReplacementDisplay = (props: AioReplacementsProps): JSX.Element => {
+export const AioReplacementDisplay = ({
+  replacements,
+  setReplacements,
+  dontAskSpace,
+  externalLists,
+}: AioReplacementsProps): JSX.Element => {
 
   /** Update individual replacement and send it back */
   const updateReplacement = useCallback((ret: AioReplacement, i: number) => {
-    let newValue = [...props.replacements];
+    if (typeof setReplacements !== "function") return;
+    let newValue = [...replacements];
     newValue[i] = ret;
-    if (typeof (props.setReplacements) === "function") props.setReplacements(newValue);
-  }, [props]);
+    setReplacements(newValue);
+  }, [replacements, setReplacements]);
 
-  const addReplacement = useCallback(() => {
-    let newReplacements = [...props.replacements];
-    newReplacements.push({
-      replacementTexts: [{
-        text: "",
-        spaceAfter: false,
-      }],
-      replacementValues: [{
-        newText: "",
-      }],
-    });
-    props.setReplacements!(newReplacements);
-  }, [props]);
+  const addReplacement = useCallback((i: number) => {
+    let newReplacements = [...replacements];
+    let newReplacement: AioReplacement = { replacementTexts: [{ text: "", spaceAfter: false, }], replacementValues: [{ newText: "", }], };
+    newReplacements.splice(i + 1, 0, newReplacement);
+    setReplacements!(newReplacements);
+  }, [replacements, setReplacements]);
 
-  const removeReplacement = useCallback(() => {
-    let newReplacements = [...props.replacements];
-    newReplacements.pop();
-    props.setReplacements!(newReplacements);
-  }, [props.replacements, props.setReplacements]);
+  const removeReplacement = useCallback((i: number) => {
+    let newReplacements = [...replacements];
+    newReplacements.splice(i, 1);
+    setReplacements!(newReplacements);
+  }, [replacements, setReplacements]);
 
   return (
     <>
       <AioLabel label={"Replace text"} />
       <div className={"aio-input-holder"}>
-        {(props.replacements ?? []).map((repl, i) => {
-          return (
-            <div key={i}>
-              {i > 0 && <div> and then...</div>}
-              <AioReplacementTable
-                replacement={repl}
-                setReplacement={(ret) => updateReplacement(ret, i)}
-                dontAskSpace={props.dontAskSpace}
-                externalLists={props.externalLists}
-              />
-            </div>
-          )
-        }
-        )}
-        {typeof props.setReplacements === "function" &&
+        {typeof setReplacements === "function" && 
           <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px" }}>
-            <div className={"aiox-button aiox-addDown"} onClick={addReplacement} />
-            {props.replacements.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={removeReplacement} />}
+            <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(-1)} />
           </div>
         }
+        {(replacements ?? []).map((repl, i) => {
+          return (
+            <div key={repl.airid ?? i}>
+              {i > 0 && <div> and then...</div>}
+              <AioReplacementTable
+                airid={repl.airid}
+                replacementTexts={repl.replacementTexts}
+                replacementValues={repl.replacementValues}
+                givenName={repl.givenName}
+                externalName={repl.externalName}
+                setReplacement={(ret) => updateReplacement(ret, i)}
+                dontAskSpace={dontAskSpace}
+                externalLists={externalLists}
+              />
+              {typeof setReplacements === "function" &&
+                <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px" }}>
+                  <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(i)} />
+                  {replacements.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => removeReplacement(i)} />}
+                </div>
+              }
+            </div>
+          )
+        })}
       </div>
     </>
   );

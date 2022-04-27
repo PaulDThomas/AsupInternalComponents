@@ -124,7 +124,13 @@ export const AitRow = ({
                 }
                 {/* Row group options window */}
                 {showRowGroupOptions && replacements !== undefined &&
-                  <AsupInternalWindow key="RowGroup" Title={(rowGroupWindowTitle ?? "Row group options")} Visible={showRowGroupOptions} onClose={() => { setShowRowGroupOptions(false); }}>
+                  <AsupInternalWindow
+                    key="RowGroup"
+                    Title={(rowGroupWindowTitle ?? "Row group options")}
+                    Visible={showRowGroupOptions}
+                    onClose={() => { setShowRowGroupOptions(false); }}
+                    style={{maxHeight:"75vh"}}
+                  >
                     <div className="aiw-body-row">
                       <AioComment
                         label={"Notes"}

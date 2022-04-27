@@ -64,7 +64,7 @@ export const AifLineDisplay = ({
           <div className="aiw-body-row">
             <AioSelect
               label="Line type"
-              availableValues={["Left only", "Centre only", "Left and Right", "Left, Centre and Right"]}
+              availableValues={["Left only", "Centre only", "Left, Centre and Right", "Left and Right"]}
               value={
                 typeof left === "string" && typeof centre == "string" && typeof right === "string"
                   ? "Left, Centre and Right"

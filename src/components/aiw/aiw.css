@@ -11,8 +11,7 @@
 }
 
 .aiw-inner {
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: none;
     cursor: default;
     flex-grow: 1;
     margin-bottom: 2rem;
@@ -22,7 +21,7 @@
     text-transform: capitalize;
     border-bottom: 1px black dashed;
     padding-bottom: 4px;
-    margin: 0 4px 4px 4px;
+    margin: 0 4px 3px 4px;
     font-size: 1.2rem;
     font-weight: 600;
     flex-grow: 1;
@@ -50,7 +49,9 @@
 }
 
 .aiw-body {
-    overflow: none;
+    overflow: auto;
+    /* fill inner minus total title height */
+    height: calc(100% - 34px); 
 }
 
 .aiw-body-row {
@@ -61,3 +62,23 @@
 .aiw-body-row:not(:first-child) {
     margin-top: 4px;
 }
+
+.aiw-body::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+.aiw-body::-webkit-scrollbar-track {
+    background: white;
+    border-radius: 100px;
+}
+
+.aiw-body::-webkit-scrollbar-thumb {
+    background: lightgrey;
+    border: none;
+    border-radius: 100px;
+  }
+  
+  .aiw-body::-webkit-scrollbar-thumb:hover {
+    background: grey;
+  }

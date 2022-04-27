@@ -5,17 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "command": "npm start",
+            "name": "Run npm start",
+            "request": "launch",
+            "type": "node-terminal",
+            "env": {
+                "PORT": "3003"
+            }
+        },
+        {
             "type": "pwa-chrome",
             "request": "attach",
             "port": 9222,
             "name": "Attach to Browser debug",
             "webRoot": "${workspaceFolder}"
-        },
-        {
-            "command": "npm start",
-            "name": "Run npm start",
-            "request": "launch",
-            "type": "node-terminal"
         }
     ]
 }

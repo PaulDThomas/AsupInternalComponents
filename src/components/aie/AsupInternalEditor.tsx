@@ -90,7 +90,7 @@ export const AsupInternalEditor = ({
     setEditorState(nextEditorState);
   }
 
-  const handlePastedText = useCallback((text: string, html:string): DraftHandleValue => {
+  const handlePastedText = useCallback((text: string, html: string): DraftHandleValue => {
     let sel = editorState.getSelection();
     let newContent: Draft.DraftModel.ImmutableData.ContentState;
     if (sel.getAnchorOffset() === sel.getFocusOffset() && sel.getAnchorKey === sel.getFocusKey) {
@@ -113,37 +113,36 @@ export const AsupInternalEditor = ({
 
   // Render the component
   return (
-    <div className="aie-outer">
+    <div className="aie-outer"
+      style={{
+        ...style,
+      }}
+    >
       <div
         className="aie-holder"
-        style={{
-          ...style,
-          alignItems: textAlignment === "left"
-            ? "flex-start"
-            : textAlignment === "right"
-              ? "flex-end"
-              : textAlignment
-        }}
+        onBlur={onBlur}
+        onFocus={onFocus}
       >
         <Editor
           customStyleMap={currentStyleMap.current}
           editorState={editorState}
           onChange={setEditorState}
-          onBlur={onBlur}
-          onFocus={onFocus}
           textAlignment={textAlignment}
           readOnly={editable === false || typeof setValue !== "function"}
           handlePastedText={handlePastedText}
         />
       </div>
+
       {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
-        <div className="aie-button-holder aie-style-button-holder">
-          <AieStyleButtonRow
-            styleList={Object.keys(currentStyleMap.current)}
-            currentStyle={editorState.getCurrentInlineStyle()}
-            applyStyleFunction={aieApplyStyle}
-            disabled={editorState.getSelection().isCollapsed()}
-          />
+        <div className={`aie-button-position ${textAlignment !== undefined ? textAlignment : "left"}`}>
+          <div className="aie-button-holder">
+            <AieStyleButtonRow
+              styleList={Object.keys(currentStyleMap.current)}
+              currentStyle={editorState.getCurrentInlineStyle()}
+              applyStyleFunction={aieApplyStyle}
+              disabled={editorState.getSelection().isCollapsed()}
+            />
+          </div>
         </div>
       }
     </div>

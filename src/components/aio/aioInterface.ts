@@ -23,6 +23,7 @@ export interface AioReplacementValue {
 
 /** Text replacements, and their replacement matrix */
 export interface AioReplacement {
+  airid?: string,
   replacementTexts: AioReplacementText[],
   replacementValues: AioReplacementValue[],
   givenName?: string,

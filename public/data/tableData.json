@@ -35,10 +35,8 @@
     "comments": "",
     "rows": [
       {
-        "aitid": "7f3fb58c-2b1a-4155-878a-a13c51635a11",
         "cells": [
           {
-            "aitid": "05315c16-9964-4e76-87bd-e4a7b2e5905a",
             "text": "",
             "comments": "",
             "colSpan": 1,
@@ -47,8 +45,7 @@
             "textIndents": 0
           },
           {
-            "aitid": "fe5093dc-1258-4d5e-872e-fae99e2e67d9",
-            "text": "<div classname=\"aie-text\" data-key=\"7kj0r\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">Statistic</span></div>",
+            "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">Statistic</span></div>",
             "comments": "",
             "colSpan": 1,
             "rowSpan": 2,
@@ -60,37 +57,31 @@
             "colSpan": 1,
             "rowSpan": 1,
             "textIndents": 0,
-            "replacedText": "&lt;&lt;low&nbsp;dose&gt;&gt;",
-            "aitid": "400b2d13-09e1-4ad2-a3ae-fcd078076cc0"
+            "replacedText": "&lt;&lt;low&nbsp;dose&gt;&gt;"
           },
           {
             "text": "Total",
             "colSpan": 1,
             "rowSpan": 1,
-            "textIndents": 0,
-            "aitid": "5a09c048-31ef-4d45-b044-d6ddd7ee5468"
+            "textIndents": 0
           }
         ]
       },
       {
-        "aitid": "3a4da0e4-27a7-41b8-93ee-fbd9b514d49e",
         "cells": [
           {
             "text": "",
             "colSpan": 1,
             "rowSpan": 0,
-            "textIndents": 0,
-            "aitid": "6a6b8d60-4cf8-4eed-a13c-f780ac514045"
+            "textIndents": 0
           },
           {
             "text": "",
             "rowSpan": 0,
             "colSpan": 1,
-            "textIndents": 0,
-            "aitid": "167f4701-cebc-4a0e-8536-19a94a449ae3"
+            "textIndents": 0
           },
           {
-            "aitid": "ac6c6203-4287-4aa4-a7c4-b3fe55a93032",
             "text": "N=xxx",
             "comments": "",
             "colSpan": 1,
@@ -99,7 +90,6 @@
             "textIndents": 0
           },
           {
-            "aitid": "c1a54ac1-5034-44ca-b19f-10a0f6a3338e",
             "text": "N=xxx",
             "comments": "",
             "colSpan": 1,
@@ -113,14 +103,11 @@
   },
   "bodyData": [
     {
-      "aitid": "808413e6-e7c9-4807-9a3e-29b9d48e6c89",
       "rows": [
         {
-          "aitid": "30a9f880-cbe4-416c-8245-4ddf7913e1c0",
           "cells": [
             {
-              "aitid": "df8a3213-79e4-45d6-b7f7-8a35631c8874",
-              "text": "<div classname=\"aie-text\" data-key=\"bac21\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"},{\"offset\":11,\"length\":8,\"style\":\"Notes\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">!!label!!</span> (<span classname=\"Notes\" style=\"color:royalblue\">!!unit!!</span>)</div>",
+              "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"},{\"offset\":11,\"length\":8,\"style\":\"Notes\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">!!label!!</span> (<span classname=\"Notes\" style=\"color:royalblue\">!!unit!!</span>)</div>",
               "comments": "",
               "colSpan": 1,
               "rowSpan": 1,
@@ -130,22 +117,19 @@
               "text": "!!stat!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "51b476f6-9228-468b-89eb-8e0536f06526"
+              "textIndents": 0
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "1921b229-eb28-4959-83f4-9c1300f120ba"
+              "textIndents": 0
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "8426aac9-74e7-420b-834c-81a6fad26732"
+              "textIndents": 0
             }
           ]
         }
@@ -248,7 +232,6 @@
       "spaceAfter": true
     },
     {
-      "aitid": "fa30989f-0b0c-4831-9a16-7a67c4618861",
       "rows": [
         {
           "cells": [
@@ -256,39 +239,32 @@
               "text": "!!label!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "a3a87ad5-a126-457b-a98f-c84b26e93394"
+              "textIndents": 0
             },
             {
               "text": "",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "7d881539-1279-4173-abcc-54953757c390"
+              "textIndents": 0
             },
             {
               "text": "",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "838d0a9b-edc0-4c19-82d7-4a26e730cabd"
+              "textIndents": 0
             },
             {
               "text": "",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "6f46f1f8-d16f-4229-99e9-cc25c50bdcc9"
+              "textIndents": 0
             }
-          ],
-          "aitid": "78a78d9f-3086-43aa-999b-d95589ec00ec"
+          ]
         },
         {
-          "aitid": "1ae3732f-2c5a-4c4e-b819-b35c5308c155",
           "cells": [
             {
-              "aitid": "529ffa2d-ac6d-482e-833c-49af72b4b228",
-              "text": "<div classname=\"aie-text\" data-key=\"37fii\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":12,\"style\":\"Notes\"}]'><span classname=\"Notes\" style=\"color:royalblue\">!!category!!</span></div>",
+              "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":12,\"style\":\"Notes\"}]'><span classname=\"Notes\" style=\"color:royalblue\">!!category!!</span></div>",
               "comments": "",
               "colSpan": 1,
               "rowSpan": 1,
@@ -298,22 +274,19 @@
               "text": "!!stat!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "9296b0c8-694b-4745-b395-c0e8ea7f1a57"
+              "textIndents": 0
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "e470001e-f6d3-4463-b515-924f6c8e609c"
+              "textIndents": 0
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0,
-              "aitid": "ae94adbe-77f1-4a6e-9f63-fb61add92ac2"
+              "textIndents": 0
             }
           ]
         }
@@ -328,7 +301,7 @@
           ],
           "replacementValues": [
             {
-              "newText": "Age&nbsp;group&nbsp;(&lt;&lt;unit&gt;&gt;)"
+              "newText": "Age group (&lt;&lt;unit&gt;&gt;)"
             }
           ]
         },
@@ -341,13 +314,13 @@
           ],
           "replacementValues": [
             {
-              "newText": "&lt;&lt;Category&nbsp;1&gt;&gt;"
+              "newText": "&lt;&lt;Category 1&gt;&gt;"
             },
             {
-              "newText": "&lt;&lt;Category&nbsp;2&gt;&gt;"
+              "newText": "&lt;&lt;Category 2&gt;&gt;"
             },
             {
-              "newText": "&lt;&lt;Category&nbsp;3&gt;&gt;"
+              "newText": "&lt;&lt;Category 3&gt;&gt;"
             },
             {
               "newText": "Missing"

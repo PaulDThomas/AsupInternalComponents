@@ -3,14 +3,16 @@ import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap } from '../aie';
 import "./aif.css";
 import { AifLineDisplay } from './aifLineDisplay';
-import { AifBlockLine } from './aifInterface';
+import { AifBlockLine, AifLineType } from './aifInterface';
 
 interface AsupInternalBlockProps {
   lines: AifBlockLine[]
   setLines?: (ret: AifBlockLine[]) => void
   minLines?: number,
   maxLines?: number,
-  styleMap?: AieStyleMap
+  styleMap?: AieStyleMap,
+  defaultType?: AifLineType,
+  style?: React.CSSProperties,
 }
 export const AsupInternalBlock = ({
   lines,
@@ -18,6 +20,8 @@ export const AsupInternalBlock = ({
   minLines,
   maxLines,
   styleMap,
+  defaultType,
+  style,
 }: AsupInternalBlockProps): JSX.Element => {
 
   /** Check lines object min/max rule */
@@ -78,9 +82,27 @@ export const AsupInternalBlock = ({
       canMove: true,
       canRemove: true,
     };
+    if (defaultType !== undefined) {
+      switch (defaultType) {
+        case AifLineType.leftOnly:
+          newLine.right = false;
+          newLine.centre = false;
+          break;
+        case AifLineType.leftAndRight:
+          newLine.centre = false;
+          break;
+        case AifLineType.centreOnly:
+          newLine.left = false;
+          newLine.right = false;
+          break;
+        case AifLineType.leftCentreAndRight:
+        default:
+          break;
+      }
+    }
     newLines.splice(li + 1, 0, newLine);
     returnData({ lines: newLines });
-  }, [lines, returnData])
+  }, [defaultType, lines, returnData])
 
   const removeLine = useCallback((li: number) => {
     let newLines = [...lines];
@@ -89,7 +111,7 @@ export const AsupInternalBlock = ({
   }, [lines, returnData])
 
   return (
-    <div className="aif-block" >
+    <div className="aif-block" style={{...style}}>
       {lines.map((l: AifBlockLine, li: number) => (
         <AifLineDisplay
           key={l.aifid ?? li}

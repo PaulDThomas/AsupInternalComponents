@@ -6,16 +6,16 @@ export const toHtml = (text: string): string =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;")
     .replace(/\n/g, "<br/>")
-    .replace(/ /g, "&nbsp;")
+    .replace(/\u0060/g, "&nbsp;")
   ;
 
 export const fromHtml = (text: string): string =>
   text
-    .replace(/&nbsp;/g, " ")
+    .replace(/&nbsp;/g, "\u00A0")
     .replace(/<br\/>/g, "\n")
-    .replace(/&gt;/g, ">")
-    .replace(/&lt;/g, "<")
-    .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&amp;/g, "&")
   ;

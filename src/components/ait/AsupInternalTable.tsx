@@ -60,7 +60,11 @@ export const AsupInternalTable = ({
         aitid: "processedHeader",
         rows: headerDataUpdate.rows,
         comments: tableData.headerData.comments ?? "",
-        replacements: tableData.headerData.replacements
+        replacements: (tableData.headerData.replacements ?? []).map(repl => {
+          let n = {...repl};
+          if (n.airid === undefined) n.airid = uuidv4();
+          return n;
+        }),
       });
       setColumnRepeats(headerDataUpdate.columnRepeats);
     }

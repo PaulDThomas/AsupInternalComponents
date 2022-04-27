@@ -8,3 +8,10 @@ export interface AifBlockLine {
   canRemove?: boolean,
   canMove?: boolean,
 }
+
+export const enum AifLineType {
+  leftOnly = "Left only",
+  centreOnly = "Centre only",
+  leftAndRight = "Left and Right", 
+  leftCentreAndRight = "Left, Centre and Right"
+}

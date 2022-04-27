@@ -1,11 +1,16 @@
 import React, { useCallback, useMemo } from 'react';
+import { v4 as uuidv4 } from "uuid";
 import { assignSubListLevel, fromHtml, toHtml } from '../functions';
 import { AioDropSelect } from './aioDropSelect';
 import { AioReplacement, AioReplacementText, AioReplacementValue } from './aioInterface';
 import { AioReplacementValueDisplay } from './aioReplacementValuesDisplay';
 
 interface AioReplacmentTableProps {
-  replacement: AioReplacement,
+  airid?: string,
+  replacementTexts: AioReplacementText[],
+  replacementValues: AioReplacementValue[],
+  givenName?: string,
+  externalName?: string,
   setReplacement: (ret: AioReplacement) => void,
   externalLists?: AioReplacement[],
   dontAskSpace?: boolean,
@@ -16,7 +21,17 @@ interface AioReplacmentTableProps {
  * Render an individuial AioReplacement
  * @param props value/setValue pair
  */
-export const AioReplacementTable = ({ replacement, setReplacement, externalLists, dontAskSpace, dontShowText }: AioReplacmentTableProps): JSX.Element => {
+export const AioReplacementTable = ({ 
+  airid, 
+  replacementTexts,
+  replacementValues,
+  givenName,
+  externalName,
+  setReplacement, 
+  externalLists, 
+  dontAskSpace, 
+  dontShowText 
+}: AioReplacmentTableProps): JSX.Element => {
 
   const availableListNames = useMemo<string[]>(() => {
     let a: string[] = ["with..."];
@@ -28,6 +43,7 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
 
   /** Send back updates */
   const returnData = useCallback((newReplacement: {
+    airid?: string,
     replacementTexts?: AioReplacementText[],
     replacementValues?: AioReplacementValue[],
     externalName?: string,
@@ -35,16 +51,17 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
     if (typeof (setReplacement) !== "function") return;
     // Create new object
     let r: AioReplacement = {
-      replacementTexts: newReplacement.replacementTexts ?? replacement.replacementTexts,
-      replacementValues: newReplacement.replacementValues ?? replacement.replacementValues,
-      externalName: newReplacement.externalName ?? replacement.externalName,
-      givenName: replacement.givenName,
+      airid: newReplacement.airid ?? airid ?? uuidv4(),
+      replacementTexts: newReplacement.replacementTexts ?? replacementTexts,
+      replacementValues: newReplacement.replacementValues ?? replacementValues,
+      externalName: newReplacement.externalName ?? externalName,
+      givenName: givenName,
     }
     // Remove default
     if (r.externalName === "with...") delete (r.externalName);
     // Update existing object
     setReplacement(r);
-  }, [replacement.externalName, replacement.givenName, replacement.replacementTexts, replacement.replacementValues, setReplacement]);
+  }, [airid, externalName, givenName, replacementTexts, replacementValues, setReplacement]);
 
   /**
    * Update text in a replacement
@@ -52,30 +69,30 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
    * @param level Level number of the replacement
    */
   const updateText = useCallback((ret: string, i: number) => {
-    let newRT: AioReplacementText[] = [...replacement.replacementTexts];
+    let newRT: AioReplacementText[] = [...replacementTexts];
     newRT[i].text = ret;
     returnData({ replacementTexts: newRT });
-  }, [replacement.replacementTexts, returnData]);
+  }, [replacementTexts, returnData]);
 
   const updateSpaceAfter = useCallback((ret: boolean, i: number) => {
-    let newRT: AioReplacementText[] = [...replacement.replacementTexts];
+    let newRT: AioReplacementText[] = [...replacementTexts];
     newRT[i].spaceAfter = ret;
     returnData({ replacementTexts: newRT });
-  }, [replacement.replacementTexts, returnData]);
+  }, [replacementTexts, returnData]);
 
   const addLevel = useCallback(() => {
-    let newRT = [...replacement.replacementTexts];
+    let newRT = [...replacementTexts];
     newRT.push({ text: "", spaceAfter: false });
-    let newValues = assignSubListLevel(replacement.replacementValues, newRT.length);
+    let newValues = assignSubListLevel(replacementValues, newRT.length);
     returnData({ replacementTexts: newRT, replacementValues: newValues });
-  }, [replacement.replacementTexts, replacement.replacementValues, returnData]);
+  }, [replacementTexts, replacementValues, returnData]);
 
   const removeLevel = useCallback(() => {
-    let newRT = [...replacement.replacementTexts];
+    let newRT = [...replacementTexts];
     newRT.pop();
-    let newValues = assignSubListLevel(replacement.replacementValues, newRT.length);
+    let newValues = assignSubListLevel(replacementValues, newRT.length);
     returnData({ replacementTexts: newRT, replacementValues: newValues });
-  }, [replacement.replacementTexts, replacement.replacementValues, returnData]);
+  }, [replacementTexts, replacementValues, returnData]);
 
   /**
    * Update the list
@@ -88,7 +105,7 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
         flexDirection: "row",
         height: `${dontShowText ? '2px' : undefined}`
       }}>
-        {replacement.replacementTexts.map((r, l) =>
+        {replacementTexts.map((r, l) =>
           <div key={l} style={{ width: "180px", minWidth: "180px" }}>
             {!dontShowText &&
               <div>
@@ -123,7 +140,7 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
         )}
         <div>
           <div className="aiox-button-holder" style={{ minWidth: "32px", width: "32px", paddingTop: "6px" }}>
-            {replacement.replacementTexts.length > 1 && <div className={"aiox-button aiox-implode"} onClick={removeLevel} />}
+            {replacementTexts.length > 1 && <div className={"aiox-button aiox-implode"} onClick={removeLevel} />}
             <div className={"aiox-button aiox-explode"} onClick={addLevel} />
           </div>
         </div>
@@ -132,7 +149,7 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
       {!dontShowText &&
         <div>
           <AioDropSelect
-            value={replacement.externalName ?? "with..."}
+            value={externalName ?? "with..."}
             availableValues={availableListNames}
             setValue={(ret) => {
               returnData({ externalName: ret });
@@ -141,18 +158,18 @@ export const AioReplacementTable = ({ replacement, setReplacement, externalLists
         </div>
       }
 
-      {replacement.externalName === undefined ?
+      {externalName === undefined ?
         <AioReplacementValueDisplay
-          values={replacement.replacementValues}
-          setValues={(ret) => returnData({ replacementValues: assignSubListLevel(ret, replacement.replacementTexts.length) })}
+          values={replacementValues}
+          setValues={(ret) => returnData({ replacementValues: assignSubListLevel(ret, replacementTexts.length) })}
           level={0}
         />
         :
         <>
-          {externalLists?.find(e => e.givenName === replacement.externalName) !== undefined
+          {externalLists?.find(e => e.givenName === externalName) !== undefined
             ?
             <AioReplacementValueDisplay
-              values={externalLists?.find(e => e.givenName === replacement.externalName)?.replacementValues}
+              values={externalLists?.find(e => e.givenName === externalName)?.replacementValues}
               level={0}
             />
             :
