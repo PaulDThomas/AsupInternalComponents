@@ -89,11 +89,15 @@ table.ait-table {
 }
 
 .ait-cell.ait-body-cell .ait-options-button {
-  top: 0
+  top: 0;
 }
 
 .ait-cell.ait-header-cell .ait-options-button {
-  bottom: 0
+  bottom: 0;
+}
+
+.ait-cell .aio-button-cell {
+  z-index:2;
 }
 
 /* Holders, positioning */
