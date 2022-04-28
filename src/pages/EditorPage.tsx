@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components';
 
@@ -18,7 +18,7 @@ export const EditorPage = () => {
   }
 
   const load = () => {
-    var saved = JSON.parse(window.localStorage.getItem('content'));
+    var saved = JSON.parse(window.localStorage.getItem('content') ?? "");
     setText(saved);
   }
 
