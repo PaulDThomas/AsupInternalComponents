@@ -1,6 +1,6 @@
 import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useMemo, useState } from "react";
-import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementDisplay } from '../aio';
+import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { objEqual } from '../functions';
 import { AitBorderRow } from "./aitBorderRow";
@@ -26,7 +26,7 @@ interface AitRowProps {
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
   removeRowSpan?: (loc: AitLocation) => void,
-  columnRepeats?: AitColumnRepeat[],
+  columnRepeats?: AitColumnRepeat[] | null,
   rowGroupSpace?: boolean,
   setRowGroupSpace?: (ret: boolean) => void,
 }
@@ -147,11 +147,11 @@ export const AitRow = ({
                       </>}
                     </>
                     <div className="aiw-body-row">
-                      <AioReplacementDisplay
+                      <AioReplacementList
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
                         externalLists={higherOptions.externalLists}
-                        dontAskSpace={location.tableSection === AitRowType.header}
+                        dontAskOptions={location.tableSection === AitRowType.header}
                       />
                     </div>
                   </AsupInternalWindow>
@@ -190,8 +190,8 @@ export const AitRow = ({
           // Render object
           return (
             <AitCell
-              key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
-              aitid={cell.aitid ?? ci.toString()}
+              key={isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid!}
+              aitid={cell.aitid!}
               text={cell.text ?? ""}
               comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}

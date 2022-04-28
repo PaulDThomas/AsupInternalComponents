@@ -26,15 +26,16 @@ export interface AitRowGroupData {
   rows: Array<AitRowData>,
   comments?: string,
   spaceAfter?: boolean,
+  includeTrailing?: boolean,
   replacements?: AioReplacement[],
 };
 
 export interface AitTableData {
-  headerData: AitRowGroupData,
-  bodyData: AitRowGroupData[],
+  headerData?: AitRowGroupData,
+  bodyData?: AitRowGroupData[],
   comments?: string,
-  rowHeaderColumns: number,
-  noRepeatProcessing: boolean,
+  rowHeaderColumns?: number,
+  noRepeatProcessing?: boolean,
 };
 
 export interface AitCoord {

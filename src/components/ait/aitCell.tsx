@@ -1,10 +1,9 @@
-import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from '../aie';
 import { AioComment, AioExpander, AioIconButton, AioNumber } from '../aio';
 import { AsupInternalWindow } from "../aiw";
-import { objEqual } from "../functions";
 import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
+
 
 interface AitCellProps {
   aitid: string,
@@ -65,18 +64,6 @@ export const AitCell = ({
   ), [replacedText, text]);
 
   const [buttonState, setButtonState] = useState("hidden");
-  const [lastSend, setLastSend] = useState<AitCellData>(structuredClone({
-    aitid: aitid,
-    text: text,
-    colSpan: colSpan,
-    rowSpan: rowSpan,
-    colWidth: colWidth,
-    textIndents: textIndents,
-    replacedText: replacedText,
-    repeatColSpan: repeatColSpan,
-    repeatRowSpan: repeatRowSpan,
-  }));
-
   const [showCellOptions, setShowCellOptions] = useState(false);
 
   // Static options/variables
@@ -152,14 +139,8 @@ export const AitCell = ({
       repeatColSpan: repeatColSpan,
       repeatRowSpan: repeatRowSpan,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `CELLCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      // console.log(`CELLRETURN:${diffs}`);
-      setCellData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [aitid, colSpan, colWidth, comments, currentReadOnly, lastSend, location, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
+    setCellData!(r);
+  }, [aitid, colSpan, colWidth, comments, currentReadOnly, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -190,7 +171,7 @@ export const AitCell = ({
       >
 
         <>
-          <div style={{position:"absolute", right:"-8px", visibility:(buttonState === "hidden" ? 'hidden' : 'visible')}}>
+          <div style={{ position: "absolute", right: "-8px", visibility: (buttonState === "hidden" ? 'hidden' : 'visible') }}>
             {/* Option buttons  */}
             <AioIconButton
               tipText="Cell Options"

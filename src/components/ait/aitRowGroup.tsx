@@ -1,8 +1,7 @@
 import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { AioRepeats, AioReplacement } from "../aio";
-import { newCell, objEqual, repeatRows } from "../functions";
+import { AioReplacement } from "../aio";
+import { newCell, newRow, objEqual, repeatRows } from "../functions";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
@@ -81,11 +80,8 @@ export const AitRowGroup = ({
   }, [setRowGroupData, rows, returnData]);
 
   const addRow = useCallback((ri: number) => {
-    let newRows = [...rows];
-    let newRow: AitRowData = {
-      aitid: uuidv4(),
-      cells: [],
-    };
+    let newrs = [...rows];
+    let newr = newRow(0);
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
@@ -93,16 +89,16 @@ export const AitRowGroup = ({
       // Create new cell
       let c = newCell();
       // Check rowSpans on previous row
-      if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+      if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
         let riUp = 0;
-        while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
-        newRows[ri - riUp].cells[ci].rowSpan!++;
+        while (riUp <= ri && newrs[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+        newrs[ri - riUp].cells[ci].rowSpan!++;
         c.rowSpan = 0;
       }
-      newRow.cells.push(c);
+      newr.cells.push(c);
     }
-    newRows.splice(ri + 1, 0, newRow);
-    returnData({ rows: newRows });
+    newrs.splice(ri + 1, 0, newr);
+    returnData({ rows: newrs });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri: number) => {
@@ -185,14 +181,10 @@ export const AitRowGroup = ({
   }, [returnData, rows]);
 
   // Get rows after repeat processing
-  const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
+  const processed = useMemo((): { rows: AitRowData[] } => {
     return repeatRows(
       rows,
-      replacements.map(repl => {
-        let n = { ...repl };
-        if (n.airid === undefined) n.airid = uuidv4();
-        return n;
-      }),
+      replacements,
       higherOptions.noRepeatProcessing,
       higherOptions.rowHeaderColumns,
       higherOptions.externalLists,
@@ -206,8 +198,8 @@ export const AitRowGroup = ({
         let rowHigherOptions = {
           ...higherOptions,
           row: ri,
-          repeatNumber: processed.repeats.numbers[ri],
-          repeatValues: processed.repeats.values[ri],
+          // repeatNumber: processed.repeats.numbers[ri],
+          // repeatValues: processed.repeats.values[ri],
         } as AitOptionList;
 
         return (

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import { Rnd } from 'react-rnd';
-import { AsupInternalEditor, AsupInternalWindow } from '../components';
+import { AsupInternalWindow } from '../components';
 
 export const WindowPage = () => {
   const [showWindow, setShowWindow] = useState<boolean>(true);
-  const [someText, setSomeText] = useState<string>("");
 
   return (
     <>

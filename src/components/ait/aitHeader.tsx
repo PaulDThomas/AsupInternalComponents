@@ -1,9 +1,8 @@
-import structuredClone from '@ungap/structured-clone';
-import React, { useCallback, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useCallback, useEffect, useState } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, objEqual } from "../functions";
-import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
+import { newCell, newRow, repeatHeaders } from "../functions";
+import { AitBorderRow } from "./aitBorderRow";
+import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitHeaderProps {
@@ -13,7 +12,8 @@ interface AitHeaderProps {
   replacements: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
-  columnRepeats?: AitColumnRepeat[],
+  columnRepeats: AitColumnRepeat[] | null,
+  setColumnRepeats: (ret: AitColumnRepeat[] | null) => void,
 }
 
 export const AitHeader = ({
@@ -24,38 +24,65 @@ export const AitHeader = ({
   setHeaderData,
   higherOptions,
   columnRepeats,
+  setColumnRepeats,
 }: AitHeaderProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
 
-  const location: AitLocation = useMemo(() => {
-    return {
-      tableSection: higherOptions.tableSection ?? AitRowType.header,
-      rowGroup: higherOptions.rowGroup ?? 0,
-      row: -1,
-      column: -1,
-      repeat: "",
+  const [processedRows, setProcessedRows] = useState<AitRowData[]>([...rows]);
+  useEffect(() => { 
+    console.group(`Processing header data ${aitid}`);
+    if (rows.some(r => (r.aitid === undefined || r.cells.some(c => c.aitid === undefined) ))) {
+      console.log("Missing aitid!?!");
+      return;
     }
-  }, [higherOptions]);
+    console.log(`${rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+    console.log(`${rows.map(r => r.cells.map(c => c.aitid?.substring(0, 3)).join("||")).join("\n")}`);
+    if ((rows.length ?? 0) > 0) {
+      let headerDataUpdate = repeatHeaders(
+        rows,
+        replacements ?? [],
+        higherOptions.noRepeatProcessing ?? false,
+        higherOptions.rowHeaderColumns ?? 0,
+        higherOptions.externalLists,
+      );
+      console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+      console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.aitid?.substr(0, 3)).join("||")).join("\n")}`);
+      setProcessedRows(headerDataUpdate.rows);
+      setColumnRepeats(headerDataUpdate.columnRepeats);
+    }
+    else {
+      setColumnRepeats(null);
+    }
+    console.groupEnd();
+  }, [aitid, higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows, setColumnRepeats]);
 
   // General function to return complied object
-  const returnData = useCallback((headerUpdate: { 
-    rows?: AitRowData[], 
+  const returnData = useCallback((headerUpdate: {
+    rows?: AitRowData[],
     comments?: string,
-    replacements?: AioReplacement[] 
+    replacements?: AioReplacement[]
   }) => {
     if (typeof (setHeaderData) !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
-      rows: headerUpdate.rows ?? rows,
+      rows: (headerUpdate.rows ?? rows).map(r => {
+        return {
+          aitid: r.aitid,
+          cells: r.cells.filter((c, ci) => (
+            !columnRepeats
+            || !columnRepeats[ci]
+            || !columnRepeats[ci].repeatNumbers
+            || columnRepeats[ci].repeatNumbers?.reduce((r, a) => r + a, 0) === 0
+          ))
+        };
+      }),
       comments: headerUpdate.comments ?? comments,
       replacements: headerUpdate.replacements ?? replacements,
     };
-    let [chkObj] = objEqual(r, lastSend, `HEADERCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      setHeaderData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [setHeaderData, aitid, rows, comments, replacements, lastSend, location]);
+    console.group(`AitHeader returnData: ${aitid}`);
+    console.log(`${r?.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+    console.groupEnd();
+    setHeaderData!(r);
+  }, [setHeaderData, aitid, rows, comments, replacements, columnRepeats]);
 
   // Update row
   const updateRow = useCallback((ret: AitRowData, ri: number) => {
@@ -66,11 +93,8 @@ export const AitHeader = ({
   }, [rows, returnData]);
 
   const addRow = useCallback((ri: number) => {
-    let newRows = [...rows];
-    let newRow: AitRowData = {
-      aitid: uuidv4(),
-      cells: [],
-    };
+    let newrs = [...rows];
+    let newr: AitRowData = newRow(0);
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
@@ -78,18 +102,17 @@ export const AitHeader = ({
       // Create new cell
       let c = newCell(AitCellType.header);
       // Check rowSpans on previous row
-      if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+      if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
         let riUp = 0;
-        while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
-        newRows[ri - riUp].cells[ci].rowSpan!++;
+        while (riUp <= ri && newrs[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+        newrs[ri - riUp].cells[ci].rowSpan!++;
         c.rowSpan = 0;
       }
-      newRow.cells.push(c);
+      newr.cells.push(c);
     }
 
-
-    newRows.splice(ri + 1, 0, newRow);
-    returnData({ rows: newRows });
+    newrs.splice(ri + 1, 0, newr);
+    returnData({ rows: newrs });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri: number) => {
@@ -211,22 +234,23 @@ export const AitHeader = ({
     returnData({ rows: newRows });
   }, [returnData, rows]);
 
+  if (rows.length === 0) return <></>;
+
   return (
     <>
       {
-        rows.map((row: AitRowData, ri: number): JSX.Element => {
+        processedRows.map((row: AitRowData, ri: number): JSX.Element => {
 
           let rowHigherOptions: AitOptionList = {
             ...higherOptions,
             headerRows: rows.length,
             row: ri,
           } as AitOptionList;
-          if (row.aitid === undefined) row.aitid = uuidv4();
 
           return (
             <AitRow
-              key={row.aitid}
-              aitid={row.aitid}
+              key={row.aitid!}
+              aitid={row.aitid!}
               cells={row.cells}
               setRowData={(ret) => updateRow(ret, ri)}
               higherOptions={rowHigherOptions}
@@ -247,6 +271,10 @@ export const AitHeader = ({
           );
         }
         )
+      }
+      {(columnRepeats?.length ?? 0) > 0
+        ? <AitBorderRow rowLength={columnRepeats!.length} spaceBefore={true} spaceAfter={true} />
+        : <></>
       }
     </>
   );

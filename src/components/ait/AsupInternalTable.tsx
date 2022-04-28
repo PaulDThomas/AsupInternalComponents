@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
 import { AieStyleMap } from "../aie";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement } from "../aio";
 import { AsupInternalWindow } from "../aiw";
-import { newCell, repeatHeaders } from "../functions";
+import { bodyPreProcess, headerPreProcess, newCell, newRow } from "../functions";
+import { newRowGroup } from "../functions/newRowGroup";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitCellData, AitCellType, AitColumnRepeat, AitOptionList, AitRowData, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 
 interface AsupInternalTableProps {
@@ -36,46 +36,27 @@ export const AsupInternalTable = ({
   commentStyles,
   cellStyles,
 }: AsupInternalTableProps) => {
+  // Internal state
   const [showOptions, setShowOptions] = useState(false);
-  const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[]>();
-  const [processedHeader, setProcessedHeader] = useState<AitRowGroupData>(tableData.headerData);
+  const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
+  // const [processedHeader, setProcessedHeader] = useState<AitRowGroupData | null>(null);
 
-  // Basic data checking... useful on load/reload
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { if (tableData.rowHeaderColumns === undefined) tableData.rowHeaderColumns = 1; }, [tableData.rowHeaderColumns]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { if (tableData.noRepeatProcessing === undefined) tableData.noRepeatProcessing = false; }, [tableData.noRepeatProcessing]);
+  // Explode tableData
+  const [headerData, setHeaderData] = useState<AitRowGroupData>();
+  const [bodyData, setBodyData] = useState<AitRowGroupData[]>();
+  const [comments, setComments] = useState<string>();
+  const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
+  const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
 
-  // Header data processing
+  // Pushdown data
   useEffect(() => {
-    if (tableData.headerData.rows.length > 0) {
-      let headerDataUpdate = repeatHeaders(
-        tableData.headerData.rows ?? [],
-        tableData.headerData.replacements ?? [],
-        tableData.noRepeatProcessing ?? false,
-        tableData.rowHeaderColumns ?? 0,
-        externalLists,
-      );
-      setProcessedHeader({
-        aitid: "processedHeader",
-        rows: headerDataUpdate.rows,
-        comments: tableData.headerData.comments ?? "",
-        replacements: (tableData.headerData.replacements ?? []).map(repl => {
-          let n = {...repl};
-          if (n.airid === undefined) n.airid = uuidv4();
-          return n;
-        }),
-      });
-      setColumnRepeats(headerDataUpdate.columnRepeats);
-    }
-    // There is no header... 
-    else {
-      setColumnRepeats(Array.from(
-        tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }
-        ))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tableData.bodyData[0].rows[0].cells.length, tableData.headerData, tableData.noRepeatProcessing, tableData.rowHeaderColumns]);
+    console.log("Received table data from page");
+    setHeaderData(headerPreProcess(tableData.headerData));
+    setBodyData(bodyPreProcess(tableData.bodyData));
+    setComments(tableData.comments ?? "");
+    setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
+    setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
+  }, [tableData]);
 
   // Return data
   const returnData = useCallback((tableUpdate: {
@@ -88,84 +69,51 @@ export const AsupInternalTable = ({
     if (typeof (setTableData) !== "function") return;
     console.log("Table return");
     const r = {
-      headerData: tableUpdate.headerData ?? tableData.headerData,
-      bodyData: tableUpdate.bodyData ?? tableData.bodyData,
-      comments: tableUpdate.comments ?? tableData.comments,
-      rowHeaderColumns: tableUpdate.rowHeaderColumns ?? tableData.rowHeaderColumns,
-      noRepeatProcessing: tableUpdate.noRepeatProcessing ?? tableData.noRepeatProcessing,
+      headerData: tableUpdate.headerData ?? headerData,
+      bodyData: tableUpdate.bodyData ?? bodyData,
+      comments: tableUpdate.comments ?? comments,
+      rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
+      noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
     } as AitTableData;
     setTableData(r);
-  }, [setTableData, tableData.headerData, tableData.bodyData, tableData.comments, tableData.rowHeaderColumns, tableData.noRepeatProcessing]);
-
-  const updateHeader = useCallback((ret: AitRowGroupData) => {
-    let retMinusRepeats = {
-      aitid: ret.aitid,
-      replacements: ret.replacements,
-      comments: ret.comments,
-      rows: ret.rows.map(r => {
-        return {
-          aitid: r.aitid,
-          cells: r.cells.filter((c, ci) => (
-            !columnRepeats
-            || !columnRepeats[ci]
-            || !columnRepeats[ci].repeatNumbers
-            || columnRepeats[ci].repeatNumbers?.reduce((r, a) => r + a, 0) === 0
-          ))
-        };
-      })
-    } as AitRowGroupData;
-    returnData({ headerData: retMinusRepeats })
-  }, [columnRepeats, returnData]);
+  }, [setTableData, headerData, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback((ret: AitRowGroupData, rgi: number) => {
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    let newBody: AitRowGroupData[] = [...(bodyData ?? [])];
     newBody[rgi] = ret;
     returnData({ bodyData: newBody });
-  }, [tableData.bodyData, returnData]);
+  }, [bodyData, returnData]);
 
   /**
    * Add a new row group to the table body
    */
   const addRowGroup = useCallback((rgi: number, templateName?: string) => {
+    // Check ok to proceed
+    if (bodyData === undefined) return;
     // Create new body, take template if it can be found
     let newRowGroupTemplate: AitRowGroupData = templateName && groupTemplates && groupTemplates.find(g => g.name === templateName)
       ? groupTemplates.find(g => g.name === templateName)!
       : { rows: [{ cells: [] }] }
       ;
     // Ensure new template meets requirements
-    let cols = tableData.bodyData[0].rows[0].cells.length;
-    let newRowGroup = {
-      aitid: uuidv4(),
-      replacements: newRowGroupTemplate.replacements,
-      rows: newRowGroupTemplate.rows.map(row => {
-        let newCells: AitCellData[] = [];
-        for (let ci = 0; ci < cols; ci++) {
-          newCells.push(
-            row.cells[ci] !== undefined
-              ? { ...row.cells[ci], aitid: uuidv4() }
-              : newCell()
-          );
-        }
-        return {
-          aitid: uuidv4(),
-          cells: newCells,
-        }
-      })
-    };
+    let newrg = newRowGroup(bodyData[0].rows[0].cells.length, newRowGroupTemplate);
     // Copy existing body and splice in new data
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
-    newBody.splice(rgi + 1, 0, newRowGroup);
+    let newBody: AitRowGroupData[] = [...(bodyData ?? [])];
+    newBody.splice(rgi + 1, 0, newrg);
     // Update table body
     returnData({ bodyData: newBody });
-  }, [groupTemplates, tableData.bodyData, returnData]);
+  }, [bodyData, groupTemplates, returnData]);
 
   // Remove a row group from the table body
   const removeRowGroup = useCallback((rgi: number) => {
-    let newRowGroups: AitRowGroupData[] = [...tableData.bodyData];
+    // Check ok to proceed
+    if (bodyData === undefined) return;
+    // Update bodyData
+    let newRowGroups: AitRowGroupData[] = [...bodyData];
     newRowGroups.splice(rgi, 1);
     returnData({ bodyData: newRowGroups });
-  }, [returnData, tableData.bodyData]);
+  }, [bodyData, returnData]);
 
   // Set up higher options, defaults need to be set
   let higherOptions = useMemo<AitOptionList>(() => {
@@ -178,18 +126,21 @@ export const AsupInternalTable = ({
       ;
     return {
       showCellBorders: showCellBorders,
-      noRepeatProcessing: tableData.noRepeatProcessing ?? false,
-      rowHeaderColumns: tableData.rowHeaderColumns ?? 1,
+      noRepeatProcessing: noRepeatProcessing ?? false,
+      rowHeaderColumns: rowHeaderColumns ?? 1,
       externalLists: externalLists ?? [],
       groupTemplateNames: groupTemplateNames,
       commentStyles: commentStyles,
       cellStyles: cellStyles,
     };
-  }, [cellStyles, commentStyles, externalLists, groupTemplates, showCellBorders, tableData.noRepeatProcessing, tableData.rowHeaderColumns]) as AitOptionList;
+  }, [cellStyles, commentStyles, externalLists, groupTemplates, noRepeatProcessing, rowHeaderColumns, showCellBorders]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    // Check ok to proceed
+    if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
+    // Update body data
+    let newBody: AitRowGroupData[] = [...bodyData];
     newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(ci + 1, 0, newCell());
@@ -197,8 +148,9 @@ export const AsupInternalTable = ({
       });
       return rg;
     });
-    let newHeader: AitRowGroupData = { ...tableData.headerData };
-    tableData.headerData.rows = newHeader.rows.map(r => {
+    // Update header group
+    let newHeader: AitRowGroupData = { ...headerData };
+    headerData.rows = newHeader.rows.map(r => {
       // Check for colSpan
       if ((r.cells[ci + 1]?.colSpan ?? 1) === 0) {
         // Add in blank cell
@@ -217,7 +169,6 @@ export const AsupInternalTable = ({
           if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
         }
         targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
-
       }
       else {
         r.cells.splice(ci + 1, 0, newCell());
@@ -227,17 +178,16 @@ export const AsupInternalTable = ({
     returnData({
       headerData: newHeader,
       bodyData: newBody,
-      rowHeaderColumns: (
-        ci < tableData.rowHeaderColumns - 1
-          ? tableData.rowHeaderColumns + 1
-          : tableData.rowHeaderColumns
-      )
+      rowHeaderColumns: (ci < rowHeaderColumns - 1 ? rowHeaderColumns + 1 : rowHeaderColumns)
     });
-  }, [tableData.bodyData, tableData.headerData, tableData.rowHeaderColumns, returnData]);
+  }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Remove column 
   const remCol = useCallback((ci: number) => {
-    let newBody: AitRowGroupData[] = [...tableData.bodyData];
+    // Check ok to proceed
+    if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
+    // Update body data
+    let newBody: AitRowGroupData[] = [...bodyData];
     newBody = newBody.map(rg => {
       rg.rows = rg.rows.map(r => {
         r.cells.splice(ci, 1);
@@ -245,9 +195,9 @@ export const AsupInternalTable = ({
       });
       return rg;
     });
-    let newHeader: AitRowGroupData = { ...tableData.headerData };
     // Update header group
-    tableData.headerData.rows = newHeader.rows.map(r => {
+    let newHeader: AitRowGroupData = { ...headerData };
+    headerData.rows = newHeader.rows.map(r => {
       // Check for colSpan 
       let c = r.cells[ci];
       if (c.colSpan === undefined) c.colSpan = 1;
@@ -268,190 +218,164 @@ export const AsupInternalTable = ({
       r.cells.splice(ci, 1);
       return r;
     });
-    let newHeaderColumns = tableData.rowHeaderColumns;
-    if (ci < newHeaderColumns) newHeaderColumns--;
-    returnData({ headerData: newHeader, bodyData: newBody, rowHeaderColumns: newHeaderColumns });
-  }, [tableData.bodyData, tableData.headerData, tableData.rowHeaderColumns, returnData]);
+    returnData({ headerData: newHeader, bodyData: newBody, rowHeaderColumns: ci < rowHeaderColumns ? rowHeaderColumns - 1 : rowHeaderColumns });
+  }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Add rowHeader columns
   const addRowHeaderColumn = useCallback(() => {
+    // Check ok to proceed
+    if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     // Check new column has not colspan
-    if (tableData.rowHeaderColumns === tableData.bodyData[0].rows[0].cells.length - 1) return;
-    if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns + 1].colSpan ?? 1) !== 1)) return;
-    let newHeaderColumns = tableData.rowHeaderColumns + 1;
-    returnData({ rowHeaderColumns: newHeaderColumns });
-  }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+    if (rowHeaderColumns === bodyData[0].rows[0].cells.length - 1) return;
+    if (headerData.rows.some(r => (r.cells[rowHeaderColumns + 1].colSpan ?? 1) !== 1)) return;
+    returnData({ rowHeaderColumns: rowHeaderColumns + 1 });
+  }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Remove rowHeader columns
   const removeRowHeaderColumn = useCallback(() => {
-    // Check new column has not colspan
-    if (tableData.rowHeaderColumns === 0) return;
-    if (tableData.headerData.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
+    // Check ok to proceed
+    if (rowHeaderColumns === 0 || rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
+    if (headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     // Check bodyData for cells with rowSpan
-    if (tableData.bodyData.some(rg => rg.rows.some(r => (r.cells[tableData.rowHeaderColumns - 1].rowSpan ?? 1) !== 1))) return;
-    let newHeaderColumns = tableData.rowHeaderColumns - 1;
-    returnData({ rowHeaderColumns: newHeaderColumns });
-  }, [returnData, tableData.bodyData, tableData.headerData.rows, tableData.rowHeaderColumns]);
+    if (bodyData.some(rg => rg.rows.some(r => (r.cells[rowHeaderColumns - 1].rowSpan ?? 1) !== 1))) return;
+    returnData({ rowHeaderColumns: rowHeaderColumns - 1 });
+  }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Add header if is is not there
   const addNewHeader = useCallback(() => {
-    let newRow: AitRowData = {
-      aitid: uuidv4(),
-      cells: [],
-    };
-    let cols = tableData.bodyData[0].rows[0].cells.length;
-    for (let i = 0; i < cols; i++) newRow.cells.push(newCell(AitCellType.header));
-    let newHeader: AitRowGroupData = { ...tableData.headerData, rows: [newRow] };
+    // Check ok to proceed
+    if ((headerData?.rows.length ?? 0) > 0 || bodyData === undefined) return;
+    // Create new row 
+    let newHeader: AitRowGroupData = { ...headerData, rows: [newRow(bodyData[0].rows[0].cells.length, AitRowType.header)] };
     returnData({ headerData: newHeader });
-  }, [returnData, tableData.bodyData, tableData.headerData]);
+  }, [bodyData, headerData, returnData]);
+
+  // Show loading if there is nothing to see
+  if (bodyData === undefined
+    || bodyData.length < 1
+    || headerData === undefined
+    // || processedHeader === null
+    || rowHeaderColumns === undefined
+    || noRepeatProcessing === undefined
+    || columnRepeats === undefined
+  ) {
+    return <div>Loading...</div>
+  }
 
   // Print the table
   return (
-    <>
-      <div
-        className="ait-holder"
-        style={style}
-      >
-        <div style={{position:"absolute", top:0}}>
-          <AioIconButton
-            tipText="Table settings"
-            onClick={() => setShowOptions(!showOptions)}
-            iconName={"aio-button-settings"}
-          />
-          {showOptions &&
-            <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+    <div className="ait-holder" style={style}>
+      <div style={{ position: "absolute", top: 0 }}>
+        <AioIconButton
+          style={{ zIndex: 2 }}
+          tipText="Table settings"
+          onClick={() => {
+            console.log("click");
+            setShowOptions(!showOptions)
+          }}
+          iconName={"aio-button-settings"}
+        />
+        {showOptions &&
+          <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+            <div className="aiw-body-row">
+              <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={higherOptions.commentStyles} />
+            </div>
+            {headerData.rows.length === 0 ?
               <div className="aiw-body-row">
-                <AioComment
-                  label={"Notes"}
-                  value={tableData.comments ?? ""}
-                  setValue={(ret) => returnData({ comments: ret })}
-                  commentStyles={higherOptions.commentStyles}
-                />
-              </div>
-              <div className="aiw-body-row">
-                <AioBoolean label="Suppress repeats" value={tableData.noRepeatProcessing} setValue={(ret) => returnData({ noRepeatProcessing: ret })} />
-              </div>
-              <div className="aiw-body-row">
-                <div className={"aio-label"}>Row headers: </div>
-                <div className={"aio-ro-value"}>{tableData.rowHeaderColumns ?? 1}</div>
+                <div className={"aio-label"}>Add header section: </div>
                 <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                  {(tableData.rowHeaderColumns ?? 1) < tableData.bodyData[0].rows[0].cells.length - 1
-                    ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
-                    : <div className="aiox-button" />
-                  }
-                  {(tableData.rowHeaderColumns ?? 1) > 0
-                    ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
-                    : <div className="aiox-button" />
-                  }
+                  <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
                 </div>
               </div>
-            </AsupInternalWindow>
-          }
-        </div>
-        <table className="ait-table">
-          {tableData.headerData.rows.length > 0 ?
-            <thead>
-              <AitBorderRow
-                rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length}
-                spaceAfter={true}
-                changeColumns={{
-                  addColumn: addCol,
-                  removeColumn: remCol,
-                  showButtons: true,
-                }}
-                rowHeaderColumns={tableData.rowHeaderColumns}
-                columnRepeats={columnRepeats}
-              />
-              <AitHeader
-                aitid={processedHeader.aitid!}
-                rows={processedHeader.rows}
-                comments={processedHeader.comments ?? ""}
-                replacements={processedHeader.replacements ??
-                  [{
-                    replacementTexts: [{ text: "", spaceAfter: false }],
-                    replacementValues: [{ newText: "" }],
-                  }]
-                }
-                setHeaderData={(ret) => updateHeader(ret)}
-                higherOptions={{
-                  ...higherOptions,
-                  tableSection: AitRowType.header,
-                  rowGroup: 0,
-                }}
-                columnRepeats={columnRepeats}
-              />
-              <AitBorderRow rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length} spaceBefore={true} noBorder={true} />
-            </thead>
-            :
-            <thead>
-              <tr>
-                <td className="ait-cell">
-                  <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "center" }}>
-                    <AioIconButton
-                      tipText={"Add header"}
-                      iconName={"aiox-plus"}
-                      onClick={addNewHeader}
-                    />
-                  </div>
-                </td>
-              </tr>
-            </thead>
-          }
-
-          <tbody>
-            <AitBorderRow
-              rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length}
-              spaceAfter={true}
-              changeColumns={tableData.headerData.rows.length === 0
-                ?
-                {
-                  addColumn: addCol,
-                  removeColumn: remCol,
-                  showButtons: true,
-                }
-                : undefined
-              }
-              rowHeaderColumns={tableData.rowHeaderColumns}
-              columnRepeats={tableData.headerData.rows.length === 0 ? columnRepeats : undefined}
-              minWidth={tableData.headerData.rows.length === 0 ? 120 : undefined}
-            />
-            {
-              tableData.bodyData?.map((rowGroup: AitRowGroupData, rgi: number) => {
-
-                /** Protect against missing information on load */
-                if (rowGroup.aitid === undefined) rowGroup.aitid = uuidv4();
-                rowGroup.rows = rowGroup.rows.map(r => { if (r.aitid === undefined) r.aitid = uuidv4(); return r; });
-                /** Default row group options */
-                if (rowGroup.replacements === undefined) rowGroup.replacements = [{
-                  replacementTexts: [{ text: "", spaceAfter: false }],
-                  replacementValues: [{ newText: "" }]
-                }];
-
-                return (
-                  <AitRowGroup
-                    key={rowGroup.aitid}
-                    aitid={rowGroup.aitid}
-                    rows={rowGroup.rows}
-                    comments={rowGroup.comments}
-                    replacements={rowGroup.replacements}
-                    spaceAfter={rowGroup.spaceAfter}
-                    setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
-                    higherOptions={{
-                      ...higherOptions,
-                      tableSection: AitRowType.body,
-                      rowGroup: rgi,
-                    }}
-                    addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
-                    removeRowGroup={(groupTemplates !== false && tableData.bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
-                    columnRepeats={columnRepeats}
-                  />
-                );
-              })
+              : <></>
             }
-            <AitBorderRow rowLength={columnRepeats?.length ?? tableData.bodyData[0].rows[0].cells.length} />
-          </tbody>
-        </table>
+            <div className="aiw-body-row">
+              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={setNoRepeatProcessing} />
+            </div>
+            <div className="aiw-body-row">
+              <div className={"aio-label"}>Row headers: </div>
+              <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
+              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
+                  ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
+                  : <div className="aiox-button" />
+                }
+                {(rowHeaderColumns ?? 1) > 0
+                  ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
+                  : <div className="aiox-button" />
+                }
+              </div>
+            </div>
+          </AsupInternalWindow>
+        }
       </div>
-    </>
+      <table className="ait-table">
+        <thead>
+          <AitBorderRow
+            rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length}
+            spaceAfter={true}
+            changeColumns={{
+              addColumn: addCol,
+              removeColumn: remCol,
+              showButtons: true,
+            }}
+            rowHeaderColumns={rowHeaderColumns}
+            columnRepeats={!columnRepeats
+              ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
+              : columnRepeats
+            }
+          />
+          <AitHeader
+            aitid={headerData.aitid!}
+            rows={headerData.rows}
+            comments={headerData.comments ?? ""}
+            replacements={headerData.replacements ?? []}
+            setHeaderData={(ret) => {
+              console.group("Header data returned");
+              console.log(`${ret.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+              console.groupEnd();
+              setHeaderData(ret);
+            }}
+            higherOptions={{
+              ...higherOptions,
+              tableSection: AitRowType.header,
+              rowGroup: 0,
+            }}
+            columnRepeats={columnRepeats}
+            setColumnRepeats={setColumnRepeats}
+          />
+        </thead>
+
+        <tbody>
+          {
+            bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
+              return (
+                <AitRowGroup
+                  key={rowGroup.aitid}
+                  aitid={rowGroup.aitid!}
+                  rows={rowGroup.rows}
+                  comments={rowGroup.comments}
+                  replacements={rowGroup.replacements ?? []}
+                  spaceAfter={rowGroup.spaceAfter}
+                  setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
+                  higherOptions={{
+                    ...higherOptions,
+                    tableSection: AitRowType.body,
+                    rowGroup: rgi,
+                  }}
+                  addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
+                  removeRowGroup={(groupTemplates !== false && bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                  columnRepeats={!columnRepeats
+                    ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
+                    : columnRepeats
+                  }
+                />
+              );
+            })
+          }
+          <AitBorderRow rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length} />
+        </tbody>
+      </table>
+    </div>
   );
 };

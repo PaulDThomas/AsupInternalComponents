@@ -72,7 +72,13 @@ export const TablePage = () => {
         :
         <AsupInternalTable
           tableData={tableData}
-          setTableData={setTableData}
+          setTableData={(ret) => {
+            console.group("received table data in page");
+            console.log(`${ret.headerData?.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+            console.log(`${ret.bodyData?.map(rg => rg.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")).join("\n\t")}`);
+            console.groupEnd();
+            setTableData(ret)}
+          }
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}
