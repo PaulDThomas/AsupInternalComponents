@@ -148,6 +148,7 @@ export const AitRow = ({
                     </>
                     <div className="aiw-body-row">
                       <AioReplacementList
+                        label={"Replacements"}
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
                         externalLists={higherOptions.externalLists}

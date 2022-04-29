@@ -8,6 +8,5 @@ export const newReplacement = (): AioReplacement => {
     oldText: "",
     newTexts: [newReplacementValues()],
     includeTrailing: false,
-    externalName: "",
   };
 }

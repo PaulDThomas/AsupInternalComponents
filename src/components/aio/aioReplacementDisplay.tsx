@@ -72,7 +72,7 @@ export const AioReplacementDisplay = ({
     <div className="aiord-main" style={{
       display: 'flex',
       flexDirection: "column",
-      gap: '0.5rem',
+      gap: '2px',
     }}>
       <div>
         {typeof setReplacement !== "function"
@@ -88,7 +88,7 @@ export const AioReplacementDisplay = ({
           />
         }
       </div>
-      {externalLists !== undefined && externalLists.length > 0 &&
+      {typeof setReplacement === "function" && externalLists !== undefined && externalLists.length > 0 &&
         <div>
           <AioDropSelect
             value={externalName ?? "with..."}
@@ -113,18 +113,21 @@ export const AioReplacementDisplay = ({
           </>
           :
           <>
-            {newTexts.map((rv, i) =>
+            {newTexts.map((rv, i) => 
               <AioReplacementValuesDisplay
                 key={rv.airid}
                 airid={rv.airid}
                 texts={rv.texts}
                 subLists={rv.subLists}
                 externalLists={externalLists}
-                setReplacementValue={(ret) => {
+                setReplacementValue={typeof setReplacement === "function" 
+                ?
+                (ret) => {
                   let nts = [...newTexts];
                   nts.splice(i, 1, ret);
                   returnData({ newTexts: nts });
-                }}
+                }
+                : undefined}
               />
             )}
           </>

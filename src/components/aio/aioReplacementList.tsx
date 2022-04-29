@@ -56,7 +56,7 @@ export const AioReplacementList = ({
     <>
       <AioLabel label={label} />
       <div>
-        <span>then...</span>{" "}
+        {!label && <><span>then...</span>{" "}</>}
         {typeof setReplacements === "function" &&
           <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(0)} />
         }
@@ -70,7 +70,7 @@ export const AioReplacementList = ({
                 newTexts={repl.newTexts}
                 includeTrailing={repl.includeTrailing}
                 externalName={repl.externalName}
-                setReplacement={(ret) => updateReplacement(ret, i)}
+                setReplacement={typeof setReplacements === "function" ? (ret) => updateReplacement(ret, i) : undefined}
                 dontAskOptions={dontAskOptions}
                 externalLists={externalLists}
               />
