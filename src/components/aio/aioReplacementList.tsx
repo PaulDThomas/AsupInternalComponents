@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
-import { AioReplacement } from "./aioInterface";
+import { newReplacement } from "../functions";
+import { AioExternalReplacements, AioReplacement } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 
@@ -10,10 +11,10 @@ import { AioReplacementDisplay } from "./aioReplacementDisplay";
  */
 interface AioReplacementListProps {
   label?: string,
-  replacements: AioReplacement[],
-  setReplacements?: (value: AioReplacement[]) => void,
+  replacements?: AioReplacement[],
+  setReplacements?: (ret: AioReplacement[]) => void,
   dontAskOptions?: boolean,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
 }
 
 /**
@@ -32,22 +33,21 @@ export const AioReplacementList = ({
   /** Update individual replacement and send it back */
   const updateReplacement = useCallback((ret: AioReplacement, i: number) => {
     if (typeof setReplacements !== "function") return;
-    let newValue = [...replacements];
+    let newValue = [...(replacements ?? [])];
     newValue[i] = ret;
     setReplacements(newValue);
   }, [replacements, setReplacements]);
 
   const addReplacement = useCallback((i: number) => {
     if (typeof setReplacements !== "function") return;
-    let newReplacements = [...replacements];
-    let newReplacement: AioReplacement = { oldText: "", newText: [""], spaceAfter: false, includeTrailing: false, subLists: [], };
-    newReplacements.splice(i, 0, newReplacement);
+    let newReplacements = [...(replacements ?? [])];
+    newReplacements.splice(i, 0, newReplacement());
     setReplacements!(newReplacements);
   }, [replacements, setReplacements]);
 
   const removeReplacement = useCallback((i: number) => {
     if (typeof setReplacements !== "function") return;
-    let newReplacements = [...replacements];
+    let newReplacements = [...replacements!];
     newReplacements.splice(i, 1);
     setReplacements!(newReplacements);
   }, [replacements, setReplacements]);
@@ -58,7 +58,7 @@ export const AioReplacementList = ({
       <div>
         <span>then...</span>{" "}
         {typeof setReplacements === "function" &&
-            <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(0)} />
+          <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(0)} />
         }
         {(replacements ?? []).map((repl, i) => {
           return (
@@ -67,20 +67,17 @@ export const AioReplacementList = ({
               <AioReplacementDisplay
                 airid={repl.airid}
                 oldText={repl.oldText}
-                newText={repl.newText}
-                subLists={repl.subLists}
-                spaceAfter={repl.spaceAfter}
+                newTexts={repl.newTexts}
                 includeTrailing={repl.includeTrailing}
-                givenName={repl.givenName}
                 externalName={repl.externalName}
                 setReplacement={(ret) => updateReplacement(ret, i)}
                 dontAskOptions={dontAskOptions}
                 externalLists={externalLists}
               />
               {typeof setReplacements === "function" &&
-                <div className="aiox-button-holder" style={{ display:"flex", flexDirection:"row", alignContent:"center" }}>
-                  {replacements.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => removeReplacement(i)} />}
-                  <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(i+1)} />
+                <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center" }}>
+                  {replacements!.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => removeReplacement(i)} />}
+                  <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(i + 1)} />
                 </div>
               }
             </div>

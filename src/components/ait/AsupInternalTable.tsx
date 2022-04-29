@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioIconButton, AioReplacement } from "../aio";
+import { AioBoolean, AioComment, AioExternalReplacements, AioIconButton } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow } from "../functions";
 import { newRowGroup } from "../functions/newRowGroup";
@@ -13,7 +13,7 @@ import { AitRowGroup } from "./aitRowGroup";
 interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
   groupTemplates?: AitRowGroupData[] | false,
@@ -50,7 +50,7 @@ export const AsupInternalTable = ({
 
   // Pushdown data
   useEffect(() => {
-    console.log("Received table data from page");
+    // console.log("Received table data from page");
     setHeaderData(headerPreProcess(tableData.headerData));
     setBodyData(bodyPreProcess(tableData.bodyData));
     setComments(tableData.comments ?? "");
@@ -67,7 +67,7 @@ export const AsupInternalTable = ({
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
-    console.log("Table return");
+    // console.log("Table return");
     const r = {
       headerData: tableUpdate.headerData ?? headerData,
       bodyData: tableUpdate.bodyData ?? bodyData,

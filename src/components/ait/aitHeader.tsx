@@ -29,13 +29,13 @@ export const AitHeader = ({
 
   const [processedRows, setProcessedRows] = useState<AitRowData[]>([...rows]);
   useEffect(() => { 
-    console.group(`Processing header data ${aitid}`);
+    // console.group(`Processing header data ${aitid}`);
     if (rows.some(r => (r.aitid === undefined || r.cells.some(c => c.aitid === undefined) ))) {
       console.log("Missing aitid!?!");
       return;
     }
-    console.log(`${rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
-    console.log(`${rows.map(r => r.cells.map(c => c.aitid?.substring(0, 3)).join("||")).join("\n")}`);
+    // console.log(`${rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+    // console.log(`${rows.map(r => r.cells.map(c => c.aitid?.substring(0, 3)).join("||")).join("\n")}`);
     if ((rows.length ?? 0) > 0) {
       let headerDataUpdate = repeatHeaders(
         rows,
@@ -44,15 +44,15 @@ export const AitHeader = ({
         higherOptions.rowHeaderColumns ?? 0,
         higherOptions.externalLists,
       );
-      console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
-      console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.aitid?.substr(0, 3)).join("||")).join("\n")}`);
+      // console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
+      // console.log(`${headerDataUpdate.rows.map(r => r.cells.map(c => c.aitid?.substr(0, 3)).join("||")).join("\n")}`);
       setProcessedRows(headerDataUpdate.rows);
       setColumnRepeats(headerDataUpdate.columnRepeats);
     }
     else {
       setColumnRepeats(null);
     }
-    console.groupEnd();
+    // console.groupEnd();
   }, [aitid, higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows, setColumnRepeats]);
 
   // General function to return complied object

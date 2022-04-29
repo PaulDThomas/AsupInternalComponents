@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AieStyleMap, AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
+import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
 
 export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [tableData, setTableData] = useState<AitTableData | undefined>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
-  const [externalReplacements, setExternalReplacements] = useState<AioReplacement[]>([]);
+  const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
     Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
@@ -49,9 +49,9 @@ export const TablePage = () => {
 
   const loadReplacements = useCallback(() => {
     try {
-      const j: { name: string, list: AioReplacement }[] = JSON.parse(window.localStorage.getItem('listContent') ?? "[]");
-      setExternalReplacements(j.map(j => j.list));
-      setListStatus(`Loaded ${j.length} lists: ${j.map(rep => rep.list.givenName).join(', ')}`);
+      const j: AioExternalReplacements[] = JSON.parse(window.localStorage.getItem('listContent') ?? "[]");
+      setExternalReplacements(j);
+      setListStatus(`Loaded ${j.length} lists: ${j.map(rv => rv.givenName).join(', ')}`);
     }
     catch (e) {
       console.log("JSON parse from listContent failed");
@@ -77,8 +77,8 @@ export const TablePage = () => {
             console.log(`${ret.headerData?.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
             console.log(`${ret.bodyData?.map(rg => rg.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")).join("\n\t")}`);
             console.groupEnd();
-            setTableData(ret)}
-          }
+            setTableData(ret)
+          }}
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}

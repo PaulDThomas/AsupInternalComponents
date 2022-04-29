@@ -1,6 +1,6 @@
 
-import { AioReplacement } from "../aio/aioInterface";
-import { AitRowData } from "../ait/aitInterface";
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitRowData } from "../ait";
 // import { createRepeats } from "./createRepeats";
 // import { findTargets } from "./findTargets";
 // import { getRepeats } from "./getRepeats";
@@ -21,7 +21,7 @@ export const repeatRows = (
   replacements?: AioReplacement[],
   noProcessing?: boolean,
   rowHeaderColumns?: number,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
 ): { rows: AitRowData[]; } => {
 
   // Create initial return

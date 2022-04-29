@@ -1,6 +1,5 @@
-import { AioReplacement } from "../aio/aioInterface";
-import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
-import { flattenReplacements } from "./flattenReplacements";
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
 
 /**
  * Entry function to process headers with replacements
@@ -15,7 +14,7 @@ export const repeatHeaders = (
   replacements: AioReplacement[],
   noProcessing?: boolean,
   rowHeaderColumns?: number,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
@@ -41,7 +40,7 @@ export const repeatHeaders = (
     columnRepeats: newColumnRepeats
   };
 
-  let replacement = flattenReplacements(replacements, externalLists);
+  // let replacement = flattenReplacements(replacements, externalLists);
 
   // let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, replacement, newHeaderRows, newColumnRepeats);
   // newHeaderRows = afterReplacement.newHeaderRows;

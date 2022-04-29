@@ -1,5 +1,5 @@
 import { AieStyleMap } from "../aie";
-import { AioReplacement } from "../aio";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 
 export interface AitCellData {
   aitid?: string,
@@ -69,7 +69,7 @@ export interface AitOptionList {
   noRepeatProcessing?: boolean,
   headerRows?: number,
   rowHeaderColumns?: number,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
   tableSection?: AitRowType,
   rowGroup?: number,
   row?: number,

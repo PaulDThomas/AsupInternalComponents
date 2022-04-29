@@ -12,12 +12,21 @@ export interface AioOption {
 export interface AioReplacement {
   airid?: string,
   oldText: string,
-  newText: string[],
-  subLists?: AioReplacement[],
-  spaceAfter?: boolean,
+  newTexts: AioReplacementValues[],
   includeTrailing?: boolean,
-  givenName?: string,
   externalName?: string,
+}
+
+export interface AioReplacementValues {
+  airid?: string,
+  texts: string[],
+  spaceAfter?: boolean,
+  subLists?: AioReplacement[],
+}
+
+export interface AioExternalReplacements {
+  givenName: string,
+  subLists: AioReplacementValues[],
 }
 
 export enum AioOptionType {

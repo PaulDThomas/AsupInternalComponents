@@ -1,10 +1,13 @@
-import { AioReplacement, AioReplacementDisplay, AioString } from '../components';
+import { AioExternalReplacements } from 'components/aio/aioInterface';
+import { newReplacementValues } from 'components/functions';
+import { newExternalReplacements } from 'components/functions/newExternalReplacements';
 import React, { useCallback, useRef, useState } from 'react';
+import { AioReplacementValuesDisplay, AioString } from '../components';
 
 export const ListPage = (): JSX.Element => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [repls, setRepls] = useState<AioReplacement[]>([]);
+  const [lists, setLists] = useState<AioExternalReplacements[]>([]);
   const [currentL, setCurrentL] = useState<number>(-1);
 
   const loadData = useCallback(() => {
@@ -14,7 +17,7 @@ export const ListPage = (): JSX.Element => {
       }
       if (ta.current) {
         const j = JSON.parse(ta.current.value?.toString() ?? "[]");
-        setRepls(j);
+        setLists(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }
@@ -35,25 +38,25 @@ export const ListPage = (): JSX.Element => {
       <div style={{ width: "30%" }}>
         <h4>Available lists</h4>
         <div>
-          {repls.map((l, i) =>
+          {lists.map((l, i) =>
             <div key={i}>
               <span onFocus={e => { setCurrentL(i); }}>
                 <AioString
-                  value={repls[i].givenName}
+                  value={lists[i].givenName}
                   setValue={(ret) => {
-                    let newRepl: AioReplacement = { ...repls[i], givenName:ret};
-                    let newRepls = [...repls];
-                    newRepls.splice(i, 1, newRepl);
-                    setRepls(newRepls);
+                    let newEx: AioExternalReplacements = { ...lists[i], givenName: ret };
+                    let newL = [...lists];
+                    newL.splice(i, 1, newEx);
+                    setLists(newL);
                   }}
                 />
               </span>
               <div
                 className='aiox-button aiox-minus'
                 onClick={e => {
-                  let newLi = [...repls];
+                  let newLi = [...lists];
                   newLi.splice(i, 1);
-                  setRepls(newLi);
+                  setLists(newLi);
                   setCurrentL(i - 1);
                 }}
               />
@@ -67,39 +70,58 @@ export const ListPage = (): JSX.Element => {
         <div
           className='aiox-button aiox-plus'
           onClick={e => {
-            let newRepl: AioReplacement = { oldText: "", newText:[""] };
-            let newRepls = [...repls];
-            newRepls.push(newRepl);
-            setRepls(newRepls);
+            let newRepls = [...lists];
+            newRepls.push(newExternalReplacements());
+            setLists(newRepls);
             setCurrentL(newRepls.length - 1)
           }}
         />
-
       </div>
       <div style={{ width: "70%" }}>
         <h4>List values</h4>
         <div>
           {currentL >= 0 &&
-            <AioReplacementDisplay
-              airid={repls[currentL].airid}
-              oldText={repls[currentL].oldText}
-              newText={repls[currentL].newText}
-              subLists={repls[currentL].subLists}
-              spaceAfter={repls[currentL].spaceAfter}
-              includeTrailing={repls[currentL].includeTrailing}
-              givenName={repls[currentL].givenName}
-              externalName={repls[currentL].externalName}
-              setReplacement={ret => {
-                let newRepls = [...repls];
-                newRepls.splice(currentL, 1, ret);
-                setRepls(newRepls);
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.5rem'
               }}
-              // dontShowText={true}
-            />
+
+            >
+              {
+                lists[currentL].subLists.map((e, i) =>
+                  <div key={i}                  >
+                    <AioReplacementValuesDisplay
+                      airid={e.airid}
+                      texts={e.texts}
+                      subLists={e.subLists}
+                      spaceAfter={e.spaceAfter}
+                      setReplacementValue={ret => {
+                        let newRepls = [...lists];
+                        newRepls[currentL].subLists.splice(i, 1, ret);
+                        setLists(newRepls);
+                      }}
+                    />
+                    <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center" }}>
+                      {lists!.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => {
+                        let newRepls = [...lists];
+                        newRepls[currentL].subLists.splice(i, 1);
+                        setLists(newRepls);
+                      }} />}
+                      <div className={"aiox-button aiox-addDown"} onClick={() => {
+                        let newRepls = [...lists];
+                        newRepls[currentL].subLists.splice(i+1, 0, newReplacementValues());
+                        setLists(newRepls);
+                      }} />
+                    </div>
+                  </div>
+                )
+              }
+            </div>
           }
         </div>
       </div>
-
     </div>
 
     <div style={{
@@ -114,9 +136,9 @@ export const ListPage = (): JSX.Element => {
         onClick={() => {
           if (!ta.current) return;
           // Show intended data
-          ta.current.value = JSON.stringify(repls, null, 2);
+          ta.current.value = JSON.stringify(lists, null, 2);
           // Save string
-          window.localStorage.setItem('listContent', JSON.stringify(repls));
+          window.localStorage.setItem('listContent', JSON.stringify(lists));
         }}
       >
         Save
@@ -126,6 +148,5 @@ export const ListPage = (): JSX.Element => {
         <textarea style={{ width: "98%", height: "200px" }} ref={ta} />
       </pre>
     </div>
-
   </>);
 }
