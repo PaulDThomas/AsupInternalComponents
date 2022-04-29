@@ -60,7 +60,7 @@ export const AioReplacementValuesDisplay = ({
               rows={4}
               value={texts?.map(t => fromHtml(t)).join("\n") ?? ""}
               onChange={e => { returnData({ texts: e.currentTarget.value.split("\n").map(t => toHtml(t)) }); }}
-              style={{ width: "168px", minWidth: "168px" }}
+              style={{ width: "170px", minWidth: "170px" }}
             />
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <label><small>Space after repeat</small></label>
