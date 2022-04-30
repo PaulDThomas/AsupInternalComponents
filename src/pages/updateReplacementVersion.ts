@@ -1,22 +1,5 @@
-import { AioReplacement, AioReplacementValues, AitRowData, AitRowGroupData, AitTableData } from "components";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "components";
 import { v4 as uuidv4 } from "uuid";
-
-interface OldTableData {
-  headerData?: OldRowGroupData,
-  bodyData?: OldRowGroupData[],
-  comments?: string,
-  rowHeaderColumns?: number,
-  noRepeatProcessing?: boolean,
-};
-
-interface OldRowGroupData {
-  aitid?: string,
-  name?: string,
-  rows: AitRowData[],
-  comments?: string,
-  spaceAfter?: boolean,
-  replacements?: AioReplacement[] | oldReplacement[],
-};
 
 interface oldReplacementText {
   text: string,
@@ -28,7 +11,7 @@ interface oldReplacementValue {
   subList?: oldReplacementValue[],
 }
 
-interface oldReplacement {
+export interface oldReplacement {
   airid?: string,
   replacementTexts: oldReplacementText[],
   replacementValues: oldReplacementValue[],
@@ -36,26 +19,12 @@ interface oldReplacement {
   externalName?: string,
 }
 
-export const tableDataUpdate = (inData: OldTableData): AitTableData => {
-  return {
-    ...inData,
-    headerData: {
-      ...inData.headerData,
-      replacements: textToReplacement(inData.headerData?.replacements)
-    } as AitRowGroupData,
-    bodyData: inData.bodyData?.map(rg => {
-      return {
-        ...rg,
-        replacements: textToReplacement(rg.replacements)
-      } as AitRowGroupData;
-    })
-  };
-};
-
-function textToReplacement(reps?: AioReplacement[] | oldReplacement[]): AioReplacement[] {
+export function updateReplacementVersion(reps?: AioReplacement[] | oldReplacement[]): AioReplacement[] {
   // Check processing required
-  if (reps === undefined || reps.length === 0) return [];
-  if ((reps[0] as AioReplacement).oldText !== undefined) return reps as AioReplacement[];
+  if (reps === undefined || reps.length === 0)
+    return [];
+  if ((reps[0] as AioReplacement).oldText !== undefined)
+    return reps as AioReplacement[];
   // Create the new object
   let oldReps = reps as oldReplacement[];
   let newReps: AioReplacement[] = [];
@@ -74,7 +43,7 @@ function textToReplacement(reps?: AioReplacement[] | oldReplacement[]): AioRepla
         newTexts: [newRV],
         includeTrailing: true,
         externalName: oldRep.externalName
-      }
+      };
       newReps.push(newRep);
     }
     else {
@@ -84,9 +53,9 @@ function textToReplacement(reps?: AioReplacement[] | oldReplacement[]): AioRepla
         newTexts: [],
         includeTrailing: true,
         externalName: oldRep.externalName
-      }
+      };
       for (let j = 0; j < oldRep.replacementValues.length; j++) {
-        let nextLevel:oldReplacement = {
+        let nextLevel: oldReplacement = {
           replacementTexts: oldRep.replacementTexts.slice(1),
           replacementValues: oldRep.replacementValues[j].subList ?? [],
         };
@@ -94,7 +63,7 @@ function textToReplacement(reps?: AioReplacement[] | oldReplacement[]): AioRepla
           airid: uuidv4(),
           texts: [oldRep.replacementValues[j].newText],
           spaceAfter: oldRep.replacementTexts[0].spaceAfter,
-          subLists: nextLevel.replacementTexts.length > 0 ? textToReplacement([nextLevel]) : undefined,
+          subLists: nextLevel.replacementTexts.length > 0 ? updateReplacementVersion([nextLevel]) : undefined,
         };
         newRep.newTexts.push(newRV);
       }
@@ -102,4 +71,32 @@ function textToReplacement(reps?: AioReplacement[] | oldReplacement[]): AioRepla
     }
   }
   return newReps;
+}
+
+export function updateReplToExtl(
+  reps: AioExternalReplacements[] | oldReplacement[] | { name: string, list: oldReplacement[] }[]): AioExternalReplacements[] {
+  // Check processing required
+  if (reps === undefined || reps.length === 0)
+    return [];
+  if ((reps[0] as AioExternalReplacements).givenName !== undefined)
+    return reps as AioExternalReplacements[];
+  // Change from old to new
+  let oldReps: oldReplacement[];
+  if ((reps[0] as { name: string, list: oldReplacement[] }).name !== undefined) {
+    oldReps = reps.map(r =>  (r as { name: string, list:oldReplacement[]}).list).flat();
+  }
+  else {
+    oldReps = reps as oldReplacement[];
+  }
+  // Extract
+  let newExl: AioExternalReplacements[] = [];
+  newExl.push(...oldReps.filter(o => o.givenName !== undefined).map(oRep => {
+    let nReps: AioReplacement[] = updateReplacementVersion([oRep]);
+    let nRvs: AioReplacementValues[] = nReps.map(nRep => { return nRep.newTexts; }).flat();
+    return {
+      givenName: oRep.givenName,
+      subLists: nRvs,
+    } as AioExternalReplacements;
+  }));
+  return newExl;
 }

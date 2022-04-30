@@ -3,6 +3,7 @@ import { newReplacementValues } from 'components/functions';
 import { newExternalReplacements } from 'components/functions/newExternalReplacements';
 import React, { useCallback, useRef, useState } from 'react';
 import { AioReplacementValuesDisplay, AioString } from '../components';
+import { updateReplacementVersion, updateReplToExtl } from './updateReplacementVersion';
 
 export const ListPage = (): JSX.Element => {
 
@@ -16,8 +17,8 @@ export const ListPage = (): JSX.Element => {
         ta.current.value = window.localStorage.getItem('listContent') ?? "";
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current.value?.toString() ?? "[]");
-        setLists(j);
+        const j:any = JSON.parse(ta.current.value?.toString() ?? "[]");
+        setLists(updateReplToExtl(j));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }

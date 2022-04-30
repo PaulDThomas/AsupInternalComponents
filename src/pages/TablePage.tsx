@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
-import { tableDataUpdate } from './tableDataUpdate';
+import { updateTableDataVersion } from './updateTableDataVersion';
 
 export const TablePage = () => {
 
@@ -28,7 +28,7 @@ export const TablePage = () => {
     /** Load table data */
     fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
       .then(function (response) { return response.json(); })
-      .then(function (MyJson: AitTableData) { setTableData(tableDataUpdate(MyJson)); });
+      .then(function (MyJson: AitTableData) { setTableData(updateTableDataVersion(MyJson)); });
   }, []);
 
   const loadData = useCallback(() => {
