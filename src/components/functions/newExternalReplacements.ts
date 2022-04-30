@@ -4,6 +4,6 @@ import { newReplacementValues } from "./newReplacementValues";
 export const newExternalReplacements = (): AioExternalReplacements => {
   return {
     givenName: "",
-    subLists: [newReplacementValues()],
+    newTexts: [newReplacementValues()],
   };
 };

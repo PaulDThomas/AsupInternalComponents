@@ -3,7 +3,7 @@ import { newReplacementValues } from 'components/functions';
 import { newExternalReplacements } from 'components/functions/newExternalReplacements';
 import React, { useCallback, useRef, useState } from 'react';
 import { AioReplacementValuesDisplay, AioString } from '../components';
-import { updateReplacementVersion, updateReplToExtl } from './updateReplacementVersion';
+import { updateReplToExtl } from './updateReplacementVersion';
 
 export const ListPage = (): JSX.Element => {
 
@@ -91,7 +91,7 @@ export const ListPage = (): JSX.Element => {
 
             >
               {
-                lists[currentL].subLists.map((e, i) =>
+                lists[currentL].newTexts.map((e, i) =>
                   <div key={i}                  >
                     <AioReplacementValuesDisplay
                       airid={e.airid}
@@ -100,19 +100,19 @@ export const ListPage = (): JSX.Element => {
                       spaceAfter={e.spaceAfter}
                       setReplacementValue={ret => {
                         let newRepls = [...lists];
-                        newRepls[currentL].subLists.splice(i, 1, ret);
+                        newRepls[currentL].newTexts.splice(i, 1, ret);
                         setLists(newRepls);
                       }}
                     />
                     <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center" }}>
                       {lists!.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => {
                         let newRepls = [...lists];
-                        newRepls[currentL].subLists.splice(i, 1);
+                        newRepls[currentL].newTexts.splice(i, 1);
                         setLists(newRepls);
                       }} />}
                       <div className={"aiox-button aiox-addDown"} onClick={() => {
                         let newRepls = [...lists];
-                        newRepls[currentL].subLists.splice(i+1, 0, newReplacementValues());
+                        newRepls[currentL].newTexts.splice(i+1, 0, newReplacementValues());
                         setLists(newRepls);
                       }} />
                     </div>

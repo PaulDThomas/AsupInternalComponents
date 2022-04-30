@@ -1,48 +1,66 @@
-import { AioReplacement } from "../aio";
+import { AioExternalReplacements, AioReplacement } from "../aio";
 import { updateExternals } from "./updateExternals";
 
 describe('Check updateExternals', () => {
   let a: AioReplacement = {
     oldText: "a",
-    newText: ["a1", "a2"],
-    externalName: "ListB",
-    givenName: "ListA",
+    externalName: "ListE",
+    newTexts: [{ texts: ["a1", "a2"] }]
   };
   let b: AioReplacement = {
     oldText: "b",
-    newText: ["b1", "b2"],
-    givenName: "ListB",
-    subLists: [
-      { oldText: "c", newText: ["c1", "c2"], externalName: "ListA" },
-      { oldText: "d", newText: ["d1", "d2"] }
+    newTexts: [
+      {
+        texts: ["b1"], subLists: [
+          {
+            oldText: "c",
+            externalName: "ListE",
+            newTexts: [{ texts: ["c1", "c2"] }]
+          },
+          { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
+        ]
+      }
+    ]
+  };
+  let e: AioExternalReplacements = {
+    givenName: "ListE",
+    newTexts: [
+      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
     ]
   };
 
-  test("Single into long", () => {
-    let c = updateExternals(b, [a]);
-    expect(c).toEqual({
-      oldText: "b",
-      newText: ["b1", "b2"],
-      givenName: "ListB",
-      subLists: [
-        { oldText: "c", newText: ["a1", "a2"], externalName: "ListA" },
-        { oldText: "d", newText: ["d1", "d2"] }
-      ]
-    });
-  });
-
-  test("Long into single", () => {
-    let c = updateExternals(a, [b]);
+  test("Into single", () => {
+    let c = updateExternals(a, [e]);
     expect(c).toEqual({
       oldText: "a",
-      newText: ["b1", "b2"],
-      externalName: "ListB",
-      givenName: "ListA",
-      subLists: [
-        { oldText: "c", newText: ["c1", "c2"], externalName: "ListA", subList: undefined },
-        { oldText: "d", newText: ["d1", "d2"], subList: undefined }
+      externalName: "ListE",
+      newTexts: [
+        { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+        { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
       ]
     });
   });
 
+  test("Into long", () => {
+    let c = updateExternals(b, [e]);
+    expect(c).toEqual({
+      oldText: "b",
+      newTexts: [
+        {
+          texts: ["b1"], subLists: [
+            {
+              oldText: "c",
+              externalName: "ListE",
+              newTexts: [
+                { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+                { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
+              ]
+            },
+            { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
+          ]
+        }
+      ]
+    });
+  });
 });

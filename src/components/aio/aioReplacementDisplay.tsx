@@ -102,7 +102,7 @@ export const AioReplacementDisplay = ({
           ?
           <>
             {
-              externalLists!.find(e => e.givenName === externalName)!.subLists.map((e, i) =>
+              externalLists!.find(e => e.givenName === externalName)!.newTexts.map((e, i) =>
                 <AioReplacementValuesDisplay
                   key={i}
                   texts={e.texts}
@@ -135,81 +135,4 @@ export const AioReplacementDisplay = ({
       </div>
     </div>
   );
-
-  // {
-  //   externalName === undefined
-  //     ?
-  //     <div>
-  //       {typeof setReplacement === "function"
-  //         ?
-  //         <textarea
-  //           className={"aio-input"}
-  //           rows={4}
-  //           value={text.map(t => fromHtml(t)).join("\n")}
-  //           onChange={e => { returnData({ newText: e.currentTarget.value.split("\n").map(t => toHtml(t)) }); }}
-  //           style={{ width: "168px", minWidth: "168px" }}
-  //         />
-  //         :
-  //         <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>
-  //           {text.map((t, i) =>
-  //             <div key={i} style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>
-  //               {fromHtml(t)}
-  //             </div>
-  //           )}
-  //         </div>
-  //       }
-  //     </div>
-  //     :
-  //     <>
-  //       {externalLists?.find(e => e.givenName === externalName) !== undefined
-  //         ?
-  //         <div style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}>
-  //           {externalLists.find(e => e.givenName === externalName)!.newTexts.map((t, i) =>
-  //             <div key={i} style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}>
-  //               {fromHtml(t)}
-  //             </div>
-  //           )}
-  //         </div>
-  //         :
-  //         <span><em>WARNING: List missing</em></span>
-  //       }
-  //     </>
-  // }
-  // {
-  //   !dontShowText && !dontAskOptions &&
-  //     <>
-  //       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-  //         <label><small>Space after repeat</small></label>
-  //         <input
-  //           style={{ margin: "6px" }}
-  //           type='checkbox'
-  //           checked={spaceAfter}
-  //           onChange={(e) => returnData({ spaceAfter: e.currentTarget.checked })} />
-  //       </div>
-  //       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-  //         <label><small>Include following rows</small></label>
-  //         <input
-  //           style={{ margin: "6px" }}
-  //           type='checkbox'
-  //           checked={includeTrailing}
-  //           onChange={(e) => returnData({ includeTrailing: e.currentTarget.checked })} />
-  //       </div>
-  //     </>
-  // }
-  //     </div >
-  //     <div style={{ display: "flex", flexDirection: "column" }}>
-  //       <div style={{ flexGrow: 1, minWidth: "5px", width: "5px", borderBottom: "1px burlywood solid", borderBottomRightRadius: "4px", }} />
-  //       <div style={{ flexGrow: 1, minWidth: "5px", width: "5px", borderTop: "1px burlywood solid", borderTopRightRadius: "4px", }} />
-  //     </div>
-  //     <div style={{ minWidth: "5px", width: "5px", marginTop: "6px", marginBottom: "6px", borderLeft: "1px burlywood solid", borderTop: "1px burlywood solid", borderBottom: "1px burlywood solid", borderTopLeftRadius: "4px", borderBottomLeftRadius: "4px", }} />
-
-  //     <div className="aiord-sub-lists" style={{ marginLeft: "0.5rem", display: "flex", flexDirection: "column", justifyContent: "center" }}>
-  //       <AioReplacementList
-  //         replacements={subLists ?? []}
-  //         setReplacements={typeof setReplacement === "function" ? (ret) => returnData({ subLists: ret }) : undefined}
-  //         dontAskOptions={dontAskOptions}
-  //         externalLists={externalLists}
-  //       />
-  //     </div>
-
 }

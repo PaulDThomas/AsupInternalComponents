@@ -26,7 +26,7 @@ export interface AioReplacementValues {
 
 export interface AioExternalReplacements {
   givenName: string,
-  subLists: AioReplacementValues[],
+  newTexts: AioReplacementValues[],
 }
 
 export enum AioOptionType {

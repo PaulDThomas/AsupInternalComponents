@@ -95,7 +95,7 @@ export function updateReplToExtl(
     let nRvs: AioReplacementValues[] = nReps.map(nRep => { return nRep.newTexts; }).flat();
     return {
       givenName: oRep.givenName,
-      subLists: nRvs,
+      newTexts: nRvs,
     } as AioExternalReplacements;
   }));
   return newExl;
