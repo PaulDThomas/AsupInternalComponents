@@ -51,6 +51,7 @@ export const AioReplacementValuesDisplay = ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+        gap: '2px',
       }}>
         {typeof setReplacementValue === "function"
           ?
@@ -62,14 +63,16 @@ export const AioReplacementValuesDisplay = ({
               onChange={e => { returnData({ texts: e.currentTarget.value.split("\n").map(t => toHtml(t)) }); }}
               style={{ width: "170px", minWidth: "170px" }}
             />
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <label><small>Space after repeat</small></label>
-              <input
-                style={{ margin: "6px" }}
-                type='checkbox'
-                checked={spaceAfter}
-                onChange={(e) => returnData({ spaceAfter: e.currentTarget.checked })} />
-            </div>
+            {!dontAskOptions &&
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <label><small>Space after repeat</small></label>
+                <input
+                  style={{ margin: "6px" }}
+                  type='checkbox'
+                  checked={spaceAfter}
+                  onChange={(e) => returnData({ spaceAfter: e.currentTarget.checked })} />
+              </div>
+            }
           </>
           :
           <>

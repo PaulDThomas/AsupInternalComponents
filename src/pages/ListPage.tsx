@@ -2,13 +2,13 @@ import { AioExternalReplacements } from 'components/aio/aioInterface';
 import { newReplacementValues } from 'components/functions';
 import { newExternalReplacements } from 'components/functions/newExternalReplacements';
 import React, { useCallback, useRef, useState } from 'react';
-import { AioReplacementValuesDisplay, AioString } from '../components';
+import { AioIconButton, AioReplacementValuesDisplay, AioString } from '../components';
 import { updateReplToExtl } from './updateReplacementVersion';
 
 export const ListPage = (): JSX.Element => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lists, setLists] = useState<AioExternalReplacements[]>([]);
+  const [newTexts, setNewTexts] = useState<AioExternalReplacements[]>([]);
   const [currentL, setCurrentL] = useState<number>(-1);
 
   const loadData = useCallback(() => {
@@ -17,8 +17,8 @@ export const ListPage = (): JSX.Element => {
         ta.current.value = window.localStorage.getItem('listContent') ?? "";
       }
       if (ta.current) {
-        const j:any = JSON.parse(ta.current.value?.toString() ?? "[]");
-        setLists(updateReplToExtl(j));
+        const j: any = JSON.parse(ta.current.value?.toString() ?? "[]");
+        setNewTexts(updateReplToExtl(j));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }
@@ -33,31 +33,30 @@ export const ListPage = (): JSX.Element => {
       width: "100%",
       margin: "1.5rem",
       display: "flex",
-      justifyContent: "center",
     }}>
 
       <div style={{ width: "30%" }}>
         <h4>Available lists</h4>
         <div>
-          {lists.map((l, i) =>
+          {newTexts.map((l, i) =>
             <div key={i}>
               <span onFocus={e => { setCurrentL(i); }}>
                 <AioString
-                  value={lists[i].givenName}
+                  value={newTexts[i].givenName}
                   setValue={(ret) => {
-                    let newEx: AioExternalReplacements = { ...lists[i], givenName: ret };
-                    let newL = [...lists];
+                    let newEx: AioExternalReplacements = { ...newTexts[i], givenName: ret };
+                    let newL = [...newTexts];
                     newL.splice(i, 1, newEx);
-                    setLists(newL);
+                    setNewTexts(newL);
                   }}
                 />
               </span>
               <div
                 className='aiox-button aiox-minus'
                 onClick={e => {
-                  let newLi = [...lists];
+                  let newLi = [...newTexts];
                   newLi.splice(i, 1);
-                  setLists(newLi);
+                  setNewTexts(newLi);
                   setCurrentL(i - 1);
                 }}
               />
@@ -71,9 +70,9 @@ export const ListPage = (): JSX.Element => {
         <div
           className='aiox-button aiox-plus'
           onClick={e => {
-            let newRepls = [...lists];
+            let newRepls = [...newTexts];
             newRepls.push(newExternalReplacements());
-            setLists(newRepls);
+            setNewTexts(newRepls);
             setCurrentL(newRepls.length - 1)
           }}
         />
@@ -86,35 +85,34 @@ export const ListPage = (): JSX.Element => {
               style={{
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '0.5rem'
+                gap: '0.5rem',
               }}
-
             >
               {
-                lists[currentL].newTexts.map((e, i) =>
-                  <div key={i}                  >
+                newTexts[currentL].newTexts.map((e, i) =>
+                  <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '2px'}}>
                     <AioReplacementValuesDisplay
                       airid={e.airid}
                       texts={e.texts}
                       subLists={e.subLists}
                       spaceAfter={e.spaceAfter}
                       setReplacementValue={ret => {
-                        let newRepls = [...lists];
+                        let newRepls = [...newTexts];
                         newRepls[currentL].newTexts.splice(i, 1, ret);
-                        setLists(newRepls);
+                        setNewTexts(newRepls);
                       }}
                     />
-                    <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center" }}>
-                      {lists!.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => {
-                        let newRepls = [...lists];
+                    <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginLeft: '2.5rem', marginTop: '2px'  }}>
+                      {newTexts!.length > 1 && <AioIconButton iconName={"aiox-minus"} onClick={() => {
+                        let newRepls = [...newTexts];
                         newRepls[currentL].newTexts.splice(i, 1);
-                        setLists(newRepls);
-                      }} />}
-                      <div className={"aiox-button aiox-addDown"} onClick={() => {
-                        let newRepls = [...lists];
-                        newRepls[currentL].newTexts.splice(i+1, 0, newReplacementValues());
-                        setLists(newRepls);
-                      }} />
+                        setNewTexts(newRepls);
+                      }} tipText={"Add new text"} />}
+                      <AioIconButton iconName={"aiox-plus"} onClick={() => {
+                        let newRepls = [...newTexts];
+                        newRepls[currentL].newTexts.splice(i + 1, 0, newReplacementValues());
+                        setNewTexts(newRepls);
+                      }} tipText={"Remove new text"} />
                     </div>
                   </div>
                 )
@@ -137,9 +135,9 @@ export const ListPage = (): JSX.Element => {
         onClick={() => {
           if (!ta.current) return;
           // Show intended data
-          ta.current.value = JSON.stringify(lists, null, 2);
+          ta.current.value = JSON.stringify(newTexts, null, 2);
           // Save string
-          window.localStorage.setItem('listContent', JSON.stringify(lists));
+          window.localStorage.setItem('listContent', JSON.stringify(newTexts));
         }}
       >
         Save

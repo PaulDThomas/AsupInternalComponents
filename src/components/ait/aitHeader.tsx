@@ -28,9 +28,9 @@ export const AitHeader = ({
 }: AitHeaderProps): JSX.Element => {
 
   const [processedRows, setProcessedRows] = useState<AitRowData[]>([...rows]);
-  useEffect(() => { 
+  useEffect(() => {
     // console.group(`Processing header data ${aitid}`);
-    if (rows.some(r => (r.aitid === undefined || r.cells.some(c => c.aitid === undefined) ))) {
+    if (rows.some(r => (r.aitid === undefined || r.cells.some(c => c.aitid === undefined)))) {
       console.log("Missing aitid!?!");
       return;
     }
@@ -64,17 +64,7 @@ export const AitHeader = ({
     if (typeof (setHeaderData) !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
-      rows: (headerUpdate.rows ?? rows).map(r => {
-        return {
-          aitid: r.aitid,
-          cells: r.cells.filter((c, ci) => (
-            !columnRepeats
-            || !columnRepeats[ci]
-            || !columnRepeats[ci].repeatNumbers
-            || columnRepeats[ci].repeatNumbers?.reduce((r, a) => r + a, 0) === 0
-          ))
-        };
-      }),
+      rows: (headerUpdate.rows ?? rows),
       comments: headerUpdate.comments ?? comments,
       replacements: headerUpdate.replacements ?? replacements,
     };
@@ -82,7 +72,7 @@ export const AitHeader = ({
     console.log(`${r?.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
     console.groupEnd();
     setHeaderData!(r);
-  }, [setHeaderData, aitid, rows, comments, replacements, columnRepeats]);
+  }, [setHeaderData, aitid, rows, comments, replacements]);
 
   // Update row
   const updateRow = useCallback((ret: AitRowData, ri: number) => {

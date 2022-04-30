@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import { v4 as uuidv4 } from "uuid";
-import { fromHtml, toHtml } from '../functions';
+import { fromHtml, newReplacementValues, toHtml } from '../functions';
 import { AioDropSelect } from './aioDropSelect';
+import { AioIconButton } from './aioIconButton';
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from './aioInterface';
 import { AioReplacementValuesDisplay } from './aioReplacementValuesDisplay';
 
@@ -14,7 +15,6 @@ interface AioReplacmentDisplayProps {
   setReplacement?: (ret: AioReplacement) => void,
   externalLists?: AioExternalReplacements[],
   dontAskOptions?: boolean,
-  dontShowText?: boolean,
 }
 
 /**
@@ -29,6 +29,7 @@ export const AioReplacementDisplay = ({
   externalName,
   setReplacement,
   externalLists,
+  dontAskOptions,
 }: AioReplacmentDisplayProps): JSX.Element => {
 
   const availableListNames = useMemo<string[]>(() => {
@@ -64,6 +65,20 @@ export const AioReplacementDisplay = ({
     setReplacement(r);
   }, [setReplacement, airid, oldText, newTexts, includeTrailing, externalName]);
 
+  const addNewText = useCallback((i: number) => {
+    if (typeof setReplacement !== "function") return;
+    let nts = [...newTexts];
+    nts.splice(i, 0, newReplacementValues());
+    returnData({ newTexts: nts });
+  }, [newTexts, returnData, setReplacement]);
+
+  const removeNewText = useCallback((i: number) => {
+    if (typeof setReplacement !== "function") return;
+    let nts = [...newTexts];
+    nts.splice(i, 1);
+    returnData({ newTexts: nts });
+  }, [newTexts, returnData, setReplacement]);
+
   /**
    * Update the list
    * @param string value that will be split by new line into repeats
@@ -73,6 +88,10 @@ export const AioReplacementDisplay = ({
       display: 'flex',
       flexDirection: "column",
       gap: '2px',
+      border: '1px dotted burlywood',
+      padding: '2px',
+      borderRadius: '4px,',
+      margin: '2px',
     }}>
       <div>
         {typeof setReplacement !== "function"
@@ -113,22 +132,31 @@ export const AioReplacementDisplay = ({
           </>
           :
           <>
-            {newTexts.map((rv, i) => 
-              <AioReplacementValuesDisplay
-                key={rv.airid}
-                airid={rv.airid}
-                texts={rv.texts}
-                subLists={rv.subLists}
-                externalLists={externalLists}
-                setReplacementValue={typeof setReplacement === "function" 
-                ?
-                (ret) => {
-                  let nts = [...newTexts];
-                  nts.splice(i, 1, ret);
-                  returnData({ newTexts: nts });
+            {newTexts.map((rv, i) =>
+              <div>
+                <AioReplacementValuesDisplay
+                  key={rv.airid}
+                  airid={rv.airid}
+                  texts={rv.texts}
+                  subLists={rv.subLists}
+                  externalLists={externalLists}
+                  dontAskOptions={dontAskOptions}
+                  setReplacementValue={typeof setReplacement === "function"
+                    ?
+                    (ret) => {
+                      let nts = [...newTexts];
+                      nts.splice(i, 1, ret);
+                      returnData({ newTexts: nts });
+                    }
+                    : undefined}
+                />
+                {typeof setReplacement === 'function' &&
+                  <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginLeft: '2.5rem', marginTop: '2px'  }}>
+                    {newTexts!.length > 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeNewText(i)} tipText={"Add new text"} />}
+                    <AioIconButton iconName={"aiox-addDown"} onClick={() => addNewText(i + 1)} tipText={"Remove new text"} />
+                  </div>
                 }
-                : undefined}
-              />
+              </div>
             )}
           </>
         }

@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { newReplacement } from "../functions";
+import { AioIconButton } from "./aioIconButton";
 import { AioExternalReplacements, AioReplacement } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
@@ -75,9 +76,9 @@ export const AioReplacementList = ({
                 externalLists={externalLists}
               />
               {typeof setReplacements === "function" &&
-                <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center" }}>
-                  {replacements!.length >= 1 && <div className={"aiox-button aiox-removeUp"} onClick={() => removeReplacement(i)} />}
-                  <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(i + 1)} />
+                <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginBottom: '2px' }}>
+                  {replacements!.length >= 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeReplacement(i)} tipText={"Add old text"} />}
+                  <AioIconButton iconName={"aiox-addDown"} onClick={() => addReplacement(i + 1)} tipText={"Remove old text"} />
                 </div>
               }
             </div>
