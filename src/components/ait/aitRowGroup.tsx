@@ -1,8 +1,7 @@
-import structuredClone from '@ungap/structured-clone';
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, newRow, objEqual, repeatRows } from "../functions";
-import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
+import { newCell, newRow, repeatRows } from "../functions";
+import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
@@ -32,18 +31,7 @@ export const AitRowGroup = ({
   removeRowGroup,
   columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
-
-  const location: AitLocation = useMemo(() => {
-    return {
-      tableSection: higherOptions.tableSection ?? AitRowType.body,
-      rowGroup: higherOptions.rowGroup ?? 0,
-      row: -1,
-      column: -1,
-      repeat: "na",
-    }
-  }, [higherOptions]);
-
+  
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
     rows?: AitRowData[],
@@ -59,14 +47,8 @@ export const AitRowGroup = ({
       replacements: rowGroupUpdate.replacements ?? replacements,
       spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      // console.log(`ROWGROUPRETURN: ${diffs}`);
       setRowGroupData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [setRowGroupData, aitid, rows, comments, replacements, spaceAfter, lastSend, location]);
+  }, [setRowGroupData, aitid, rows, comments, replacements, spaceAfter]);
 
   // Update row
   const updateRow = useCallback((ret: AitRowData, ri: number) => {
@@ -186,10 +168,9 @@ export const AitRowGroup = ({
       rows,
       replacements,
       higherOptions.noRepeatProcessing,
-      higherOptions.rowHeaderColumns,
       higherOptions.externalLists,
     );
-  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
+  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, replacements, rows]);
 
   // Output the rows
   return (
@@ -217,7 +198,7 @@ export const AitRowGroup = ({
             updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
             addRow={addRow}
             removeRow={rows.length > 1 ? removeRow : undefined}
-            spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? 0 : false)}
+            spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? true : false)}
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}

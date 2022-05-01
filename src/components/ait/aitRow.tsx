@@ -1,8 +1,6 @@
-import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
 import { AsupInternalWindow } from "../aiw";
-import { objEqual } from '../functions';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
@@ -21,7 +19,7 @@ interface AitRowProps {
   updateRowGroupComments: (ret: string) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
-  spaceAfter?: number | false,
+  spaceAfter?: boolean,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
@@ -54,7 +52,6 @@ export const AitRow = ({
   rowGroupSpace,
   setRowGroupSpace,
 }: AitRowProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
 
   const location: AitLocation = useMemo(() => {
@@ -74,14 +71,8 @@ export const AitRow = ({
       aitid: aitid,
       cells: rowUpdate.cells ?? cells,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      // console.log(`ROWRETURN: ${diffs}`);
       setRowData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [setRowData, aitid, cells, lastSend, location]);
+  }, [setRowData, aitid, cells]);
 
   const updateCell = useCallback((ret: AitCellData, ci: number) => {
     // Create new object to send back

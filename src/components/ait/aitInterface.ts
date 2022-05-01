@@ -17,7 +17,7 @@ export interface AitCellData {
 export interface AitRowData {
   aitid?: string, // Unique ID
   cells: AitCellData[],
-  spaceAfter?: number | false, // Indicator if there is space after a row
+  spaceAfter?: boolean, // Indicator if there is space after a row
 };
 
 export interface AitRowGroupData {
