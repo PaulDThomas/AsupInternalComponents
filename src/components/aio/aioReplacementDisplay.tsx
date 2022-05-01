@@ -106,6 +106,18 @@ export const AioReplacementDisplay = ({
             style={{ minWidth: 0, width: "170px" }}
           />
         }
+      {!dontAskOptions &&
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <label><small>Repeat following lines</small></label>
+          <input
+            disabled={typeof setReplacement !== 'function'}
+            style={{ margin: "6px" }}
+            type='checkbox'
+            checked={includeTrailing}
+            onChange={e => returnData({includeTrailing:e.currentTarget.checked})}
+            />
+        </div>
+      }
       </div>
       {typeof setReplacement === "function" && externalLists !== undefined && externalLists.length > 0 &&
         <div>
@@ -151,7 +163,7 @@ export const AioReplacementDisplay = ({
                     : undefined}
                 />
                 {typeof setReplacement === 'function' &&
-                  <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginLeft: '2.5rem', marginTop: '2px'  }}>
+                  <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginLeft: '2.5rem', marginTop: '2px' }}>
                     {newTexts!.length > 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeNewText(i)} tipText={"Add new text"} />}
                     <AioIconButton iconName={"aiox-addDown"} onClick={() => addNewText(i + 1)} tipText={"Remove new text"} />
                   </div>
