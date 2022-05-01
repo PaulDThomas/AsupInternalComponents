@@ -50,7 +50,6 @@ export const AsupInternalTable = ({
 
   // Pushdown data
   useEffect(() => {
-    // console.log("Received table data from page");
     setHeaderData(headerPreProcess(tableData.headerData));
     setBodyData(bodyPreProcess(tableData.bodyData));
     setComments(tableData.comments ?? "");
@@ -67,7 +66,6 @@ export const AsupInternalTable = ({
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
-    console.log("Table return");
     const r = {
       headerData: tableUpdate.headerData ?? headerData,
       bodyData: tableUpdate.bodyData ?? bodyData,
@@ -269,10 +267,7 @@ export const AsupInternalTable = ({
         <AioIconButton
           style={{ zIndex: 2 }}
           tipText="Table settings"
-          onClick={() => {
-            console.log("click");
-            setShowOptions(!showOptions)
-          }}
+          onClick={() => { setShowOptions(!showOptions) }}
           iconName={"aio-button-settings"}
         />
         {showOptions &&
@@ -330,12 +325,7 @@ export const AsupInternalTable = ({
             rows={headerData.rows}
             comments={headerData.comments}
             replacements={headerData.replacements}
-            setHeaderData={(ret) => {
-              console.group("Header data returned");
-              console.log(`${ret.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
-              console.groupEnd();
-              setHeaderData(ret);
-            }}
+            setHeaderData={(ret) => { setHeaderData(ret); }}
             higherOptions={{
               ...higherOptions,
               tableSection: AitRowType.header,
