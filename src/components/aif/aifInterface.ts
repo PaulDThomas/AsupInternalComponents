@@ -1,12 +1,12 @@
 export interface AifBlockLine {
-  aifid?: string,
-  left?: string | false,
-  centre?: string | false,
-  right?: string | false,
-  addBelow?: boolean,
-  canEdit?: boolean,
-  canRemove?: boolean,
-  canMove?: boolean,
+  aifid?: string, // Unique ID
+  left?: string | false, // Left aligned text in the row
+  centre?: string | false, // Centre aligned text in the row
+  right?: string | false, // Right aligned text in the row
+  addBelow?: boolean, // If the user can add a line below
+  canEdit?: boolean, // If the user can edit the line
+  canRemove?: boolean, // If the user can remove the line
+  canMove?: boolean, // If the user can move the line in an array of lines
 }
 
 export const enum AifLineType {

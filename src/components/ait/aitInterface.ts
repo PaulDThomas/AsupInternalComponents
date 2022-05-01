@@ -1,41 +1,40 @@
 import { AieStyleMap } from "../aie";
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
+import { AioExternalReplacements, AioReplacement } from "../aio";
 
 export interface AitCellData {
-  aitid?: string,
-  text: string,
+  aitid?: string, // Unique ID
+  text: string, 
   comments?: string,
   colSpan?: number,
   rowSpan?: number,
   colWidth?: number,
-  textIndents?: number,
-  replacedText?: string,
-  repeatColSpan?: number,
-  repeatRowSpan?: number,
+  textIndents?: number, // Spaces/tabs at the start of the cell
+  replacedText?: string, // Visible text after any list replacements
+  repeatColSpan?: number, // ColSpan after any list replacements
+  repeatRowSpan?: number, // RowSpan after any list replacements
 };
 
 export interface AitRowData {
-  aitid?: string,
+  aitid?: string, // Unique ID
   cells: AitCellData[],
-  spaceAfter?: number | false,
+  spaceAfter?: number | false, // Indicator if there is space after a row
 };
 
 export interface AitRowGroupData {
-  aitid?: string,
-  name?: string,
+  aitid?: string, // Unique ID
+  name?: string, // Optional name for a row group type
   rows: AitRowData[],
   comments?: string,
-  spaceAfter?: boolean,
-  includeTrailing?: boolean,
-  replacements?: AioReplacement[],
+  spaceAfter?: boolean, // Indicator if there is space after the last row in the group
+  replacements?: AioReplacement[], // Replacement lists to use for repeats
 };
 
 export interface AitTableData {
   headerData?: AitRowGroupData,
   bodyData?: AitRowGroupData[],
   comments?: string,
-  rowHeaderColumns?: number,
-  noRepeatProcessing?: boolean,
+  rowHeaderColumns?: number, // Number of label type columns before data is presented
+  noRepeatProcessing?: boolean, // Indicator is repeat lists should be processed
 };
 
 export interface AitCoord {
