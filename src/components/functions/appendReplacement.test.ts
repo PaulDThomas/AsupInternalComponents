@@ -7,7 +7,7 @@ describe('Check appendReplacement', () => {
     oldText: "b", newTexts: [
       {
         texts: ["b1"], subLists: [
-          { oldText: "c", newTexts: [{ texts: ["c1", "c2"] }] },
+          { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
           { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
         ]
       }
@@ -31,7 +31,7 @@ describe('Check appendReplacement', () => {
                 oldText: "b", newTexts: [
                   {
                     texts: ["b1"], subLists: [
-                      { oldText: "c", newTexts: [{ texts: ["c1", "c2"] }] },
+                      { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
                       { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
                     ]
                   }
@@ -84,7 +84,7 @@ describe('Check appendReplacement', () => {
                       oldText: "b", newTexts: [
                         {
                           texts: ["b1"], subLists: [
-                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"] }] },
+                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
                             { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
                           ]
                         }
@@ -100,7 +100,7 @@ describe('Check appendReplacement', () => {
                       oldText: "b", newTexts: [
                         {
                           texts: ["b1"], subLists: [
-                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"] }] },
+                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
                             { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
                           ]
                         }

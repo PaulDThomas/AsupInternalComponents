@@ -4,7 +4,7 @@ import { AioReplacement } from "../aio";
 export const appendReplacement = (incoming: AioReplacement, subLists?: AioReplacement[]): AioReplacement[] | undefined => {
   let newSubLists: AioReplacement[] = [];
 
-  if (subLists === undefined) {
+  if (subLists === undefined || subLists.length === 0) {
     newSubLists.push(structuredClone(incoming));
   }
   else {
