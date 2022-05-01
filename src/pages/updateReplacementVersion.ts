@@ -83,7 +83,7 @@ export function updateReplToExtl(
   // Change from old to new
   let oldReps: oldReplacement[];
   if ((reps[0] as { name: string, list: oldReplacement[] }).name !== undefined) {
-    oldReps = reps.map(r =>  (r as { name: string, list:oldReplacement[]}).list).flat();
+    oldReps = reps.map(r => (r as { name: string, list: oldReplacement[] }).list).flat();
   }
   else {
     oldReps = reps as oldReplacement[];

@@ -19,17 +19,28 @@ interface OldRowGroupData {
 };
 
 export const updateTableDataVersion = (inData: OldTableData): AitTableData => {
-  return {
-    ...inData,
-    headerData: {
+  let headerData = inData.headerData !== undefined
+    ? {
       ...inData.headerData,
-      replacements: updateReplacementVersion(inData.headerData?.replacements)
-    } as AitRowGroupData,
+      replacements: inData.headerData?.replacements !== undefined
+        ? updateReplacementVersion(inData.headerData?.replacements)
+        : undefined
+    } as AitRowGroupData
+    : undefined
+    ;
+  let outData: AitTableData = {
+    ...inData,
+    headerData: headerData,
     bodyData: inData.bodyData?.map(rg => {
-      return {
+      let org = {
         ...rg,
-        replacements: updateReplacementVersion(rg.replacements)
+        replacements: rg.replacements !== undefined
+          ? updateReplacementVersion(rg.replacements)
+          : undefined
       } as AitRowGroupData;
+      if (rg.replacements === undefined) delete org.replacements;
+      return org;
     })
   };
+  return outData;
 };
