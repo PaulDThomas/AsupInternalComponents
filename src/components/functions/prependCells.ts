@@ -9,10 +9,6 @@ export const prependCell = (pre: AitCellData, post?: AitRowData[]): AitRowData[]
     return [r];
   }
 
-  if (post.length > (pre.repeatRowSpan ?? pre.rowSpan ?? 1)) {
-    pre.repeatRowSpan = post.length;
-  }
-
   let newRows: AitRowData[] = [];
 
   // Cycle through post rows
@@ -21,7 +17,18 @@ export const prependCell = (pre: AitCellData, post?: AitRowData[]): AitRowData[]
       aitid: post[ri].aitid,
       cells: [
         ri === 0
-          ? { ...pre, repeatRowSpan: (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + post.length - 1 }
+          ? {
+            ...pre, repeatRowSpan: (
+              pre.repeatRowSpan ?? pre.rowSpan ?? 1
+            )
+              + post.length
+              + (post.length > 1
+                ? post.slice(0, post.length - 1)
+                  .map(r => (r.spaceAfter === true ? 1 : 0) as number)
+                  .reduce((sum, a) => { return sum + a }, 0)
+                : 0)
+              - 1
+          }
           : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: 'prependFiller' }
         ,
         ...post[ri].cells,
