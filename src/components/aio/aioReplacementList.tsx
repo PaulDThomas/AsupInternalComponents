@@ -77,8 +77,8 @@ export const AioReplacementList = ({
               />
               {typeof setReplacements === "function" &&
                 <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginBottom: '2px' }}>
-                  {replacements!.length >= 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeReplacement(i)} tipText={"Add old text"} />}
-                  <AioIconButton iconName={"aiox-addDown"} onClick={() => addReplacement(i + 1)} tipText={"Remove old text"} />
+                  {replacements!.length >= 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeReplacement(i)} tipText={"Remove old text"} />}
+                  <AioIconButton iconName={"aiox-addDown"} onClick={() => addReplacement(i + 1)} tipText={"Add old text"} />
                 </div>
               }
             </div>

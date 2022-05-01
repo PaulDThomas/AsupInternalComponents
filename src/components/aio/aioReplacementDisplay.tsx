@@ -164,8 +164,8 @@ export const AioReplacementDisplay = ({
                 />
                 {typeof setReplacement === 'function' &&
                   <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginLeft: '2.5rem', marginTop: '2px' }}>
-                    {newTexts!.length > 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeNewText(i)} tipText={"Add new text"} />}
-                    <AioIconButton iconName={"aiox-addDown"} onClick={() => addNewText(i + 1)} tipText={"Remove new text"} />
+                    {newTexts!.length > 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeNewText(i)} tipText={"Remove new text"} />}
+                    <AioIconButton iconName={"aiox-addDown"} onClick={() => addNewText(i + 1)} tipText={"Add new text"} />
                   </div>
                 }
               </div>
