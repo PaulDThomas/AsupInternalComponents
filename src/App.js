@@ -17,25 +17,25 @@ function App() {
 
         <nav>
           <ul>
-            <li><NavLink to="/ait/" className={activeClass}>Current</NavLink></li>
-            <li><NavLink to="/ait/block" className={activeClass}>TiFo block</NavLink></li>
-            <li><NavLink to="/ait/list" className={activeClass}>Lists</NavLink></li>
-            <li><NavLink to="/ait/table" className={activeClass}>Table</NavLink></li>
-            <li><NavLink to="/ait/editor" className={activeClass}>Editor</NavLink></li>
-            <li><NavLink to="/ait/expander" className={activeClass}>Expander</NavLink></li>
-            <li><NavLink to="/ait/window" className={activeClass}>Window</NavLink></li>
+            <li><NavLink to="/internalcomponents/" className={activeClass}>Current</NavLink></li>
+            <li><NavLink to="/internalcomponents/block" className={activeClass}>TiFo block</NavLink></li>
+            <li><NavLink to="/internalcomponents/list" className={activeClass}>Lists</NavLink></li>
+            <li><NavLink to="/internalcomponents/table" className={activeClass}>Table</NavLink></li>
+            <li><NavLink to="/internalcomponents/editor" className={activeClass}>Editor</NavLink></li>
+            <li><NavLink to="/internalcomponents/expander" className={activeClass}>Expander</NavLink></li>
+            <li><NavLink to="/internalcomponents/window" className={activeClass}>Window</NavLink></li>
           </ul>
         </nav>
 
         <Routes>
-          <Route path="/" element={<Navigate replace to="/ait/" />} />
-          <Route path="/ait/" element={<TablePage />} />
-          <Route path="/ait/block" element={<BlockPage />} />
-          <Route path="/ait/editor" element={<EditorPage />} />
-          <Route path="/ait/expander" element={<ExpanderPage />} />
-          <Route path="/ait/list" element={<ListPage />} />
-          <Route path="/ait/table" element={<TablePage />} />
-          <Route path="/ait/window" element={<WindowPage />} />
+          <Route path="/" element={<Navigate replace to="/internalcomponents/" />} />
+          <Route path="/internalcomponents/" element={<TablePage />} />
+          <Route path="/internalcomponents/block" element={<BlockPage />} />
+          <Route path="/internalcomponents/editor" element={<EditorPage />} />
+          <Route path="/internalcomponents/expander" element={<ExpanderPage />} />
+          <Route path="/internalcomponents/list" element={<ListPage />} />
+          <Route path="/internalcomponents/table" element={<TablePage />} />
+          <Route path="/internalcomponents/window" element={<WindowPage />} />
           <Route
             path="*"
             element={
