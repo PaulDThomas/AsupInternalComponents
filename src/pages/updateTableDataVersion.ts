@@ -18,7 +18,7 @@ interface OldRowGroupData {
   replacements?: AioReplacement[] | oldReplacement[],
 };
 
-export const updateTableDataVersion = (inData: OldTableData): AitTableData => {
+export const updateTableDataVersion = (inData: OldTableData | AitTableData): AitTableData => {
   let headerData = inData.headerData !== undefined
     ? {
       ...inData.headerData,
