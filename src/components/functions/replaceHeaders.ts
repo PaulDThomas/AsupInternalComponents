@@ -2,8 +2,8 @@ import { AioReplacement } from "../aio/aioInterface";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { appendCells } from "./appendCells";
 import { newCell } from "./newCell";
-import { newReplacedText } from "../aie/newReplacedText";
 import { flattenReplacements } from "./flattenReplacements";
+import { replaceCellText } from "./replaceCellText";
 
 /**
  * Recursive function to replace column header information
@@ -61,8 +61,8 @@ export const replaceHeaders = (
         // React if found
         if (rows[ri].cells[ci].text.includes(replacement!.oldText)) {
           let targetCell = rows[ri].cells[ci];
-          if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
           found = true;
+          if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
 
           let midRows: AitRowData[] = rows.slice(ri).map(r => { return { aitid: r.aitid, cells: [] }; });
           let midRepeats: AitColumnRepeat[] = [];
@@ -72,28 +72,25 @@ export const replaceHeaders = (
             let rv = replacement!.newTexts[rvi];
 
             // Process sublist
-            let nextReplacement = flattenReplacements(rv.subLists);
-            let lowerRows: AitRowData[] = rows.slice(ri + 1).map(r => {
+            let lowerQuad: AitRowData[] = rows.slice(ri + 1).map(r => {
               return {
                 aitid: r.aitid,
                 cells: r.cells.slice(ci, ci + targetCell.colSpan!)
               };
             });
+            let nextReplacement = flattenReplacements(rv.subLists);
             let {
               newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats
             } = replaceHeaders(
               0,
-              lowerRows,
-              lowerRows.length > 0 ? Array.from(rows[lowerRows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
+              lowerQuad,
+              lowerQuad.length > 0 ? Array.from(rows[lowerQuad.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
               nextReplacement,
             );
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              let thisRepeat = {
-                ...targetCell,
-                replacedText: newReplacedText(targetCell.text, replacement!.oldText, rv.texts[ti])
-              } as AitCellData;
+              let thisRepeat: AitCellData = replaceCellText(targetCell, replacement!.oldText, rv.texts[ti]);
               // Expand to cover all lower columns
               if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {
                 thisRepeat.repeatColSpan = lowerProcessed[0].cells.length;
@@ -105,7 +102,7 @@ export const replaceHeaders = (
               if (thisRepeat.colSpan! > 1) {
                 targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
               }
-              // Add new trailing cells
+              // Add new blank cells
               if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan!) {
                 let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan!;
                 for (let nci = 0; nci < nIns; nci++) {
