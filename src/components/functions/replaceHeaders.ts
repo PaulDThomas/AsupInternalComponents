@@ -1,8 +1,8 @@
-import { AioReplacement } from "../aio/aioInterface";
+import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { appendCells } from "./appendCells";
-import { newCell } from "./newCell";
 import { flattenReplacements } from "./flattenReplacements";
+import { newCell } from "./newCell";
 import { replaceCellText } from "./replaceCellText";
 
 /**
@@ -17,6 +17,7 @@ export const replaceHeaders = (
   rows: AitRowData[],
   columnRepeats: AitColumnRepeat[],
   replacement?: AioReplacement,
+  externalLists?: AioExternalReplacements[],
 ): { newHeaderRows: AitRowData[]; newColumnRepeats: AitColumnRepeat[]; } => {
 
   // Check there are rows
@@ -78,7 +79,7 @@ export const replaceHeaders = (
                 cells: r.cells.slice(ci, ci + targetCell.colSpan!)
               };
             });
-            let nextReplacement = flattenReplacements(rv.subLists);
+            let nextReplacement = flattenReplacements(rv.subLists, externalLists);
             let {
               newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats
             } = replaceHeaders(

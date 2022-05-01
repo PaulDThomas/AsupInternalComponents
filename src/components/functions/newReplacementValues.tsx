@@ -5,7 +5,7 @@ export const newReplacementValues = (): AioReplacementValues => {
   return {
     airid: uuidv4(),
     texts: [""],
-    spaceAfter: true,
+    spaceAfter: false,
     subLists: [],
   };
 };

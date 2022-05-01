@@ -1,6 +1,7 @@
 import { AioExternalReplacements, AioReplacement } from "../aio";
-import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
+import { AitColumnRepeat, AitRowData } from "../ait";
 import { flattenReplacements } from "./flattenReplacements";
+import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceHeaders } from "./replaceHeaders";
 
 /**
@@ -20,20 +21,7 @@ export const repeatHeaders = (
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
-  let newHeaderRows: AitRowData[] = rows.map(r => {
-    return {
-      aitid: r.aitid,
-      cells: r.cells.map(c => {
-        return {
-          ...c,
-          aitid: c.aitid,
-          replacedText: undefined,
-          repeatColSpan: undefined,
-          repeatRowSpan: undefined,
-        } as AitCellData;
-      })
-    } as AitRowData;
-  });
+  let newHeaderRows: AitRowData[] = removeRowRepeatInfo(rows);
   let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; });
 
   // Strip repeat data if flagged 
@@ -43,8 +31,12 @@ export const repeatHeaders = (
   };
 
   // Process replacements
-  let replacement = flattenReplacements(replacements, externalLists);
-  let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, newHeaderRows, newColumnRepeats, replacement);
+  let afterReplacement = replaceHeaders(
+    rowHeaderColumns ?? 0,
+    newHeaderRows,
+    newColumnRepeats,
+    flattenReplacements(replacements, externalLists)
+  );
   newHeaderRows = afterReplacement.newHeaderRows;
   newColumnRepeats = afterReplacement.newColumnRepeats;
 

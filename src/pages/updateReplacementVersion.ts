@@ -41,7 +41,7 @@ export function updateReplacementVersion(reps?: AioReplacement[] | oldReplacemen
         airid: uuidv4(),
         oldText: oldRep.replacementTexts[0].text ?? "",
         newTexts: [newRV],
-        includeTrailing: true,
+        includeTrailing: false,
         externalName: oldRep.externalName
       };
       newReps.push(newRep);
@@ -51,7 +51,7 @@ export function updateReplacementVersion(reps?: AioReplacement[] | oldReplacemen
         airid: uuidv4(),
         oldText: oldRep.replacementTexts[0].text,
         newTexts: [],
-        includeTrailing: true,
+        includeTrailing: false,
         externalName: oldRep.externalName
       };
       for (let j = 0; j < oldRep.replacementValues.length; j++) {

@@ -13,21 +13,19 @@ export const prependCell = (pre: AitCellData, post?: AitRowData[]): AitRowData[]
 
   // Cycle through post rows
   for (let ri = 0; ri < post.length; ri++) {
+    let postRows = post.length
+      + (post.length > 1
+        ? post.slice(0, post.length - 1)
+          .map(r => (r.spaceAfter === true ? 1 : 0) as number)
+          .reduce((sum, a) => { return sum + a }, 0)
+        : 0);
     newRows.push({
       aitid: post[ri].aitid,
       cells: [
         ri === 0
           ? {
-            ...pre, repeatRowSpan: (
-              pre.repeatRowSpan ?? pre.rowSpan ?? 1
-            )
-              + post.length
-              + (post.length > 1
-                ? post.slice(0, post.length - 1)
-                  .map(r => (r.spaceAfter === true ? 1 : 0) as number)
-                  .reduce((sum, a) => { return sum + a }, 0)
-                : 0)
-              - 1
+            ...pre,
+            repeatRowSpan: (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + postRows - (post[post.length - 1].spaceAfter ? 0 : 1)
           }
           : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: 'prependFiller' }
         ,
