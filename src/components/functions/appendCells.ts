@@ -1,9 +1,9 @@
 import { AitRowData } from "../ait/aitInterface";
 
 /**
- * Add another block of cells onto the right of a row
+ * Add rows to the right of more rows
  * @param base Initial block of rows
- * @param block of rows to add to the right
+ * @param append block of rows to add to the right
  * @returns Consolidated rows
  */
 export const appendCells = (base: AitRowData[], append: AitRowData[]): AitRowData[] => {
