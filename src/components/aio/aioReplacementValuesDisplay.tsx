@@ -1,5 +1,5 @@
 import { fromHtml, toHtml } from 'components/functions';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from './aioInterface';
 import { AioReplacementList } from './aioReplacementList';
 
@@ -39,6 +39,8 @@ export const AioReplacementValuesDisplay = ({
     setReplacementValue(r);
   }, [airid, setReplacementValue, spaceAfter, subLists, texts]);
 
+  const [text, setText] = useState<string>(texts?.map(t => fromHtml(t)).join("\n") ?? "");
+
   return (
     <div className="aiordv-main"
       style={{
@@ -59,8 +61,9 @@ export const AioReplacementValuesDisplay = ({
             <textarea
               className={"aio-input"}
               rows={4}
-              value={texts?.map(t => fromHtml(t)).join("\n") ?? ""}
-              onChange={e => { returnData({ texts: e.currentTarget.value.split("\n").map(t => toHtml(t)) }); }}
+              value={text}
+              onChange={e => setText(e.currentTarget.value)}
+              onBlur={() => returnData({ texts: text.split("\n").map(t => toHtml(t)) })}
               style={{ width: "170px", minWidth: "170px" }}
             />
             {!dontAskOptions &&
