@@ -8,8 +8,8 @@ import { AitRow } from "./aitRow";
 interface AitHeaderProps {
   aitid: string,
   rows: AitRowData[],
-  comments: string,
-  replacements: AioReplacement[],
+  comments?: string,
+  replacements?: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
   higherOptions: AitOptionList,
   columnRepeats: AitColumnRepeat[] | null,

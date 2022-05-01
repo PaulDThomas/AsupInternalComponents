@@ -23,7 +23,7 @@ export interface AitRowData {
 export interface AitRowGroupData {
   aitid?: string,
   name?: string,
-  rows: Array<AitRowData>,
+  rows: AitRowData[],
   comments?: string,
   spaceAfter?: boolean,
   includeTrailing?: boolean,

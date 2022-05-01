@@ -12,7 +12,7 @@ interface AitRowProps {
   cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  replacements: AioReplacement[],
+  replacements?: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number, templateName?: string) => void,

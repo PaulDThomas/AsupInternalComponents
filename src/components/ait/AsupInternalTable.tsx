@@ -67,7 +67,7 @@ export const AsupInternalTable = ({
     noRepeatProcessing?: boolean,
   }) => {
     if (typeof (setTableData) !== "function") return;
-    // console.log("Table return");
+    console.log("Table return");
     const r = {
       headerData: tableUpdate.headerData ?? headerData,
       bodyData: tableUpdate.bodyData ?? bodyData,
@@ -328,8 +328,8 @@ export const AsupInternalTable = ({
           <AitHeader
             aitid={headerData.aitid!}
             rows={headerData.rows}
-            comments={headerData.comments ?? ""}
-            replacements={headerData.replacements ?? []}
+            comments={headerData.comments}
+            replacements={headerData.replacements}
             setHeaderData={(ret) => {
               console.group("Header data returned");
               console.log(`${ret.rows.map(r => r.cells.map(c => c.text).join("||")).join("\n")}`);
