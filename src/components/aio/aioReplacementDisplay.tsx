@@ -150,6 +150,7 @@ export const AioReplacementDisplay = ({
                   key={rv.airid}
                   airid={rv.airid}
                   texts={rv.texts}
+                  spaceAfter={rv.spaceAfter}
                   subLists={rv.subLists}
                   externalLists={externalLists}
                   dontAskOptions={dontAskOptions}
