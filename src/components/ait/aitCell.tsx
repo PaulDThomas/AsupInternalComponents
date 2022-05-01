@@ -175,7 +175,7 @@ export const AitCell = ({
             {/* Option buttons  */}
             <AioIconButton
               tipText="Cell Options"
-              onClick={() => setShowCellOptions(true)}
+              onClick={() => setShowCellOptions(!showCellOptions)}
               iconName="aio-button-cell"
             />
           </div>

@@ -110,7 +110,7 @@ export const AitRow = ({
                   <AioIconButton
                     tipText='Row group options'
                     iconName='aio-button-row-group'
-                    onClick={() => { setShowRowGroupOptions(true) }}
+                    onClick={() => { setShowRowGroupOptions(!showRowGroupOptions) }}
                   />
                 }
                 {/* Row group options window */}

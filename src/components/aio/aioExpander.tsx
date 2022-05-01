@@ -139,7 +139,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                       <div className="aio-label" />
                       <div className="aio-input-holder" style={{ borderLeft: "0" }} />
                       <div className="aiox-button-holder">
-                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }} />
+                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(!showNewItemWindow) }} />
                         {showNewItemWindow &&
                           <AsupInternalWindow
                             Title={"Add item"}
