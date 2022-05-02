@@ -2,18 +2,25 @@ import { AitCellData, AitRowData } from "../ait/aitInterface";
 
 export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
   return rows.map(r => {
-    return {
+    let ret: AitRowData = {
       aitid: r.aitid,
       cells: r.cells.map(c => {
         return {
-          ...c,
           aitid: c.aitid,
-          replacedText: undefined,
-          repeatColSpan: undefined,
-          repeatRowSpan: undefined,
+          text: c.text,
+          comments: c.comments,
+          colSpan: c.colSpan,
+          rowSpan: c.rowSpan,
+          colWidth: c.colWidth,
+          textIndents: c.textIndents,
+          // replacedText: undefined,
+          // repeatColSpan: undefined,
+          // repeatRowSpan: undefined,
         } as AitCellData;
       }),
       spaceAfter: false,
-    } as AitRowData;
+      // rowRepeat: undefined,
+    };
+    return ret;
   });
 };

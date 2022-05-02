@@ -185,7 +185,7 @@ export const AitRowGroup = ({
 
         return (
           <AitRow
-            key={rowHigherOptions.repeatNumber === undefined || rowHigherOptions.repeatNumber?.reduce((s, a) => s + a, 0) === 0 ? row.aitid : `${row.aitid}-${rowHigherOptions.repeatNumber?.join(',')}`}
+            key={`${row.aitid}${row.rowRepeat}`}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
