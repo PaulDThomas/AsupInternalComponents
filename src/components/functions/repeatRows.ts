@@ -32,12 +32,10 @@ export const repeatRows = (
     return { rows: newRows };
   }
 
-  //  newRows = replaceRows(newRows, flattenReplacements(replacements, externalLists), externalLists);
   // Process rows if there are replacements
-  if ((replacements?.length ?? 0) > 0) for (let si = 0; si < replacements!.length; si++) {
-    newRows = replaceRows(newRows, updateExternals(replacements![si], externalLists));
-    if (si > 0) newRows = newRows.map(r => { return { ...r, aitid: `${r.aitid}-[${si}]` } });
-    console.log("w");
+  let extReplacements = updateExternals(replacements, externalLists)
+  if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
+    newRows = replaceRows(newRows, extReplacements![si]);
   }
 
   return { rows: newRows };

@@ -215,14 +215,14 @@ export const AitRow = ({
         {/* Row buttons */}
         <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-start", flexDirection: "row" }}>
-            {typeof addRow === "function" && !aitid.includes(',') &&
+            {typeof addRow === "function" &&
               <AioIconButton
                 tipText="Add row"
                 iconName={"aiox-plus"}
                 onClick={() => { addRow(location.row) }}
               />
             }
-            {typeof removeRow === "function" && !aitid.includes(',') &&
+            {typeof removeRow === "function" &&
               <AioIconButton
                 tipText="Remove row"
                 iconName={"aiox-minus"}

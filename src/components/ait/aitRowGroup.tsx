@@ -179,13 +179,11 @@ export const AitRowGroup = ({
         let rowHigherOptions = {
           ...higherOptions,
           row: ri,
-          // repeatNumber: processed.repeats.numbers[ri],
-          // repeatValues: processed.repeats.values[ri],
         } as AitOptionList;
 
         return (
           <AitRow
-            key={`${row.aitid}${row.rowRepeat}`}
+            key={`${row.aitid}${!row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : ""}`}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
@@ -196,8 +194,8 @@ export const AitRowGroup = ({
             removeRowGroup={removeRowGroup}
             rowGroupComments={comments ?? ""}
             updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
-            addRow={addRow}
-            removeRow={rows.length > 1 ? removeRow : undefined}
+            addRow={row.rowRepeat?.match(/^[[\]0,]+$/) ? addRow : undefined}
+            removeRow={rows.length > 1 && row.rowRepeat?.match(/^[[\]0,]+$/) ? removeRow : undefined}
             spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? true : false)}
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}

@@ -65,7 +65,8 @@ export const replaceRows = (
                   ? [thisRepeat, ...r.cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
                   : [...r.cells.slice(ci).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
                 return {
-                  aitid: `${r.aitid}${rvi + ti > 0 ? `-[${rvi},${ti}]` : ``}`,
+                  aitid: r.aitid,
+                  rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                   cells: cells,
                   spaceAfter: r.spaceAfter ?? false,
                 }
@@ -76,20 +77,23 @@ export const replaceRows = (
                     ? [thisRepeat, ...r.cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
                     : [...r.cells.slice(ci).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
                   return {
-                    aitid: `${r.aitid}${rvi + ti > 0 ? `-[${rvi},${ti}]` : ``}`,
+                    aitid: r.aitid,
+                    rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                     cells: cells,
                     spaceAfter: r.spaceAfter ?? false,
                   }
                 })
                 : [{
-                  aitid: `${rows[ri].aitid}${rvi + ti > 0 ? `-[${rvi},${ti}]` : ``}`,
+                  aitid: rows[ri].aitid,
+                  rowRepeat: `${rows[ri].rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                   cells: [thisRepeat, ...rows[ri].cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))],
                   spaceAfter: rows[ri].spaceAfter ?? false,
                 } as AitRowData]
               ;
             // Process lowerQuad if there are subLists
-            if ((rv.subLists?.length ?? 0) > 0) for (let si = 0; si < rv.subLists!.length; si++) {
-              lowerQuad = replaceRows(lowerQuad, updateExternals(rv.subLists![si], externalLists));
+            let extReplacements = updateExternals(rv.subLists, externalLists)
+            if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
+              lowerQuad = replaceRows(lowerQuad, extReplacements![si]);
             }
             // Add spaceAfter if required
             lowerQuad[lowerQuad.length - 1].spaceAfter = (lowerQuad[lowerQuad.length - 1].spaceAfter || rv.spaceAfter) ?? false;

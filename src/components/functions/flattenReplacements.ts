@@ -20,7 +20,7 @@ export const flattenReplacements = (reps?: AioReplacement[], exts?: AioExternalR
   reps.map((rep, repi) => {
 
     // First update any external list
-    let incoming:AioReplacement = updateExternals({ ...rep}, exts)!;
+    let incoming:AioReplacement = updateExternals([{...rep}], exts)![0];
 
     // First entry can be used as a base
     if (repi === 0) {

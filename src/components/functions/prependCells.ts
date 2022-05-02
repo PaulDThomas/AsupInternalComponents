@@ -31,6 +31,7 @@ export const prependCell = (pre: AitCellData, post?: AitRowData[]): AitRowData[]
         ,
         ...post[ri].cells,
       ],
+      rowRepeat: post[ri].rowRepeat,
       spaceAfter: post[ri].spaceAfter,
     })
   }
