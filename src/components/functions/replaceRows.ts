@@ -35,7 +35,12 @@ export const replaceRows = (
   let processedRows = 0;
   let emergencyExit = 0;
   while (ri < rows.length && emergencyExit < 100) {
-    for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
+    if (ri >= rows.length || rows[ri].cells.length === undefined) {
+      console.warn("High ri value somehow");
+      console.log(`ri: ${ri}`);
+      console.log(`${JSON.stringify(rows)}`);
+    }
+    else for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
       if (
         replacement !== undefined &&
         (rows[ri].cells[ci].replacedText !== undefined
