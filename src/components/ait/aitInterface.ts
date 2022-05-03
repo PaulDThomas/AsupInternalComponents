@@ -46,7 +46,7 @@ export interface AitCoord {
 export interface AitLocation extends AitCoord {
   tableSection: AitRowType,
   rowGroup: number,
-  repeat: string
+  repeat?: string
 }
 
 export interface AitColumnRepeat {
@@ -76,8 +76,7 @@ export interface AitOptionList {
   column?: number,
   showCellBorders?: boolean,
   groupTemplateNames?: string[],
-  repeatNumber?: number[],
-  repeatValues?: string[],
+  repeatNumber?: string,
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
 }

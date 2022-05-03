@@ -225,7 +225,7 @@ export const AitHeader = ({
           let rowHigherOptions: AitOptionList = {
             ...higherOptions,
             headerRows: rows.length,
-            row: ri,
+            row: rows.findIndex(r => r.aitid === row.aitid),
           } as AitOptionList;
 
           return (

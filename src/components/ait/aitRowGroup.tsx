@@ -178,7 +178,8 @@ export const AitRowGroup = ({
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
         let rowHigherOptions = {
           ...higherOptions,
-          row: ri,
+          row: rows.findIndex(r => r.aitid === row.aitid),
+          repeatNumber: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
         } as AitOptionList;
 
         return (

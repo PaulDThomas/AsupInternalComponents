@@ -91,7 +91,7 @@ export const AitCell = ({
       rowGroup: higherOptions.rowGroup ?? 0,
       row: higherOptions.row ?? 0,
       column: columnIndex,
-      repeat: (higherOptions.repeatNumber ?? []).join(",")
+      repeat: higherOptions.repeatNumber
     }
   }, [columnIndex, higherOptions.repeatNumber, higherOptions.row, higherOptions.rowGroup, higherOptions.tableSection]);
 

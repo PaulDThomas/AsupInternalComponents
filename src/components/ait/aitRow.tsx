@@ -60,7 +60,7 @@ export const AitRow = ({
       rowGroup: higherOptions.rowGroup ?? 0,
       row: higherOptions.row ?? 0,
       column: -1,
-      repeat: (higherOptions.repeatNumber ?? []).join(",")
+      repeat: higherOptions.repeatNumber
     }
   }, [higherOptions]);
 
@@ -88,7 +88,7 @@ export const AitRow = ({
         {/* Row group options */}
         <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
-            {higherOptions.row === 0
+            {higherOptions.row === 0 && !higherOptions.repeatNumber
               ?
               (<>
                 {typeof (removeRowGroup) === "function" &&
@@ -197,7 +197,7 @@ export const AitRow = ({
               columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
               readOnly={(
-                (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
+                cellHigherOptions.repeatNumber !== ""
                 || isColumnRepeat
               ) ?? false}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
