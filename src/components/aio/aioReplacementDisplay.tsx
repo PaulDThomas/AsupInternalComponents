@@ -8,13 +8,14 @@ import { AioReplacementValuesDisplay } from './aioReplacementValuesDisplay';
 
 interface AioReplacmentDisplayProps {
   airid?: string,
-  oldText: string,
+  oldText?: string,
   newTexts: AioReplacementValues[],
   includeTrailing?: boolean,
   externalName?: string,
   setReplacement?: (ret: AioReplacement) => void,
   externalLists?: AioExternalReplacements[],
   dontAskOptions?: boolean,
+  noText?: boolean,
 }
 
 /**
@@ -30,6 +31,7 @@ export const AioReplacementDisplay = ({
   setReplacement,
   externalLists,
   dontAskOptions,
+  noText: noOldText,
 }: AioReplacmentDisplayProps): JSX.Element => {
 
   const availableListNames = useMemo<string[]>(() => {
@@ -53,7 +55,7 @@ export const AioReplacementDisplay = ({
     // Create new object
     let r: AioReplacement = {
       airid: newReplacement.airid ?? airid ?? uuidv4(),
-      oldText: newReplacement.oldText ?? oldText,
+      oldText: newReplacement.oldText ?? oldText ?? "",
       newTexts: newReplacement.newTexts ?? newTexts,
       includeTrailing: newReplacement.includeTrailing ?? includeTrailing,
       externalName: newReplacement.externalName ?? externalName,
@@ -93,32 +95,34 @@ export const AioReplacementDisplay = ({
       borderRadius: '4px,',
       margin: '2px',
     }}>
-      <div>
-        {typeof setReplacement !== "function"
-          ?
-          <span className="aio-replaceText">{oldText !== "" ? fromHtml(oldText) : <em>Nothing</em>}</span>
-          :
-          <input
-            className="aio-input"
-            type="text"
-            value={fromHtml(oldText) ?? ""}
-            onChange={(e) => { returnData({ oldText: toHtml(e.currentTarget.value) }) }}
-            style={{ minWidth: 0, width: "170px" }}
-          />
-        }
-      {!dontAskOptions &&
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <label><small>Repeat following lines</small></label>
-          <input
-            disabled={typeof setReplacement !== 'function'}
-            style={{ margin: "6px" }}
-            type='checkbox'
-            checked={includeTrailing}
-            onChange={e => returnData({includeTrailing:e.currentTarget.checked})}
+      {!noOldText &&
+        <div>
+          {typeof setReplacement !== "function"
+            ?
+            <span className="aio-replaceText">{oldText !== "" ? fromHtml(oldText ?? "") : <em>Nothing</em>}</span>
+            :
+            <input
+              className="aio-input"
+              type="text"
+              value={fromHtml(oldText ?? "")}
+              onChange={(e) => { returnData({ oldText: toHtml(e.currentTarget.value) }) }}
+              style={{ minWidth: 0, width: "170px" }}
             />
+          }
+          {!dontAskOptions &&
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <label><small>Repeat following lines</small></label>
+              <input
+                disabled={typeof setReplacement !== 'function'}
+                style={{ margin: "6px" }}
+                type='checkbox'
+                checked={includeTrailing}
+                onChange={e => returnData({ includeTrailing: e.currentTarget.checked })}
+              />
+            </div>
+          }
         </div>
       }
-      </div>
       {typeof setReplacement === "function" && externalLists !== undefined && externalLists.length > 0 &&
         <div>
           <AioDropSelect
