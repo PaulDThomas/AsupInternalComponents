@@ -38,7 +38,7 @@ export const TablePage = () => {
       }
       if (ta.current) {
         const j = JSON.parse(ta.current!.value?.toString() ?? "{}");
-        setTableData(j);
+        setTableData(updateTableDataVersion(j));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }

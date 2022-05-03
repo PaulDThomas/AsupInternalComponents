@@ -31,7 +31,7 @@ export const AitRowGroup = ({
   removeRowGroup,
   columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
-  
+
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
     rows?: AitRowData[],
@@ -47,7 +47,7 @@ export const AitRowGroup = ({
       replacements: rowGroupUpdate.replacements ?? replacements,
       spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
     };
-      setRowGroupData!(r);
+    setRowGroupData!(r);
   }, [setRowGroupData, aitid, rows, comments, replacements, spaceAfter]);
 
   // Update row
@@ -183,7 +183,7 @@ export const AitRowGroup = ({
 
         return (
           <AitRow
-            key={`${row.aitid}${!row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : ""}`}
+            key={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? row.aitid : (row.aitid + row.rowRepeat)}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
@@ -194,8 +194,8 @@ export const AitRowGroup = ({
             removeRowGroup={removeRowGroup}
             rowGroupComments={comments ?? ""}
             updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
-            addRow={row.rowRepeat?.match(/^[[\]0,]+$/) ? addRow : undefined}
-            removeRow={rows.length > 1 && row.rowRepeat?.match(/^[[\]0,]+$/) ? removeRow : undefined}
+            addRow={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined}
+            removeRow={rows.length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
             spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? true : false)}
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
