@@ -1,5 +1,5 @@
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "components";
 import { v4 as uuidv4 } from "uuid";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 
 interface oldReplacementText {
   text: string,

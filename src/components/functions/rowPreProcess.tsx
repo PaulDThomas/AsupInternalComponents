@@ -1,4 +1,4 @@
-import { AitRowData } from "components/ait";
+import { AitRowData } from "../ait";
 import { v4 as uuidv4 } from 'uuid';
 import { cellPreProcess } from "./cellPreProcess";
 import { newRow } from "./newRow";

@@ -1,4 +1,5 @@
-import { AioReplacement, AitRowData, AitRowGroupData, AitTableData } from "components";
+import { AioReplacement } from "../aio";
+import { AitRowData, AitRowGroupData, AitTableData } from "../ait";
 import { oldReplacement, updateReplacementVersion } from "./updateReplacementVersion";
 
 interface OldTableData {

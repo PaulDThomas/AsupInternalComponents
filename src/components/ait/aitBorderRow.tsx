@@ -1,4 +1,4 @@
-import { AioIconButton } from "components/aio";
+import { AioIconButton } from "../aio";
 import React from "react";
 import { AitColumnRepeat } from "./aitInterface";
 

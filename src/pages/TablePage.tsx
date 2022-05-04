@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
-import { updateTableDataVersion } from './updateTableDataVersion';
+import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable, updateTableDataVersion } from '../components';
 
 export const TablePage = () => {
 

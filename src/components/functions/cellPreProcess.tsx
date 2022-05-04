@@ -1,4 +1,4 @@
-import { AitCellData } from "components/ait";
+import { AitCellData } from "../ait";
 import { v4 as uuidv4 } from 'uuid';
 import { newCell } from "./newCell";
 

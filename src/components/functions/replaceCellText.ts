@@ -1,5 +1,5 @@
-import { newReplacedText } from "components/aie/newReplacedText";
-import { AitCellData } from "components/ait";
+import { newReplacedText } from "../aie/newReplacedText";
+import { AitCellData } from "../ait";
 
 export const replaceCellText = (cell: AitCellData, oldText: string, newText: string): AitCellData => {
   let replacedText = cell.replacedText !== undefined
