@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from "uuid";
 import { fromHtml, newReplacementValues, toHtml } from '../functions';
 import { AioDropSelect } from './aioDropSelect';
@@ -33,6 +33,9 @@ export const AioReplacementDisplay = ({
   dontAskOptions,
   noText: noOldText,
 }: AioReplacmentDisplayProps): JSX.Element => {
+
+  const [displayText, setDisplayText] = useState<string>(fromHtml(oldText ?? ""));
+  useEffect(() => { setDisplayText(fromHtml(oldText ?? ""))}, [oldText]);
 
   const availableListNames = useMemo<string[]>(() => {
     let a: string[] = ["with..."];
@@ -104,8 +107,9 @@ export const AioReplacementDisplay = ({
             <input
               className="aio-input"
               type="text"
-              value={fromHtml(oldText ?? "")}
-              onChange={(e) => { returnData({ oldText: toHtml(e.currentTarget.value) }) }}
+              value={displayText}
+              onChange={(e) => setDisplayText(e.currentTarget.value)}
+              onBlur={(e) => { returnData({ oldText: toHtml(e.currentTarget.value) }) }}
               style={{ minWidth: 0, width: "170px" }}
             />
           }
