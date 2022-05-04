@@ -48,5 +48,5 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
     ret = htmlIn.innerHTML;
   }
   // Change ~ for line break for all replaced text
-  return ret.replace(/~/g, "<br/>");
+  return ret;
 }

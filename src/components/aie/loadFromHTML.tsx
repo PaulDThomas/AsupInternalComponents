@@ -5,26 +5,30 @@ import { ContentState, convertFromHTML, convertFromRaw, RawDraftContentBlock } f
  * @param s HTML string to load
  * @returns Content stats to load into Draft-js editor
  */
-export const loadFromHTML = (s: string): ContentState => {
+export const loadFromHTML = (s: string, editable?: boolean): ContentState => {
+  // Update ~ here if it is not a DIV
+  let initialBlocks = convertFromHTML(editable === false ? s.replace(/~/g, "<br/>") : s);
   // There are no spans to apply
-  let initialBlocks = convertFromHTML(s);
   if (!s.match(/^<div classname=["']aie-text/i)) {
     let state = ContentState.createFromBlockArray(initialBlocks.contentBlocks, initialBlocks.entityMap);
     return state;
   }
 
-  // 
+  // Work out where style ranges are includes
   else {
     let htmlIn = document.createElement('template');
     htmlIn.innerHTML = s.trim();
     let rawBlocks: RawDraftContentBlock[] = [];
+    // There should be only one child
     for (let i = 0; i < htmlIn.content.children.length; i++) {
       let child = htmlIn.content.children[i] as HTMLDivElement;
       let rawBlock: RawDraftContentBlock = {
         key: child.dataset.key ?? "",
         type: child.dataset.type ?? "unstyled",
-        text: child.innerText,
+        // Update ~ here if it is a DIV
+        text: editable === false ? child.innerText.replace(/~/g, '\n') : child.innerText,
         depth: 0,
+        // Style ranges from data
         inlineStyleRanges: JSON.parse(child.dataset.inlineStyleRanges ?? "[]"),
         entityRanges: [],
       };
