@@ -18,7 +18,7 @@ export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
           // repeatRowSpan: undefined,
         } as AitCellData;
       }),
-      spaceAfter: false,
+      // spaceAfter: false,
       // rowRepeat: undefined,
     };
     return ret;

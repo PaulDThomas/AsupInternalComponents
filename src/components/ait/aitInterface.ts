@@ -12,6 +12,7 @@ export interface AitCellData {
   replacedText?: string, // Visible text after any list replacements
   repeatColSpan?: number, // ColSpan after any list replacements
   repeatRowSpan?: number, // RowSpan after any list replacements
+  spaceAfterRepeat?: boolean, // If a blank row is required after this repeat
 };
 
 export interface AitRowData {

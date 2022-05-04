@@ -61,7 +61,7 @@ export const replaceRows = (
 
           // Perform replacements for each text entry
           for (let ti = 0; ti < rv.texts.length; ti++) {
-            let thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
+            let thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti], rv.spaceAfter);
 
             // Process remaining cells, including target after replacement
             let lowerQuad: AitRowData[] = (replacement.includeTrailing ?? false)
@@ -73,7 +73,6 @@ export const replaceRows = (
                   aitid: r.aitid,
                   rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                   cells: cells,
-                  spaceAfter: r.spaceAfter ?? false,
                 }
               })
               : targetCell.rowSpan > 1
@@ -85,14 +84,12 @@ export const replaceRows = (
                     aitid: r.aitid,
                     rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                     cells: cells,
-                    spaceAfter: r.spaceAfter ?? false,
                   }
                 })
                 : [{
                   aitid: rows[ri].aitid,
                   rowRepeat: `${rows[ri].rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                   cells: [thisRepeat, ...rows[ri].cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))],
-                  spaceAfter: rows[ri].spaceAfter ?? false,
                 } as AitRowData]
               ;
             // Process lowerQuad if there are subLists
@@ -100,8 +97,6 @@ export const replaceRows = (
             if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
               lowerQuad = replaceRows(lowerQuad, extReplacements![si]);
             }
-            // Add spaceAfter if required
-            lowerQuad[lowerQuad.length - 1].spaceAfter = (lowerQuad[lowerQuad.length - 1].spaceAfter || rv.spaceAfter) ?? false;
             // Find amount to move row cursor 
             processedRows = lowerQuad.length;
 
