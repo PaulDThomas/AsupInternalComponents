@@ -14,7 +14,7 @@ interface AitRowGroupProps {
   higherOptions: AitOptionList,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
-  columnRepeats?: AitColumnRepeat[],
+  columnRepeats: AitColumnRepeat[] | null,
   spaceAfter?: boolean,
 }
 
@@ -54,9 +54,9 @@ export const AitRowGroup = ({
   const updateRow = useCallback((ret: AitRowData, ri: number) => {
     // Do nothing if readonly
     if (typeof (setRowGroupData) !== "function") return;
-
+    // Filter out repeat cells
+    let newRows: AitRowData[] = [ ...rows ];
     // Create new object to send back
-    let newRows = [...rows];
     newRows[ri] = ret;
     returnData({ rows: newRows });
   }, [setRowGroupData, rows, returnData]);

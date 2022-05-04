@@ -71,7 +71,7 @@ export const AitRow = ({
       aitid: aitid,
       cells: rowUpdate.cells ?? cells,
     };
-      setRowData!(r);
+    setRowData!(r);
   }, [setRowData, aitid, cells]);
 
   const updateCell = useCallback((ret: AitCellData, ci: number) => {
@@ -120,7 +120,7 @@ export const AitRow = ({
                     Title={(rowGroupWindowTitle ?? "Row group options")}
                     Visible={showRowGroupOptions}
                     onClose={() => { setShowRowGroupOptions(false); }}
-                    style={{maxHeight:"75vh"}}
+                    style={{ maxHeight: "75vh" }}
                   >
                     <div className="aiw-body-row">
                       <AioComment
@@ -196,10 +196,7 @@ export const AitRow = ({
               higherOptions={cellHigherOptions}
               columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
-              readOnly={(
-                cellHigherOptions.repeatNumber !== ""
-                || isColumnRepeat
-              ) ?? false}
+              readOnly={(cellHigherOptions.repeatNumber !== undefined || isColumnRepeat) ?? false}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={

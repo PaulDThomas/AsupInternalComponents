@@ -52,7 +52,7 @@
 .aiw-body {
     overflow: auto;
     /* fill inner minus total title height */
-    height: calc(100% - 34px); 
+    height: calc(100% - 40px); 
 }
 
 .aiw-body-row {

@@ -67,11 +67,21 @@ export const AitHeader = ({
 
   // Update row
   const updateRow = useCallback((ret: AitRowData, ri: number) => {
-    // Create new object to send back
+    // Do nothing if readonly
+    if (typeof (setHeaderData) !== "function") return;
+    // Filter out repeat cells as these are passed into the row
     let newRows: AitRowData[] = [...rows];
-    newRows[ri] = ret;
+    let newRow:AitRowData = {
+      ...ret,
+      cells: ret.cells.filter((_, ci) => (
+        columnRepeats === null
+        || (columnRepeats !== null && (columnRepeats[ci].repeatNumbers?.reduce((r, a) => r + a, 0) ?? 0)) === 0
+      ))
+    };
+    // Add back into holding object
+    newRows[ri] = newRow;
     returnData({ rows: newRows });
-  }, [rows, returnData]);
+  }, [setHeaderData, rows, returnData, columnRepeats]);
 
   const addRow = useCallback((ri: number) => {
     let newrs = [...rows];
