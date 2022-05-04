@@ -51,7 +51,13 @@ export const repeatRows = (
           for (let ri = 0; ri < newRows.length; ri++) {
             let targetCell = newRows[ri].cells[ci];
             // Add space below appropriate rows if required
-            if ((targetCell.repeatRowSpan ?? 1) > 0 && (targetCell.rowSpan ?? 1) > 0 && targetCell.spaceAfterRepeat && !newRows[ri + (targetCell.rowSpan ?? 1) - 1].spaceAfter) {
+            if (
+              (targetCell.repeatRowSpan ?? 1) > 0 &&
+              (targetCell.rowSpan ?? 1) > 0 &&
+              targetCell.spaceAfterRepeat &&
+              ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length  &&
+              !newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter 
+            ) {
               newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
               let lookback = 1;
               // Check previous cells
