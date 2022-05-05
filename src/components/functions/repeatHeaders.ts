@@ -1,8 +1,8 @@
-import { AioReplacement } from "../aio/aioInterface";
-import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitColumnRepeat, AitRowData } from "../ait";
 import { flattenReplacements } from "./flattenReplacements";
+import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceHeaders } from "./replaceHeaders";
-import { v4 as uuidv4 } from "uuid";
 
 /**
  * Entry function to process headers with replacements
@@ -17,24 +17,11 @@ export const repeatHeaders = (
   replacements: AioReplacement[],
   noProcessing?: boolean,
   rowHeaderColumns?: number,
-  externalLists?: AioReplacement[],
+  externalLists?: AioExternalReplacements[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
-  let newHeaderRows: AitRowData[] = rows.map(r => {
-    return {
-      aitid: r.aitid,
-      cells: r.cells.map(c => {
-        return {
-          ...c,
-          aitid: c.aitid ?? uuidv4(),
-          replacedText: undefined,
-          repeatColSpan: undefined,
-          repeatRowSpan: undefined,
-        } as AitCellData;
-      })
-    } as AitRowData;
-  });
+  let newHeaderRows: AitRowData[] = removeRowRepeatInfo(rows);
   let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; });
 
   // Strip repeat data if flagged 
@@ -43,9 +30,13 @@ export const repeatHeaders = (
     columnRepeats: newColumnRepeats
   };
 
-  let replacement = flattenReplacements(replacements, externalLists);
-
-  let afterReplacement = replaceHeaders(rowHeaderColumns ?? 0, replacement, newHeaderRows, newColumnRepeats);
+  // Process replacements
+  let afterReplacement = replaceHeaders(
+    rowHeaderColumns ?? 0,
+    newHeaderRows,
+    newColumnRepeats,
+    flattenReplacements(replacements, externalLists)
+  );
   newHeaderRows = afterReplacement.newHeaderRows;
   newColumnRepeats = afterReplacement.newColumnRepeats;
 

@@ -1,8 +1,6 @@
-import structuredClone from '@ungap/structured-clone';
 import React, { useCallback, useMemo, useState } from "react";
-import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementDisplay } from '../aio';
+import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
 import { AsupInternalWindow } from "../aiw";
-import { objEqual } from '../functions';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
 import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
@@ -12,7 +10,7 @@ interface AitRowProps {
   cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
   higherOptions: AitOptionList,
-  replacements: AioReplacement[],
+  replacements?: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
   addRowGroup?: (rgi: number, templateName?: string) => void,
@@ -21,12 +19,12 @@ interface AitRowProps {
   updateRowGroupComments: (ret: string) => void,
   addRow?: (ri: number) => void,
   removeRow?: (ri: number) => void,
-  spaceAfter?: number | false,
+  spaceAfter?: boolean,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
   removeRowSpan?: (loc: AitLocation) => void,
-  columnRepeats?: AitColumnRepeat[],
+  columnRepeats?: AitColumnRepeat[] | null,
   rowGroupSpace?: boolean,
   setRowGroupSpace?: (ret: boolean) => void,
 }
@@ -54,7 +52,6 @@ export const AitRow = ({
   rowGroupSpace,
   setRowGroupSpace,
 }: AitRowProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowData>(structuredClone({ aitid: aitid, cells: cells }));
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
 
   const location: AitLocation = useMemo(() => {
@@ -63,7 +60,7 @@ export const AitRow = ({
       rowGroup: higherOptions.rowGroup ?? 0,
       row: higherOptions.row ?? 0,
       column: -1,
-      repeat: (higherOptions.repeatNumber ?? []).join(",")
+      repeat: higherOptions.repeatNumber
     }
   }, [higherOptions]);
 
@@ -74,14 +71,8 @@ export const AitRow = ({
       aitid: aitid,
       cells: rowUpdate.cells ?? cells,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `ROWCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      // console.log(`ROWRETURN: ${diffs}`);
-      setRowData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [setRowData, aitid, cells, lastSend, location]);
+    setRowData!(r);
+  }, [setRowData, aitid, cells]);
 
   const updateCell = useCallback((ret: AitCellData, ci: number) => {
     // Create new object to send back
@@ -97,7 +88,7 @@ export const AitRow = ({
         {/* Row group options */}
         <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
-            {higherOptions.row === 0
+            {higherOptions.row === 0 && !higherOptions.repeatNumber
               ?
               (<>
                 {typeof (removeRowGroup) === "function" &&
@@ -119,7 +110,7 @@ export const AitRow = ({
                   <AioIconButton
                     tipText='Row group options'
                     iconName='aio-button-row-group'
-                    onClick={() => { setShowRowGroupOptions(true) }}
+                    onClick={() => { setShowRowGroupOptions(!showRowGroupOptions) }}
                   />
                 }
                 {/* Row group options window */}
@@ -129,7 +120,7 @@ export const AitRow = ({
                     Title={(rowGroupWindowTitle ?? "Row group options")}
                     Visible={showRowGroupOptions}
                     onClose={() => { setShowRowGroupOptions(false); }}
-                    style={{maxHeight:"75vh"}}
+                    style={{ maxHeight: "75vh" }}
                   >
                     <div className="aiw-body-row">
                       <AioComment
@@ -147,11 +138,12 @@ export const AitRow = ({
                       </>}
                     </>
                     <div className="aiw-body-row">
-                      <AioReplacementDisplay
+                      <AioReplacementList
+                        label={"Replacements"}
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
                         externalLists={higherOptions.externalLists}
-                        dontAskSpace={location.tableSection === AitRowType.header}
+                        dontAskOptions={location.tableSection === AitRowType.header}
                       />
                     </div>
                   </AsupInternalWindow>
@@ -190,8 +182,8 @@ export const AitRow = ({
           // Render object
           return (
             <AitCell
-              key={(isColumnRepeat ? `${cell.aitid}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid) ?? ci.toString()}
-              aitid={cell.aitid ?? ci.toString()}
+              key={isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid!}
+              aitid={cell.aitid!}
               text={cell.text ?? ""}
               comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}
@@ -204,10 +196,7 @@ export const AitRow = ({
               higherOptions={cellHigherOptions}
               columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
-              readOnly={(
-                (cellHigherOptions.repeatNumber && cellHigherOptions.repeatNumber?.reduce((r, a) => r + a, 0) > 0)
-                || isColumnRepeat
-              ) ?? false}
+              readOnly={(cellHigherOptions.repeatNumber !== undefined || isColumnRepeat) ?? false}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
@@ -223,14 +212,14 @@ export const AitRow = ({
         {/* Row buttons */}
         <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-start", flexDirection: "row" }}>
-            {typeof addRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
+            {typeof addRow === "function" &&
               <AioIconButton
                 tipText="Add row"
                 iconName={"aiox-plus"}
                 onClick={() => { addRow(location.row) }}
               />
             }
-            {typeof removeRow === "function" && ((higherOptions.repeatNumber?.reduce((r, a) => r + a, 0) ?? 0) === 0) &&
+            {typeof removeRow === "function" &&
               <AioIconButton
                 tipText="Remove row"
                 iconName={"aiox-minus"}

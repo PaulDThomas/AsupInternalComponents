@@ -1,8 +1,9 @@
-import { AioReplacement } from "../aio/aioInterface";
+import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { appendCells } from "./appendCells";
+import { flattenReplacements } from "./flattenReplacements";
 import { newCell } from "./newCell";
-import { newReplacedText } from "../aie/newReplacedText";
+import { replaceCellText } from "./replaceCellText";
 
 /**
  * Recursive function to replace column header information
@@ -13,9 +14,10 @@ import { newReplacedText } from "../aie/newReplacedText";
  */
 export const replaceHeaders = (
   rowHeaderColumns: number,
-  replacement: AioReplacement,
   rows: AitRowData[],
-  columnRepeats: AitColumnRepeat[]
+  columnRepeats: AitColumnRepeat[],
+  replacement?: AioReplacement,
+  externalLists?: AioExternalReplacements[],
 ): { newHeaderRows: AitRowData[]; newColumnRepeats: AitColumnRepeat[]; } => {
 
   // Check there are rows
@@ -24,10 +26,10 @@ export const replaceHeaders = (
 
   // Look for match, is there is one to find
   let found = (
-    replacement.replacementTexts.length === 0
-    || replacement.replacementTexts[0].text === ""
-    || replacement.replacementValues.length === 0
-    || replacement.replacementValues[0].newText === ""
+    replacement === undefined
+    || replacement.oldText === ""
+    || replacement.newTexts.length === 0
+    || replacement.newTexts[0].texts.join("") === ""
   );
 
   // Set up holders
@@ -58,88 +60,85 @@ export const replaceHeaders = (
       for (let ri = 0; ri < rows.length; ri++) {
 
         // React if found
-        if (rows[ri].cells[ci].text.includes(replacement.replacementTexts[0].text)) {
+        if (rows[ri].cells[ci].text.includes(replacement!.oldText)) {
           let targetCell = rows[ri].cells[ci];
-          if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
           found = true;
+          if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
 
           let midRows: AitRowData[] = rows.slice(ri).map(r => { return { aitid: r.aitid, cells: [] }; });
           let midRepeats: AitColumnRepeat[] = [];
 
           // Cycle through reach replacement value
-          for (let rvi = 0; rvi < replacement.replacementValues.length; rvi++) {
-            let rv = replacement.replacementValues[rvi];
+          for (let rvi = 0; rvi < replacement!.newTexts.length; rvi++) {
+            let rv = replacement!.newTexts[rvi];
 
             // Process sublist
-            let nextReplacement: AioReplacement = {
-              replacementTexts: replacement.replacementTexts.slice(1),
-              replacementValues: rv.subList ?? []
-            };
-            let lowerRows: AitRowData[] = rows.slice(ri + 1).map(r => {
+            let lowerQuad: AitRowData[] = rows.slice(ri + 1).map(r => {
               return {
                 aitid: r.aitid,
                 cells: r.cells.slice(ci, ci + targetCell.colSpan!)
               };
             });
+            let nextReplacement = flattenReplacements(rv.subLists, externalLists);
             let {
               newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats
             } = replaceHeaders(
               0,
+              lowerQuad,
+              lowerQuad.length > 0 ? Array.from(rows[lowerQuad.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
               nextReplacement,
-              lowerRows,
-              lowerRows.length > 0 ? Array.from(rows[lowerRows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : []
             );
 
-            // Create new cell
-            let thisRepeat = {
-              ...targetCell,
-              replacedText: newReplacedText(targetCell.text, replacement.replacementTexts[0].text, rv.newText)
-            } as AitCellData;
-            // Expand to cover all lower columns
-            if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {
-              thisRepeat.repeatColSpan = lowerProcessed[0].cells.length;
-            }
-
-            // Add into mid cells
-            let targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
-            // Add usual trailing cells
-            if (thisRepeat.colSpan! > 1) {
-              targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
-            }
-            // Add new trailing cells
-            if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan!) {
-              let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan!;
-              for (let nci = 0; nci < nIns; nci++) {
-                let n = newCell();
-                n.colSpan = 0;
-                n.repeatColSpan = 0;
-                n.replacedText = "filler1";
-                targetRow.cells.push(n);
+            // Perform replacements for each text entry
+            for (let ti = 0; ti < rv.texts.length; ti++) {
+              let thisRepeat: AitCellData = replaceCellText(targetCell, replacement!.oldText, rv.texts[ti]);
+              // Expand to cover all lower columns
+              if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {
+                thisRepeat.repeatColSpan = lowerProcessed[0].cells.length;
               }
-            }
 
-            midRows = appendCells(
-              midRows,
-              [targetRow, ...lowerProcessed]
-            );
+              // Add into mid cells
+              let targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
+              // Add usual trailing cells
+              if (thisRepeat.colSpan! > 1) {
+                targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
+              }
+              // Add new blank cells
+              if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan!) {
+                let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan!;
+                for (let nci = 0; nci < nIns; nci++) {
+                  let n = newCell();
+                  n.colSpan = 0;
+                  n.repeatColSpan = 0;
+                  n.replacedText = "filler1";
+                  targetRow.cells.push(n);
+                }
+              }
 
-            // Work out new repeat for this cell
-            if (lowerColumnRepeats.length > 0) {
-              midRepeats = [
-                ...midRepeats,
-                ...lowerColumnRepeats.map(crep => {
-                  return {
-                    columnIndex: ci + crep.columnIndex,
-                    repeatNumbers: [rvi, ...(crep.repeatNumbers ?? [])]
-                  } as AitColumnRepeat;
-                })
-              ];
-            }
-            else {
-              midRepeats = [
-                ...midRepeats,
-                { columnIndex: ci, repeatNumbers: [rvi] }
-              ];
+              // Add this repeat into the output
+              midRows = appendCells(
+                midRows,
+                [targetRow, ...lowerProcessed]
+              );
+
+              // Work out new repeat for this cell
+              if (lowerColumnRepeats.length > 0) {
+                midRepeats = [
+                  ...midRepeats,
+                  ...lowerColumnRepeats.map(crep => {
+                    return {
+                      columnIndex: ci + crep.columnIndex,
+                      repeatNumbers: [rvi, ti, ...(crep.repeatNumbers ?? [])]
+                    } as AitColumnRepeat;
+                  })
+                ];
+              }
+              else {
+                midRepeats = [
+                  ...midRepeats,
+                  { columnIndex: ci, repeatNumbers: [rvi, ti] }
+                ];
+              }
             }
           }
 

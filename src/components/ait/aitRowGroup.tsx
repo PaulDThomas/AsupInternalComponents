@@ -1,9 +1,7 @@
-import structuredClone from '@ungap/structured-clone';
-import React, { useCallback, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { AioRepeats, AioReplacement } from "../aio";
-import { newCell, objEqual, repeatRows } from "../functions";
-import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
+import React, { useCallback, useMemo } from "react";
+import { AioReplacement } from "../aio";
+import { newCell, newRow, repeatRows } from "../functions";
+import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
@@ -16,7 +14,7 @@ interface AitRowGroupProps {
   higherOptions: AitOptionList,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
-  columnRepeats?: AitColumnRepeat[],
+  columnRepeats: AitColumnRepeat[] | null,
   spaceAfter?: boolean,
 }
 
@@ -33,17 +31,6 @@ export const AitRowGroup = ({
   removeRowGroup,
   columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
-  const [lastSend, setLastSend] = useState<AitRowGroupData>(structuredClone({ aitid: aitid, rows: rows, replacements: replacements }));
-
-  const location: AitLocation = useMemo(() => {
-    return {
-      tableSection: higherOptions.tableSection ?? AitRowType.body,
-      rowGroup: higherOptions.rowGroup ?? 0,
-      row: -1,
-      column: -1,
-      repeat: "na",
-    }
-  }, [higherOptions]);
 
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
@@ -60,32 +47,23 @@ export const AitRowGroup = ({
       replacements: rowGroupUpdate.replacements ?? replacements,
       spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    let [chkObj, diffs] = objEqual(r, lastSend, `ROWGROUPCHECK:${Object.values(location).join(',')}-`);
-    if (!chkObj) {
-      // console.log(`ROWGROUPRETURN: ${diffs}`);
-      setRowGroupData!(r);
-      setLastSend(structuredClone(r));
-    }
-  }, [setRowGroupData, aitid, rows, comments, replacements, spaceAfter, lastSend, location]);
+    setRowGroupData!(r);
+  }, [setRowGroupData, aitid, rows, comments, replacements, spaceAfter]);
 
   // Update row
   const updateRow = useCallback((ret: AitRowData, ri: number) => {
     // Do nothing if readonly
     if (typeof (setRowGroupData) !== "function") return;
-
+    // Filter out repeat cells
+    let newRows: AitRowData[] = [ ...rows ];
     // Create new object to send back
-    let newRows = [...rows];
     newRows[ri] = ret;
     returnData({ rows: newRows });
   }, [setRowGroupData, rows, returnData]);
 
   const addRow = useCallback((ri: number) => {
-    let newRows = [...rows];
-    let newRow: AitRowData = {
-      aitid: uuidv4(),
-      cells: [],
-    };
+    let newrs = [...rows];
+    let newr = newRow(0);
     let cols = rows[0].cells
       .map(c => (c.colSpan ?? 1))
       .reduce((sum, a) => sum + a, 0);
@@ -93,16 +71,16 @@ export const AitRowGroup = ({
       // Create new cell
       let c = newCell();
       // Check rowSpans on previous row
-      if ((newRows[ri].cells[ci].rowSpan ?? 1) !== 1) {
+      if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
         let riUp = 0;
-        while (riUp <= ri && newRows[ri - riUp].cells[ci].rowSpan === 0) riUp++;
-        newRows[ri - riUp].cells[ci].rowSpan!++;
+        while (riUp <= ri && newrs[ri - riUp].cells[ci].rowSpan === 0) riUp++;
+        newrs[ri - riUp].cells[ci].rowSpan!++;
         c.rowSpan = 0;
       }
-      newRow.cells.push(c);
+      newr.cells.push(c);
     }
-    newRows.splice(ri + 1, 0, newRow);
-    returnData({ rows: newRows });
+    newrs.splice(ri + 1, 0, newr);
+    returnData({ rows: newrs });
   }, [returnData, rows])
 
   const removeRow = useCallback((ri: number) => {
@@ -185,19 +163,15 @@ export const AitRowGroup = ({
   }, [returnData, rows]);
 
   // Get rows after repeat processing
-  const processed = useMemo((): { rows: AitRowData[], repeats: AioRepeats } => {
+  const processed = useMemo((): { rows: AitRowData[] } => {
     return repeatRows(
       rows,
-      replacements.map(repl => {
-        let n = { ...repl };
-        if (n.airid === undefined) n.airid = uuidv4();
-        return n;
-      }),
+      replacements,
+      spaceAfter,
       higherOptions.noRepeatProcessing,
-      higherOptions.rowHeaderColumns,
       higherOptions.externalLists,
     );
-  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows]);
+  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, replacements, rows, spaceAfter]);
 
   // Output the rows
   return (
@@ -205,14 +179,13 @@ export const AitRowGroup = ({
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
         let rowHigherOptions = {
           ...higherOptions,
-          row: ri,
-          repeatNumber: processed.repeats.numbers[ri],
-          repeatValues: processed.repeats.values[ri],
+          row: rows.findIndex(r => r.aitid === row.aitid),
+          repeatNumber: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
         } as AitOptionList;
 
         return (
           <AitRow
-            key={rowHigherOptions.repeatNumber === undefined || rowHigherOptions.repeatNumber?.reduce((s, a) => s + a, 0) === 0 ? row.aitid : `${row.aitid}-${rowHigherOptions.repeatNumber?.join(',')}`}
+            key={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? row.aitid : (row.aitid + row.rowRepeat)}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, ri)}
@@ -223,9 +196,10 @@ export const AitRowGroup = ({
             removeRowGroup={removeRowGroup}
             rowGroupComments={comments ?? ""}
             updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
-            addRow={addRow}
-            removeRow={rows.length > 1 ? removeRow : undefined}
-            spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? 0 : false)}
+            addRow={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined}
+            removeRow={rows.length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
+            // spaceAfter={row.spaceAfter !== false ? row.spaceAfter : (ri === processed.rows.length - 1 && (spaceAfter ?? true) ? true : false)}
+            spaceAfter={row.spaceAfter ?? false}
             columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}

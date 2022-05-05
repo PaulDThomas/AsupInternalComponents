@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AieStyleMap, AioReplacement, AitRowGroupData, AitTableData, AsupInternalTable } from '../components';
+import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable, updateTableDataVersion } from '../components';
 
 export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [tableData, setTableData] = useState<AitTableData | undefined>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
-  const [externalReplacements, setExternalReplacements] = useState<AioReplacement[]>([]);
+  const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
     Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
@@ -27,7 +27,7 @@ export const TablePage = () => {
     /** Load table data */
     fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, { headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' } })
       .then(function (response) { return response.json(); })
-      .then(function (MyJson: AitTableData) { setTableData(MyJson); });
+      .then(function (MyJson: AitTableData) { setTableData(updateTableDataVersion(MyJson)); });
   }, []);
 
   const loadData = useCallback(() => {
@@ -37,7 +37,7 @@ export const TablePage = () => {
       }
       if (ta.current) {
         const j = JSON.parse(ta.current!.value?.toString() ?? "{}");
-        setTableData(j);
+        setTableData(updateTableDataVersion(j));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     }
@@ -49,9 +49,9 @@ export const TablePage = () => {
 
   const loadReplacements = useCallback(() => {
     try {
-      const j: { name: string, list: AioReplacement }[] = JSON.parse(window.localStorage.getItem('listContent') ?? "[]");
-      setExternalReplacements(j.map(j => j.list));
-      setListStatus(`Loaded ${j.length} lists: ${j.map(rep => rep.list.givenName).join(', ')}`);
+      const j: AioExternalReplacements[] = JSON.parse(window.localStorage.getItem('listContent') ?? "[]");
+      setExternalReplacements(j);
+      setListStatus(`Loaded ${j.length} lists: ${j.map(rv => rv.givenName).join(', ')}`);
     }
     catch (e) {
       console.log("JSON parse from listContent failed");
@@ -72,7 +72,7 @@ export const TablePage = () => {
         :
         <AsupInternalTable
           tableData={tableData}
-          setTableData={setTableData}
+          setTableData={(ret) => { setTableData(ret) }}
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}

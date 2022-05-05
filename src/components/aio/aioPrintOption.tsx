@@ -4,7 +4,7 @@ import { AioExpander } from "./aioExpander";
 import { AioOptionType, AioReplacement } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioNumber } from "./aioNumber";
-import { AioReplacementDisplay } from "./aioReplacementDisplay";
+import { AioReplacementList } from "./aioReplacementList";
 import { AioSelect } from "./aioSelect";
 import { AioString } from "./aioString";
 
@@ -66,7 +66,8 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
     // Replacements
     case (AioOptionType.replacements):
       return (
-        <AioReplacementDisplay
+        <AioReplacementList
+          label="Replacement text"
           replacements={props.value}
           setReplacements={(typeof (props.setValue) === "function")
             ?

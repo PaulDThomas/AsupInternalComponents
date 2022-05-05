@@ -1,17 +1,31 @@
-import { assignSubListLevel } from "./assignSubListLevel";
+// import { assignSubListLevel } from "./assignSubListLevel";
+import { bodyPreProcess } from "./bodyPreProcess";
+import { headerPreProcess } from "./headerPreProcess";
 import { newCell } from "./newCell";
+import { newReplacement } from "./newReplacement";
+import { newReplacementValues } from "./newReplacementValues";
+import { newRow } from "./newRow";
 import { objEqual } from "./objEqual";
 import { repeatHeaders } from "./repeatHeaders";
 import { repeatRows } from "./repeatRows";
 import { fromHtml, toHtml } from "./tofromHtml";
+import { updateReplacementVersion, updateReplToExtl } from "./updateReplacementVersion";
+import { updateTableDataVersion } from "./updateTableDataVersion";
 
 export {
-  assignSubListLevel,
+  // assignSubListLevel,
   fromHtml,
+  bodyPreProcess,
+  headerPreProcess,
   objEqual,
   newCell,
+  newReplacement,
+  newReplacementValues,
+  newRow,
   repeatHeaders,
   repeatRows,
   toHtml,
+  updateReplacementVersion,
+  updateReplToExtl,
+  updateTableDataVersion,
 };
-

@@ -1,4 +1,4 @@
-import { AioIconButton } from "components/aio";
+import { AioIconButton } from "../aio";
 import React from "react";
 import { AitColumnRepeat } from "./aitInterface";
 
@@ -8,7 +8,7 @@ interface AitBorderRowProps {
   spaceAfter?: boolean,
   noBorder?: boolean,
   rowHeaderColumns?: number
-  columnRepeats?: AitColumnRepeat[];
+  columnRepeats?: AitColumnRepeat[] | null;
   changeColumns?: {
     addColumn: (col: number) => void,
     removeColumn: (col: number) => void,
@@ -23,7 +23,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
     <>
       {props.changeColumns &&
         <tr>
-          <td className="ait-cell">
+          <td className="ait-cell" >
             <div className="ait-aie-holder" style={{ display: "flex", justifyContent: "flex-end" }}>
               <AioIconButton
                 tipText="Add column"

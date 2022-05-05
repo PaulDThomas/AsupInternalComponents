@@ -15,7 +15,6 @@
     overflow-y: auto;
     cursor: default;
     flex-grow: 1;
-    margin-bottom: 0.5rem;
 }
 
 .aiw-title {
@@ -52,7 +51,7 @@
 .aiw-body {
     overflow: auto;
     /* fill inner minus total title height */
-    height: calc(100% - 34px); 
+    height: calc(100% - 40px); 
 }
 
 .aiw-body-row {

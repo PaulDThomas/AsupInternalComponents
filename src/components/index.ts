@@ -1,9 +1,10 @@
 
 import { AieStyleMap, AsupInternalEditor } from "./aie";
 import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
-import { AioDropSelect, AioExpander, AioIconButton, AioOption, AioOptionGroup, AioReplacement, AioReplacementTable, AioReplacementText, AioReplacementValue, AioString } from "./aio";
+import { AioDropSelect, AioExpander, AioExternalReplacements, AioIconButton, AioOption, AioReplacement, AioReplacementDisplay, AioReplacementValues, AioReplacementValuesDisplay, AioString } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
 import { AsupInternalWindow } from "./aiw";
+import { updateReplacementVersion, updateReplToExtl, updateTableDataVersion } from "./functions";
 
 export {
   AsupInternalEditor,
@@ -14,13 +15,20 @@ export {
 export {
   AifLineType,
   AioExpander,
-  AioReplacementTable,
+  AioReplacementDisplay,
+  AioReplacementValuesDisplay,
   AioDropSelect,
   AioIconButton,
   AioString,
 };
 export type { AieStyleMap };
 export type { AifBlockLine };
-export type { AioOption, AioOptionGroup, AioReplacement, AioReplacementText, AioReplacementValue };
+export type { AioExternalReplacements, AioOption, AioReplacement, AioReplacementValues };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
+
+export {
+  updateReplacementVersion,
+  updateReplToExtl,
+  updateTableDataVersion,
+}
 

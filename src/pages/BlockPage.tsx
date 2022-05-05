@@ -24,7 +24,7 @@ export const BlockPage = () => {
           setLines={setLines}
           minLines={3}
           maxLines={10}
-          style={{fontFamily:"Courier New", fontWeight:800}}
+          style={{ fontFamily: "Courier New", fontWeight: 800 }}
           styleMap={{
             Green: { css: { color: "green", }, aieExclude: ["Blue", "Red"] },
             Blue: { css: { color: "blue", }, aieExclude: ["Green", "Red"] },
@@ -50,7 +50,7 @@ export const BlockPage = () => {
               setLines(j);
             }
             catch (e) {
-              console.log("JSON parse failed");
+              console.warn("JSON parse failed");
               console.dir(e);
             }
           }}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioArraySortable } from "./aioArraySortable";
-import { AioNewItem, AioOptionGroup, AioOptionType } from "./aioInterface";
+import { AioNewItem, AioOption, AioOptionType } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
@@ -20,7 +20,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showNewItemWindow, setShowNewItemWindow] = useState(false);
 
-  const onClickAdd = (ret: AioOptionGroup) => {
+  const onClickAdd = (ret: AioOption[]) => {
     if (props.inputObject === undefined) return;
     // Check value is ok
     if (ret[0].value !== "" && Object.keys(props.inputObject).indexOf(ret[0].value) === -1 && props.updateObject) {
@@ -139,7 +139,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                       <div className="aio-label" />
                       <div className="aio-input-holder" style={{ borderLeft: "0" }} />
                       <div className="aiox-button-holder">
-                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(true) }} />
+                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(!showNewItemWindow) }} />
                         {showNewItemWindow &&
                           <AsupInternalWindow
                             Title={"Add item"}
@@ -151,7 +151,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                               options={[
                                 { type: AioOptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
                                 { type: AioOptionType.select, optionName: AioNewItem.newType, value: "", label: "New type", availableValues: ["string", "number", "array", "object"] },
-                              ] as AioOptionGroup}
+                              ]}
                               setOptions={onClickAdd}
                               buttonText="Add" />
                           </AsupInternalWindow>

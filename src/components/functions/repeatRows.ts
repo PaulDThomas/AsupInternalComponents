@@ -1,11 +1,9 @@
-import { AioRepeats, AioReplacement, AioReplacementText } from "../aio/aioInterface";
-import { AitRowData } from "../ait/aitInterface";
-import { createRepeats } from "./createRepeats";
-import { findTargets } from "./findTargets";
-import { getRepeats } from "./getRepeats";
+
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitRowData } from "../ait";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
-import { replaceText } from "./replaceText";
-import { updateRowSpans } from "./updateRowSpans";
+import { replaceRows } from "./replaceRows";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Repeat rows based on repeat number array with potential for partial repeats
@@ -18,66 +16,79 @@ import { updateRowSpans } from "./updateRowSpans";
 export const repeatRows = (
   rows: AitRowData[],
   replacements?: AioReplacement[],
+  spaceAfter?: boolean,
   noProcessing?: boolean,
-  rowHeaderColumns?: number,
-  externalLists?: AioReplacement[],
-): { rows: AitRowData[]; repeats: AioRepeats; } => {
+  externalLists?: AioExternalReplacements[],
+): { rows: AitRowData[]; } => {
 
   // Create initial return
-  let newRows = rows.map((r, ri) => {
-    let _r = removeRowRepeatInfo(r);
-    _r.spaceAfter = false;
-    return _r;
-  });
-  let newRepeats = { numbers: [[]], values: [[]], last: [[]] };
+  let newRows = removeRowRepeatInfo(rows);
 
   // Strip repeat data if flagged 
   if (noProcessing
     || rows.length === 0
     || !replacements
     || replacements.length === 0
-    || !replacements[0].replacementTexts
-    || replacements[0].replacementTexts.length === 0
-    || !replacements[0].replacementValues
-    || replacements[0].replacementValues.length === 0)
-    return { rows: newRows, repeats: newRepeats, };
+  ) {
+    return { rows: newRows };
+  }
 
-  // Process parts of replacements into single objects
-  let replacementTexts: AioReplacementText[] = replacements.map(rep => rep.replacementTexts).flat();
-  let repeats = getRepeats(replacements, externalLists);
+  // Process rows if there are replacements
+  let extReplacements = updateExternals(replacements, externalLists)
+  if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
+    newRows = replaceRows(newRows, extReplacements![si]);
+    // Process spaceAfter
+    for (let ri = newRows.length - 1; ri >= 0; ri--) {
+      // Start cell counter
+      // Add spaceAfter for final row automatically
+      if (spaceAfter && ri === newRows.length - 1) {
+        newRows[ri].spaceAfter = true;
+      }
+      else {
+        // Look down each column
+        for (let ci = 0; ci < newRows[0].cells.length; ci++) {
+          // Cycle through each column cell
+          for (let ri = 0; ri < newRows.length; ri++) {
+            let targetCell = newRows[ri].cells[ci];
+            // Add space below appropriate rows if required
+            if (
+              (targetCell.repeatRowSpan ?? 1) > 0 &&
+              (targetCell.rowSpan ?? 1) > 0 &&
+              targetCell.spaceAfterRepeat &&
+              ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length  &&
+              !newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter 
+            ) {
+              newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
+              let lookback = 1;
+              // Check previous cells
+              while (lookback <= ci) {
+                let checkCell = newRows[ri].cells[ci - lookback];
+                // Add span to any preceeding rowSpans > 1
+                if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1) {
+                  checkCell.repeatRowSpan = (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) + 1;
+                }
+                // Look up when cells have span = 0
+                else if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) === 0) {
+                  let lookup = 1;
+                  let found = false;
+                  while (lookup <= ri && !found) {
+                    checkCell = newRows[ri - lookup].cells[ci - lookback];
+                    if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1) {
+                      found = true;
+                      checkCell.repeatRowSpan = (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) + 1;
+                    }
+                    lookup++;
+                  }
+                }
+                lookback++;
+              }
+            }
+          }
+        }
 
-  // Stop processing if there is nothing to repeat 
-  if (!repeats?.numbers || repeats.numbers.length === 0)
-    return { rows: newRows, repeats: { numbers: [[]], values: [[]], last: [[]] } };
-
-  // Get row numbers that contain the repeat texts 
-  let targetArray = findTargets(rows, replacementTexts);
-
-  // Rows to the returned by this function 
-  let { newRows: newRows2, newRepeatValues, newRepeatNumbers, newLast } = createRepeats(repeats, newRows, targetArray);
-  // Stop processing if there were no repeats
-  if (newRows2.length === 0)
-    return { rows: newRows, repeats: { numbers: [[]], values: [[]], last: [[]] } };
-  else 
-  newRows = newRows2;
-
-  // Update text based on repeats */
-  replaceText(newRows, replacementTexts, newRepeatValues);
-
-  // Process space after
-  newRows.map((row, ri) => {
-    row.spaceAfter = false;
-    // Check for spaceAfter highest level  for within group 
-    if (newRepeatNumbers.length > 0) {
-      let replacementTexts = replacements.map(r => r.replacementTexts).flat();
-      let checkSpaceLevel: number = replacementTexts?.reduce((r, a, i) => a.spaceAfter === true ? i : r, -1) ?? -1;
-      let isLastLevel: number = newLast[ri]?.reduce((l, a, i) => a ? Math.min(l, i) : i + 1, 1);
-      row.spaceAfter = checkSpaceLevel >= isLastLevel ? targetArray[isLastLevel].column : false;
+      }
     }
-    return true;
-  });
+  }
 
-  // Process newRows add rowSpan in rowHeaders */
-  updateRowSpans(newRows, newRepeatNumbers, rowHeaderColumns ?? 0);
-  return { rows: newRows, repeats: { numbers: newRepeatNumbers, values: newRepeatValues, last: newLast } };
+  return { rows: newRows };
 };

@@ -59,8 +59,8 @@ export const AsupInternalEditor = ({
   // Initial Text loading/update
   useEffect(() => {
     // Update the content
-    setEditorState(EditorState.createWithContent(loadFromHTML(value)));
-  }, [value]);
+    setEditorState(EditorState.createWithContent(loadFromHTML(value, editable)));
+  }, [editable, value]);
 
   /**
    * Apply style to current selection on button press

@@ -2,7 +2,6 @@
 .aio-button-holder {
   position: relative;
   display: inline-flex;
-  z-index: 2;
 }
 
 .aio-button-holder:not(:first-child) {
