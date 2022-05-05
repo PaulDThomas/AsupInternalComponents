@@ -1,5 +1,5 @@
 import { fromHtml, toHtml } from '../functions';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from './aioInterface';
 import { AioReplacementList } from './aioReplacementList';
 
@@ -40,6 +40,7 @@ export const AioReplacementValuesDisplay = ({
   }, [airid, setReplacementValue, spaceAfter, subLists, texts]);
 
   const [text, setText] = useState<string>(texts?.map(t => fromHtml(t)).join("\n") ?? "");
+  useEffect(() => { setText(texts?.map(t => fromHtml(t)).join("\n") ?? "") }, [texts]);
 
   return (
     <div className="aiordv-main"
