@@ -50,6 +50,8 @@
 
 .aiw-body {
     overflow: auto;
+    margin-bottom: 6px;
+    margin-right: 4px;
     /* fill inner minus total title height */
     height: calc(100% - 40px); 
 }

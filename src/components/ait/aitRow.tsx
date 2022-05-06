@@ -133,7 +133,7 @@ export const AitRow = ({
                     <>
                       {location.tableSection === AitRowType.body && <>
                         <div className="aiw-body-row">
-                          <AioBoolean label="Space after group" value={rowGroupSpace ?? true} setValue={setRowGroupSpace} />
+                          <AioBoolean label="Space after group" value={rowGroupSpace ?? false} setValue={setRowGroupSpace} />
                         </div>
                       </>}
                     </>
@@ -193,6 +193,7 @@ export const AitRow = ({
               replacedText={cell.replacedText}
               repeatColSpan={cell.repeatColSpan}
               repeatRowSpan={cell.repeatRowSpan}
+              spaceAfterSpan={cell.spaceAfterSpan}
               higherOptions={cellHigherOptions}
               columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
@@ -206,6 +207,7 @@ export const AitRow = ({
                   :
                   undefined}
               removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
+              spaceAfterRepeat={cell.spaceAfterRepeat}
             />
           );
         })}

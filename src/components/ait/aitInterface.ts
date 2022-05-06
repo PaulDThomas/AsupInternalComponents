@@ -13,6 +13,7 @@ export interface AitCellData {
   repeatColSpan?: number, // ColSpan after any list replacements
   repeatRowSpan?: number, // RowSpan after any list replacements
   spaceAfterRepeat?: boolean, // If a blank row is required after this repeat
+  spaceAfterSpan?: number, // Number of rowSpaceAfters being crossed
 };
 
 export interface AitRowData {

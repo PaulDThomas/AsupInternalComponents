@@ -24,6 +24,8 @@ interface AitCellProps {
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
   removeRowSpan?: (loc: AitLocation) => void,
+  spaceAfterRepeat?: boolean,
+  spaceAfterSpan?: number,
 };
 
 /*
@@ -48,6 +50,8 @@ export const AitCell = ({
   removeColSpan,
   addRowSpan,
   removeRowSpan,
+  spaceAfterRepeat,
+  spaceAfterSpan, 
 }: AitCellProps) => {
 
   // Data holder
@@ -138,9 +142,11 @@ export const AitCell = ({
       replacedText: replacedText,
       repeatColSpan: repeatColSpan,
       repeatRowSpan: repeatRowSpan,
+      spaceAfterRepeat: spaceAfterRepeat,
+      spaceAfterSpan: spaceAfterSpan,
     };
     setCellData!(r);
-  }, [aitid, colSpan, colWidth, comments, currentReadOnly, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, text, textIndents]);
+  }, [aitid, colSpan, colWidth, comments, currentReadOnly, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, spaceAfterRepeat, spaceAfterSpan, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -158,7 +164,7 @@ export const AitCell = ({
         (currentReadOnly ? "ait-readonly-cell" : ""),
       ].join(" ")}
       colSpan={repeatColSpan ?? colSpan ?? 1}
-      rowSpan={repeatRowSpan ?? rowSpan ?? 1}
+      rowSpan={(repeatRowSpan ?? rowSpan ?? 1) + (spaceAfterSpan ?? 0)}
       style={cellStyle}
       data-location-table-section={higherOptions.tableSection}
       data-location-row-group={higherOptions.rowGroup}

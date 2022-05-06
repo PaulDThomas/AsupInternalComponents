@@ -25,6 +25,7 @@ export const newRowGroup = (l: number, newRowGroupTemplate: AitRowGroupData): Ai
         aitid: uuidv4(),
         cells: newCells,
       };
-    })
+    }),
+    spaceAfter: true,
   };
 };
