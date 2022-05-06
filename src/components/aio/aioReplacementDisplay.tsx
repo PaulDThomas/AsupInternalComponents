@@ -117,7 +117,7 @@ export const AioReplacementDisplay = ({
           }
           {!dontAskTrail &&
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <label><small>Repeat following lines</small></label>
+              <label><small>Include trailing rows</small></label>
               <input
                 disabled={typeof setReplacement !== 'function'}
                 style={{ margin: "6px" }}
