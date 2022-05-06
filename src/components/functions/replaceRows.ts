@@ -54,7 +54,7 @@ export const replaceRows = (
         targetCell.rowSpan = targetCell.rowSpan ?? 1;
 
         let midRows: AitRowData[] = [];
-        let initialRows: number = 0;
+        let addedRows = 0;
 
         // Cycle through newTexts
         for (let rvi = 0; rvi < replacement!.newTexts.length; rvi++) {
@@ -93,15 +93,13 @@ export const replaceRows = (
                   cells: [thisRepeat, ...rows[ri].cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))],
                 } as AitRowData]
               ;
-            // This value should be the same for all text entries
-            initialRows = lowerQuad.length;
-            // Process lowerQuad if there are subLists
-            let extReplacements = updateExternals(rv.subLists, externalLists)
-            if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
-              lowerQuad = replaceRows(lowerQuad, extReplacements![si]);
-            }
             // Find amount to move row cursor 
             processedRows = lowerQuad.length;
+            // Process lowerQuad if there are subLists
+            let subLists = updateExternals(rv.subLists, externalLists)
+            if ((subLists?.length ?? 0) > 0) for (let si = 0; si < subLists!.length; si++) {
+              lowerQuad = replaceRows(lowerQuad, subLists![si]);
+            }
 
             // Expand to cover rest of the row
             midRows.push(...lowerQuad);
@@ -110,16 +108,18 @@ export const replaceRows = (
 
         // Add preceeding cells from current row
         if (midRows.length > 0) for (let lookleft = 1; lookleft <= ci; lookleft++) {
-          midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midRows.length - initialRows);
-          // Update cell above if prepended to a cell with no rowSpan
+          midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midRows.length - processedRows);
+          // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
           if (midRows[0].cells[0].rowSpan === 0 && (midRows[0].cells[0].repeatRowSpan ?? 0) > 0) {
             let lookup = 1;
-            while ((newRows[ri - lookup].cells[ci - lookleft].rowSpan ?? 1) === 0) lookup++;
-            newRows[ri - lookup].cells[ci - lookleft].repeatRowSpan = (newRows[ri - lookup].cells[ci - lookleft].repeatRowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
+            while ((newRows[ri + addedRows - lookup].cells[ci - lookleft].rowSpan ?? 1) === 0) lookup++;
+            newRows[ri + addedRows - lookup].cells[ci - lookleft].repeatRowSpan = (newRows[ri  + addedRows - lookup].cells[ci - lookleft].repeatRowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
           }
         }
         // Add returned rows
         newRows.push(...midRows);
+        // Update number of rows for further lookups
+        addedRows = addedRows +  midRows.length - processedRows;
       }
     }
     // Add the row if it was not found on this pass
