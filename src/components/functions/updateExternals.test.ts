@@ -31,20 +31,20 @@ describe('Check updateExternals', () => {
   };
 
   test("Into single", () => {
-    let c = updateExternals(a, [e]);
-    expect(c).toEqual({
+    let c = updateExternals([a], [e]);
+    expect(c).toEqual([{
       oldText: "a",
       externalName: "ListE",
       newTexts: [
         { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
         { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
       ]
-    });
+    }]);
   });
 
   test("Into long", () => {
-    let c = updateExternals(b, [e]);
-    expect(c).toEqual({
+    let c = updateExternals([b], [e]);
+    expect(c).toEqual([{
       oldText: "b",
       newTexts: [
         {
@@ -61,6 +61,38 @@ describe('Check updateExternals', () => {
           ]
         }
       ]
-    });
+    }]);
   });
+
+
+  test("Into both", () => {
+    let c = updateExternals([a, b], [e]);
+    expect(c).toEqual([{
+      oldText: "a",
+      externalName: "ListE",
+      newTexts: [
+        { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+        { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
+      ]
+    },
+    {
+      oldText: "b",
+      newTexts: [
+        {
+          texts: ["b1"], subLists: [
+            {
+              oldText: "c",
+              externalName: "ListE",
+              newTexts: [
+                { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+                { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
+              ]
+            },
+            { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
+          ]
+        }
+      ]
+    }]);
+  });
+
 });
