@@ -14,7 +14,8 @@ interface AioReplacmentDisplayProps {
   externalName?: string,
   setReplacement?: (ret: AioReplacement) => void,
   externalLists?: AioExternalReplacements[],
-  dontAskOptions?: boolean,
+  dontAskSpace?: boolean,
+  dontAskTrail?: boolean,
   noText?: boolean,
 }
 
@@ -30,7 +31,8 @@ export const AioReplacementDisplay = ({
   externalName,
   setReplacement,
   externalLists,
-  dontAskOptions,
+  dontAskSpace,
+  dontAskTrail,
   noText: noOldText,
 }: AioReplacmentDisplayProps): JSX.Element => {
 
@@ -113,7 +115,7 @@ export const AioReplacementDisplay = ({
               style={{ minWidth: 0, width: "170px" }}
             />
           }
-          {!dontAskOptions &&
+          {!dontAskTrail &&
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <label><small>Repeat following lines</small></label>
               <input
@@ -161,7 +163,8 @@ export const AioReplacementDisplay = ({
                   spaceAfter={rv.spaceAfter}
                   subLists={rv.subLists}
                   externalLists={externalLists}
-                  dontAskOptions={dontAskOptions}
+                  dontAskSpace={dontAskSpace}
+                  dontAskTrail={typeof setReplacement === "function" ? dontAskTrail : true}
                   setReplacementValue={typeof setReplacement === "function"
                     ?
                     (ret) => {

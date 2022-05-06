@@ -9,7 +9,8 @@ interface AioReplacementValuesDisplayProps {
   spaceAfter?: boolean,
   subLists?: AioReplacement[],
   setReplacementValue?: (ret: AioReplacementValues) => void,
-  dontAskOptions?: boolean,
+  dontAskSpace?: boolean,
+  dontAskTrail?: boolean,
   externalLists?: AioExternalReplacements[],
 }
 
@@ -19,7 +20,8 @@ export const AioReplacementValuesDisplay = ({
   spaceAfter,
   subLists,
   setReplacementValue,
-  dontAskOptions,
+  dontAskSpace,
+  dontAskTrail,
   externalLists,
 }: AioReplacementValuesDisplayProps): JSX.Element => {
 
@@ -67,7 +69,7 @@ export const AioReplacementValuesDisplay = ({
               onBlur={() => returnData({ texts: text.split("\n").map(t => toHtml(t)) })}
               style={{ width: "170px", minWidth: "170px" }}
             />
-            {!dontAskOptions &&
+            {!dontAskSpace &&
               <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <label><small>Space after repeat</small></label>
                 <input
@@ -110,7 +112,8 @@ export const AioReplacementValuesDisplay = ({
           <AioReplacementList
             replacements={subLists}
             setReplacements={typeof setReplacementValue === "function" ? (ret) => returnData({ subLists: ret }) : undefined}
-            dontAskOptions={typeof setReplacementValue === "function" ? dontAskOptions : true}
+            dontAskSpace={typeof setReplacementValue === "function" ? dontAskSpace : true}
+            dontAskTrail={dontAskTrail}
             externalLists={externalLists}
           />
         </>

@@ -143,7 +143,8 @@ export const AitRow = ({
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
                         externalLists={higherOptions.externalLists}
-                        dontAskOptions={location.tableSection === AitRowType.header}
+                        dontAskSpace={location.tableSection === AitRowType.header}
+                        dontAskTrail={location.tableSection === AitRowType.header}
                       />
                     </div>
                   </AsupInternalWindow>

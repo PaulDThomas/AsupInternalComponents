@@ -14,7 +14,8 @@ interface AioReplacementListProps {
   label?: string,
   replacements?: AioReplacement[],
   setReplacements?: (ret: AioReplacement[]) => void,
-  dontAskOptions?: boolean,
+  dontAskSpace?: boolean,
+  dontAskTrail?: boolean,
   externalLists?: AioExternalReplacements[],
 }
 
@@ -27,7 +28,8 @@ export const AioReplacementList = ({
   label,
   replacements,
   setReplacements,
-  dontAskOptions,
+  dontAskSpace,
+  dontAskTrail,
   externalLists,
 }: AioReplacementListProps): JSX.Element => {
 
@@ -72,7 +74,8 @@ export const AioReplacementList = ({
                 includeTrailing={repl.includeTrailing}
                 externalName={repl.externalName}
                 setReplacement={typeof setReplacements === "function" ? (ret) => updateReplacement(ret, i) : undefined}
-                dontAskOptions={dontAskOptions}
+                dontAskSpace={dontAskSpace}
+                dontAskTrail={i > 0 ? true: dontAskTrail}
                 externalLists={externalLists}
               />
               {typeof setReplacements === "function" &&
