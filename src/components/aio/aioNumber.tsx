@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import { AioLabel } from "./aioLabel";
 
 interface AioNumberProps {
@@ -8,6 +8,10 @@ interface AioNumberProps {
 }
 
 export const AioNumber = (props: AioNumberProps): JSX.Element => {
+
+  const [value, setValue] = useState<number>(props.value ?? 0);
+  useEffect(() => { setValue(props.value ?? 0)} , [props.value]);
+
   return (
     <>
       <AioLabel label={props.label} />
@@ -18,14 +22,10 @@ export const AioNumber = (props: AioNumberProps): JSX.Element => {
           :
           <input
             className={"aio-input"}
-            value={props.value}
+            value={value}
             type={"number"}
-            onChange={typeof (props.setValue) === "function"
-              ?
-              (e: React.ChangeEvent<HTMLInputElement>) => { if (props.setValue) props.setValue(parseFloat(e.currentTarget.value)); }
-              :
-              undefined
-            }
+            onChange={e => setValue(parseFloat(e.currentTarget.value))}
+            onBlur={_ => props.setValue!(value)}
           />
         }
       </div>
