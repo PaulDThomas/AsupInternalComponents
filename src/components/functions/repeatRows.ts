@@ -39,6 +39,11 @@ export const repeatRows = (
 
   // Check other spaceAfter if there are replacements
   if ((extReplacements?.length ?? 0) > 0) for (let si = 0; si < extReplacements!.length; si++) {
+    // Data fix
+    if (si > 0 && extReplacements![si].includeTrailing) {
+      extReplacements![si].includeTrailing = false;
+    }
+    // Run current replacement
     newRows = replaceRows(newRows, extReplacements![si]);
     // Add spaceAfter for the group
     if (spaceAfter) {

@@ -28,6 +28,7 @@ export const replaceRows = (
 
   // Set up holders
   let newRows: AitRowData[] = [];
+  let addedRows = 0;
   let found = false;
 
   // Look through each cell
@@ -54,7 +55,7 @@ export const replaceRows = (
         targetCell.rowSpan = targetCell.rowSpan ?? 1;
 
         let midRows: AitRowData[] = [];
-        let addedRows = 0;
+        let midAddedRows = 0;
 
         // Cycle through newTexts
         for (let rvi = 0; rvi < replacement!.newTexts.length; rvi++) {
@@ -112,21 +113,23 @@ export const replaceRows = (
             midRows.push(...lowerQuad);
           }
         }
-
+        
         // Add preceeding cells from current row
         if (midRows.length > 0) for (let lookleft = 1; lookleft <= ci; lookleft++) {
-          midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midRows.length - processedRows);
+          midAddedRows = midRows.length - processedRows;
+          midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midAddedRows);
           // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
           if (midRows[0].cells[0].rowSpan === 0 && (midRows[0].cells[0].repeatRowSpan ?? 0) > 0) {
             let lookup = 1;
             while ((newRows[ri + addedRows - lookup].cells[ci - lookleft].rowSpan ?? 1) === 0) lookup++;
-            newRows[ri + addedRows - lookup].cells[ci - lookleft].repeatRowSpan = (newRows[ri  + addedRows - lookup].cells[ci - lookleft].repeatRowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
+            let spanTargetCell = newRows[ri + addedRows - lookup].cells[ci - lookleft]
+            spanTargetCell.repeatRowSpan = (spanTargetCell.repeatRowSpan ?? spanTargetCell.rowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
           }
         }
         // Add returned rows
         newRows.push(...midRows);
         // Update number of rows for further lookups
-        addedRows = addedRows +  midRows.length - processedRows;
+        addedRows = addedRows +  midAddedRows;
       }
     }
     // Add the row if it was not found on this pass
@@ -142,4 +145,3 @@ export const replaceRows = (
   }
   return newRows;
 };
-
