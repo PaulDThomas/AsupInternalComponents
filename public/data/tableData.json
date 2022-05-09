@@ -2,34 +2,20 @@
   "headerData": {
     "replacements": [
       {
-        "replacementTexts": [
+        "oldText": "!!trt!!",
+        "newTexts": [
           {
-            "text": "!!trt!!",
-            "spaceAfter": false
-          },
-          {
-            "text": "",
-            "spaceAfter": false
+            "texts": [
+              "&lt;&lt;low&nbsp;dose&gt;&gt;",
+              "&lt;&lt;high&nbsp;dose&gt;&gt;",
+              "Total",
+              "Control"
+            ],
+            "spaceAfter": false,
+            "subLists": []
           }
         ],
-        "replacementValues": [
-          {
-            "newText": "&lt;&lt;low&nbsp;dose&gt;&gt;",
-            "subList": []
-          },
-          {
-            "newText": "&lt;&lt;high&nbsp;dose&gt;&gt;",
-            "subList": []
-          },
-          {
-            "newText": "Total",
-            "subList": []
-          },
-          {
-            "newText": "Control",
-            "subList": []
-          }
-        ]
+        "includeTrailing": false
       }
     ],
     "comments": "",
@@ -137,96 +123,184 @@
       "comments": "",
       "replacements": [
         {
-          "replacementTexts": [
+          "oldText": "!!label!!",
+          "newTexts": [
             {
-              "text": "!!label!!",
-              "spaceAfter": false
+              "spaceAfter": true,
+              "texts": [
+                "Age"
+              ],
+              "subLists": [
+                {
+                  "oldText": "!!unit!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "years"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
             },
             {
-              "text": "!!unit!!",
-              "spaceAfter": false
+              "spaceAfter": true,
+              "texts": [
+                "Weight"
+              ],
+              "subLists": [
+                {
+                  "oldText": "!!unit!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "kg"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
             }
           ],
-          "replacementValues": [
-            {
-              "newText": "Age",
-              "subList": [
-                {
-                  "newText": "years"
-                }
-              ]
-            },
-            {
-              "newText": "Weight",
-              "subList": [
-                {
-                  "newText": "kg"
-                }
-              ]
-            }
-          ]
+          "includeTrailing": false
         },
         {
-          "replacementTexts": [
+          "oldText": "!!stat!!",
+          "newTexts": [
             {
-              "text": "!!stat!!",
-              "spaceAfter": false
+              "texts": [
+                "n"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "xxx"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
             },
             {
-              "text": "!!xval!!",
-              "spaceAfter": false
+              "texts": [
+                "Mean"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "xx.x"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
+            },
+            {
+              "spaceAfter": false,
+              "texts": [
+                "SD"
+              ],
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "spaceAfter": true,
+                      "texts": [
+                        "x.xx"
+                      ],
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
+            },
+            {
+              "texts": [
+                "Median"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "xx.x"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
+            },
+            {
+              "texts": [
+                "Min"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "x.x"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
+            },
+            {
+              "texts": [
+                "Max"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "xxx.x"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
             }
           ],
-          "replacementValues": [
-            {
-              "newText": "n",
-              "subList": [
-                {
-                  "newText": "xxx"
-                }
-              ]
-            },
-            {
-              "newText": "Mean",
-              "subList": [
-                {
-                  "newText": "xx.x"
-                }
-              ]
-            },
-            {
-              "newText": "SD",
-              "subList": [
-                {
-                  "newText": "x.xx"
-                }
-              ]
-            },
-            {
-              "newText": "Median",
-              "subList": [
-                {
-                  "newText": "xx.x"
-                }
-              ]
-            },
-            {
-              "newText": "Min",
-              "subList": [
-                {
-                  "newText": "x.x"
-                }
-              ]
-            },
-            {
-              "newText": "Max",
-              "subList": [
-                {
-                  "newText": "xxx.x"
-                }
-              ]
-            }
-          ]
+          "includeTrailing": false
         }
       ],
       "spaceAfter": true
@@ -264,94 +338,101 @@
         {
           "cells": [
             {
-              "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":12,\"style\":\"Notes\"}]'><span classname=\"Notes\" style=\"color:royalblue\">!!category!!</span></div>",
+              "text": "<div classname=\"aie-text\" data-key=\"efd1n\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":12,\"style\":\"Notes\"}]'><span classname=\"Notes\" style=\"color:royalblue\">!!category!!</span></div>",
               "comments": "",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 1
+              "textIndents": 1,
+              "repeatRowSpan": 1,
+              "spaceAfterRepeat": true
             },
             {
               "text": "!!stat!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0
+              "textIndents": 0,
+              "replacedText": "n (%)",
+              "repeatRowSpan": 1
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0
+              "textIndents": 0,
+              "replacedText": "xxx (xx.x)"
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0
+              "textIndents": 0,
+              "replacedText": "xxx (xx.x)"
             }
           ]
         }
       ],
       "replacements": [
         {
-          "replacementTexts": [
+          "oldText": "!!label!!",
+          "newTexts": [
             {
-              "text": "!!label!!",
-              "spaceAfter": false
-            }
-          ],
-          "replacementValues": [
-            {
-              "newText": "Age group (&lt;&lt;unit&gt;&gt;)"
-            }
-          ]
-        },
-        {
-          "replacementTexts": [
-            {
-              "text": "!!category!!",
-              "spaceAfter": false
-            }
-          ],
-          "replacementValues": [
-            {
-              "newText": "&lt;&lt;Category 1&gt;&gt;"
-            },
-            {
-              "newText": "&lt;&lt;Category 2&gt;&gt;"
-            },
-            {
-              "newText": "&lt;&lt;Category 3&gt;&gt;"
-            },
-            {
-              "newText": "Missing"
-            }
-          ]
-        },
-        {
-          "replacementTexts": [
-            {
-              "text": "!!stat!!",
-              "spaceAfter": false
-            },
-            {
-              "text": "!!xval!!",
-              "spaceAfter": false
-            }
-          ],
-          "replacementValues": [
-            {
-              "newText": "n (%)",
-              "subList": [
+              "spaceAfter": true,
+              "texts": [
+                "Age group 1 (&lt;&lt;unit&gt;&gt;)",
+                "Age group 2 (&lt;&lt;unit&gt;&gt;)"
+              ],
+              "subLists": [
                 {
-                  "newText": "xxx (xx.x)"
+                  "oldText": "!!category!!",
+                  "newTexts": [
+                    {
+                      "spaceAfter": false,
+                      "texts": [
+                        "Category 1",
+                        "Category 2",
+                        "Category 3"
+                      ],
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
                 }
               ]
             }
-          ]
+          ],
+          "includeTrailing": true
+        },
+        {
+          "oldText": "!!stat!!",
+          "newTexts": [
+            {
+              "texts": [
+                "n (%)"
+              ],
+              "spaceAfter": false,
+              "subLists": [
+                {
+                  "oldText": "!!xval!!",
+                  "newTexts": [
+                    {
+                      "texts": [
+                        "xxx (xx.x)"
+                      ],
+                      "spaceAfter": false,
+                      "subLists": []
+                    }
+                  ],
+                  "includeTrailing": false
+                }
+              ]
+            }
+          ],
+          "includeTrailing": false
         }
       ]
     }
   ],
+  "comments": "",
   "rowHeaderColumns": 2,
   "noRepeatProcessing": false
 }

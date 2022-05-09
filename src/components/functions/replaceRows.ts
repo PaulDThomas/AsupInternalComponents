@@ -62,7 +62,7 @@ export const replaceRows = (
 
           // Perform replacements for each text entry
           for (let ti = 0; ti < rv.texts.length; ti++) {
-            let thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti], rv.spaceAfter);
+            let thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
 
             // Process remaining cells, including target after replacement
             let lowerQuad: AitRowData[] = (replacement.includeTrailing ?? false)
@@ -99,6 +99,13 @@ export const replaceRows = (
             let subLists = updateExternals(rv.subLists, externalLists)
             if ((subLists?.length ?? 0) > 0) for (let si = 0; si < subLists!.length; si++) {
               lowerQuad = replaceRows(lowerQuad, subLists![si]);
+            }
+
+            // Add spaceAfter to bottom left cell in the block
+            if (rv.spaceAfter) {
+              let lookup = 0;
+              while ((lowerQuad[lowerQuad.length-1-lookup].cells[0].rowSpan ?? 1) === 0) lookup++;
+              lowerQuad[lowerQuad.length-1-lookup].cells[0].spaceAfterRepeat = true;
             }
 
             // Expand to cover rest of the row
