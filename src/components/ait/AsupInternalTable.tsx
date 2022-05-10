@@ -285,7 +285,7 @@ export const AsupInternalTable = ({
               : <></>
             }
             <div className="aiw-body-row">
-              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={setNoRepeatProcessing} />
+              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({noRepeatProcessing: ret})}} />
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Row headers: </div>
