@@ -96,13 +96,14 @@ table.ait-table {
 }
 
 .ait-cell .aio-button-cell {
-  z-index:2;
+  z-index: 2;
 }
 
 /* Holders, positioning */
 .ait-holder {
   width: max-content;
   position: relative;
+  display: inline-flex;
 }
 
 .ait-aie-holder {

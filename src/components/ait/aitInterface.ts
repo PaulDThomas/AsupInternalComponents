@@ -33,7 +33,7 @@ export interface AitRowGroupData {
 };
 
 export interface AitTableData {
-  headerData?: AitRowGroupData,
+  headerData?: AitRowGroupData | false,
   bodyData?: AitRowGroupData[],
   comments?: string,
   rowHeaderColumns?: number, // Number of label type columns before data is presented

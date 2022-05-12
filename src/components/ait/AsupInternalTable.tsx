@@ -42,7 +42,7 @@ export const AsupInternalTable = ({
   // const [processedHeader, setProcessedHeader] = useState<AitRowGroupData | null>(null);
 
   // Explode tableData
-  const [headerData, setHeaderData] = useState<AitRowGroupData>();
+  const [headerData, setHeaderData] = useState<AitRowGroupData | false>();
   const [bodyData, setBodyData] = useState<AitRowGroupData[]>();
   const [comments, setComments] = useState<string>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
@@ -59,7 +59,7 @@ export const AsupInternalTable = ({
 
   // Return data
   const returnData = useCallback((tableUpdate: {
-    headerData?: AitRowGroupData,
+    headerData?: AitRowGroupData | false,
     bodyData?: AitRowGroupData[],
     comments?: string,
     rowHeaderColumns?: number,
@@ -147,32 +147,37 @@ export const AsupInternalTable = ({
       return rg;
     });
     // Update header group
-    let newHeader: AitRowGroupData = { ...headerData };
-    headerData.rows = newHeader.rows.map(r => {
-      // Check for colSpan
-      if ((r.cells[ci + 1]?.colSpan ?? 1) === 0) {
-        // Add in blank cell
-        let n = newCell();
-        n.colSpan = 0;
-        r.cells.splice(ci + 1, 0, n);
-        // Change colSpan on previous spanner
-        // Check that the target is showing
-        let lookback = 0;
-        let targetCellBefore = r.cells[ci];
-        if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
-        while ((targetCellBefore?.colSpan ?? 0) === 0) {
-          // Move to previous cell
-          lookback++;
-          targetCellBefore = r.cells[ci - lookback];
+    let newHeader: AitRowGroupData | false = headerData === false ? false : { ...headerData };
+    if (newHeader !== false && headerData !== false) {
+      headerData.rows = newHeader.rows.map(r => {
+        // Check for colSpan
+        if ((r.cells[ci + 1]?.colSpan ?? 1) === 0) {
+          // Add in blank cell
+          let n = newCell();
+          n.colSpan = 0;
+          r.cells.splice(ci + 1, 0, n);
+          // Change colSpan on previous spanner
+          // Check that the target is showing
+          let lookback = 0;
+          let targetCellBefore = r.cells[ci];
           if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
+          while ((targetCellBefore?.colSpan ?? 0) === 0) {
+            // Move to previous cell
+            lookback++;
+            targetCellBefore = r.cells[ci - lookback];
+            if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
+          }
+          targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
         }
-        targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
-      }
-      else {
-        r.cells.splice(ci + 1, 0, newCell());
-      }
-      return r;
-    });
+        else {
+          r.cells.splice(ci + 1, 0, newCell());
+        }
+        return r;
+      });
+    }
+    else {
+
+    }
     returnData({
       headerData: newHeader,
       bodyData: newBody,
@@ -194,34 +199,37 @@ export const AsupInternalTable = ({
       return rg;
     });
     // Update header group
-    let newHeader: AitRowGroupData = { ...headerData };
-    headerData.rows = newHeader.rows.map(r => {
-      // Check for colSpan 
-      let c = r.cells[ci];
-      if (c.colSpan === undefined) c.colSpan = 1;
-      // Reduce where a hidden cell has been removed
-      if (c.colSpan === 0) {
-        let lookBack = 1;
-        while (r.cells[ci - lookBack].colSpan === 0) {
-          lookBack++;
+    let newHeader: AitRowGroupData | false = headerData === false ? false : { ...headerData };
+    if (newHeader !== false && headerData !== false) {
+      headerData.rows = newHeader.rows.map(r => {
+        // Check for colSpan 
+        let c = r.cells[ci];
+        if (c.colSpan === undefined) c.colSpan = 1;
+        // Reduce where a hidden cell has been removed
+        if (c.colSpan === 0) {
+          let lookBack = 1;
+          while (r.cells[ci - lookBack].colSpan === 0) {
+            lookBack++;
+          }
+          r.cells[ci - lookBack].colSpan!--;
         }
-        r.cells[ci - lookBack].colSpan!--;
-      }
-      // Reveal where an expanded cell has been removed
-      else if (c.colSpan > 1) {
-        for (let cj = 1; cj < c.colSpan; cj++) {
-          r.cells[ci + cj].colSpan = 1;
+        // Reveal where an expanded cell has been removed
+        else if (c.colSpan > 1) {
+          for (let cj = 1; cj < c.colSpan; cj++) {
+            r.cells[ci + cj].colSpan = 1;
+          }
         }
-      }
-      r.cells.splice(ci, 1);
-      return r;
-    });
+        r.cells.splice(ci, 1);
+        return r;
+      });
+    }
     returnData({ headerData: newHeader, bodyData: newBody, rowHeaderColumns: ci < rowHeaderColumns ? rowHeaderColumns - 1 : rowHeaderColumns });
   }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Add rowHeader columns
   const addRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
+    if (headerData === false) return;
     if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     // Check new column has not colspan
     if (rowHeaderColumns === bodyData[0].rows[0].cells.length - 1) return;
@@ -232,6 +240,7 @@ export const AsupInternalTable = ({
   // Remove rowHeader columns
   const removeRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
+    if (headerData === false) return;
     if (rowHeaderColumns === 0 || rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     if (headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     // Check bodyData for cells with rowSpan
@@ -242,6 +251,7 @@ export const AsupInternalTable = ({
   // Add header if is is not there
   const addNewHeader = useCallback(() => {
     // Check ok to proceed
+    if (headerData === false) return;
     if ((headerData?.rows.length ?? 0) > 0 || bodyData === undefined) return;
     // Create new row 
     let newHeader: AitRowGroupData = { ...headerData, rows: [newRow(bodyData[0].rows[0].cells.length, AitRowType.header)] };
@@ -263,10 +273,13 @@ export const AsupInternalTable = ({
   // Print the table
   return (
     <div className="ait-holder" style={style}>
-      <div style={{ position: "absolute", top: 0 }}>
+      <div>
         <AioIconButton
           tipText="Table settings"
-          onClick={() => { setShowOptions(!showOptions) }}
+          onClick={() => {
+            console.log("Show options");
+            setShowOptions(!showOptions)
+          }}
           iconName={"aio-button-settings"}
         />
         {showOptions &&
@@ -274,7 +287,7 @@ export const AsupInternalTable = ({
             <div className="aiw-body-row">
               <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={higherOptions.commentStyles} />
             </div>
-            {headerData.rows.length === 0 ?
+            {headerData !== false && headerData.rows.length === 0 ?
               <div className="aiw-body-row">
                 <div className={"aio-label"}>Add header section: </div>
                 <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
@@ -284,7 +297,7 @@ export const AsupInternalTable = ({
               : <></>
             }
             <div className="aiw-body-row">
-              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({noRepeatProcessing: ret})}} />
+              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Row headers: </div>
@@ -319,20 +332,22 @@ export const AsupInternalTable = ({
               : columnRepeats
             }
           />
-          <AitHeader
-            aitid={headerData.aitid!}
-            rows={headerData.rows}
-            comments={headerData.comments}
-            replacements={headerData.replacements}
-            setHeaderData={(ret) => { setHeaderData(ret); }}
-            higherOptions={{
-              ...higherOptions,
-              tableSection: AitRowType.header,
-              rowGroup: 0,
-            }}
-            columnRepeats={columnRepeats}
-            setColumnRepeats={setColumnRepeats}
-          />
+          {headerData !== false &&
+            <AitHeader
+              aitid={headerData.aitid!}
+              rows={headerData.rows}
+              comments={headerData.comments}
+              replacements={headerData.replacements}
+              setHeaderData={(ret) => { setHeaderData(ret); }}
+              higherOptions={{
+                ...higherOptions,
+                tableSection: AitRowType.header,
+                rowGroup: 0,
+              }}
+              columnRepeats={columnRepeats}
+              setColumnRepeats={setColumnRepeats}
+            />
+          }
         </thead>
 
         <tbody>

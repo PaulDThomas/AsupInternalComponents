@@ -20,14 +20,16 @@ interface OldRowGroupData {
 };
 
 export const updateTableDataVersion = (inData: OldTableData | AitTableData): AitTableData => {
-  let headerData = inData.headerData !== undefined
-    ? {
-      ...inData.headerData,
-      replacements: inData.headerData?.replacements !== undefined
-        ? updateReplacementVersion(inData.headerData?.replacements)
-        : undefined
-    } as AitRowGroupData
-    : undefined
+  let headerData = inData.headerData === false
+    ? false
+    : inData.headerData !== undefined
+      ? {
+        ...inData.headerData,
+        replacements: inData.headerData?.replacements !== undefined
+          ? updateReplacementVersion(inData.headerData?.replacements)
+          : undefined
+      } as AitRowGroupData
+      : undefined
     ;
   let outData: AitTableData = {
     ...inData,

@@ -28,7 +28,7 @@ export const RowGroupPage = (): JSX.Element => {
   const rg2Table = useCallback((rg?: AitRowGroupData) => {
     if (rg === undefined) setTableData(null);
     else if (tableData === null) {
-      setTableData({ bodyData: [rg] });
+      setTableData({ headerData: false, bodyData: [rg] });
     }
     else {
       setTableData({ ...tableData, bodyData: [rg] });
@@ -96,9 +96,10 @@ export const RowGroupPage = (): JSX.Element => {
           className='aiox-button aiox-plus'
           onClick={e => {
             let newRgs = [...rowGroups];
-            let newRg = newRowGroup()
+            let newRg = { ...newRowGroup(), name: `Group ${newRgs.length}` };
             newRgs.push(newRg);
             setRowGroups(newRgs);
+            setCurrentName(newRg.name);
           }}
         />
       </div>

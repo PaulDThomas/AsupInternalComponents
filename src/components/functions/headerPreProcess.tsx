@@ -7,8 +7,9 @@ import { rowPreProcess } from "./rowPreProcess";
  * @param rg 
  * @returns compliant row group
  */
-export const headerPreProcess = (rg?: AitRowGroupData): AitRowGroupData => {
+export const headerPreProcess = (rg?: AitRowGroupData | false): AitRowGroupData | false => {
   if (rg === undefined) return { aitid: uuidv4(), rows: [] };
+  if (rg === false) return false;
   return {
     ...rg,
     rows: rowPreProcess(rg.rows),
