@@ -188,7 +188,7 @@ export const AitRowGroup = ({
             key={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? row.aitid : (row.aitid + row.rowRepeat)}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
-            setRowData={(ret) => updateRow(ret, ri)}
+            setRowData={(ret) => updateRow(ret, rows.findIndex(r => r.aitid === row.aitid))}
             higherOptions={rowHigherOptions}
             replacements={replacements}
             setReplacements={(ret) => returnData({ replacements: ret })}

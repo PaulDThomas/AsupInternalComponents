@@ -36,7 +36,7 @@ export const replaceRows = (
   let processedRows = 0;
   let emergencyExit = 0;
   while (ri < rows.length && emergencyExit < 100) {
-    if (ri >= rows.length || rows[ri].cells.length === undefined) {
+    if (ri >= rows.length || rows[ri] === undefined || rows[ri].cells.length === undefined) {
       console.warn("High ri value somehow");
       console.log(`ri: ${ri}`);
       console.log(`${JSON.stringify(rows)}`);
