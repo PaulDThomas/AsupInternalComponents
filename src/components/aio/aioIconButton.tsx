@@ -4,7 +4,7 @@ import './aio.css';
 import './aioTip.css';
 
 interface AioIconButtonProps {
-  onClick: (ret: string) => void
+  onClick?: (ret: string) => void
   iconName?: string,
   tipText?: string,
   menuItems?: string[],
@@ -50,6 +50,7 @@ export const AioIconButton = ({
           aria-label={tipText}
           title={tipText}
           onClick={() => {
+            if (typeof onClick !== "function") return;
             // Just click if there is no drop down
             if (!menuItems || menuItems.length <= 1) {
               onClick(menuItems?.length === 1 ? menuItems[0] : "");
@@ -68,7 +69,11 @@ export const AioIconButton = ({
         <div ref={menuRef} className="aio-drop-items-holder" style={{ left: leftMenuOffset ?? "1.25rem", }}>
           <div className="aio-drop-items-inner-holder">
             {menuItems?.map((a, i) =>
-              <div key={i} className={`aio-drop-item`} onClick={e => { onClick(a); setShowDrop(false); }}>
+              <div key={i} className={`aio-drop-item`} onClick={e => { 
+                if (typeof onClick !== "function") return;
+                onClick(a); 
+                setShowDrop(false); 
+                }}>
                 {a.replace(/ /g, "\u00A0")}
               </div>
             )}
