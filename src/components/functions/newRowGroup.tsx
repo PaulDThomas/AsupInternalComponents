@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { newCell } from ".";
 import { AitCellData, AitRowGroupData } from "../ait/aitInterface";
+import { newRow } from './newRow';
 
 /**
  * Add newRowGroupTemplate to existing body
@@ -8,13 +9,13 @@ import { AitCellData, AitRowGroupData } from "../ait/aitInterface";
  * @param newRowGroupTemplate 
  * @returns New row group
  */
-export const newRowGroup = (l: number, newRowGroupTemplate: AitRowGroupData): AitRowGroupData => {
+export const newRowGroup = (l?: number, newRowGroupTemplate?: AitRowGroupData): AitRowGroupData => {
   return {
     aitid: uuidv4(),
-    replacements: newRowGroupTemplate.replacements,
-    rows: newRowGroupTemplate.rows.map(row => {
+    replacements: newRowGroupTemplate?.replacements ?? [],
+    rows: newRowGroupTemplate?.rows.map(row => {
       let newCells: AitCellData[] = [];
-      for (let ci = 0; ci < l; ci++) {
+      for (let ci = 0; ci < (l ?? 1); ci++) {
         newCells.push(
           row.cells[ci] !== undefined
             ? { ...row.cells[ci], aitid: uuidv4() }
@@ -25,7 +26,7 @@ export const newRowGroup = (l: number, newRowGroupTemplate: AitRowGroupData): Ai
         aitid: uuidv4(),
         cells: newCells,
       };
-    }),
+    }) ?? [newRow()],
     spaceAfter: true,
   };
 };
