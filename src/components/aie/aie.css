@@ -57,7 +57,6 @@
 }
 
 .aie-button-holder {
-  z-index: 2;
   position: absolute;
   bottom: -28px;
   height: 29px;

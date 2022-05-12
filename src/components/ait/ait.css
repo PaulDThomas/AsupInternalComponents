@@ -81,7 +81,6 @@ table.ait-table {
   background-position: center center;
   background-size: cover;
   top: 0;
-  z-index: 2;
 }
 
 .ait-options-button.hidden {
