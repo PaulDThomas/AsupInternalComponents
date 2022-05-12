@@ -1,3 +1,4 @@
+import { RowGroupPage } from 'pages/RowGroupPage';
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
 import { BlockPage } from './pages/BlockPage';
 import { EditorPage } from './pages/EditorPage';
@@ -20,6 +21,7 @@ function App() {
             <li><NavLink to="/internalcomponents/" className={activeClass}>Current</NavLink></li>
             <li><NavLink to="/internalcomponents/block" className={activeClass}>TiFo block</NavLink></li>
             <li><NavLink to="/internalcomponents/list" className={activeClass}>Lists</NavLink></li>
+            <li><NavLink to="/internalcomponents/rowgroup" className={activeClass}>RowGroups</NavLink></li>
             <li><NavLink to="/internalcomponents/table" className={activeClass}>Table</NavLink></li>
             <li><NavLink to="/internalcomponents/editor" className={activeClass}>Editor</NavLink></li>
             <li><NavLink to="/internalcomponents/expander" className={activeClass}>Expander</NavLink></li>
@@ -34,6 +36,7 @@ function App() {
           <Route path="/internalcomponents/editor" element={<EditorPage />} />
           <Route path="/internalcomponents/expander" element={<ExpanderPage />} />
           <Route path="/internalcomponents/list" element={<ListPage />} />
+          <Route path="/internalcomponents/rowgroup" element={<RowGroupPage />} />
           <Route path="/internalcomponents/table" element={<TablePage />} />
           <Route path="/internalcomponents/window" element={<WindowPage />} />
           <Route

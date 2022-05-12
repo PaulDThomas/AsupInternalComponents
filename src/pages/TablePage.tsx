@@ -51,7 +51,9 @@ export const TablePage = () => {
     try {
       const j: AioExternalReplacements[] = JSON.parse(window.localStorage.getItem('listContent') ?? "[]");
       setExternalReplacements(j);
-      setListStatus(`Loaded ${j.length} lists: ${j.map(rv => rv.givenName).join(', ')}`);
+      const g: AitRowGroupData[] = JSON.parse(window.localStorage.getItem('rowGroupContent') ?? "[]");
+      setSampleGroupTempaltes(g);
+      setListStatus(`Loaded ${j.length} lists: ${j.map(rv => rv.givenName).join(', ')}, RG templates: ${g.map(rg => rg.name).join(', ')}`);
     }
     catch (e) {
       console.log("JSON parse from listContent failed");

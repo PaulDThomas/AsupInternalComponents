@@ -1,8 +1,5 @@
-import { AioExternalReplacements } from '../components/aio/aioInterface';
-import { newExternalReplacements } from '../components/functions/newExternalReplacements';
 import React, { useCallback, useRef, useState } from 'react';
-import { AioReplacementDisplay, AioString } from '../components';
-import { updateReplToExtl } from '../components/functions/updateReplacementVersion';
+import { AioExternalReplacements, AioReplacementDisplay, AioString, newExternalReplacements, updateReplToExtl } from '../components';
 
 export const ListPage = (): JSX.Element => {
 
