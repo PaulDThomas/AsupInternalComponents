@@ -10,7 +10,7 @@ interface AioStringProps {
 export const AioString = (props: AioStringProps): JSX.Element => {
 
   const [value, setValue] = useState<string>(props.value ?? "");
-  useEffect(() => { setValue(props.value ?? "") }, [props.value]);
+  useEffect(() => { setValue(props.value ?? ""); }, [props.value]);
 
   return (
     <>
@@ -22,10 +22,10 @@ export const AioString = (props: AioStringProps): JSX.Element => {
           :
           <input
             className={"aio-input"}
-            value={props.value ?? ""}
+            value={value ?? ""}
             type="text"
-            onChange={e => { if (props.setValue) props.setValue(e.currentTarget.value); }}
-            onBlur={_ => props.setValue!(value)}
+            onChange={e => { setValue(e.currentTarget.value); }}
+            onBlur={_ => { props.setValue!(value) }}
           />
         }
       </div>
