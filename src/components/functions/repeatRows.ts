@@ -78,7 +78,7 @@ export const repeatRows = (
                 let found = false;
                 while (lookup <= ri && !found) {
                   checkCell = newRows[ri - lookup].cells[ci - lookback];
-                  if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1) {
+                  if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
                     found = true;
                     checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
                   }
