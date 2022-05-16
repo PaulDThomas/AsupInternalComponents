@@ -142,8 +142,15 @@ const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
           }
         />
       );
+
+    // Undefined
+    case ('undefined'):
+      return (
+        <AioString label={props.label} value={"Undefined"} />
+      );
+
     default:
-      return (<AioLabel label={"Missing type"} noColon={true} />);
+      return (<AioLabel label={`Missing type for ${props.type ?? (props.value === null ? "string" : typeof (props.value))}`} noColon={true} />);
   }
 }
 
