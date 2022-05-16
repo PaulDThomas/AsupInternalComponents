@@ -1,15 +1,16 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
-import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowType } from "./aitInterface";
+import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
+import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitRowProps {
   aitid: string,
   cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
-  higherOptions: AitOptionList,
+  location: AitLocation,
   replacements?: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
   rowGroupWindowTitle?: string
@@ -33,7 +34,7 @@ export const AitRow = ({
   aitid,
   cells,
   setRowData,
-  higherOptions,
+  location,
   replacements,
   setReplacements,
   rowGroupWindowTitle,
@@ -52,17 +53,9 @@ export const AitRow = ({
   rowGroupSpace,
   setRowGroupSpace,
 }: AitRowProps): JSX.Element => {
-  const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
 
-  const location: AitLocation = useMemo(() => {
-    return {
-      tableSection: higherOptions.tableSection ?? AitRowType.body,
-      rowGroup: higherOptions.rowGroup ?? 0,
-      row: higherOptions.row ?? 0,
-      column: -1,
-      repeat: higherOptions.repeatNumber
-    }
-  }, [higherOptions]);
+  const tableSettings = useContext(TableSettingsContext);
+  const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
 
   // General function to return complied object
   const returnData = useCallback((rowUpdate: { cells?: AitCellData[] }) => {
@@ -88,7 +81,7 @@ export const AitRow = ({
         {/* Row group options */}
         <td className="ait-cell" width="50px">
           <div className="ait-aie-holder" style={{ display: 'flex', justifyContent: "flex-end", flexDirection: "row" }}>
-            {higherOptions.row === 0 && !higherOptions.repeatNumber
+            {location.row === 0 && !location.rowRepeat
               ?
               (<>
                 {typeof (removeRowGroup) === "function" &&
@@ -103,7 +96,7 @@ export const AitRow = ({
                     tipText={"Add row group"}
                     iconName={"aiox-plus"}
                     onClick={(ret) => { addRowGroup(location.rowGroup, ret) }}
-                    menuItems={higherOptions.groupTemplateNames}
+                    menuItems={tableSettings.groupTemplateNames}
                   />
                 }
                 {replacements !== undefined &&
@@ -127,7 +120,7 @@ export const AitRow = ({
                         label={"Notes"}
                         value={rowGroupComments}
                         setValue={updateRowGroupComments}
-                        commentStyles={higherOptions.commentStyles}
+                        commentStyles={tableSettings.commentStyles}
                       />
                     </div>
                     <>
@@ -142,7 +135,7 @@ export const AitRow = ({
                         label={"Replacements"}
                         replacements={replacements!}
                         setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
-                        externalLists={higherOptions.externalLists}
+                        externalLists={tableSettings.externalLists}
                         dontAskSpace={location.tableSection === AitRowType.header}
                         dontAskTrail={location.tableSection === AitRowType.header}
                       />
@@ -175,11 +168,6 @@ export const AitRow = ({
             <td key={`${ci}-h`}>Header cell {ci} not defined</td>
           );
 
-          // Sort out static options
-          let cellHigherOptions: AitOptionList = {
-            ...higherOptions,
-          } as AitOptionList;
-
           // Render object
           return (
             <AitCell
@@ -195,15 +183,14 @@ export const AitRow = ({
               repeatColSpan={cell.repeatColSpan}
               repeatRowSpan={cell.repeatRowSpan}
               spaceAfterSpan={cell.spaceAfterSpan}
-              higherOptions={cellHigherOptions}
-              columnIndex={(location.tableSection === AitRowType.body ? cr.columnIndex : ci)}
+              location={{...location, column: (location.tableSection === AitRowType.body ? cr.columnIndex : ci)}}
               setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
-              readOnly={(cellHigherOptions.repeatNumber !== undefined || isColumnRepeat) ?? false}
+              readOnly={(location.colRepeat !== undefined || isColumnRepeat) ?? false}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
-                (cellHigherOptions.row! + (cell.rowSpan ?? 1) < (cellHigherOptions.headerRows ?? 0))
-                  || (ci < (higherOptions.rowHeaderColumns ?? 0))
+                (location.row! + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0))
+                  || (ci < (tableSettings.rowHeaderColumns ?? 0))
                   ? addRowSpan
                   :
                   undefined}

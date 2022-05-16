@@ -1,17 +1,18 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { AioReplacement } from "../aio";
 import { newCell, newRow, repeatRows } from "../functions";
-import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
+import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
+import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitRowGroupProps {
   aitid: string,
   name?: string,
+  location: AitLocation,
   rows: AitRowData[],
   comments?: string,
   replacements: AioReplacement[],
   setRowGroupData: (ret: AitRowGroupData) => void,
-  higherOptions: AitOptionList,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   columnRepeats: AitColumnRepeat[] | null,
@@ -21,16 +22,19 @@ interface AitRowGroupProps {
 export const AitRowGroup = ({
   aitid,
   name,
+  location,
   rows,
   comments,
   replacements,
   spaceAfter,
   setRowGroupData,
-  higherOptions,
   addRowGroup,
   removeRowGroup,
   columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
+
+  // Context
+  const tableSettings = useContext(TableSettingsContext);
 
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
@@ -168,20 +172,15 @@ export const AitRowGroup = ({
       rows,
       replacements,
       spaceAfter,
-      higherOptions.noRepeatProcessing,
-      higherOptions.externalLists,
+      tableSettings.noRepeatProcessing,
+      tableSettings.externalLists,
     );
-  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, replacements, rows, spaceAfter]);
+  }, [replacements, rows, spaceAfter, tableSettings.externalLists, tableSettings.noRepeatProcessing]);
 
   // Output the rows
   return (
     <>
       {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
-        let rowHigherOptions = {
-          ...higherOptions,
-          row: rows.findIndex(r => r.aitid === row.aitid),
-          repeatNumber: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
-        } as AitOptionList;
 
         return (
           <AitRow
@@ -189,7 +188,10 @@ export const AitRowGroup = ({
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, rows.findIndex(r => r.aitid === row.aitid))}
-            higherOptions={rowHigherOptions}
+            location={{...location,
+              row: rows.findIndex(r => r.aitid === row.aitid),
+              rowRepeat: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
+            }}
             replacements={replacements}
             setReplacements={(ret) => returnData({ replacements: ret })}
             addRowGroup={addRowGroup}

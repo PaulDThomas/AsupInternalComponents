@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AioBoolean, AioComment, AioExternalReplacements, AioIconButton } from "../aio";
 import { AsupInternalWindow } from "../aiw";
-import { bodyPreProcess, headerPreProcess, newCell, newRow } from "../functions";
-import { newRowGroup } from "../functions/newRowGroup";
+import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
@@ -20,6 +19,13 @@ interface AsupInternalTableProps {
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
 }
+
+let defaultSettings: AitOptionList = {
+  noRepeatProcessing: false,
+  showCellBorders: true,
+};
+
+export const TableSettingsContext = React.createContext(defaultSettings);
 
 /**
  * Table view for clinical table data
@@ -112,26 +118,6 @@ export const AsupInternalTable = ({
     newRowGroups.splice(rgi, 1);
     returnData({ bodyData: newRowGroups });
   }, [bodyData, returnData]);
-
-  // Set up higher options, defaults need to be set
-  let higherOptions = useMemo<AitOptionList>(() => {
-    let groupTemplateNames =
-      groupTemplates === false
-        ? ["None"]
-        : groupTemplates !== undefined
-          ? groupTemplates.filter(g => g.name !== undefined).map(g => g.name).sort((a, b) => a!.localeCompare(b!)) as string[]
-          : undefined
-      ;
-    return {
-      showCellBorders: showCellBorders,
-      noRepeatProcessing: noRepeatProcessing ?? false,
-      rowHeaderColumns: rowHeaderColumns ?? 1,
-      externalLists: externalLists ?? [],
-      groupTemplateNames: groupTemplateNames,
-      commentStyles: commentStyles,
-      cellStyles: cellStyles,
-    };
-  }, [cellStyles, commentStyles, externalLists, groupTemplates, noRepeatProcessing, rowHeaderColumns, showCellBorders]) as AitOptionList;
 
   // Add column 
   const addCol = useCallback((ci: number) => {
@@ -272,114 +258,125 @@ export const AsupInternalTable = ({
 
   // Print the table
   return (
-    <div className="ait-holder" style={style}>
-      <div>
-        <AioIconButton
-          tipText="Table settings"
-          onClick={() => {
-            console.log("Show options");
-            setShowOptions(!showOptions)
-          }}
-          iconName={"aio-button-settings"}
-        />
-        {showOptions &&
-          <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-            <div className="aiw-body-row">
-              <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={higherOptions.commentStyles} />
-            </div>
-            {headerData !== false && headerData.rows.length === 0 ?
+    <TableSettingsContext.Provider value={{
+      showCellBorders: showCellBorders,
+      noRepeatProcessing: noRepeatProcessing ?? false,
+      rowHeaderColumns: rowHeaderColumns ?? 1,
+      externalLists: externalLists ?? [],
+      groupTemplateNames: groupTemplates === false
+        ? ["None"]
+        : groupTemplates !== undefined
+          ? groupTemplates.filter(g => g.name !== undefined).map(g => g.name).sort((a, b) => a!.localeCompare(b!)) as string[]
+          : undefined,
+      commentStyles: commentStyles,
+      cellStyles: cellStyles,
+    }}>
+      <div className="ait-holder" style={style}>
+        <div>
+          <AioIconButton
+            tipText="Table settings"
+            onClick={() => {
+              console.log("Show options");
+              setShowOptions(!showOptions)
+            }}
+            iconName={"aio-button-settings"}
+          />
+          {showOptions &&
+            <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
               <div className="aiw-body-row">
-                <div className={"aio-label"}>Add header section: </div>
+                <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={commentStyles} />
+              </div>
+              {headerData !== false && headerData.rows.length === 0 ?
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Add header section: </div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
+                  </div>
+                </div>
+                : <></>
+              }
+              <div className="aiw-body-row">
+                <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
+              </div>
+              <div className="aiw-body-row">
+                <div className={"aio-label"}>Row headers: </div>
+                <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
                 <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                  <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
+                  {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
+                    ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
+                  {(rowHeaderColumns ?? 1) > 0
+                    ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
                 </div>
               </div>
-              : <></>
-            }
-            <div className="aiw-body-row">
-              <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Row headers: </div>
-              <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
-              <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
-                  ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
-                  : <div className="aiox-button" />
-                }
-                {(rowHeaderColumns ?? 1) > 0
-                  ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
-                  : <div className="aiox-button" />
-                }
-              </div>
-            </div>
-          </AsupInternalWindow>
-        }
-      </div>
-      <table className="ait-table">
-        <thead>
-          <AitBorderRow
-            rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length}
-            spaceAfter={true}
-            changeColumns={{
-              addColumn: addCol,
-              removeColumn: remCol,
-              showButtons: true,
-            }}
-            rowHeaderColumns={rowHeaderColumns}
-            columnRepeats={!columnRepeats
-              ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
-              : columnRepeats
-            }
-          />
-          {headerData !== false &&
-            <AitHeader
-              aitid={headerData.aitid!}
-              rows={headerData.rows}
-              comments={headerData.comments}
-              replacements={headerData.replacements}
-              setHeaderData={(ret) => { setHeaderData(ret); }}
-              higherOptions={{
-                ...higherOptions,
-                tableSection: AitRowType.header,
-                rowGroup: 0,
+            </AsupInternalWindow>
+          }
+        </div>
+        <table className="ait-table">
+          <thead>
+            <AitBorderRow
+              rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length}
+              spaceAfter={true}
+              changeColumns={{
+                addColumn: addCol,
+                removeColumn: remCol,
+                showButtons: true,
               }}
-              columnRepeats={columnRepeats}
-              setColumnRepeats={setColumnRepeats}
+              rowHeaderColumns={rowHeaderColumns}
+              columnRepeats={!columnRepeats
+                ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
+                : columnRepeats
+              }
             />
-          }
-        </thead>
+            {headerData !== false &&
+              <AitHeader
+                aitid={headerData.aitid!}
+                rows={headerData.rows}
+                comments={headerData.comments}
+                replacements={headerData.replacements}
+                setHeaderData={(ret) => { setHeaderData(ret); }}
+                location={{tableSection: AitRowType.header, rowGroup: 0, row: -1, column: -1}}
+                columnRepeats={columnRepeats}
+                setColumnRepeats={setColumnRepeats}
+              />
+            }
+          </thead>
 
-        <tbody>
-          {
-            bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
-              return (
-                <AitRowGroup
-                  key={rowGroup.aitid}
-                  aitid={rowGroup.aitid!}
-                  rows={rowGroup.rows}
-                  comments={rowGroup.comments}
-                  replacements={rowGroup.replacements ?? []}
-                  spaceAfter={rowGroup.spaceAfter}
-                  setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
-                  higherOptions={{
-                    ...higherOptions,
-                    tableSection: AitRowType.body,
-                    rowGroup: rgi,
-                  }}
-                  addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
-                  removeRowGroup={(groupTemplates !== false && bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
-                  columnRepeats={!columnRepeats
-                    ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
-                    : columnRepeats
-                  }
-                />
-              );
-            })
-          }
-          <AitBorderRow rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length} />
-        </tbody>
-      </table>
-    </div>
+          <tbody>
+            {
+              bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
+                return (
+                  <AitRowGroup
+                    key={rowGroup.aitid}
+                    aitid={rowGroup.aitid!}
+                    rows={rowGroup.rows}
+                    comments={rowGroup.comments}
+                    replacements={rowGroup.replacements ?? []}
+                    spaceAfter={rowGroup.spaceAfter}
+                    setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
+                    location={{
+                      tableSection: AitRowType.body,
+                      rowGroup: rgi,
+                      row: -1,
+                      column: -1,
+                    }}
+                    addRowGroup={groupTemplates !== false ? (rgi, templateName) => { addRowGroup(rgi, templateName) } : undefined}
+                    removeRowGroup={(groupTemplates !== false && bodyData.length > 1) ? (rgi) => { removeRowGroup(rgi) } : undefined}
+                    columnRepeats={!columnRepeats
+                      ? Array.from(bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
+                      : columnRepeats
+                    }
+                  />
+                );
+              })
+            }
+            <AitBorderRow rowLength={columnRepeats?.length ?? bodyData[0].rows[0].cells.length} />
+          </tbody>
+        </table>
+      </div>
+    </TableSettingsContext.Provider >
   );
 };

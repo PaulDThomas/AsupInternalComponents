@@ -48,7 +48,8 @@ export interface AitCoord {
 export interface AitLocation extends AitCoord {
   tableSection: AitRowType,
   rowGroup: number,
-  repeat?: string
+  rowRepeat?: string
+  colRepeat?: number[][],
 }
 
 export interface AitColumnRepeat {
@@ -68,17 +69,17 @@ export enum AitRowType {
 }
 
 export interface AitOptionList {
+  /* Table options and setters */
   noRepeatProcessing?: boolean,
-  headerRows?: number,
-  rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
-  tableSection?: AitRowType,
-  rowGroup?: number,
-  row?: number,
-  column?: number,
   showCellBorders?: boolean,
   groupTemplateNames?: string[],
-  repeatNumber?: string,
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
+  
+  /* Table options with setters */
+  headerRows?: number,
+  setHeaderRows?: (ret: number) => void,
+  rowHeaderColumns?: number,
+  setRowHeaderColumns?: (ret: number) => void,
 }
