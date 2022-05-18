@@ -1,3 +1,4 @@
+import { printRows } from 'components/functions/printRows';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable, updateTableDataVersion } from '../components';
 
@@ -5,6 +6,7 @@ export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [tableData, setTableData] = useState<AitTableData | undefined>();
+  const processedTableData = useRef<AitTableData | null>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
   const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
@@ -75,6 +77,7 @@ export const TablePage = () => {
         <AsupInternalTable
           tableData={tableData}
           setTableData={(ret) => { setTableData(ret) }}
+          processedData={(ret) => {processedTableData.current = ret; }}
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}

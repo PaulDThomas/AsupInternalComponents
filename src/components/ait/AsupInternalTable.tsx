@@ -12,6 +12,7 @@ import { AitRowGroup } from "./aitRowGroup";
 interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
+  processedData?: (ret: AitTableData) => void,
   externalLists?: AioExternalReplacements[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
@@ -35,6 +36,7 @@ export const TableSettingsContext = React.createContext(defaultSettings);
 export const AsupInternalTable = ({
   tableData,
   setTableData,
+  processedData,
   externalLists,
   style,
   showCellBorders,
@@ -55,7 +57,6 @@ export const AsupInternalTable = ({
 
   // Pushdown data when it it updated externally
   useEffect(() => {
-    console.log("Receive data in AsupInternalTable");
     // Set defaults for no processing
     let headerData = headerPreProcess(tableData.headerData);
     let columnRepeats = tableData.bodyData === undefined
@@ -164,9 +165,11 @@ export const AsupInternalTable = ({
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
     } as AitTableData;
-    console.log("Send from AsupInternalTable");
     setTableData(r);
   }, [setTableData, headerData, unProcessRowGroup, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
+
+  // Send back processed data
+  useEffect(() => { if (typeof processedData === "function") processedData({ headerData, bodyData }) }, [headerData, bodyData, processedData]);
 
   // Add column 
   const addCol = useCallback((ci: number) => {
