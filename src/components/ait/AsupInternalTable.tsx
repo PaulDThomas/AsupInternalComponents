@@ -12,7 +12,7 @@ import { AitRowGroup } from "./aitRowGroup";
 interface AsupInternalTableProps {
   tableData: AitTableData,
   setTableData: (ret: AitTableData) => void,
-  processedData?: (ret: AitTableData) => void,
+  processedDataRef?: React.MutableRefObject<AitTableData | undefined>,
   externalLists?: AioExternalReplacements[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
@@ -36,7 +36,7 @@ export const TableSettingsContext = React.createContext(defaultSettings);
 export const AsupInternalTable = ({
   tableData,
   setTableData,
-  processedData,
+  processedDataRef,
   externalLists,
   style,
   showCellBorders,
@@ -107,12 +107,14 @@ export const AsupInternalTable = ({
       }
     });
     setBodyData(processedBodyData);
+    // Set ref for processed data
+    if (processedDataRef !== undefined) processedDataRef.current = {bodyData: processedBodyData, headerData: processedHeaderData};
 
     // Info that is not processed
     setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
-  }, [externalLists, noRepeatProcessing, setTableData, tableData]);
+  }, [externalLists, noRepeatProcessing, processedDataRef, setTableData, tableData]);
 
   const unProcessRowGroup = useCallback((processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
     let ret = processedGroup === false
@@ -167,9 +169,6 @@ export const AsupInternalTable = ({
     } as AitTableData;
     setTableData(r);
   }, [setTableData, headerData, unProcessRowGroup, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
-
-  // Send back processed data
-  useEffect(() => { if (typeof processedData === "function") processedData({ headerData, bodyData }) }, [headerData, bodyData, processedData]);
 
   // Add column 
   const addCol = useCallback((ci: number) => {

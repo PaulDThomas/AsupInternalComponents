@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { newCell } from ".";
-import { AitCellData, AitRowGroupData } from "../ait/aitInterface";
+import { newCell } from "./newCell";
+import { AitCellData, AitRowGroupData } from "../ait";
 import { newRow } from './newRow';
 
 /**
