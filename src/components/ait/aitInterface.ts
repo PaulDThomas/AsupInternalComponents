@@ -49,12 +49,12 @@ export interface AitLocation extends AitCoord {
   tableSection: AitRowType,
   rowGroup: number,
   rowRepeat?: string
-  colRepeat?: number[][],
+  colRepeat?: number[],
 }
 
 export interface AitColumnRepeat {
   columnIndex: number,
-  repeatNumbers?: number[],
+  colRepeat?: number[],
 }
 
 export enum AitCellType {
@@ -76,6 +76,7 @@ export interface AitOptionList {
   groupTemplateNames?: string[],
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
+  columnRepeats?: AitColumnRepeat[] | null,
   
   /* Table options with setters */
   headerRows?: number,

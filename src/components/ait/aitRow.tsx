@@ -25,7 +25,6 @@ interface AitRowProps {
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
   removeRowSpan?: (loc: AitLocation) => void,
-  columnRepeats?: AitColumnRepeat[] | null,
   rowGroupSpace?: boolean,
   setRowGroupSpace?: (ret: boolean) => void,
 }
@@ -49,7 +48,6 @@ export const AitRow = ({
   removeColSpan,
   addRowSpan,
   removeRowSpan,
-  columnRepeats,
   rowGroupSpace,
   setRowGroupSpace,
 }: AitRowProps): JSX.Element => {
@@ -150,10 +148,10 @@ export const AitRow = ({
         </td>
 
         {/* All cells from row */}
-        {columnRepeats?.map((cr: AitColumnRepeat, ci: number): JSX.Element => {
+        {tableSettings.columnRepeats?.map((cr: AitColumnRepeat, ci: number): JSX.Element => {
 
           // Get cell from column repeat
-          let isColumnRepeat = cr.repeatNumbers && cr.repeatNumbers.reduce((r, a) => r + a, 0) > 0;
+          let isColumnRepeat = (cr.colRepeat && cr.colRepeat.reduce((r, a) => r + a, 0) > 0) ?? false;
           // Get cell depending on column repeats;
           let cell: AitCellData = location.tableSection === AitRowType.header
             ? cells[ci]
@@ -171,7 +169,7 @@ export const AitRow = ({
           // Render object
           return (
             <AitCell
-              key={isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr.repeatNumbers)}` : cell.aitid!}
+              key={isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr.colRepeat)}` : cell.aitid!}
               aitid={cell.aitid!}
               text={cell.text ?? ""}
               comments={cell.comments ?? ""}
@@ -183,9 +181,9 @@ export const AitRow = ({
               repeatColSpan={cell.repeatColSpan}
               repeatRowSpan={cell.repeatRowSpan}
               spaceAfterSpan={cell.spaceAfterSpan}
-              location={{...location, column: (location.tableSection === AitRowType.body ? cr.columnIndex : ci)}}
-              setCellData={(ret) => updateCell(ret, (location.tableSection === AitRowType.body ? cr.columnIndex : ci))}
-              readOnly={(location.colRepeat !== undefined || isColumnRepeat) ?? false}
+              location={{...location, column: cr.columnIndex, colRepeat: cr.colRepeat}}
+              setCellData={(ret) => updateCell(ret, cr.columnIndex)}
+              readOnly={isColumnRepeat || typeof addRow !== "function"}
               addColSpan={(location.tableSection === AitRowType.body ? cr.columnIndex : ci) + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
@@ -221,7 +219,7 @@ export const AitRow = ({
       </tr>
       {/* Additional row if required */}
       {spaceAfter !== false &&
-        <AitBorderRow rowLength={cells.length} spaceAfter={true} noBorder={true} />
+        <AitBorderRow spaceAfter={true} noBorder={true} />
       }
     </>
   );

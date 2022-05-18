@@ -1,9 +1,8 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useCallback } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, newRow, repeatRows } from "../functions";
-import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
+import { newCell, newRow } from "../functions";
+import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitRowGroupProps {
   aitid: string,
@@ -15,7 +14,6 @@ interface AitRowGroupProps {
   setRowGroupData: (ret: AitRowGroupData) => void,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
-  columnRepeats: AitColumnRepeat[] | null,
   spaceAfter?: boolean,
 }
 
@@ -30,11 +28,7 @@ export const AitRowGroup = ({
   setRowGroupData,
   addRowGroup,
   removeRowGroup,
-  columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
-
-  // Context
-  const tableSettings = useContext(TableSettingsContext);
 
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
@@ -166,22 +160,21 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [returnData, rows]);
 
-  // Get rows after repeat processing
-  const processed = useMemo((): { rows: AitRowData[] } => {
-    return repeatRows(
-      rows,
-      replacements,
-      spaceAfter,
-      tableSettings.noRepeatProcessing,
-      tableSettings.externalLists,
-    );
-  }, [replacements, rows, spaceAfter, tableSettings.externalLists, tableSettings.noRepeatProcessing]);
+  // // Get rows after repeat processing
+  // const processed = useMemo((): { rows: AitRowData[] } => {
+  //   return repeatRows(
+  //     rows,
+  //     replacements,
+  //     spaceAfter,
+  //     tableSettings.noRepeatProcessing,
+  //     tableSettings.externalLists,
+  //   );
+  // }, [replacements, rows, spaceAfter, tableSettings.externalLists, tableSettings.noRepeatProcessing]);
 
   // Output the rows
   return (
     <>
-      {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
-
+      {rows.map((row: AitRowData, ri: number): JSX.Element => {
         return (
           <AitRow
             key={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? row.aitid : (row.aitid + row.rowRepeat)}
@@ -201,7 +194,6 @@ export const AitRowGroup = ({
             addRow={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined}
             removeRow={rows.length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
             spaceAfter={row.spaceAfter ?? false}
-            columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
             addRowSpan={addRowSpan}

@@ -1,14 +1,12 @@
+import React, { useContext } from "react";
 import { AioIconButton } from "../aio";
-import React from "react";
-import { AitColumnRepeat } from "./aitInterface";
+import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitBorderRowProps {
-  rowLength: number,
   spaceBefore?: boolean,
   spaceAfter?: boolean,
   noBorder?: boolean,
   rowHeaderColumns?: number
-  columnRepeats?: AitColumnRepeat[] | null;
   changeColumns?: {
     addColumn: (col: number) => void,
     removeColumn: (col: number) => void,
@@ -18,7 +16,8 @@ interface AitBorderRowProps {
 }
 
 export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
-  let cis = Array.from(Array(props.rowLength).keys());
+  const tableSettings = useContext(TableSettingsContext);
+  let cis = Array.from(Array(tableSettings.columnRepeats?.length ?? 1).keys());
   return (
     <>
       {props.changeColumns &&
@@ -34,15 +33,15 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
           </td>
           {cis.map((ci: number): JSX.Element => {
             let isColumnRepeat =
-              props.columnRepeats
-              && props.columnRepeats.length > ci
-              && props.columnRepeats[ci]!.repeatNumbers !== undefined
-              && props.columnRepeats[ci]!.repeatNumbers!.length > 0
-              && props.columnRepeats[ci]!.repeatNumbers!.reduce((r, a) => r + a, 0) > 0;
+              tableSettings.columnRepeats
+              && tableSettings.columnRepeats.length > ci
+              && tableSettings.columnRepeats[ci]!.colRepeat !== undefined
+              && tableSettings.columnRepeats[ci]!.colRepeat!.length > 0
+              && tableSettings.columnRepeats[ci]!.colRepeat!.reduce((r, a) => r + a, 0) > 0;
             if (isColumnRepeat) return (<td key={ci}></td>);
-            let maxColumnIndex = props.columnRepeats
-              ? Math.max(...props.columnRepeats.map(crep => crep.columnIndex))
-              : props.rowLength
+            let maxColumnIndex = tableSettings.columnRepeats
+              ? Math.max(...tableSettings.columnRepeats.map(crep => crep.columnIndex))
+              : 1
               ;
 
             return (
@@ -53,7 +52,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                     <AioIconButton
                       tipText="Remove column"
                       iconName="aiox-minus"
-                      onClick={() => props.changeColumns!.removeColumn!(props.columnRepeats![ci].columnIndex)}
+                      onClick={() => props.changeColumns!.removeColumn!(tableSettings.columnRepeats![ci].columnIndex)}
                       style={{ justifySelf: "start" }}
                     />
                   }
@@ -61,7 +60,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                   <AioIconButton
                     tipText="Add column"
                     iconName="aiox-plus"
-                    onClick={() => props.changeColumns!.addColumn!(props.columnRepeats![ci].columnIndex)}
+                    onClick={() => props.changeColumns!.addColumn!(tableSettings.columnRepeats![ci].columnIndex)}
                   />
 
                 </div>

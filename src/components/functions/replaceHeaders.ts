@@ -128,7 +128,7 @@ export const replaceHeaders = (
                   ...lowerColumnRepeats.map(crep => {
                     return {
                       columnIndex: ci + crep.columnIndex,
-                      repeatNumbers: [rvi, ti, ...(crep.repeatNumbers ?? [])]
+                      colRepeat: [rvi, ti, ...(crep.colRepeat ?? [])]
                     } as AitColumnRepeat;
                   })
                 ];
@@ -136,7 +136,7 @@ export const replaceHeaders = (
               else {
                 midRepeats = [
                   ...midRepeats,
-                  { columnIndex: ci, repeatNumbers: [rvi, ti] }
+                  { columnIndex: ci, colRepeat: [rvi, ti] }
                 ];
               }
             }
