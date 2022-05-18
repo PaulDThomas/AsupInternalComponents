@@ -1,4 +1,3 @@
-import { printRows } from "components/functions/printRows";
 import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AioBoolean, AioComment, AioExternalReplacements, AioIconButton } from "../aio";
@@ -46,7 +45,6 @@ export const AsupInternalTable = ({
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
-  // const [processedHeader, setProcessedHeader] = useState<AitRowGroupData | null>(null);
 
   // Explode tableData
   const [headerData, setHeaderData] = useState<AitRowGroupData | false>();
@@ -57,38 +55,40 @@ export const AsupInternalTable = ({
 
   // Pushdown data when it it updated externally
   useEffect(() => {
-    console.log("Table data push");
+    console.log("Receive data in AsupInternalTable");
+    // Set defaults for no processing
     let headerData = headerPreProcess(tableData.headerData);
+    let columnRepeats = tableData.bodyData === undefined
+      ? null
+      : Array.from(tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
+      ;
+    let processedHeaderData = headerData;
 
-    // Create processed headerData
-    if (headerData !== false && (headerData.rows.length ?? 0) > 0) {
+    // Process repeats if required
+    if (processedHeaderData !== false && (processedHeaderData.rows.length ?? 0) > 0) {
       let headerDataUpdate = repeatHeaders(
-        headerData.rows,
-        headerData.replacements ?? [],
+        processedHeaderData.rows,
+        processedHeaderData.replacements ?? [],
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
         externalLists,
       );
-      setHeaderData({
-        aitid: headerData.aitid,
-        name: headerData.name,
+      processedHeaderData = {
+        aitid: processedHeaderData.aitid,
+        name: processedHeaderData.name,
         rows: headerDataUpdate.rows,
-        comments: headerData.comments,
-        spaceAfter: headerData.spaceAfter,
-        replacements: headerData.replacements,
-      });
-      setColumnRepeats(headerDataUpdate.columnRepeats);
+        comments: processedHeaderData.comments,
+        spaceAfter: processedHeaderData.spaceAfter,
+        replacements: processedHeaderData.replacements,
+      };
+      columnRepeats = headerDataUpdate.columnRepeats;
     }
-    else {
-      setHeaderData(false);
-      setColumnRepeats(tableData.bodyData === undefined
-        ? null
-        : Array.from(tableData.bodyData[0].rows[0].cells.keys()).map(n => { return { columnIndex: n } })
-      );
-    }
+    setHeaderData(processedHeaderData);
+    setColumnRepeats(columnRepeats);
 
     // Create processed body
-    let bodyData: AitRowGroupData[] = bodyPreProcess(tableData.bodyData).map(rg => {
+    let bodyData = bodyPreProcess(tableData.bodyData);
+    let processedBodyData: AitRowGroupData[] = bodyData.map(rg => {
       return {
         ...rg,
         rows: repeatRows(
@@ -97,40 +97,39 @@ export const AsupInternalTable = ({
           rg.spaceAfter,
           noRepeatProcessing,
           externalLists,
-        )
+        ).map(r => {
+          return {
+            ...r,
+            cells: columnRepeats?.map(ci => r.cells[ci.columnIndex]) ?? r.cells
+          }
+        })
       }
     });
-    setBodyData(bodyData);
+    setBodyData(processedBodyData);
 
+    // Info that is not processed
     setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
-  }, [externalLists, noRepeatProcessing, tableData]);
+  }, [externalLists, noRepeatProcessing, setTableData, tableData]);
 
   const unProcessRowGroup = useCallback((processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
     let ret = processedGroup === false
       ? false
-      : type === AitRowType.header
-        ?
-        {
-          ...processedGroup,
-          rows: processedGroup.rows
-            .map(r => {
-              return {
-                ...r,
-                cells: r.cells.filter((_, ci) => (
-                  columnRepeats === null
-                  || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.reduce((r, a) => r + a, 0) ?? 0)) === 0
-                ))
-              }
-            })
-        }
-        :
-        {
-          ...processedGroup,
-          rows: processedGroup.rows
-            .filter(r => r.rowRepeat === undefined || r.rowRepeat.match(/^[[\]0,]+$/) !== null)
-        }
+      : {
+        ...processedGroup,
+        rows: processedGroup.rows
+          .filter(r => r.rowRepeat === undefined || r.rowRepeat.match(/^[[\]0,]+$/) !== null)
+          .map(r => {
+            return {
+              ...r,
+              cells: r.cells.filter((_, ci) => (
+                columnRepeats === null
+                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.reduce((r, a) => r + a, 0) ?? 0)) === 0
+              ))
+            }
+          })
+      }
       ;
     return ret;
   }, [columnRepeats]);
@@ -164,9 +163,8 @@ export const AsupInternalTable = ({
       comments: tableUpdate.comments ?? comments,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
-      processedHeader: headerData,
-      processedBody: bodyData,
     } as AitTableData;
+    console.log("Send from AsupInternalTable");
     setTableData(r);
   }, [setTableData, headerData, unProcessRowGroup, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
 

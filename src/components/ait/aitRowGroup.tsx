@@ -160,17 +160,6 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [returnData, rows]);
 
-  // // Get rows after repeat processing
-  // const processed = useMemo((): { rows: AitRowData[] } => {
-  //   return repeatRows(
-  //     rows,
-  //     replacements,
-  //     spaceAfter,
-  //     tableSettings.noRepeatProcessing,
-  //     tableSettings.externalLists,
-  //   );
-  // }, [replacements, rows, spaceAfter, tableSettings.externalLists, tableSettings.noRepeatProcessing]);
-
   // Output the rows
   return (
     <>
