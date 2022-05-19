@@ -8,6 +8,7 @@ export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
         return {
           aitid: c.aitid,
           text: c.text,
+          justifyText: c.justifyText,
           comments: c.comments,
           colSpan: c.colSpan,
           rowSpan: c.rowSpan,

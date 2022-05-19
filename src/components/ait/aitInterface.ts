@@ -1,9 +1,11 @@
+import { DraftComponent } from "draft-js";
 import { AieStyleMap } from "../aie";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 
 export interface AitCellData {
   aitid?: string, // Unique ID
   text: string, 
+  justifyText?: DraftComponent.Base.DraftTextAlignment,
   comments?: string,
   colSpan?: number,
   rowSpan?: number,

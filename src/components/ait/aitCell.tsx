@@ -1,6 +1,7 @@
+import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from '../aie';
-import { AioComment, AioExpander, AioIconButton, AioNumber } from '../aio';
+import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
 import { TableSettingsContext } from "./AsupInternalTable";
@@ -9,6 +10,7 @@ import { TableSettingsContext } from "./AsupInternalTable";
 interface AitCellProps {
   aitid: string,
   text: string,
+  justifyText?: DraftComponent.Base.DraftTextAlignment,
   comments: string,
   rowSpan: number,
   colSpan: number,
@@ -34,6 +36,7 @@ interface AitCellProps {
 export const AitCell = ({
   aitid,
   text,
+  justifyText,
   comments,
   colSpan,
   rowSpan,
@@ -50,7 +53,7 @@ export const AitCell = ({
   addRowSpan,
   removeRowSpan,
   spaceAfterRepeat,
-  spaceAfterSpan, 
+  spaceAfterSpan,
 }: AitCellProps) => {
 
   // Context
@@ -117,6 +120,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
+    justifyText?: DraftComponent.Base.DraftTextAlignment,
     comments?: string,
     colWidth?: number
     textIndents?: number
@@ -125,6 +129,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
+      justifyText: cellUpdate.justifyText,
       comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
@@ -181,7 +186,7 @@ export const AitCell = ({
         {/* Cell text editor */}
         <AsupInternalEditor
           style={{ width: "100%", height: "100%", border: "none" }}
-          textAlignment={(location.column < (tableSettings.rowHeaderColumns ?? 0) ? "left" : "center")}
+          textAlignment={justifyText ?? (location.column < (tableSettings.rowHeaderColumns ?? 0) ? "left" : "center")}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
@@ -209,6 +214,24 @@ export const AitCell = ({
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
               <AsupInternalEditor value={text} style={{ border: "0" }} styleMap={tableSettings.cellStyles} />
+            </div>
+            <div className="aiw-body-row">
+              <AioSelect
+                label="Justify text"
+                value={justifyText === undefined ? "Default" : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)}
+                availableValues={["Default", "Left", "Center", "Right"]}
+                setValue={!currentReadOnly ? (ret) => {
+                  console.log(ret)
+                  let newJ: DraftComponent.Base.DraftTextAlignment | undefined = undefined;
+                  switch (ret) {
+                    case "Left": newJ = "left"; break;
+                    case "Right": newJ = "right"; break;
+                    case "Center": newJ = "center"; break;
+                    default: break;
+                  }
+                  returnData({ justifyText: newJ });
+                } : undefined}
+              />
             </div>
             {(cellType === AitCellType.header)
               ?

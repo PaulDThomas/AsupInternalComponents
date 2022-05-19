@@ -160,6 +160,7 @@ export const AitRow = ({
               key={isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr!.colRepeat!)}` : cell.aitid!}
               aitid={cell.aitid!}
               text={cell.text ?? ""}
+              justifyText={cell.justifyText}
               comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
