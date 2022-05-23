@@ -1,9 +1,11 @@
+import { DraftComponent } from "draft-js";
 import { AieStyleMap } from "../aie";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 
 export interface AitCellData {
   aitid?: string, // Unique ID
   text: string, 
+  justifyText?: DraftComponent.Base.DraftTextAlignment,
   comments?: string,
   colSpan?: number,
   rowSpan?: number,
@@ -48,12 +50,13 @@ export interface AitCoord {
 export interface AitLocation extends AitCoord {
   tableSection: AitRowType,
   rowGroup: number,
-  repeat?: string
+  rowRepeat?: string
+  colRepeat?: number[],
 }
 
 export interface AitColumnRepeat {
   columnIndex: number,
-  repeatNumbers?: number[],
+  colRepeat?: number[],
 }
 
 export enum AitCellType {
@@ -68,17 +71,18 @@ export enum AitRowType {
 }
 
 export interface AitOptionList {
+  /* Table options and setters */
   noRepeatProcessing?: boolean,
-  headerRows?: number,
-  rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
-  tableSection?: AitRowType,
-  rowGroup?: number,
-  row?: number,
-  column?: number,
   showCellBorders?: boolean,
   groupTemplateNames?: string[],
-  repeatNumber?: string,
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
+  columnRepeats?: AitColumnRepeat[] | null,
+  
+  /* Table options with setters */
+  headerRows?: number,
+  setHeaderRows?: (ret: number) => void,
+  rowHeaderColumns?: number,
+  setRowHeaderColumns?: (ret: number) => void,
 }

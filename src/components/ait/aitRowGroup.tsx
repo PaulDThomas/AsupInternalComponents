@@ -1,35 +1,33 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, newRow, repeatRows } from "../functions";
-import { AitCellData, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
+import { newCell, newRow } from "../functions";
+import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
   aitid: string,
   name?: string,
+  location: AitLocation,
   rows: AitRowData[],
   comments?: string,
   replacements: AioReplacement[],
   setRowGroupData: (ret: AitRowGroupData) => void,
-  higherOptions: AitOptionList,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
-  columnRepeats: AitColumnRepeat[] | null,
   spaceAfter?: boolean,
 }
 
 export const AitRowGroup = ({
   aitid,
   name,
+  location,
   rows,
   comments,
   replacements,
   spaceAfter,
   setRowGroupData,
-  higherOptions,
   addRowGroup,
   removeRowGroup,
-  columnRepeats,
 }: AitRowGroupProps): JSX.Element => {
 
   // General function to return complied object
@@ -162,34 +160,20 @@ export const AitRowGroup = ({
     returnData({ rows: newRows });
   }, [returnData, rows]);
 
-  // Get rows after repeat processing
-  const processed = useMemo((): { rows: AitRowData[] } => {
-    return repeatRows(
-      rows,
-      replacements,
-      spaceAfter,
-      higherOptions.noRepeatProcessing,
-      higherOptions.externalLists,
-    );
-  }, [higherOptions.externalLists, higherOptions.noRepeatProcessing, replacements, rows, spaceAfter]);
-
   // Output the rows
   return (
     <>
-      {processed.rows.map((row: AitRowData, ri: number): JSX.Element => {
-        let rowHigherOptions = {
-          ...higherOptions,
-          row: rows.findIndex(r => r.aitid === row.aitid),
-          repeatNumber: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
-        } as AitOptionList;
-
+      {rows.map((row: AitRowData, ri: number): JSX.Element => {
         return (
           <AitRow
             key={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? row.aitid : (row.aitid + row.rowRepeat)}
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, rows.findIndex(r => r.aitid === row.aitid))}
-            higherOptions={rowHigherOptions}
+            location={{...location,
+              row: rows.findIndex(r => r.aitid === row.aitid),
+              rowRepeat: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
+            }}
             replacements={replacements}
             setReplacements={(ret) => returnData({ replacements: ret })}
             addRowGroup={addRowGroup}
@@ -199,7 +183,6 @@ export const AitRowGroup = ({
             addRow={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined}
             removeRow={rows.length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
             spaceAfter={row.spaceAfter ?? false}
-            columnRepeats={columnRepeats}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
             addRowSpan={addRowSpan}

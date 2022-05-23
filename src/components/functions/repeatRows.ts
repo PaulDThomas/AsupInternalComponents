@@ -19,7 +19,7 @@ export const repeatRows = (
   spaceAfter?: boolean,
   noProcessing?: boolean,
   externalLists?: AioExternalReplacements[],
-): { rows: AitRowData[]; } => {
+): AitRowData[]  => {
 
   // Create initial return
   let newRows = removeRowRepeatInfo(rows);
@@ -31,7 +31,7 @@ export const repeatRows = (
     || replacements.length === 0
   ) {
     newRows[newRows.length - 1].spaceAfter = spaceAfter;
-    return { rows: newRows };
+    return newRows;
   }
 
   // Process rows if there are replacements
@@ -92,5 +92,5 @@ export const repeatRows = (
       }
     }
   }
-  return { rows: newRows };
+  return newRows;
 };

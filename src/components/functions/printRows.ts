@@ -9,7 +9,7 @@ export const printRows = (rs: AitRowData[]): string => {
   return "\t" + rs
     .map(r => r.cells
       .map(c => c !== undefined ? `${c.text} ${c.replacedText ? " => " + c.replacedText : ""}` : "!!UNDEF!!")
-      .join(",")
+      .join("\u2506")
     )
     .join("\n\t");
 }

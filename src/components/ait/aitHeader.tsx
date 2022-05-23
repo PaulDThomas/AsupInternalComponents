@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, newRow, repeatHeaders } from "../functions";
+import { newCell, newRow } from "../functions";
 import { AitBorderRow } from "./aitBorderRow";
-import { AitCellData, AitCellType, AitColumnRepeat, AitLocation, AitOptionList, AitRowData, AitRowGroupData } from "./aitInterface";
+import { AitCellData, AitCellType, AitLocation, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
+import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitHeaderProps {
   aitid: string,
@@ -11,9 +12,6 @@ interface AitHeaderProps {
   comments?: string,
   replacements?: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
-  higherOptions: AitOptionList,
-  columnRepeats: AitColumnRepeat[] | null,
-  setColumnRepeats: (ret: AitColumnRepeat[] | null) => void,
 }
 
 export const AitHeader = ({
@@ -22,32 +20,9 @@ export const AitHeader = ({
   comments,
   replacements,
   setHeaderData,
-  higherOptions,
-  columnRepeats,
-  setColumnRepeats,
 }: AitHeaderProps): JSX.Element => {
 
-  const [processedRows, setProcessedRows] = useState<AitRowData[]>([...rows]);
-  useEffect(() => {
-    if (rows.some(r => (r.aitid === undefined || r.cells.some(c => c.aitid === undefined)))) {
-      console.log("Missing aitid!?!");
-      return;
-    }
-    if ((rows.length ?? 0) > 0) {
-      let headerDataUpdate = repeatHeaders(
-        rows,
-        replacements ?? [],
-        higherOptions.noRepeatProcessing ?? false,
-        higherOptions.rowHeaderColumns ?? 0,
-        higherOptions.externalLists,
-      );
-      setProcessedRows(headerDataUpdate.rows);
-      setColumnRepeats(headerDataUpdate.columnRepeats);
-    }
-    else {
-      setColumnRepeats(null);
-    }
-  }, [aitid, higherOptions.externalLists, higherOptions.noRepeatProcessing, higherOptions.rowHeaderColumns, replacements, rows, setColumnRepeats]);
+  const tableSettings = useContext(TableSettingsContext);
 
   // General function to return complied object
   const returnData = useCallback((headerUpdate: {
@@ -55,33 +30,14 @@ export const AitHeader = ({
     comments?: string,
     replacements?: AioReplacement[]
   }) => {
-    if (typeof (setHeaderData) !== "function") return;
     let r: AitRowGroupData = {
       aitid: aitid,
-      rows: (headerUpdate.rows ?? rows),
+      rows: headerUpdate.rows ?? rows,
       comments: headerUpdate.comments ?? comments,
       replacements: headerUpdate.replacements ?? replacements,
     };
-    setHeaderData!(r);
+    setHeaderData(r);
   }, [setHeaderData, aitid, rows, comments, replacements]);
-
-  // Update row
-  const updateRow = useCallback((ret: AitRowData, ri: number) => {
-    // Do nothing if readonly
-    if (typeof (setHeaderData) !== "function") return;
-    // Filter out repeat cells as these are passed into the row
-    let newRows: AitRowData[] = [...rows];
-    let newRow:AitRowData = {
-      ...ret,
-      cells: ret.cells.filter((_, ci) => (
-        columnRepeats === null
-        || (columnRepeats !== null && (columnRepeats[ci].repeatNumbers?.reduce((r, a) => r + a, 0) ?? 0)) === 0
-      ))
-    };
-    // Add back into holding object
-    newRows[ri] = newRow;
-    returnData({ rows: newRows });
-  }, [setHeaderData, rows, returnData, columnRepeats]);
 
   const addRow = useCallback((ri: number) => {
     let newrs = [...rows];
@@ -164,7 +120,7 @@ export const AitHeader = ({
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.rowSpan !== 1) return;
     if (hideCell.rowSpan !== 1) return;
-    if (loc.column + targetCell.colSpan === higherOptions.rowHeaderColumns) return;
+    if (loc.column + targetCell.colSpan === tableSettings.rowHeaderColumns) return;
     if (loc.column + targetCell.colSpan >= newRows[loc.row].cells.length) return;
     if (hideCell.colSpan !== 1) return;
     // Update target cell
@@ -175,7 +131,7 @@ export const AitHeader = ({
     newRows[loc.row].cells[loc.column + targetCell.colSpan - 1].colSpan = 0;
     // Done
     returnData({ rows: newRows });
-  }, [higherOptions.rowHeaderColumns, returnData, rows]);
+  }, [returnData, rows, tableSettings.rowHeaderColumns]);
 
   const removeColSpan = useCallback((loc: AitLocation) => {
     // Get things to change
@@ -230,21 +186,25 @@ export const AitHeader = ({
   return (
     <>
       {
-        processedRows.map((row: AitRowData, ri: number): JSX.Element => {
-
-          let rowHigherOptions: AitOptionList = {
-            ...higherOptions,
-            headerRows: rows.length,
-            row: rows.findIndex(r => r.aitid === row.aitid),
-          } as AitOptionList;
-
+        rows.map((row: AitRowData, ri: number): JSX.Element => {
           return (
             <AitRow
               key={row.aitid!}
               aitid={row.aitid!}
               cells={row.cells}
-              setRowData={(ret) => updateRow(ret, ri)}
-              higherOptions={rowHigherOptions}
+              setRowData={(ret) => {
+                let newRows = [...rows];
+                newRows.splice(ri, 1, ret);
+                returnData({rows: newRows});
+              }}
+              location={{
+                tableSection: AitRowType.header,
+                rowGroup: 0,
+                row: rows.findIndex(r => r.aitid === row.aitid),
+                column: -1,
+                rowRepeat: "",
+                colRepeat: [],
+              }}
               spaceAfter={false}
               replacements={replacements}
               setReplacements={(ret) => returnData({ replacements: ret })}
@@ -257,16 +217,11 @@ export const AitHeader = ({
               removeColSpan={removeColSpan}
               addRowSpan={addRowSpan}
               removeRowSpan={removeRowSpan}
-              columnRepeats={columnRepeats}
             />
           );
-        }
-        )
+        })
       }
-      {(columnRepeats?.length ?? 0) > 0
-        ? <AitBorderRow rowLength={columnRepeats!.length} spaceBefore={true} spaceAfter={true} />
-        : <></>
-      }
+      <AitBorderRow spaceBefore={true} spaceAfter={true} />
     </>
   );
 }

@@ -5,6 +5,7 @@ export const TablePage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [tableData, setTableData] = useState<AitTableData | undefined>();
+  const processedTableData = useRef<AitTableData>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
   const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
@@ -75,6 +76,7 @@ export const TablePage = () => {
         <AsupInternalTable
           tableData={tableData}
           setTableData={(ret) => { setTableData(ret) }}
+          processedDataRef={processedTableData}
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}

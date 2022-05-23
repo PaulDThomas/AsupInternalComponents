@@ -1,13 +1,16 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { DraftComponent } from "draft-js";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from '../aie';
-import { AioComment, AioExpander, AioIconButton, AioNumber } from '../aio';
+import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from '../aio';
 import { AsupInternalWindow } from "../aiw";
-import { AitCellData, AitCellType, AitLocation, AitOptionList, AitRowType } from "./aitInterface";
+import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
+import { TableSettingsContext } from "./AsupInternalTable";
 
 
 interface AitCellProps {
   aitid: string,
   text: string,
+  justifyText?: DraftComponent.Base.DraftTextAlignment,
   comments: string,
   rowSpan: number,
   colSpan: number,
@@ -16,10 +19,9 @@ interface AitCellProps {
   replacedText?: string,
   repeatColSpan?: number,
   repeatRowSpan?: number,
-  columnIndex: number,
   setCellData?: (ret: AitCellData) => void,
   readOnly: boolean,
-  higherOptions: AitOptionList,
+  location: AitLocation,
   addColSpan?: (loc: AitLocation) => void,
   removeColSpan?: (loc: AitLocation) => void,
   addRowSpan?: (loc: AitLocation) => void,
@@ -34,6 +36,7 @@ interface AitCellProps {
 export const AitCell = ({
   aitid,
   text,
+  justifyText,
   comments,
   colSpan,
   rowSpan,
@@ -42,18 +45,19 @@ export const AitCell = ({
   replacedText,
   repeatColSpan,
   repeatRowSpan,
-  columnIndex,
   setCellData,
   readOnly,
-  higherOptions,
+  location,
   addColSpan,
   removeColSpan,
   addRowSpan,
   removeRowSpan,
   spaceAfterRepeat,
-  spaceAfterSpan, 
+  spaceAfterSpan,
 }: AitCellProps) => {
 
+  // Context
+  const tableSettings = useContext(TableSettingsContext);
   // Data holder
   const [displayText, setDisplayText] = useState(
     replacedText !== undefined
@@ -78,26 +82,16 @@ export const AitCell = ({
   }, [readOnly, replacedText, setCellData]);
 
   const cellType = useMemo(() => {
-    let cellType = (higherOptions.tableSection === AitRowType.body) && (columnIndex < (higherOptions.rowHeaderColumns ?? 0))
+    let cellType = (location.tableSection === AitRowType.body) && (location.column < (tableSettings.rowHeaderColumns ?? 0))
       ?
       AitCellType.rowHeader
       :
-      higherOptions.tableSection === AitRowType.header
+      location.tableSection === AitRowType.header
         ? AitCellType.header
         : AitCellType.body
       ;
     return cellType;
-  }, [columnIndex, higherOptions.rowHeaderColumns, higherOptions.tableSection]);
-
-  const location: AitLocation = useMemo(() => {
-    return {
-      tableSection: higherOptions.tableSection ?? AitRowType.body,
-      rowGroup: higherOptions.rowGroup ?? 0,
-      row: higherOptions.row ?? 0,
-      column: columnIndex,
-      repeat: higherOptions.repeatNumber
-    }
-  }, [columnIndex, higherOptions.repeatNumber, higherOptions.row, higherOptions.rowGroup, higherOptions.tableSection]);
+  }, [location.column, location.tableSection, tableSettings.rowHeaderColumns]);
 
   // Update cell style when options change
   const cellStyle = useMemo<React.CSSProperties>(() => {
@@ -107,25 +101,26 @@ export const AitCell = ({
           ? `${colWidth * 2 + (colSpan - 1) * 4}px`
           : "120px")
         : undefined,
-      borderLeft: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderBottom: higherOptions.showCellBorders ? "1px dashed burlywood" : "",
-      borderRight: higherOptions.showCellBorders && (location.column === (higherOptions.rowHeaderColumns ?? 0) - colSpan)
+      borderLeft: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
+      borderBottom: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
+      borderRight: tableSettings.showCellBorders && (location.column === (tableSettings.rowHeaderColumns ?? 0) - colSpan)
         ? "1px solid burlywood"
-        : higherOptions.showCellBorders
+        : tableSettings.showCellBorders
           ? "1px dashed burlywood"
           : "",
-      borderTop: higherOptions.showCellBorders && location.row === 0 && location.rowGroup > 0
+      borderTop: tableSettings.showCellBorders && location.row === 0 && location.rowGroup > 0
         ? "1px solid burlywood"
-        : higherOptions.showCellBorders
+        : tableSettings.showCellBorders
           ? "1px dashed burlywood"
           : "",
       paddingLeft: (cellType === AitCellType.rowHeader && textIndents !== undefined) ? `${textIndents}rem` : undefined,
     }
-  }, [cellType, colSpan, colWidth, higherOptions.rowHeaderColumns, higherOptions.showCellBorders, location.column, location.row, location.rowGroup, textIndents]);
+  }, [cellType, colWidth, colSpan, tableSettings.showCellBorders, tableSettings.rowHeaderColumns, location.column, location.row, location.rowGroup, textIndents]);
 
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
+    justifyText?: DraftComponent.Base.DraftTextAlignment,
     comments?: string,
     colWidth?: number
     textIndents?: number
@@ -134,6 +129,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
+      justifyText: cellUpdate.justifyText,
       comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
@@ -166,10 +162,10 @@ export const AitCell = ({
       colSpan={repeatColSpan ?? colSpan ?? 1}
       rowSpan={(repeatRowSpan ?? rowSpan ?? 1) + (spaceAfterSpan ?? 0)}
       style={cellStyle}
-      data-location-table-section={higherOptions.tableSection}
-      data-location-row-group={higherOptions.rowGroup}
-      data-location-row={higherOptions.row}
-      data-location-cell={higherOptions.column}
+      data-location-table-section={location.tableSection}
+      data-location-row-group={location.rowGroup}
+      data-location-row={location.row}
+      data-location-cell={location.column}
     >
       <div className="ait-aie-holder"
         onMouseOver={aitShowButtons}
@@ -190,12 +186,12 @@ export const AitCell = ({
         {/* Cell text editor */}
         <AsupInternalEditor
           style={{ width: "100%", height: "100%", border: "none" }}
-          textAlignment={(columnIndex < (higherOptions.rowHeaderColumns ?? 0) ? "left" : "center")}
+          textAlignment={justifyText ?? (location.column < (tableSettings.rowHeaderColumns ?? 0) ? "left" : "center")}
           value={displayText}
           setValue={(ret) => { setDisplayText(ret); returnData({ text: ret.trimStart() }); }}
           editable={!currentReadOnly}
-          showStyleButtons={higherOptions.cellStyles !== undefined}
-          styleMap={higherOptions.cellStyles}
+          showStyleButtons={tableSettings.cellStyles !== undefined}
+          styleMap={tableSettings.cellStyles}
         />
       </div>
 
@@ -208,7 +204,7 @@ export const AitCell = ({
                 label={"Notes"}
                 value={comments}
                 setValue={!currentReadOnly ? (ret) => returnData({ comments: ret }) : undefined}
-                commentStyles={higherOptions.commentStyles}
+                commentStyles={tableSettings.commentStyles}
               />
             </div>
             <div className="aiw-body-row">
@@ -217,7 +213,25 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <AsupInternalEditor value={text} style={{ border: "0" }} styleMap={higherOptions.cellStyles} />
+              <AsupInternalEditor value={text} style={{ border: "0" }} styleMap={tableSettings.cellStyles} />
+            </div>
+            <div className="aiw-body-row">
+              <AioSelect
+                label="Justify text"
+                value={justifyText === undefined ? "Default" : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)}
+                availableValues={["Default", "Left", "Center", "Right"]}
+                setValue={!currentReadOnly ? (ret) => {
+                  console.log(ret)
+                  let newJ: DraftComponent.Base.DraftTextAlignment | undefined = undefined;
+                  switch (ret) {
+                    case "Left": newJ = "left"; break;
+                    case "Right": newJ = "right"; break;
+                    case "Center": newJ = "center"; break;
+                    default: break;
+                  }
+                  returnData({ justifyText: newJ });
+                } : undefined}
+              />
             </div>
             {(cellType === AitCellType.header)
               ?
@@ -237,7 +251,7 @@ export const AitCell = ({
                   <div className={"aio-label"}>Column span: </div>
                   <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1 && location.row < (higherOptions.headerRows ?? 1) - 1)
+                    {(!currentReadOnly && typeof addColSpan === "function" && rowSpan === 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
                       : <div className="aiox-button" />
                     }
