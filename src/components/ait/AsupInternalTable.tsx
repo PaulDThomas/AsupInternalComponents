@@ -357,6 +357,7 @@ export const AsupInternalTable = ({
       showCellBorders: showCellBorders,
       noRepeatProcessing: noRepeatProcessing ?? false,
       rowHeaderColumns: rowHeaderColumns ?? 1,
+      headerRows: headerData === false ? 0 : headerData.rows.length,
       externalLists: externalLists ?? [],
       groupTemplateNames: groupTemplates === false
         ? ["None"]
