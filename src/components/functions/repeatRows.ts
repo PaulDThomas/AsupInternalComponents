@@ -7,11 +7,12 @@ import { updateExternals } from "./updateExternals";
 
 /**
  * Repeat rows based on repeat number array with potential for partial repeats
- * @param rows
- * @param noProcessing
- * @param replacements
- * @param rowHeaderColumns
- * @returns
+ * @param rows 
+ * @param replacements 
+ * @param spaceAfter 
+ * @param noProcessing 
+ * @param externalLists 
+ * @returns 
  */
 export const repeatRows = (
   rows: AitRowData[],
