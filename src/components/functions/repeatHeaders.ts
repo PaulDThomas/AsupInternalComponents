@@ -1,7 +1,9 @@
+import { AioExternalSingle } from "components/aio/aioInterface";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 import { AitColumnRepeat, AitRowData } from "../ait";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceHeaders } from "./replaceHeaders";
+import { singleReplacements } from "./singleReplacements";
 import { updateExternals } from "./updateExternals";
 
 /**
@@ -19,6 +21,7 @@ export const repeatHeaders = (
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
+  externalSingles?: AioExternalSingle[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
@@ -42,6 +45,9 @@ export const repeatHeaders = (
     newHeaderRows = afterReplacement.newHeaderRows;
     newColumnRepeats = afterReplacement.newColumnRepeats;
   });
+
+  // Single post processing rep
+  newHeaderRows = singleReplacements(externalSingles, newHeaderRows);
 
   return { rows: newHeaderRows, columnRepeats: newColumnRepeats };
 };

@@ -3,7 +3,7 @@ import { AioComment } from "./aioComment";
 import { AioDropSelect } from "./aioDropSelect";
 import { AioExpander } from "./aioExpander";
 import { AioIconButton } from "./aioIconButton";
-import { AioExternalReplacements, AioOption, AioReplacement, AioReplacementValues } from "./aioInterface";
+import { AioExternalReplacements, AioExternalSingle, AioOption, AioReplacement, AioReplacementValues } from "./aioInterface";
 import { AioNumber } from "./aioNumber";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { AioReplacementValuesDisplay } from "./aioReplacementValuesDisplay";
@@ -26,6 +26,7 @@ export {
 };
 export type {
   AioExternalReplacements,
+  AioExternalSingle,
   AioOption,
   AioReplacement,
   AioReplacementValues,

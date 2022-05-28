@@ -29,6 +29,12 @@ export interface AioExternalReplacements {
   newTexts: AioReplacementValues[],
 }
 
+export interface AioExternalSingle {
+  airid?: string,
+  oldText?: string,
+  newText?: string,
+}
+
 export enum AioOptionType {
   string = "string",
   number = "number",

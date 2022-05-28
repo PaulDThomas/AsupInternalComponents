@@ -1,3 +1,4 @@
+import { AioExternalSingle } from "components/aio/aioInterface";
 import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AioBoolean, AioComment, AioExternalReplacements, AioIconButton } from "../aio";
@@ -14,6 +15,7 @@ interface AsupInternalTableProps {
   setTableData: (ret: AitTableData) => void,
   processedDataRef?: React.MutableRefObject<AitTableData | undefined>,
   externalLists?: AioExternalReplacements[],
+  externalSingles?: AioExternalSingle[],
   style?: React.CSSProperties,
   showCellBorders?: boolean,
   groupTemplates?: AitRowGroupData[] | false,
@@ -38,6 +40,7 @@ export const AsupInternalTable = ({
   setTableData,
   processedDataRef,
   externalLists,
+  externalSingles,
   style,
   showCellBorders,
   groupTemplates,
@@ -73,6 +76,7 @@ export const AsupInternalTable = ({
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
         externalLists,
+        externalSingles,
       );
       processedHeaderData = {
         aitid: processedHeaderData.aitid,
@@ -98,6 +102,7 @@ export const AsupInternalTable = ({
           rg.spaceAfter,
           noRepeatProcessing,
           externalLists,
+          externalSingles,
         ).map(r => {
           return {
             ...r,
@@ -114,7 +119,7 @@ export const AsupInternalTable = ({
     setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
-  }, [externalLists, noRepeatProcessing, processedDataRef, setTableData, tableData]);
+  }, [externalLists, externalSingles, noRepeatProcessing, processedDataRef, setTableData, tableData]);
 
   const unProcessRowGroup = useCallback((processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
     let ret = processedGroup === false
