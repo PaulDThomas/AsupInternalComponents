@@ -1,8 +1,10 @@
+import { AioExternalSingle } from "components/aio/aioInterface";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 import { AitColumnRepeat, AitRowData } from "../ait";
-import { flattenReplacements } from "./flattenReplacements";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceHeaders } from "./replaceHeaders";
+import { singleReplacements } from "./singleReplacements";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Entry function to process headers with replacements
@@ -10,6 +12,7 @@ import { replaceHeaders } from "./replaceHeaders";
  * @param replacements Replacement array with new values
  * @param noProcessing Stop 
  * @param rowHeaderColumns 
+ * @param externalLists
  * @returns 
  */
 export const repeatHeaders = (
@@ -18,6 +21,7 @@ export const repeatHeaders = (
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
+  externalSingles?: AioExternalSingle[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
 
   // Start with blank slate, need to strip repeat inforation everytime!
@@ -31,15 +35,19 @@ export const repeatHeaders = (
   };
 
   // Process replacements
-  let afterReplacement = replaceHeaders(
-    rowHeaderColumns ?? 0,
-    newHeaderRows,
-    newColumnRepeats,
-    flattenReplacements(replacements, externalLists)
-  );
-  newHeaderRows = afterReplacement.newHeaderRows;
-  newColumnRepeats = afterReplacement.newColumnRepeats;
+  updateExternals(replacements, externalLists)!.forEach((rep) => {
+    let afterReplacement = replaceHeaders(
+      rowHeaderColumns ?? 0,
+      newHeaderRows,
+      newColumnRepeats,
+      rep
+    );
+    newHeaderRows = afterReplacement.newHeaderRows;
+    newColumnRepeats = afterReplacement.newColumnRepeats;
+  });
+
+  // Single post processing rep
+  newHeaderRows = singleReplacements(externalSingles, newHeaderRows);
 
   return { rows: newHeaderRows, columnRepeats: newColumnRepeats };
 };
-

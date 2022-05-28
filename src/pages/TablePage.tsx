@@ -1,5 +1,6 @@
+import { AioSingleReplacements } from 'components/aio/AioSingleReplacements';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AieStyleMap, AioExternalReplacements, AitRowGroupData, AitTableData, AsupInternalTable, updateTableDataVersion } from '../components';
+import { AieStyleMap, AioExternalReplacements, AioExternalSingle, AitRowGroupData, AitTableData, AsupInternalTable, updateTableDataVersion } from '../components';
 
 export const TablePage = () => {
 
@@ -17,7 +18,7 @@ export const TablePage = () => {
     Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
     Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] }
   };
-
+  const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
 
   /** Load defaults */
   useEffect(() => {
@@ -80,11 +81,18 @@ export const TablePage = () => {
           style={{ margin: "1rem" }}
           showCellBorders={true}
           externalLists={externalReplacements}
+          externalSingles={externalSingles}
           groupTemplates={sampleGroupTemplates}
           commentStyles={commentStyles}
           cellStyles={cellStyles}
         />
       }
+    </div>
+    <div style={{margin: "1rem"}}>
+      <AioSingleReplacements 
+      replacements={externalSingles} 
+      setReplacements={(ret) => setExternalSingles(ret)}
+       />
     </div>
     <div style={{
       margin: "1rem",

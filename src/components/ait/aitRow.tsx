@@ -176,11 +176,9 @@ export const AitRow = ({
               addColSpan={!isColumnRepeat && typeof addRow === "function" && ci + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
-                (location.row! + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0))
-                  || (ci < (tableSettings.rowHeaderColumns ?? 0))
+                (location.row! + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0)) || (ci < (tableSettings.rowHeaderColumns ?? 0))
                   ? addRowSpan
-                  :
-                  undefined}
+                  : undefined}
               removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
               spaceAfterRepeat={cell.spaceAfterRepeat}
             />

@@ -1,17 +1,21 @@
 
+import { AioExternalSingle } from "components/aio/aioInterface";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 import { AitRowData } from "../ait";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceRows } from "./replaceRows";
+import { singleReplacements } from "./singleReplacements";
 import { updateExternals } from "./updateExternals";
 
 /**
  * Repeat rows based on repeat number array with potential for partial repeats
- * @param rows
- * @param noProcessing
- * @param replacements
- * @param rowHeaderColumns
- * @returns
+ * @param rows 
+ * @param replacements 
+ * @param spaceAfter 
+ * @param noProcessing 
+ * @param externalLists 
+ * @param externalSingles
+ * @returns 
  */
 export const repeatRows = (
   rows: AitRowData[],
@@ -19,7 +23,8 @@ export const repeatRows = (
   spaceAfter?: boolean,
   noProcessing?: boolean,
   externalLists?: AioExternalReplacements[],
-): AitRowData[]  => {
+  externalSingles?: AioExternalSingle[],
+): AitRowData[] => {
 
   // Create initial return
   let newRows = removeRowRepeatInfo(rows);
@@ -47,7 +52,7 @@ export const repeatRows = (
     newRows = replaceRows(newRows, extReplacements![si]);
     // Add spaceAfter for the group
     if (spaceAfter) {
-      newRows[newRows.length-1].spaceAfter = true;
+      newRows[newRows.length - 1].spaceAfter = true;
     }
     // Process spaceAfter
     for (let ri = 0; ri < newRows.length; ri++) {
@@ -92,5 +97,9 @@ export const repeatRows = (
       }
     }
   }
+
+  // Single post processing replacements
+  newRows = singleReplacements(externalSingles, newRows);
+
   return newRows;
 };

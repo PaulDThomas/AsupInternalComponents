@@ -1,11 +1,12 @@
+import { AioSingleReplacements } from 'components/aio/AioSingleReplacements';
 import React, { useRef, useState } from 'react';
-import { AifBlockLine, AsupInternalBlock, AifLineType } from '../components';
+import { AifBlockLine, AsupInternalBlock, AifLineType, AioExternalSingle } from '../components';
 
 export const BlockPage = () => {
 
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [lines, setLines] = useState<AifBlockLine[]>([{ left: "One line", canEdit: true }]);
-
+  const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
 
   return (
     <>
@@ -24,6 +25,7 @@ export const BlockPage = () => {
           setLines={setLines}
           minLines={3}
           maxLines={10}
+          externalSingles={externalSingles}
           style={{ fontFamily: "Courier New", fontWeight: 800 }}
           styleMap={{
             Green: { css: { color: "green", }, aieExclude: ["Blue", "Red"] },
@@ -31,6 +33,13 @@ export const BlockPage = () => {
             Red: { css: { color: "red", }, aieExclude: ["Green", "Blue"] },
           }}
           defaultType={AifLineType.centreOnly}
+        />
+      </div>
+
+      <div style={{ margin: "1rem" }}>
+        <AioSingleReplacements
+          replacements={externalSingles}
+          setReplacements={(ret) => setExternalSingles(ret)}
         />
       </div>
 

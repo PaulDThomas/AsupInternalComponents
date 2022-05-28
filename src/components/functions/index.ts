@@ -3,6 +3,7 @@ import { bodyPreProcess } from "./bodyPreProcess";
 import { headerPreProcess } from "./headerPreProcess";
 import { newCell } from "./newCell";
 import { newExternalReplacements } from "./newExternalReplacements";
+import { newExternalSingle } from "./newExternalSingle";
 import { newReplacement } from "./newReplacement";
 import { newReplacementValues } from "./newReplacementValues";
 import { newRow } from "./newRow";
@@ -21,6 +22,7 @@ export {
   objEqual,
   newCell,
   newExternalReplacements,
+  newExternalSingle,
   newReplacement,
   newReplacementValues,
   newRow,
