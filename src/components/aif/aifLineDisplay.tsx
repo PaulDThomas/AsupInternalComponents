@@ -1,3 +1,4 @@
+import { AioExternalSingle } from "components/aio/aioInterface";
 import React, { useCallback, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioIconButton, AioSelect } from "../aio";
@@ -10,6 +11,7 @@ interface AifLineDisplayProps {
   left?: string | false,
   centre?: string | false,
   right?: string | false,
+  externalSingles?: AioExternalSingle[],
   addBelow?: boolean,
   canEdit?: boolean,
   canRemove?: boolean,
@@ -54,7 +56,7 @@ export const AifLineDisplay = ({
   }, [addBelow, aifid, canEdit, canMove, canRemove, centre, left, right, setLine]);
 
   return (
-    <div className="aif-line" style={{ ...style }}>
+    <div className={`aif-line ${(canEdit === false || typeof setLine !== "function") ? 'aif-readonly' : ''}`} style={{ ...style }}>
       {showOptions &&
         <AsupInternalWindow
           Title="Line options"

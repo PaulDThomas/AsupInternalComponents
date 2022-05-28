@@ -39,3 +39,11 @@
   display:flex;
   flex-direction: row;
 }
+
+.aif-line.aif-readonly {
+  /* background-color: rgb(240, 221, 168); */
+  background-color: #d3d3d329;
+  color: #0d0d0dc7;
+  font-style: italic;
+  opacity: 1;
+}

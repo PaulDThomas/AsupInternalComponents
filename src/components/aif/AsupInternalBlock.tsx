@@ -1,15 +1,18 @@
+import { AioExternalSingle } from 'components/aio';
 import React, { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap } from '../aie';
 import "./aif.css";
-import { AifLineDisplay } from './aifLineDisplay';
 import { AifBlockLine, AifLineType } from './aifInterface';
+import { AifLineDisplay } from './aifLineDisplay';
+import { replaceBlockText } from './replaceBlockText';
 
 interface AsupInternalBlockProps {
   lines: AifBlockLine[]
   setLines?: (ret: AifBlockLine[]) => void
   minLines?: number,
   maxLines?: number,
+  externalSingles?: AioExternalSingle[],
   styleMap?: AieStyleMap,
   defaultType?: AifLineType,
   style?: React.CSSProperties,
@@ -19,6 +22,7 @@ export const AsupInternalBlock = ({
   setLines,
   minLines,
   maxLines,
+  externalSingles,
   styleMap,
   defaultType,
   style,
@@ -50,7 +54,7 @@ export const AsupInternalBlock = ({
       if (l.aifid === undefined) l.aifid = uuidv4();
       return l;
     }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [minLines, maxLines])
 
   // General function to return complied object
@@ -111,24 +115,44 @@ export const AsupInternalBlock = ({
   }, [lines, returnData])
 
   return (
-    <div className="aif-block" style={{...style}}>
-      {lines.map((l: AifBlockLine, li: number) => (
-        <AifLineDisplay
-          key={l.aifid ?? li}
-          aifid={l.aifid}
-          left={l.left}
-          centre={l.centre}
-          right={l.right}
-          addBelow={l.addBelow}
-          canEdit={l.canEdit}
-          canMove={l.canMove}
-          canRemove={l.canRemove}
-          setLine={l.canEdit !== false ? (ret) => updateLine(ret, li) : undefined}
-          addLine={(l.addBelow !== false && lines.length < (maxLines ?? 10)) ? () => addLine(li) : undefined}
-          removeLine={(lines.length > (minLines ?? 1) && l.canEdit !== false && l.canRemove !== false) ? () => removeLine(li) : undefined}
-          styleMap={styleMap}
-        />
-      ))}
+    <div className="aif-block" style={{ ...style }}>
+      {lines.map((l: AifBlockLine, li: number) => {
+        // Check for replacements 
+        let editable: boolean = true;
+        let left = l.left;
+        let centre = l.centre;
+        let right = l.right;
+        if (externalSingles !== undefined && externalSingles.length > 0) {
+          externalSingles.forEach(repl => {
+            if (repl.oldText !== undefined && repl.oldText !== "" && repl.newText !== undefined) {
+              let { newText: newLeft, updated: leftChange } = replaceBlockText(left, repl)
+              let { newText: newCentre, updated: centreChange } = replaceBlockText(centre, repl);
+              let { newText: newRight, updated: rightChange } = replaceBlockText(right, repl);
+              editable = !(leftChange || centreChange || rightChange);
+              if (leftChange) left = newLeft;
+              if (centreChange) centre = newCentre;
+              if (rightChange) right = newRight;
+            }
+          })
+        }
+        return (
+          <AifLineDisplay
+            key={l.aifid ?? li}
+            aifid={l.aifid}
+            left={left}
+            centre={centre}
+            right={right}
+            addBelow={l.addBelow}
+            canEdit={l.canEdit && editable}
+            canMove={l.canMove}
+            canRemove={l.canRemove}
+            setLine={l.canEdit !== false && editable ? (ret) => updateLine(ret, li) : undefined}
+            addLine={(l.addBelow !== false && lines.length < (maxLines ?? 10)) ? () => addLine(li) : undefined}
+            removeLine={(lines.length > (minLines ?? 1) && l.canEdit !== false && l.canRemove !== false) ? () => removeLine(li) : undefined}
+            styleMap={styleMap}
+          />
+        );
+      })}
     </div>
   );
 }
