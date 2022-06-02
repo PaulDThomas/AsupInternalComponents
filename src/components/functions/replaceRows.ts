@@ -78,7 +78,7 @@ export const replaceRows = (
                 }
               })
               : targetCell.rowSpan > 1
-                ? rows.slice(ri, targetCell.rowSpan).map((r, rj) => {
+                ? rows.slice(ri, ri + targetCell.rowSpan).map((r, rj) => {
                   let cells = rj === 0
                     ? [thisRepeat, ...r.cells.slice(ci + 1).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
                     : [...r.cells.slice(ci).map(c => replaceCellText(c, replacement.oldText, rv.texts[ti]))]
