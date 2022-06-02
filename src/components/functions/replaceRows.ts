@@ -1,3 +1,4 @@
+import { getRawTextParts } from "../aie";
 import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitRowData } from "../ait/aitInterface";
 import { prependCell } from "./prependCells";
@@ -42,12 +43,10 @@ export const replaceRows = (
       console.log(`${JSON.stringify(rows)}`);
     }
     else for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
+      let cellTextParts: string[] = getRawTextParts(rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "");
       if (
         replacement !== undefined &&
-        (rows[ri].cells[ci].replacedText !== undefined
-          ? rows[ri].cells[ci].replacedText!.includes(replacement!.oldText)
-          : rows[ri].cells[ci].text.includes(replacement!.oldText)
-        )
+        cellTextParts.some(t => t.includes(replacement!.oldText))
       ) {
         // Get targetCell
         found = true;
@@ -105,15 +104,15 @@ export const replaceRows = (
             // Add spaceAfter to bottom left cell in the block
             if (rv.spaceAfter) {
               let lookup = 0;
-              while ((lowerQuad[lowerQuad.length-1-lookup].cells[0].rowSpan ?? 1) === 0) lookup++;
-              lowerQuad[lowerQuad.length-1-lookup].cells[0].spaceAfterRepeat = true;
+              while ((lowerQuad[lowerQuad.length - 1 - lookup].cells[0].rowSpan ?? 1) === 0) lookup++;
+              lowerQuad[lowerQuad.length - 1 - lookup].cells[0].spaceAfterRepeat = true;
             }
 
             // Expand to cover rest of the row
             midRows.push(...lowerQuad);
           }
         }
-        
+
         // Add preceeding cells from current row
         if (midRows.length > 0) for (let lookleft = 1; lookleft <= ci; lookleft++) {
           midAddedRows = midRows.length - processedRows;
@@ -129,7 +128,7 @@ export const replaceRows = (
         // Add returned rows
         newRows.push(...midRows);
         // Update number of rows for further lookups
-        addedRows = addedRows +  midAddedRows;
+        addedRows = addedRows + midAddedRows;
       }
     }
     // Add the row if it was not found on this pass
