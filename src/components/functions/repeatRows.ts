@@ -1,6 +1,5 @@
 
-import { AioExternalSingle } from "components/aio/aioInterface";
-import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AioExternalReplacements, AioExternalSingle, AioReplacement } from "../aio";
 import { AitRowData } from "../ait";
 import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceRows } from "./replaceRows";

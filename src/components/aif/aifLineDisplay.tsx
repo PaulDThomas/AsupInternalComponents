@@ -1,7 +1,6 @@
-import { AioExternalSingle } from "components/aio/aioInterface";
 import React, { useCallback, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
-import { AioIconButton, AioSelect } from "../aio";
+import { AioExternalSingle, AioIconButton, AioSelect } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
 import { AifBlockLine } from "./aifInterface";

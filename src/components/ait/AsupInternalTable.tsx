@@ -1,7 +1,6 @@
-import { AioExternalSingle } from "components/aio/aioInterface";
 import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioExternalReplacements, AioIconButton } from "../aio";
+import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
