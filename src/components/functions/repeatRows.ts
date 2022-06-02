@@ -72,24 +72,17 @@ export const repeatRows = (
             let lookback = 1;
             // Check previous cells
             while (lookback <= ci) {
-              let checkCell = newRows[ri].cells[ci - lookback];
-              // Add span to any preceeding rowSpans > 1
-              if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1) {
-                checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
-              }
-              // Look up when cells have span = 0
-              else if ((checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) === 0) {
-                let lookup = 1;
-                let found = false;
-                while (lookup <= ri && !found) {
-                  checkCell = newRows[ri - lookup].cells[ci - lookback];
-                  if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
-                    found = true;
-                    checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
-                  }
-                  lookup++;
+              let lookup = 0;
+              let found = false;
+              while (lookup <= ri && !found) {
+                let checkCell = newRows[ri - lookup].cells[ci - lookback];
+                if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
+                  found = true;
+                  checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
                 }
+                lookup++;
               }
+              // }
               lookback++;
             }
           }
