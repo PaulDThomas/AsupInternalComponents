@@ -1,4 +1,4 @@
-import { AioExternalSingle } from "components/aio/aioInterface";
+import { AioExternalSingle } from "../aio";
 import { AitRowData } from "../ait";
 import { replaceCellText } from "./replaceCellText";
 

@@ -1,7 +1,7 @@
-import { AioExternalSingle } from 'components/aio';
 import React, { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap } from '../aie';
+import { AioExternalSingle } from '../aio';
 import "./aif.css";
 import { AifBlockLine, AifLineType } from './aifInterface';
 import { AifLineDisplay } from './aifLineDisplay';

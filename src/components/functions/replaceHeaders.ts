@@ -1,5 +1,6 @@
-import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
-import { AitCellData, AitColumnRepeat, AitRowData } from "../ait/aitInterface";
+import { getRawTextParts } from "../aie";
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
 import { appendCells } from "./appendCells";
 import { flattenReplacements } from "./flattenReplacements";
 import { newCell } from "./newCell";
@@ -58,9 +59,9 @@ export const replaceHeaders = (
     // Go through each row if we are still looking
     else {
       for (let ri = 0; ri < rows.length; ri++) {
-
+        let cellTextParts: string[] = getRawTextParts(rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "");
         // React if found
-        if (rows[ri].cells[ci].text.includes(replacement!.oldText)) {
+        if (cellTextParts.some(t => t.includes(replacement!.oldText))) {
           let targetCell = rows[ri].cells[ci];
           found = true;
           if (targetCell.colSpan === undefined) targetCell.colSpan = 1;

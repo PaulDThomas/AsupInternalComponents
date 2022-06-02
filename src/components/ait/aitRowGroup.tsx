@@ -91,7 +91,7 @@ export const AitRowGroup = ({
         // Adjust the rowSpan of the cell above
         for (let i = 1; i < c.rowSpan!; i++) {
           if (newRows[ri + i].cells[ci].rowSpan === 0) {
-            newRows[ri + 1].cells[ci].rowSpan = 1;
+            newRows[ri + i].cells[ci].rowSpan = 1;
           }
         }
       }
