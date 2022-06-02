@@ -40,7 +40,7 @@
   flex-direction: row;
 }
 
-.aif-line.aif-readonly {
+.aif-line.aif-readonly .aif-line-item-holder {
   /* background-color: rgb(240, 221, 168); */
   background-color: #d3d3d329;
   color: #0d0d0dc7;
