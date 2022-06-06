@@ -171,7 +171,7 @@ export const AitRow = ({
               repeatRowSpan={cell.repeatRowSpan}
               spaceAfterSpan={cell.spaceAfterSpan}
               location={{...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat}}
-              setCellData={!isColumnRepeat && typeof addRow === "function" ? (ret) => updateCell(ret, cr!.columnIndex) : undefined}
+              setCellData={!isColumnRepeat && typeof addRow === "function" ? (ret) => updateCell(ret, ci) : undefined}
               readOnly={isColumnRepeat || typeof addRow !== "function"}
               addColSpan={!isColumnRepeat && typeof addRow === "function" && ci + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
