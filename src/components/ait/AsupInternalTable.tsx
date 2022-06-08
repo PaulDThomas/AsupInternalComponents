@@ -132,7 +132,7 @@ export const AsupInternalTable = ({
               ...r,
               cells: r.cells.filter((_, ci) => (
                 columnRepeats === null
-                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.reduce((r, a) => r + a, 0) ?? 0)) === 0
+                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.match(/^[[\]0,]+$/) !== null))
               ))
             }
           })

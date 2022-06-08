@@ -203,7 +203,7 @@ export const AitHeader = ({
                 row: rows.findIndex(r => r.aitid === row.aitid),
                 column: -1,
                 rowRepeat: "",
-                colRepeat: [],
+                colRepeat: "",
               }}
               spaceAfter={false}
               replacements={replacements}

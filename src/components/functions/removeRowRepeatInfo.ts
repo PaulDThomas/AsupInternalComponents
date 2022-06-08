@@ -4,7 +4,9 @@ export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
   return rows.map(r => {
     let ret: AitRowData = {
       aitid: r.aitid,
-      cells: r.cells.map(c => {
+      cells: r.cells
+      .filter(c => !c.replacedText?.includes("__filler"))
+      .map(c => {
         return {
           aitid: c.aitid,
           text: c.text,

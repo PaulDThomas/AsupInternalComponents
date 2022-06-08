@@ -152,7 +152,7 @@ export const AitRow = ({
 
           // Get cell from column repeat
           let cr: AitColumnRepeat | undefined = Array.isArray(tableSettings.columnRepeats) && tableSettings.columnRepeats.length > ci ? tableSettings.columnRepeats[ci] : undefined;
-          let isColumnRepeat = (cr !== undefined && cr.colRepeat !== undefined) ? cr.colRepeat.reduce((r, a) => r + a, 0) > 0 : false;
+          let isColumnRepeat = (cr !== undefined && cr.colRepeat !== undefined) ? cr.colRepeat.match(/^[[\]0,]+$/) === null : false;
 
           // Render object
           return (

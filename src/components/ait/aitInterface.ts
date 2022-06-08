@@ -51,12 +51,12 @@ export interface AitLocation extends AitCoord {
   tableSection: AitRowType,
   rowGroup: number,
   rowRepeat?: string
-  colRepeat?: number[],
+  colRepeat?: string,
 }
 
 export interface AitColumnRepeat {
   columnIndex: number,
-  colRepeat?: number[],
+  colRepeat?: string,
 }
 
 export enum AitCellType {
