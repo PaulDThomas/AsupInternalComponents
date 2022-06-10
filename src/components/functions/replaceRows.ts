@@ -36,7 +36,7 @@ export const replaceRows = (
   let ri = 0;
   let processedRows = 0;
   let emergencyExit = 0;
-  while (ri < rows.length && emergencyExit < 100) {
+  while (ri < rows.length && emergencyExit < 10000) {
     if (ri >= rows.length || rows[ri] === undefined || rows[ri].cells.length === undefined) {
       console.warn("High ri value somehow");
       console.log(`ri: ${ri}`);

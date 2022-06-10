@@ -81,7 +81,6 @@ export const repeatRows = (
                 }
                 lookup++;
               }
-              // }
               lookback++;
             }
           }
