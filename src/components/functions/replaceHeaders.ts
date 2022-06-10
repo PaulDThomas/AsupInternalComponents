@@ -25,13 +25,6 @@ export const replaceHeaders = (
   if (rows.length === 0)
     return { newHeaderRows: [], newColumnRepeats: [] };
 
-  // Look for match, is there is one to find
-  let found = (
-    replacement === undefined
-    || replacement.oldText === ""
-    || replacement.newTexts.length === 0
-    || replacement.newTexts[0].texts.join("") === ""
-  );
 
   // Set up holders
   let newHeaderRows: AitRowData[] = rows.map(r => { return { aitid: r.aitid, cells: [] }; });
@@ -39,7 +32,16 @@ export const replaceHeaders = (
 
   // Go through each column
   let colsProcessed = 1;
+  let addedCols = 0;
   for (let ci = 0; ci < rows[0].cells.length; ci = ci + colsProcessed) {
+
+    // Look for match, is there is one to find
+    let found = (
+      replacement === undefined
+      || replacement.oldText === ""
+      || replacement.newTexts.length === 0
+      || replacement.newTexts[0].texts.join("") === ""
+    );
     colsProcessed = 1;
 
     // Add next column if the text is already found
@@ -111,7 +113,7 @@ export const replaceHeaders = (
                   let n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = "filler1";
+                  n.replacedText = "__filler1";
                   targetRow.cells.push(n);
                 }
               }
@@ -129,7 +131,7 @@ export const replaceHeaders = (
                   ...lowerColumnRepeats.map(crep => {
                     return {
                       columnIndex: columnRepeats[ci].columnIndex + crep.columnIndex,
-                      colRepeat: [rvi, ti, ...(crep.colRepeat ?? [])]
+                      colRepeat: `${columnRepeats[ci].colRepeat ?? ""}${`[${rvi},${ti}]${crep.colRepeat ?? ""}`}`
                     } as AitColumnRepeat;
                   })
                 ];
@@ -137,7 +139,7 @@ export const replaceHeaders = (
               else {
                 midRepeats = [
                   ...midRepeats,
-                  { columnIndex: columnRepeats[ci].columnIndex, colRepeat: [rvi, ti] }
+                  { columnIndex: columnRepeats[ci].columnIndex, colRepeat: `${columnRepeats[ci].colRepeat ?? ""}${`[${rvi},${ti}]`}` }
                 ];
               }
             }
@@ -169,7 +171,7 @@ export const replaceHeaders = (
           if (nIns > 0) {
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
-              let targetCellAbove = newHeaderRows[rj].cells[ci];
+              let targetCellAbove = newHeaderRows[rj].cells[ci + addedCols];
               if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
               // Check that the target is showing
               let lookback = 0;
@@ -186,16 +188,18 @@ export const replaceHeaders = (
                   let n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = "filler2";
+                  n.replacedText = "__filler2";
                   newCells2.push(n);
                 }
-                newHeaderRows[rj].cells.splice(ci - lookback + 1, 0, ...newCells2);
+                newHeaderRows[rj].cells.splice(ci + addedCols - lookback + 1, 0, ...newCells2);
               }
-
+              
               // Not found !!!
               else {
                 console.warn("Have not found the target cell above the column header replacement");
               }
+              // Update number of columns added so far
+              addedCols = addedCols + nIns;
             }
           }
           colsProcessed = targetCell.colSpan;

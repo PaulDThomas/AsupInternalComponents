@@ -132,7 +132,7 @@ export const AsupInternalTable = ({
               ...r,
               cells: r.cells.filter((_, ci) => (
                 columnRepeats === null
-                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.reduce((r, a) => r + a, 0) ?? 0)) === 0
+                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.match(/^[[\]0,]+$/) !== null))
               ))
             }
           })
@@ -318,7 +318,7 @@ export const AsupInternalTable = ({
     if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     // Check new column has no colspan
     if (rowHeaderColumns === bodyData[0].rows[0].cells.length - 1) return;
-    if (headerData.rows.some(r => (r.cells[rowHeaderColumns + 1].colSpan ?? 1) !== 1)) return;
+    if (headerData.rows.some(r => (r.cells[rowHeaderColumns].colSpan ?? 1) !== 1)) return;
     returnData({ rowHeaderColumns: rowHeaderColumns + 1 });
   }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
