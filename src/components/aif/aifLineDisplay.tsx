@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
-import { AioExternalSingle, AioIconButton, AioSelect } from "../aio";
+import { AioExternalSingle, AioIconButton, AioSelect, AioString } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
 import { AifBlockLine } from "./aifInterface";
+import { replaceBlockText } from "./replaceBlockText";
 
 interface AifLineDisplayProps {
   aifid?: string,
@@ -27,6 +28,7 @@ export const AifLineDisplay = ({
   left,
   centre,
   right,
+  externalSingles,
   addBelow,
   canEdit,
   canRemove,
@@ -54,8 +56,32 @@ export const AifLineDisplay = ({
     setLine(newLine);
   }, [addBelow, aifid, canEdit, canMove, canRemove, centre, left, right, setLine]);
 
+  // Set up post replacement view
+  const [displayLeft, setDisplayLeft] = useState<string | false | undefined>(left);
+  const [displayCentre, setDisplayCentre] = useState<string | false | undefined>(centre);
+  const [displayRight, setDisplayRight] = useState<string | false | undefined>(right);
+
+  // Update for replacements
+  const processReplacement = useCallback((text: string | false | undefined): string | false => {
+    if (typeof text !== "string") return false;
+    // Process external replacements
+    if (externalSingles !== undefined && externalSingles.length > 0) {
+      externalSingles.forEach(repl => {
+        if (repl.oldText !== undefined && repl.oldText !== "" && repl.newText !== undefined) {
+          let { newText, updated } = replaceBlockText(text, repl);
+          if (updated) text = newText;
+        }
+      });
+    }
+    return text;
+  }, [externalSingles]);
+
+  useEffect(() => setDisplayLeft(processReplacement(left)), [left, processReplacement]);
+  useEffect(() => setDisplayCentre(processReplacement(centre)), [centre, processReplacement]);
+  useEffect(() => setDisplayRight(processReplacement(right)), [right, processReplacement]);
+
   return (
-    <div className={`aif-line ${(canEdit === false || typeof setLine !== "function") ? 'aif-readonly' : ''}`} style={{ ...style }}>
+    <div className={`aif-line ${(canEdit === false || typeof setLine !== "function") ? 'aif-readonly' : ''}`}>
       {showOptions &&
         <AsupInternalWindow
           Title="Line options"
@@ -103,43 +129,67 @@ export const AifLineDisplay = ({
               } : undefined}
             />
           </div>
+          <OriginalText
+            label="Left text"
+            text={left}
+            setText={(ret) => returnData({ left: ret })}
+          />
+          <OriginalText
+            label="Centre text"
+            text={centre}
+            setText={(ret) => returnData({ centre: ret })}
+          />
+          <OriginalText
+            label="Right text"
+            text={right}
+            setText={(ret) => returnData({ right: ret })}
+          />
         </AsupInternalWindow>
       }
 
       <div className="aif-line-buttons" />
-      <div className="aif-line-item-holder">
-        {typeof left === "string" &&
+      <div className="aif-line-item-holder" style={{ ...style }}>
+        {typeof displayLeft === "string" &&
           <div
+            className={`aif-line-item ${displayLeft !== left ? "aif-readonly" : ""}`}
             style={{ width: typeof centre !== "string" && typeof right !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
           >
             <AsupInternalEditor
-              value={left}
-              setValue={typeof setLine === "function" ? (ret) => returnData({ left: ret }) : undefined}
+              value={displayLeft}
+              setValue={typeof setLine === "function" && displayLeft === left
+                ? (ret) => returnData({ left: ret })
+                : undefined}
               showStyleButtons={true}
               styleMap={styleMap}
             />
           </div>
         }
-        {typeof centre === "string" &&
+        {typeof displayCentre === "string" &&
           <div
+            className={`aif-line-item ${displayCentre !== centre ? "aif-readonly" : ""}`}
             style={{ flexGrow: 1 }}
           >
             <AsupInternalEditor
-              value={centre}
-              setValue={typeof setLine === "function" ? (ret) => returnData({ centre: ret }) : undefined}
+              value={displayCentre}
+              setValue={typeof setLine === "function" && displayCentre === centre
+                ? (ret) => returnData({ centre: ret })
+                : undefined}
               textAlignment={"center"}
               showStyleButtons={true}
               styleMap={styleMap}
             />
           </div>
         }
-        {typeof right === "string" &&
+        {typeof displayRight === "string" &&
           <div
+            className={`aif-line-item ${displayRight !== right ? "aif-readonly" : ""}`}
             style={{ width: typeof centre !== "string" && typeof left !== "string" ? "100%" : typeof centre !== "string" ? "50%" : "33%" }}
           >
             <AsupInternalEditor
-              value={right}
-              setValue={typeof setLine === "function" ? (ret) => returnData({ right: ret }) : undefined}
+              value={displayRight}
+              setValue={typeof setLine === "function" && displayRight === right
+                ? (ret) => returnData({ right: ret })
+                : undefined}
               textAlignment={"right"}
               showStyleButtons={styleMap !== undefined}
               styleMap={styleMap}
@@ -156,3 +206,19 @@ export const AifLineDisplay = ({
     </div>
   );
 }
+
+const OriginalText = (
+  { label, text, setText }:
+    { label: string, text: string | false | undefined, setText: (ret: string) => void }
+): JSX.Element => {
+  if (typeof text !== "string") return <></>;
+  else return (
+    <div className="aiw-body-row">
+      <AioString
+        label={label}
+        value={text}
+        setValue={setText}
+      />
+    </div>
+  );
+};
