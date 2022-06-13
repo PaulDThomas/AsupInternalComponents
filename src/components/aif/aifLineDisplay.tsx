@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
-import { AioExternalSingle, AioIconButton, AioSelect, AioString } from "../aio";
+import { AioExternalSingle, AioIconButton, AioSelect } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
 import { AifBlockLine } from "./aifInterface";
@@ -133,6 +133,7 @@ export const AifLineDisplay = ({
             label="Left text"
             text={left}
             setText={(ret) => returnData({ left: ret })}
+            styleMap={styleMap}
           />
           <OriginalText
             label="Centre text"
@@ -208,16 +209,18 @@ export const AifLineDisplay = ({
 }
 
 const OriginalText = (
-  { label, text, setText }:
-    { label: string, text: string | false | undefined, setText: (ret: string) => void }
+  { label, text, setText, styleMap }:
+    { label: string, text: string | false | undefined, setText: (ret: string) => void, styleMap?: AieStyleMap }
 ): JSX.Element => {
   if (typeof text !== "string") return <></>;
   else return (
     <div className="aiw-body-row">
-      <AioString
-        label={label}
+      <div className={"aio-label"}>Unprocessed text: </div>
+      <AsupInternalEditor
         value={text}
         setValue={setText}
+        showStyleButtons={styleMap !== undefined}
+        styleMap={styleMap}
       />
     </div>
   );
