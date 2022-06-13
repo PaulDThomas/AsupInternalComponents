@@ -22,7 +22,7 @@
   flex-direction: row;
 }
 
-.aif-line.aif-readonly .aif-line-item-holder,
+.aif-line.aif-readonly .aif-line-item,
 .aif-line-item.aif-readonly {
   /* background-color: rgb(240, 221, 168); */
   background-color: #d3d3d329;
