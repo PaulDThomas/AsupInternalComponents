@@ -129,7 +129,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
-      justifyText: cellUpdate.justifyText,
+      justifyText: cellUpdate.justifyText ?? justifyText,
       comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
@@ -142,7 +142,7 @@ export const AitCell = ({
       spaceAfterSpan: spaceAfterSpan,
     };
     setCellData!(r);
-  }, [aitid, colSpan, colWidth, comments, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, spaceAfterRepeat, spaceAfterSpan, text, textIndents]);
+  }, [aitid, colSpan, colWidth, comments, justifyText, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, spaceAfterRepeat, spaceAfterSpan, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
