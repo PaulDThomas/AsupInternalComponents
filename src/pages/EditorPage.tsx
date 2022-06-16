@@ -3,23 +3,29 @@ import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components';
 
 export const EditorPage = () => {
-  const [text, setText] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
+  const [text1, setText1] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
+  const [text2, setText2] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
+  const [text3, setText3] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
+  const [text4, setText4] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
 
   const dothing = () => {
     console.log("Update");
     var newThing = "<p color='red'>Here</p><span style='color:red'>ref</span>";
-    setText(newThing);
+    setText4(newThing);
   }
 
   const save = () => {
-    window.localStorage.setItem('content', JSON.stringify(text));
+    window.localStorage.setItem('content', JSON.stringify({text1, text2, text3, text4}));
     console.log("Saved: ");
-    console.log(text);
+    console.log(text4);
   }
 
   const load = () => {
     var saved = JSON.parse(window.localStorage.getItem('content') ?? "");
-    setText(saved);
+    setText1(saved.text1);
+    setText2(saved.text2);
+    setText3(saved.text3);
+    setText4(saved.text4);
   }
 
   const thisStyleMap = {
@@ -27,7 +33,6 @@ export const EditorPage = () => {
     Optional: { css: { color: "green", fontWeight: "100", fontFamily: "serif", fontSize: "16pt" }, aieExclude: ["Editable", "Notes"] },
     Notes: { css: { color: "blue", fontSize: "16pt" }, aieExclude: ["Editable", "Optional"] },
   };
-
 
   let locn = useLocation();
 
@@ -43,8 +48,8 @@ export const EditorPage = () => {
           <tr>
             <td>
               <AsupInternalEditor
-                value={text}
-                setValue={setText}
+                value={text1}
+                setValue={setText1}
                 showStyleButtons={true}
                 style={{ width: "195px", height: "100%" }}
                 textAlignment={"left"}
@@ -58,8 +63,8 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
-                value={text}
-                setValue={setText}
+                value={text2}
+                setValue={setText2}
                 showStyleButtons={true}
                 style={{ width: "195px", height: "100%" }}
                 textAlignment={"decimal"}
@@ -73,8 +78,8 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
-                value={text}
-                setValue={setText}
+                value={text3}
+                setValue={setText3}
                 showStyleButtons={true}
                 style={{ width: "196px", height: "100%" }}
                 textAlignment={"center"}
@@ -86,8 +91,8 @@ export const EditorPage = () => {
       </table>
 
       <AsupInternalEditor
-        value={text}
-        setValue={setText}
+        value={text4}
+        setValue={setText4}
         showStyleButtons={true}
         style={{ width: "600px", height: "100%" }}
         textAlignment={"right"}
@@ -104,9 +109,15 @@ export const EditorPage = () => {
         <button onClick={save}>save</button>
         <button onClick={load}>load</button>
         <h5>Text</h5>
-        <pre>{text}</pre>
+        <pre>{text1}</pre>
+        <pre>{text2}</pre>
+        <pre>{text3}</pre>
+        <pre>{text4}</pre>
         <h5>HTML</h5>
-        <p dangerouslySetInnerHTML={{ __html: text }}></p>
+        <p dangerouslySetInnerHTML={{ __html: text1 }}></p>
+        <p dangerouslySetInnerHTML={{ __html: text2 }}></p>
+        <p dangerouslySetInnerHTML={{ __html: text3 }}></p>
+        <p dangerouslySetInnerHTML={{ __html: text4 }}></p>
       </div>
     </div>
   );
