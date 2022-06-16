@@ -51,6 +51,5 @@ describe('Check prependCells', () => {
       ret.push({ cells: Array(repi+2).fill({...newCell(), text: `Added:${repi}`})});
       lastRowCount = ret.length;
     }
-    console.log(ret);
   });
 });

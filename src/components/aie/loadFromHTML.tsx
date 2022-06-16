@@ -32,7 +32,8 @@ export const loadFromHTML = (s: string, editable?: boolean): ContentState => {
         inlineStyleRanges: JSON.parse(child.dataset.inlineStyleRanges ?? "[]"),
         entityRanges: [],
       };
-      rawBlocks.push(rawBlock);
+      // Seems to be a problem here for testing, not sure why the if is required...
+      if (rawBlocks !== undefined) rawBlocks.push(rawBlock);
     }
     let state = convertFromRaw({ blocks: rawBlocks, entityMap: initialBlocks.entityMap });
     return state;

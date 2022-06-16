@@ -38,15 +38,62 @@ export const EditorPage = () => {
         padding: "1rem",
       }}
     >
+      <table>
+        <tbody>
+          <tr>
+            <td>
+              <AsupInternalEditor
+                value={text}
+                setValue={setText}
+                showStyleButtons={true}
+                style={{ width: "195px", height: "100%" }}
+                textAlignment={"left"}
+                styleMap={thisStyleMap}
+              />
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>
+              <AsupInternalEditor
+                value={text}
+                setValue={setText}
+                showStyleButtons={true}
+                style={{ width: "195px", height: "100%" }}
+                textAlignment={"decimal"}
+                styleMap={thisStyleMap}
+              />
+            </td>
+            <td></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td></td>
+            <td>
+              <AsupInternalEditor
+                value={text}
+                setValue={setText}
+                showStyleButtons={true}
+                style={{ width: "196px", height: "100%" }}
+                textAlignment={"center"}
+                styleMap={thisStyleMap}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
 
       <AsupInternalEditor
         value={text}
         setValue={setText}
         showStyleButtons={true}
-        style={{ width: "298px", height: "100%" }}
-        textAlignment={"left"}
+        style={{ width: "600px", height: "100%" }}
+        textAlignment={"right"}
         styleMap={thisStyleMap}
       />
+
       <div style={{
         marginTop: "1rem",
         padding: "1rem",
