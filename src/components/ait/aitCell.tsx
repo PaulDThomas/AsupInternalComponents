@@ -121,7 +121,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
-    justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal",
+    justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null,
     comments?: string,
     colWidth?: number
     textIndents?: number
@@ -129,7 +129,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
-      justifyText: cellUpdate.justifyText ?? justifyText,
+      justifyText: cellUpdate.justifyText === null ? undefined : cellUpdate.justifyText ?? justifyText,
       comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
@@ -226,12 +226,13 @@ export const AitCell = ({
                 value={justifyText === undefined ? "Default" : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)}
                 availableValues={["Default", "Left", "Center", "Right", "Decimal"]}
                 setValue={isNotRepeat ? (ret) => {
-                  let newJ: DraftComponent.Base.DraftTextAlignment | "decimal" | undefined = undefined;
+                  let newJ: DraftComponent.Base.DraftTextAlignment | "decimal" | null | undefined = undefined;
                   switch (ret) {
                     case "Left": newJ = "left"; break;
                     case "Right": newJ = "right"; break;
                     case "Center": newJ = "center"; break;
                     case "Decimal": newJ = "decimal"; break;
+                    case "Default": newJ = null; break;
                     default: break;
                   }
                   returnData({ justifyText: newJ });
