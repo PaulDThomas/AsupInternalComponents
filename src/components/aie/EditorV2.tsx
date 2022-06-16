@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { ColouredText } from ".";
 
 interface iEditorV2 {
-  text: string | ColouredText,
-  setText?: (ret: ColouredText) => void,
+  text: string,
+  setText?: (ret: string) => void,
   allowNewLine?: boolean,
   textAlignment?: "left" | "center" | "decimal" | "right",
   decimalAlignPercent?: number,
@@ -12,14 +11,25 @@ interface iEditorV2 {
 export const EditorV2 = ({
   text,
   setText,
-  allowNewLine=true,
-  textAlignment="left",
-  decimalAlignPercent=60,
+  allowNewLine = true,
+  textAlignment = "decimal",
+  decimalAlignPercent = 60,
 }: iEditorV2): JSX.Element => {
 
   // Set up reference to inner div
   const divRef = useRef<HTMLDivElement | null>(null);
   const [currentText, setCurrentText] = useState<string>("");
+  useEffect(() => {
+    setCurrentText(text);
+    if (divRef.current) divRef.current.textContent = text;
+  }, [text]);
+
+  const returnData = useCallback((ret:{text?: string}) => {
+    // Do nothing if there is nothing to do
+    if (typeof setText !== "function") return;
+    // Update via parent function
+    setText(ret.text ?? text ?? "");
+  }, [setText, text]);
 
   // Work out backgroup colour and border
   const [inFocus, setInFocus] = useState<boolean>(false);
@@ -225,6 +235,9 @@ export const EditorV2 = ({
 
   function handleBlur(e: React.FocusEvent<HTMLDivElement>) {
     setInFocus(false);
+    if (typeof setText === "function") {
+      returnData({text:currentText});
+    }
   }
 
   return (
@@ -237,7 +250,7 @@ export const EditorV2 = ({
       onBlur={handleBlur}
     >
       <div className='aie-editing'
-        contentEditable
+        contentEditable={typeof setText === "function" || true}
         suppressContentEditableWarning
         ref={divRef}
         style={{

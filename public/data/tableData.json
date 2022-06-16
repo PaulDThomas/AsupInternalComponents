@@ -109,13 +109,15 @@
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0
+              "textIndents": 0,
+              "justifyText": "decimal" 
             },
             {
               "text": "!!xval!!",
               "colSpan": 1,
               "rowSpan": 1,
-              "textIndents": 0
+              "textIndents": 0,
+              "justifyText": "decimal" 
             }
           ]
         }

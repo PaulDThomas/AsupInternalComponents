@@ -10,7 +10,7 @@ import { TableSettingsContext } from "./AsupInternalTable";
 interface AitCellProps {
   aitid: string,
   text: string,
-  justifyText?: DraftComponent.Base.DraftTextAlignment,
+  justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal",
   comments: string,
   rowSpan: number,
   colSpan: number,
@@ -121,7 +121,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
-    justifyText?: DraftComponent.Base.DraftTextAlignment,
+    justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal",
     comments?: string,
     colWidth?: number
     textIndents?: number
@@ -224,13 +224,14 @@ export const AitCell = ({
               <AioSelect
                 label="Justify text"
                 value={justifyText === undefined ? "Default" : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)}
-                availableValues={["Default", "Left", "Center", "Right"]}
+                availableValues={["Default", "Left", "Center", "Right", "Decimal"]}
                 setValue={isNotRepeat ? (ret) => {
-                  let newJ: DraftComponent.Base.DraftTextAlignment | undefined = undefined;
+                  let newJ: DraftComponent.Base.DraftTextAlignment | "decimal" | undefined = undefined;
                   switch (ret) {
                     case "Left": newJ = "left"; break;
                     case "Right": newJ = "right"; break;
                     case "Center": newJ = "center"; break;
+                    case "Decimal": newJ = "decimal"; break;
                     default: break;
                   }
                   returnData({ justifyText: newJ });

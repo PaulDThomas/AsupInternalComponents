@@ -1,12 +1,8 @@
 import { convertToRaw, DraftHandleValue, DraftStyleMap, Editor, EditorState, Modifier } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AieStyleButtonRow, EditorV2, loadFromHTML, saveToHTML, styleMapToDraft, styleMapToExclude } from ".";
 import './aie.css';
-import { AieStyleButtonRow } from "./AieStyleButtonRow";
-import { loadFromHTML } from "./loadFromHTML";
-import { saveToHTML } from "./saveToHTML";
-import { styleMapToDraft } from "./styleMapToDraft";
-import { styleMapToExclude } from "./styleMapToExclude";
 
 export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
 export interface AieStyleExcludeMap { [styleName: string]: string[] };
@@ -17,7 +13,8 @@ interface AsupInternalEditorProps {
   setValue?: (ret: string) => void,
   style?: React.CSSProperties,
   styleMap?: AieStyleMap,
-  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment,
+  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | "decimal",
+  decimalAlignPercent?: number,
   showStyleButtons?: boolean,
   editable?: boolean,
 };
@@ -30,9 +27,12 @@ export const AsupInternalEditor = ({
   textAlignment,
   showStyleButtons,
   editable,
+  decimalAlignPercent,
 }: AsupInternalEditorProps) => {
   /** Current editor state */
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
+  const [editorV2Text, setEditorV2Text] = useState("");
+  useEffect(() => setEditorV2Text(value), [value]);
   /** Current button state */
   const [buttonState, setButtonState] = useState("hidden");
 
@@ -49,12 +49,18 @@ export const AsupInternalEditor = ({
   const onBlur = useCallback(() => {
     setButtonState("hidden");
     if (typeof (setValue) === "function") {
-      setValue(
-        saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
-      );
+      if (textAlignment !== "decimal") {
+
+        setValue(
+          saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
+          );
+        }
+        else {
+          setValue(editorV2Text);
+        }
     }
 
-  }, [editorState, setValue]);
+  }, [editorState, editorV2Text, setValue, textAlignment]);
 
   // Initial Text loading/update
   useEffect(() => {
@@ -123,14 +129,24 @@ export const AsupInternalEditor = ({
         onBlur={onBlur}
         onFocus={onFocus}
       >
-        <Editor
-          customStyleMap={currentStyleMap.current}
-          editorState={editorState}
-          onChange={setEditorState}
-          textAlignment={textAlignment}
-          readOnly={editable === false || typeof setValue !== "function"}
-          handlePastedText={handlePastedText}
-        />
+        {textAlignment === "decimal"
+          ?
+          <EditorV2
+            text={editorV2Text}
+            setText={setEditorV2Text}
+            textAlignment={textAlignment}
+            decimalAlignPercent={decimalAlignPercent}
+          />
+          :
+          <Editor
+            customStyleMap={currentStyleMap.current}
+            editorState={editorState}
+            onChange={setEditorState}
+            textAlignment={textAlignment}
+            readOnly={editable === false || typeof setValue !== "function"}
+            handlePastedText={handlePastedText}
+          />
+        }
       </div>
 
       {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
