@@ -2,9 +2,9 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe("Initial page render", () => {
-  test('Renders menu', () => {
+  test('Renders menu', async () => {
     render(<App />);
-    const linkElement = screen.getByText(/Current/i);
+    const linkElement = screen.getByText(/^Current$/i);
     expect(linkElement).toBeInTheDocument();
   });
 })

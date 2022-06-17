@@ -31,7 +31,7 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Navigate replace to="/internalcomponents/" />} />
-          <Route path="/internalcomponents/" element={<TablePage />} />
+          <Route path="/internalcomponents/" element={<EditorPage />} />
           <Route path="/internalcomponents/block" element={<BlockPage />} />
           <Route path="/internalcomponents/editor" element={<EditorPage />} />
           <Route path="/internalcomponents/expander" element={<ExpanderPage />} />

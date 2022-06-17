@@ -202,7 +202,7 @@ export const AitHeader = ({
                 rowGroup: 0,
                 row: rows.findIndex(r => r.aitid === row.aitid),
                 column: -1,
-                rowRepeat: "",
+                rowRepeat: undefined,
                 colRepeat: "",
               }}
               spaceAfter={false}

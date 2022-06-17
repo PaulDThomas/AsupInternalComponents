@@ -10,7 +10,7 @@ import { TableSettingsContext } from "./AsupInternalTable";
 interface AitCellProps {
   aitid: string,
   text: string,
-  justifyText?: DraftComponent.Base.DraftTextAlignment,
+  justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal",
   comments: string,
   rowSpan: number,
   colSpan: number,
@@ -121,7 +121,7 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
     text?: string,
-    justifyText?: DraftComponent.Base.DraftTextAlignment,
+    justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null,
     comments?: string,
     colWidth?: number
     textIndents?: number
@@ -129,7 +129,7 @@ export const AitCell = ({
     const r: AitCellData = {
       aitid: aitid,
       text: cellUpdate.text ?? text,
-      justifyText: cellUpdate.justifyText,
+      justifyText: cellUpdate.justifyText === null ? undefined : cellUpdate.justifyText ?? justifyText,
       comments: cellUpdate.comments ?? comments,
       colSpan: colSpan,
       rowSpan: rowSpan,
@@ -142,7 +142,7 @@ export const AitCell = ({
       spaceAfterSpan: spaceAfterSpan,
     };
     setCellData!(r);
-  }, [aitid, colSpan, colWidth, comments, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, spaceAfterRepeat, spaceAfterSpan, text, textIndents]);
+  }, [aitid, colSpan, colWidth, comments, justifyText, repeatColSpan, repeatRowSpan, replacedText, rowSpan, setCellData, spaceAfterRepeat, spaceAfterSpan, text, textIndents]);
 
   // Show hide/buttons that trigger windows
   const aitShowButtons = () => { setButtonState(""); };
@@ -224,13 +224,15 @@ export const AitCell = ({
               <AioSelect
                 label="Justify text"
                 value={justifyText === undefined ? "Default" : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)}
-                availableValues={["Default", "Left", "Center", "Right"]}
+                availableValues={["Default", "Left", "Center", "Right", "Decimal"]}
                 setValue={isNotRepeat ? (ret) => {
-                  let newJ: DraftComponent.Base.DraftTextAlignment | undefined = undefined;
+                  let newJ: DraftComponent.Base.DraftTextAlignment | "decimal" | null | undefined = undefined;
                   switch (ret) {
                     case "Left": newJ = "left"; break;
                     case "Right": newJ = "right"; break;
                     case "Center": newJ = "center"; break;
+                    case "Decimal": newJ = "decimal"; break;
+                    case "Default": newJ = null; break;
                     default: break;
                   }
                   returnData({ justifyText: newJ });
