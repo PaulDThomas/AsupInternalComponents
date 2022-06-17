@@ -7,5 +7,6 @@ export function getHTMLfromV2Text(text: string, styleName: string): string {
     offset: 0,
     style: styleName
   };
-  return `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([isr])}'>${text}</div>`;
+  return `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([isr])}'><span classname="${styleName}">${text}</span></div>`;
+  //c
 }
