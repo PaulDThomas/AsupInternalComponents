@@ -12,13 +12,12 @@ export function drawInnerHtml(
 ) {
   if (!divRef.current)
     return;
-  let fullText = initialText ?? divRef.current.textContent?.replace(/[\u202F|\u00A0]/g, ' ') ?? "";
+  let fullText = (initialText ?? divRef.current.textContent ?? "").replace(/[\u202F|\u00A0]/g, ' ').trim();
   setCurrentText(fullText);
   // Get cursor position
   let caretPosn = getCaretPosition(divRef.current);
   let decimal = fullText.match(/\./)?.index;
   // Modification because of the key pressed
-  // console.log(`fullText (${fullText?.length}): ${fullText}, zeroWidthPosn: ${fullText?.match(/[\u200B]/)?.index}, position: ${caretPosn.end}, decimal: ${decimal}`);
   if (e !== undefined) {
     if (e.key === "ArrowRight")
       caretPosn.end++;
@@ -80,7 +79,6 @@ export function drawInnerHtml(
         ;
     }
   });
-  // console.log(`Boundaries: ${fixedBoundaries.map(b => `${b.type}:${b.start}-${b.end}:${b.span?.textContent}`).join('|')}`);
 
   // Create preceeding text if decimal aligned
   if (textAlignment === "decimal") {
@@ -133,7 +131,6 @@ export function drawInnerHtml(
     range.setEnd(emptyNode, 0);
     range.collapse();
   }
-  // console.log(`Final text (${divRef.current.textContent?.length}): ${divRef.current.textContent} `);
   if (e !== undefined) {
     e.stopPropagation();
     e.preventDefault();

@@ -53,11 +53,11 @@ export const AsupInternalEditor = ({
 
         setValue(
           saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current)
-          );
-        }
-        else {
-          setValue(editorV2Text);
-        }
+        );
+      }
+      else {
+        setValue(editorV2Text);
+      }
     }
 
   }, [editorState, editorV2Text, setValue, textAlignment]);
@@ -133,7 +133,7 @@ export const AsupInternalEditor = ({
           ?
           <EditorV2
             text={editorV2Text}
-            setText={editable === true || typeof setValue !== "function" ? setEditorV2Text : undefined}
+            setText={editable !== false || typeof setValue !== "function" ? setEditorV2Text : undefined}
             customStyleMap={styleMap}
             textAlignment={textAlignment}
             decimalAlignPercent={decimalAlignPercent}
@@ -150,7 +150,7 @@ export const AsupInternalEditor = ({
         }
       </div>
 
-      {!(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
+      {textAlignment !== "decimal" && !(editable === false || typeof setValue !== "function") && buttonState !== "hidden" &&
         <div className={`aie-button-position ${textAlignment !== undefined ? textAlignment : "left"}`}>
           <div className="aie-button-holder">
             <AieStyleButtonRow

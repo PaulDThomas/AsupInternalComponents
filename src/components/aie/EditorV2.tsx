@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AieStyleMap, drawInnerHtml, getCaretPosition } from ".";
+import { AieStyleButtonRow, AieStyleMap, drawInnerHtml, getCaretPosition } from ".";
+import { getHTMLfromV2Text } from "./functions/getHTMLfromV2Text";
+import { getV2TextStyle } from "./functions/getV2TextStyle";
 
 interface iEditorV2 {
   text: string,
@@ -22,7 +24,7 @@ export const EditorV2 = ({
   // Set up reference to inner div
   const divRef = useRef<HTMLDivElement | null>(null);
   const [currentText, setCurrentText] = useState<string>("");
-  const [currentStyleName, setCurrentStyleName] =useState<string>("");
+  const [currentStyleName, setCurrentStyleName] = useState<string>("");
   const [currentStyle, setCurrentStyle] = useState<React.CSSProperties>({});
   useEffect(() => {
     let { newText, styleName } = getV2TextStyle(text);
@@ -136,65 +138,47 @@ export const EditorV2 = ({
   }, [currentStyleName, customStyleMap]);
 
   return (
-    <div className='aie-line'
-      style={{
-        ...backBorder,
-        ...just,
-        ...currentStyle,
-      }}
-      onFocusCapture={handleFocus}
-      onBlur={handleBlur}
-    >
-      <div className='aie-editing'
-        contentEditable={typeof setText === "function"}
-        suppressContentEditableWarning
-        spellCheck={false}
-        ref={divRef}
+    <div className='aiev2-outer'>
+      <div className='aiev2-line'
         style={{
-          outline: 0,
-          display: 'flex',
-          alignContent: 'start',
-          verticalAlign: 'top',
-          margin: "-1px",
+          ...backBorder,
+          ...just,
+          ...currentStyle,
         }}
-        onKeyUpCapture={handleKeyUp}
-        onSelectCapture={handleSelect}
-        onKeyDownCapture={handleKeyDown}
-        onBlurCapture={handleBlur}
-        onFocus={handleFocus}
+        onFocusCapture={handleFocus}
+        onBlur={handleBlur}
       >
+        <div className='aiev2-editing'
+          contentEditable={typeof setText === "function"}
+          suppressContentEditableWarning
+          spellCheck={false}
+          ref={divRef}
+          style={{
+            outline: 0,
+            display: 'flex',
+            alignContent: 'start',
+            verticalAlign: 'top',
+            margin: "-1px",
+          }}
+          onKeyUpCapture={handleKeyUp}
+          onSelectCapture={handleSelect}
+          onKeyDownCapture={handleKeyDown}
+          onBlurCapture={handleBlur}
+          onFocus={handleFocus}
+        >
+        </div >
       </div >
-    </div >
+      {inFocus &&
+        <div className='aie-button-position center'>
+          <div className='aie-button-holder'>
+            <AieStyleButtonRow
+              styleList={Object.keys(customStyleMap || {})}
+              currentStyle={currentStyleName}
+              applyStyleFunction={(ret: string) => setCurrentStyleName(ret)}
+            />
+          </div>
+        </div>
+      }
+    </div>
   )
-}
-
-function getV2TextStyle(text: string): { newText: string, styleName: string } {
-  // Do nothing if there is nothing to do
-  if (!text.includes('classname')) return { newText: text, styleName: "" };
-  // Create element so you can read the things
-  let d = document.createElement('div');
-  d.innerHTML = text;
-  let styleName: string = "";
-  // Any style info will have been in the first child dataset
-  if ((d.children[0] as HTMLDivElement).dataset.inlineStyleRanges) {
-    // Get the inline style range, but only interested in the style name
-    let isr = JSON.parse((d.children[0] as HTMLDivElement).dataset.inlineStyleRanges ?? "[]");
-    // Add the style name
-    styleName = isr[0].style;
-  }
-  return {
-    newText: d.textContent ?? "",
-    styleName,
-  }
-}
-
-function getHTMLfromV2Text(text:string, styleName: string): string {
-  if (styleName === "") return text;
-  let isr = {
-    length: text.length,
-    offset: 0,
-    style: styleName
-  }
-  return `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([isr])}'>${text}</div>`;
-
 }
