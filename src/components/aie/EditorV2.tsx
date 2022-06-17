@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { drawInnerHtml, getCaretPosition } from ".";
+import { AieStyleMap, drawInnerHtml, getCaretPosition } from ".";
 
 interface iEditorV2 {
   text: string,
   setText?: (ret: string) => void,
+  customStyleMap?: AieStyleMap,
   allowNewLine?: boolean,
   textAlignment?: "left" | "center" | "decimal" | "right",
   decimalAlignPercent?: number,
@@ -12,6 +13,7 @@ interface iEditorV2 {
 export const EditorV2 = ({
   text,
   setText,
+  customStyleMap,
   allowNewLine = false,
   textAlignment = "decimal",
   decimalAlignPercent = 60,
@@ -20,15 +22,19 @@ export const EditorV2 = ({
   // Set up reference to inner div
   const divRef = useRef<HTMLDivElement | null>(null);
   const [currentText, setCurrentText] = useState<string>("");
+  const [currentStyleName, setCurrentStyleName] =useState<string>("");
+  const [currentStyle, setCurrentStyle] = useState<React.CSSProperties>({});
   useEffect(() => {
-    setCurrentText(text);
+    let { newText, styleName } = getV2TextStyle(text);
+    setCurrentText(newText);
+    setCurrentStyleName(styleName);
     drawInnerHtml(
       divRef,
       setCurrentText,
       getCaretPosition,
       textAlignment,
       decimalAlignPercent,
-      text,
+      newText,
     );
   }, [decimalAlignPercent, text, textAlignment]);
 
@@ -97,10 +103,7 @@ export const EditorV2 = ({
     let sel: Selection | null = window.getSelection();
     if (sel && divRef.current) {
       let range: Range = sel.getRangeAt(0);
-
       if (range.collapsed) {
-
-        // Update fullText property
         drawInnerHtml(
           divRef,
           setCurrentText,
@@ -119,24 +122,31 @@ export const EditorV2 = ({
     // if (divRef.current) console.log(getCaretPosition(divRef.current));
   }
 
-  function handleBlur(e: React.FocusEvent<HTMLDivElement>) {
+  const handleBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
     setInFocus(false);
     if (typeof setText === "function") {
-      returnData({ text: currentText });
+      returnData({ text: getHTMLfromV2Text(currentText, currentStyleName) });
     }
-  }
+  }, [currentStyleName, currentText, returnData, setText]);
+
+  useEffect(() => {
+    let ix = Object.keys(customStyleMap ?? {}).findIndex(c => c === currentStyleName);
+    if (ix === -1) return;
+    setCurrentStyle(customStyleMap![currentStyleName].css);
+  }, [currentStyleName, customStyleMap]);
 
   return (
     <div className='aie-line'
       style={{
         ...backBorder,
         ...just,
+        ...currentStyle,
       }}
       onFocusCapture={handleFocus}
       onBlur={handleBlur}
     >
       <div className='aie-editing'
-        contentEditable={typeof setText === "function" || true}
+        contentEditable={typeof setText === "function"}
         suppressContentEditableWarning
         spellCheck={false}
         ref={divRef}
@@ -156,4 +166,35 @@ export const EditorV2 = ({
       </div >
     </div >
   )
+}
+
+function getV2TextStyle(text: string): { newText: string, styleName: string } {
+  // Do nothing if there is nothing to do
+  if (!text.includes('classname')) return { newText: text, styleName: "" };
+  // Create element so you can read the things
+  let d = document.createElement('div');
+  d.innerHTML = text;
+  let styleName: string = "";
+  // Any style info will have been in the first child dataset
+  if ((d.children[0] as HTMLDivElement).dataset.inlineStyleRanges) {
+    // Get the inline style range, but only interested in the style name
+    let isr = JSON.parse((d.children[0] as HTMLDivElement).dataset.inlineStyleRanges ?? "[]");
+    // Add the style name
+    styleName = isr[0].style;
+  }
+  return {
+    newText: d.textContent ?? "",
+    styleName,
+  }
+}
+
+function getHTMLfromV2Text(text:string, styleName: string): string {
+  if (styleName === "") return text;
+  let isr = {
+    length: text.length,
+    offset: 0,
+    style: styleName
+  }
+  return `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([isr])}'>${text}</div>`;
+
 }

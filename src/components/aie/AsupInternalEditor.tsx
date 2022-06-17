@@ -133,7 +133,8 @@ export const AsupInternalEditor = ({
           ?
           <EditorV2
             text={editorV2Text}
-            setText={setEditorV2Text}
+            setText={editable === true || typeof setValue !== "function" ? setEditorV2Text : undefined}
+            customStyleMap={styleMap}
             textAlignment={textAlignment}
             decimalAlignPercent={decimalAlignPercent}
           />
