@@ -1,11 +1,14 @@
 import { convertToRaw, DraftHandleValue, DraftStyleMap, Editor, EditorState, Modifier } from "draft-js";
 import 'draft-js/dist/Draft.css';
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AieStyleButtonRow, EditorV2, loadFromHTML, saveToHTML, styleMapToDraft, styleMapToExclude } from ".";
 import './aie.css';
-
-export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
-export interface AieStyleExcludeMap { [styleName: string]: string[] };
+import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { EditorV2 } from "./EditorV2";
+import { AieStyleExcludeMap, AieStyleMap } from "./functions/aieInterface";
+import { loadFromHTML } from "./functions/loadFromHTML";
+import { saveToHTML } from "./functions/saveToHTML";
+import { styleMapToDraft } from "./functions/styleMapToDraft";
+import { styleMapToExclude } from "./functions/styleMapToExclude";
 
 /** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {

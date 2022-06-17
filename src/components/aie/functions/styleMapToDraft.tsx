@@ -1,5 +1,5 @@
 import { DraftStyleMap } from "draft-js";
-import { AieStyleMap } from "./AsupInternalEditor";
+import { AieStyleMap } from "./aieInterface";
 
 /**
  * Change AieStyle map into Draft-js version

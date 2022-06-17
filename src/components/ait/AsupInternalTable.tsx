@@ -6,8 +6,9 @@ import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatH
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
+import { TableSettingsContext } from "./context";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -21,13 +22,6 @@ interface AsupInternalTableProps {
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
 }
-
-let defaultSettings: AitOptionList = {
-  noRepeatProcessing: false,
-  showCellBorders: true,
-};
-
-export const TableSettingsContext = React.createContext(defaultSettings);
 
 /**
  * Table view for clinical table data

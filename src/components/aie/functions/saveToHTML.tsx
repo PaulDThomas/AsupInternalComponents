@@ -1,5 +1,5 @@
 import { DraftStyleMap, RawDraftContentState } from "draft-js";
-import { toHtml } from "../functions";
+import { toHtml } from "../../functions";
 import { htmlBlock } from "./htmlBlock";
 
 /**

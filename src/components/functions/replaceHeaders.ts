@@ -1,4 +1,4 @@
-import { getRawTextParts } from "../aie";
+import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
 import { appendCells } from "./appendCells";

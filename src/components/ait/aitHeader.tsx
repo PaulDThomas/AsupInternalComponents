@@ -4,7 +4,7 @@ import { newCell, newRow } from "../functions";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCellData, AitCellType, AitLocation, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { TableSettingsContext } from "./AsupInternalTable";
+import { TableSettingsContext } from "./context";
 
 interface AitHeaderProps {
   aitid: string,

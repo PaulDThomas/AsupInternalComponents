@@ -1,4 +1,4 @@
-import { AieStyleMap, AieStyleExcludeMap } from "./AsupInternalEditor";
+import { AieStyleMap, AieStyleExcludeMap } from "./aieInterface";
 
 /**
  * Returns style maps that are excluded from the given map

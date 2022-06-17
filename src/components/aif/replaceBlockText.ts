@@ -1,5 +1,5 @@
+import { newReplacedText } from '../aie/functions/newReplacedText';
 import { AioExternalSingle } from '../aio';
-import { newReplacedText } from '../aie';
 
 export const replaceBlockText = (text?: string | false, rep?: AioExternalSingle): { newText: string | false | undefined; updated: boolean; } => {
   // Stop processing

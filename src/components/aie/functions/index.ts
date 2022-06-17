@@ -1,4 +1,4 @@
-import { iColouredLine, iColourStyles, iStyleBlock } from "./aieInterface";
+import { iColouredLine, iColourStyles, iStyleBlock, AieStyleMap, AieStyleExcludeMap } from "./aieInterface";
 import { ColouredLine } from "./ColouredLine";
 import { ColouredText } from "./ColouredText";
 import { drawInnerHtml } from "./drawInnerHtml";
@@ -9,7 +9,7 @@ import { getHtmlString } from "./getHtmlString";
 import { getV2TextStyle } from "./getV2TextStyle";
 import { implodeLine } from "./implodeLine";
 
-export type { iColourStyles, iStyleBlock, iColouredLine };
+export type { iColourStyles, iStyleBlock, iColouredLine, AieStyleMap, AieStyleExcludeMap };
 export { ColouredLine, ColouredText, explodeLine, implodeLine, getHtmlString, getV2TextStyle, getHTMLfromV2Text };
 export { drawInnerHtml, getCaretPosition };
 
