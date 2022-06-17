@@ -220,6 +220,7 @@ export const AitCell = ({
                 style={isNotRepeat ? { border: '1px solid black', backgroundColor: 'white', borderRadius: '2px', marginRight: '0.5rem', paddingBottom: '4px' } : { border: 0 }}
                 showStyleButtons={tableSettings.cellStyles !== undefined}
                 styleMap={tableSettings.cellStyles}
+                textAlignment={justifyText}
               />
             </div>
             <div className="aiw-body-row">
