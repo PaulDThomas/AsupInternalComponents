@@ -5,7 +5,6 @@ import { AioExternalSingle } from '../aio';
 import "./aif.css";
 import { AifBlockLine, AifLineType } from './aifInterface';
 import { AifLineDisplay } from './aifLineDisplay';
-import { replaceBlockText } from './replaceBlockText';
 
 interface AsupInternalBlockProps {
   lines: AifBlockLine[]
@@ -115,41 +114,25 @@ export const AsupInternalBlock = ({
   }, [lines, returnData])
 
   return (
-    <div className="aif-block" style={{ ...style }}>
+    <div className="aif-block">
       {lines.map((l: AifBlockLine, li: number) => {
-        // Check for replacements 
-        let editable: boolean = true;
-        let left = l.left;
-        let centre = l.centre;
-        let right = l.right;
-        if (externalSingles !== undefined && externalSingles.length > 0) {
-          externalSingles.forEach(repl => {
-            if (repl.oldText !== undefined && repl.oldText !== "" && repl.newText !== undefined) {
-              let { newText: newLeft, updated: leftChange } = replaceBlockText(left, repl)
-              let { newText: newCentre, updated: centreChange } = replaceBlockText(centre, repl);
-              let { newText: newRight, updated: rightChange } = replaceBlockText(right, repl);
-              editable = !(leftChange || centreChange || rightChange);
-              if (leftChange) left = newLeft;
-              if (centreChange) centre = newCentre;
-              if (rightChange) right = newRight;
-            }
-          })
-        }
         return (
           <AifLineDisplay
             key={l.aifid ?? li}
             aifid={l.aifid}
-            left={left}
-            centre={centre}
-            right={right}
+            left={l.left}
+            centre={l.centre}
+            right={l.right}
             addBelow={l.addBelow}
-            canEdit={l.canEdit && editable}
+            canEdit={l.canEdit}
             canMove={l.canMove}
             canRemove={l.canRemove}
-            setLine={l.canEdit !== false && editable ? (ret) => updateLine(ret, li) : undefined}
+            externalSingles={externalSingles}
+            setLine={l.canEdit !== false ? (ret) => updateLine(ret, li) : undefined}
             addLine={(l.addBelow !== false && lines.length < (maxLines ?? 10)) ? () => addLine(li) : undefined}
             removeLine={(lines.length > (minLines ?? 1) && l.canEdit !== false && l.canRemove !== false) ? () => removeLine(li) : undefined}
             styleMap={styleMap}
+            style={style}
           />
         );
       })}
