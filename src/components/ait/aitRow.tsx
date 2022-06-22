@@ -97,15 +97,13 @@ export const AitRow = ({
                     menuItems={tableSettings.groupTemplateNames}
                   />
                 }
-                {replacements !== undefined &&
                   <AioIconButton
                     tipText='Row group options'
                     iconName='aio-button-row-group'
                     onClick={() => { setShowRowGroupOptions(!showRowGroupOptions) }}
                   />
-                }
                 {/* Row group options window */}
-                {showRowGroupOptions && replacements !== undefined &&
+                {showRowGroupOptions && 
                   <AsupInternalWindow
                     key="RowGroup"
                     Title={(rowGroupWindowTitle ?? "Row group options")}
