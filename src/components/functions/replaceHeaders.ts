@@ -172,16 +172,16 @@ export const replaceHeaders = (
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
               let targetCellAbove = newHeaderRows[rj].cells[ci + addedCols];
-              if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
-              // Check that the target is showing
-              let lookback = 0;
-              while (targetCellAbove.colSpan === 0 && lookback < ci) {
-                // Move to previous cell
-                lookback++;
-                targetCellAbove = rows[rj].cells[ci - lookback];
-              }
               // Update the target to have minimum repeatColSpan
               if (targetCellAbove !== undefined) {
+                if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
+                // Check that the target is showing
+                let lookback = 0;
+                while (targetCellAbove.colSpan === 0 && lookback < ci) {
+                  // Move to previous cell
+                  lookback++;
+                  targetCellAbove = rows[rj].cells[ci - lookback];
+                }
                 targetCellAbove.repeatColSpan = (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan!) + nIns;
                 let newCells2: AitCellData[] = [];
                 for (let nci = 0; nci < nIns + targetCell.colSpan - 1; nci++) {
@@ -193,7 +193,7 @@ export const replaceHeaders = (
                 }
                 newHeaderRows[rj].cells.splice(ci + addedCols - lookback + 1, 0, ...newCells2);
               }
-              
+
               // Not found !!!
               else {
                 console.warn("Have not found the target cell above the column header replacement");
