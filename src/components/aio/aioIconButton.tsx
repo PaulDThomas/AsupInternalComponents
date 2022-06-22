@@ -7,6 +7,7 @@ interface AioIconButtonProps {
   onClick?: (ret: string) => void
   iconName?: string,
   tipText?: string,
+  popUpTip?: boolean,
   menuItems?: string[],
   leftMenuOffset?: string,
   style?: React.CSSProperties,
@@ -16,6 +17,7 @@ export const AioIconButton = ({
   onClick,
   iconName,
   tipText,
+  popUpTip = false,
   menuItems,
   leftMenuOffset,
   style,
@@ -61,7 +63,7 @@ export const AioIconButton = ({
             }
           }}
         />
-        {tipText &&
+        {popUpTip && tipText &&
           <span className="aio-tiptext aio-tip-top">{tipText}</span>
         }
       </div>
