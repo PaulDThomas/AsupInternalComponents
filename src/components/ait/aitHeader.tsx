@@ -143,6 +143,7 @@ export const AitHeader = ({
     targetCell.colWidth = (targetCell.colWidth ?? 60) - (hideCell.colWidth ?? 60);
     // Show next cell
     hideCell.colSpan = 1;
+    if (hideCell.rowSpan === 0) hideCell.rowSpan = 1;
     // Done
     returnData({ rows: newRows });
   }, [returnData, rows]);
@@ -177,6 +178,7 @@ export const AitHeader = ({
     targetCell.rowSpan!--;
     // Show hidden cell
     hideCell.rowSpan = 1;
+    if (hideCell.colSpan === 0) hideCell.colSpan = 1;
     // Done
     returnData({ rows: newRows });
   }, [returnData, rows]);

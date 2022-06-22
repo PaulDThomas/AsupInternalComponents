@@ -156,6 +156,7 @@ export const AitRowGroup = ({
     targetCell.rowSpan!--;
     // Show hidden cell
     hideCell.rowSpan = 1;
+    if (hideCell.colSpan === 0) hideCell.colSpan = 1;
     // Done
     returnData({ rows: newRows });
   }, [returnData, rows]);
