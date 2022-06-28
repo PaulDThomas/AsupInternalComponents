@@ -1,5 +1,5 @@
-import { iStyleBlock } from "..";
-import {explodeLine } from "..";
+import { iStyleBlock } from "../functions/aieInterface";
+import { explodeLine } from "../functions/explodeLine";
 
 // Check that correct array is returned
 describe('Check explodeLine', () => {

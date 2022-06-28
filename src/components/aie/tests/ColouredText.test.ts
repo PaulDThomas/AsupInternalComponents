@@ -1,4 +1,4 @@
-import { ColouredText } from "..";
+import { ColouredText } from "../functions/ColouredText";
 
 // Regex from https://stackoverflow.com/questions/12014441/remove-every-white-space-between-tags-using-javascript
 // use as .replace(getMultiSpace, "$1$3")

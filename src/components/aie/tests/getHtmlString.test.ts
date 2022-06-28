@@ -1,4 +1,4 @@
-import {getHtmlString} from '..';
+import {getHtmlString} from '../functions/getHtmlString';
 
 describe('Test HTML string function', () => {
 
