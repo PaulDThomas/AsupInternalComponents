@@ -6,8 +6,9 @@ import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatH
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
+import { TableSettingsContext } from "./context";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -21,13 +22,6 @@ interface AsupInternalTableProps {
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
 }
-
-let defaultSettings: AitOptionList = {
-  noRepeatProcessing: false,
-  showCellBorders: true,
-};
-
-export const TableSettingsContext = React.createContext(defaultSettings);
 
 /**
  * Table view for clinical table data
@@ -192,23 +186,18 @@ export const AsupInternalTable = ({
     if (newHeader !== false && headerData !== false) {
       headerData.rows = newHeader.rows.map(r => {
         // Check for colSpan
-        if ((r.cells[ci + 1]?.colSpan ?? 1) === 0) {
+        if (ci >= 0 && (r.cells[ci + 1]?.colSpan ?? 1) === 0) {
           // Add in blank cell
           let n = newCell();
           n.colSpan = 0;
           r.cells.splice(ci + 1, 0, n);
           // Change colSpan on previous spanner
           // Check that the target is showing
-          let lookback = 0;
+          let lookback = 1;
+          while (lookback <= ci && (r.cells[ci - lookback].colSpan ?? 0) === 0) lookback++;
           let targetCellBefore = r.cells[ci];
           if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
-          while ((targetCellBefore?.colSpan ?? 0) === 0) {
-            // Move to previous cell
-            lookback++;
-            targetCellBefore = r.cells[ci - lookback];
-            if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
-          }
-          targetCellBefore.colSpan = targetCellBefore.colSpan + lookback + 1;
+          targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
         }
         else {
           r.cells.splice(ci + 1, 0, newCell());

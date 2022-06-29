@@ -1,8 +1,6 @@
-import { iColourStyles } from ".";
-import { ColouredLine } from ".";
-import { getHtmlString } from ".";
-
-
+import { iColourStyles } from "./aieInterface";
+import { ColouredLine } from "./ColouredLine";
+import { getHtmlString } from "./getHtmlString";
 
 // Class
 export class ColouredText {

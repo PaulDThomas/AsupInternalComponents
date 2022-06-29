@@ -4,7 +4,7 @@ import { AsupInternalEditor } from '../aie';
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
-import { TableSettingsContext } from "./AsupInternalTable";
+import { TableSettingsContext } from "./context";
 
 
 interface AitCellProps {
@@ -80,9 +80,12 @@ export const AitCell = ({
       || typeof (setCellData) !== "function"
       || replacedText !== undefined
   }, [readOnly, replacedText, setCellData]);
-  const isNotRepeat = useMemo<boolean>(() => location.colRepeat === undefined && location.rowRepeat === undefined, [location]);
+  const isNotRepeat = useMemo<boolean>(() =>
+    (location.colRepeat === undefined || location.colRepeat.match(/^[[\]0,]+$/) !== null) &&
+    (location.rowRepeat === undefined || location.rowRepeat.match(/^[[\]0,]+$/) !== null) 
+    , [location]);
 
-  const cellType = useMemo(() => {
+  const cellType = useMemo<AitCellType>(() => {
     let cellType = (location.tableSection === AitRowType.body) && (location.column < (tableSettings.rowHeaderColumns ?? 0))
       ?
       AitCellType.rowHeader
@@ -170,7 +173,6 @@ export const AitCell = ({
         onMouseOver={aitShowButtons}
         onMouseLeave={aitHideButtons}
       >
-
         <>
           <div style={{ position: "absolute", right: "-8px", visibility: (buttonState === "hidden" ? 'hidden' : 'visible') }}>
             {/* Option buttons  */}
@@ -218,7 +220,8 @@ export const AitCell = ({
                 style={isNotRepeat ? { border: '1px solid black', backgroundColor: 'white', borderRadius: '2px', marginRight: '0.5rem', paddingBottom: '4px' } : { border: 0 }}
                 showStyleButtons={tableSettings.cellStyles !== undefined}
                 styleMap={tableSettings.cellStyles}
-                 />
+                textAlignment={justifyText}
+              />
             </div>
             <div className="aiw-body-row">
               <AioSelect

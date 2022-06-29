@@ -1,4 +1,5 @@
-import { iColourStyles, iStyleBlock, ColouredLine } from "..";
+import { iColourStyles, iStyleBlock } from "../functions/aieInterface";
+import { ColouredLine } from "../functions/ColouredLine";
 
 // Regex from https://stackoverflow.com/questions/12014441/remove-every-white-space-between-tags-using-javascript
 // use as .replace(getMultiSpace, "$1$3")

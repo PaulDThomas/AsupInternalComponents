@@ -14,3 +14,6 @@ export interface iColouredLine {
   styles?: iColourStyles,
   styleBlocks?: iStyleBlock[],
 }
+
+export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
+export interface AieStyleExcludeMap { [styleName: string]: string[] };

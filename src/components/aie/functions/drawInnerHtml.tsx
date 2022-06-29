@@ -1,3 +1,4 @@
+import { fromHtml } from "../../functions";
 import React from "react";
 
 export function drawInnerHtml(
@@ -12,7 +13,10 @@ export function drawInnerHtml(
 ) {
   if (!divRef.current)
     return;
-  let fullText = (initialText ?? divRef.current.textContent ?? "").replace(/[\u202F|\u00A0]/g, ' ').trim();
+  // Decode any HTML here too... we are going to set textContent so this is safe
+  let fullText = fromHtml(initialText ?? divRef.current.textContent ?? "")
+    .replace(/[\u202F|\u00A0]/g, ' ')
+    .trim();
   setCurrentText(fullText);
   // Get cursor position
   let caretPosn = getCaretPosition(divRef.current);

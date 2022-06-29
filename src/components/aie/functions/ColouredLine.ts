@@ -1,7 +1,7 @@
-import { iColouredLine, iColourStyles, iStyleBlock } from ".";
-import { explodeLine } from ".";
-import { getHtmlString } from ".";
-import { implodeLine } from ".";
+import { iColouredLine, iColourStyles, iStyleBlock } from "./aieInterface";
+import { explodeLine } from "./explodeLine";
+import { getHtmlString } from "./getHtmlString";
+import { implodeLine } from "./implodeLine";
 
 export class ColouredLine {
   // Variables

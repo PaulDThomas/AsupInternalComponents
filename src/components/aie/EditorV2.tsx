@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AieStyleButtonRow, AieStyleMap, drawInnerHtml, getCaretPosition } from ".";
+import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { AieStyleMap, drawInnerHtml, getCaretPosition } from "./functions";
 import { getHTMLfromV2Text } from "./functions/getHTMLfromV2Text";
 import { getV2TextStyle } from "./functions/getV2TextStyle";
 
@@ -154,6 +155,7 @@ export const EditorV2 = ({
           spellCheck={false}
           ref={divRef}
           style={{
+            overflow: "hidden",
             outline: 0,
             display: 'flex',
             alignContent: 'start',
