@@ -1,14 +1,16 @@
+import { AieStyleMap } from "../aie/AsupInternalEditor";
 import React, { useCallback, useEffect, useState } from "react";
-import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
-import { AsupInternalWindow } from "../aiw";
-import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { TableSettingsContext } from "./context";
+import { AioExternalReplacements, AioExternalSingle } from "../aio/aioInterface";
+import { newCell } from "../functions/newCell";
+import { AioIconButton, AioComment, AioBoolean } from "../aio";
+import { headerPreProcess, repeatHeaders, bodyPreProcess, repeatRows, newRowGroup, newRow } from "../functions";
+import { TableSettingsContext } from "./aitContext";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,

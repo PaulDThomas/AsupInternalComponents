@@ -1,4 +1,4 @@
-import { fromHtml, toHtml } from '../functions';
+import { fromHtml, toHtml } from '../functions/tofromHtml';
 import React, { useCallback, useEffect, useState } from 'react';
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from './aioInterface';
 import { AioReplacementList } from './aioReplacementList';

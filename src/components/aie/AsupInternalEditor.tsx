@@ -4,11 +4,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import './aie.css';
 import { AieStyleButtonRow } from "./AieStyleButtonRow";
 import { EditorV2 } from "./EditorV2";
-import { AieStyleExcludeMap, AieStyleMap } from "./functions/aieInterface";
-import { loadFromHTML } from "./functions/loadFromHTML";
 import { saveToHTML } from "./functions/saveToHTML";
-import { styleMapToDraft } from "./functions/styleMapToDraft";
 import { styleMapToExclude } from "./functions/styleMapToExclude";
+import { loadFromHTML } from "./loadFromHTML";
+import { styleMapToDraft } from "./styleMapToDraft";
+
+export interface AieStyleMap { [styleName: string]: { css: React.CSSProperties, aieExclude: string[] } };
+export interface AieStyleExcludeMap { [styleName: string]: string[] };
+
 
 /** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {
