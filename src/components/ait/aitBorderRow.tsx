@@ -1,11 +1,6 @@
 import React, { useContext } from "react";
-<<<<<<< HEAD
-import { AioIconButton } from "../aio";
-import { TableSettingsContext } from "./context";
-=======
 import { AioIconButton } from "../aio/aioIconButton";
 import { TableSettingsContext } from "./aitContext";
->>>>>>> 36b9afe (Fix circular deps)
 
 interface AitBorderRowProps {
   spaceBefore?: boolean,
