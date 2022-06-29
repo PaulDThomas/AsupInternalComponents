@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { AioIconButton } from "../aio";
-import { TableSettingsContext } from "./AsupInternalTable";
+import { AioIconButton } from "../aio/aioIconButton";
+import { TableSettingsContext } from "./aitContext";
 
 interface AitBorderRowProps {
   spaceBefore?: boolean,

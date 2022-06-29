@@ -1,10 +1,10 @@
 import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { AsupInternalEditor } from '../aie';
-import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from '../aio';
-import { AsupInternalWindow } from "../aiw";
+import { AsupInternalEditor } from '../aie/AsupInternalEditor';
+import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
-import { TableSettingsContext } from "./AsupInternalTable";
 
 
 interface AitCellProps {
@@ -218,7 +218,7 @@ export const AitCell = ({
                 style={isNotRepeat ? { border: '1px solid black', backgroundColor: 'white', borderRadius: '2px', marginRight: '0.5rem', paddingBottom: '4px' } : { border: 0 }}
                 showStyleButtons={tableSettings.cellStyles !== undefined}
                 styleMap={tableSettings.cellStyles}
-                 />
+              />
             </div>
             <div className="aiw-body-row">
               <AioSelect

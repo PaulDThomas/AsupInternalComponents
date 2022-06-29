@@ -2,9 +2,9 @@ import React, { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
 import { newCell, newRow } from "../functions";
 import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitCellType, AitLocation, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
 import { AitRow } from "./aitRow";
-import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitHeaderProps {
   aitid: string,

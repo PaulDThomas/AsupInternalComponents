@@ -3,8 +3,8 @@ import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementLi
 import { AsupInternalWindow } from "../aiw";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
+import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
-import { TableSettingsContext } from "./AsupInternalTable";
 
 interface AitRowProps {
   aitid: string,

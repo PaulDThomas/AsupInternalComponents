@@ -1,5 +1,5 @@
 import { DraftStyleMap, RawDraftContentBlock } from "draft-js";
-import { toHtml } from "../functions";
+import { toHtml } from "../functions/tofromHtml";
 
 /**
  * Safely change a draft block into HTML

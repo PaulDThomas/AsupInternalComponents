@@ -1,13 +1,16 @@
+import { AieStyleMap } from "../aie/AsupInternalEditor";
 import React, { useCallback, useEffect, useState } from "react";
-import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
-import { AsupInternalWindow } from "../aiw";
-import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
 import { AitHeader } from "./aitHeader";
-import { AitColumnRepeat, AitOptionList, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
+import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
+import { AioExternalReplacements, AioExternalSingle } from "../aio/aioInterface";
+import { newCell } from "../functions/newCell";
+import { AioIconButton, AioComment, AioBoolean } from "../aio";
+import { headerPreProcess, repeatHeaders, bodyPreProcess, repeatRows, newRowGroup, newRow } from "../functions";
+import { TableSettingsContext } from "./aitContext";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -21,13 +24,6 @@ interface AsupInternalTableProps {
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
 }
-
-let defaultSettings: AitOptionList = {
-  noRepeatProcessing: false,
-  showCellBorders: true,
-};
-
-export const TableSettingsContext = React.createContext(defaultSettings);
 
 /**
  * Table view for clinical table data
