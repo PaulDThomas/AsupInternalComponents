@@ -4,7 +4,7 @@ import { AsupInternalEditor } from '../aie';
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from '../aio';
 import { AsupInternalWindow } from "../aiw";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
-import { TableSettingsContext } from "./context";
+import { TableSettingsContext } from "./aitContext";
 
 
 interface AitCellProps {
