@@ -88,7 +88,7 @@ export const replaceHeaders = (
             } = replaceHeaders(
               0,
               lowerQuad,
-              lowerQuad.length > 0 ? Array.from(rows[lowerQuad.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
+              lowerQuad.length > 0 && lowerQuad[0].cells.length > 0 ? Array.from(rows[lowerQuad[0].cells.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
               nextReplacement,
             );
 
@@ -128,7 +128,7 @@ export const replaceHeaders = (
               if (lowerColumnRepeats.length > 0) {
                 midRepeats = [
                   ...midRepeats,
-                  ...lowerColumnRepeats.map(crep => {
+                  ...(lowerColumnRepeats ?? []).map(crep => {
                     return {
                       columnIndex: columnRepeats[ci].columnIndex + crep.columnIndex,
                       colRepeat: `${columnRepeats[ci].colRepeat ?? ""}${`[${rvi},${ti}]${crep.colRepeat ?? ""}`}`
