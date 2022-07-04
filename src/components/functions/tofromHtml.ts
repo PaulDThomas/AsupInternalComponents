@@ -6,7 +6,7 @@ export const toHtml = (text: string): string =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;")
     .replace(/\n/g, "<br/>")
-    .replace(/\u0060/g, "&nbsp;")
+    .replace(/\u00A0/g, "&nbsp;")
   ;
 
 export const fromHtml = (text: string): string =>
