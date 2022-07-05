@@ -88,7 +88,7 @@ export const replaceHeaders = (
             } = replaceHeaders(
               0,
               lowerQuad,
-              lowerQuad.length > 0 && lowerQuad[0].cells.length > 0 ? Array.from(rows[lowerQuad[0].cells.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
+              lowerQuad.length > 0 && lowerQuad[0].cells.length > 0 ? Array.from(lowerQuad[0].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; }) : [],
               nextReplacement,
             );
 
