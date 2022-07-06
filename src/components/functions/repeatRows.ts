@@ -30,9 +30,6 @@ export const repeatRows = (
 
   // Strip repeat data if flagged 
   if (noProcessing
-    || rows.length === 0
-    || !replacements
-    || replacements.length === 0
   ) {
     newRows[newRows.length - 1].spaceAfter = spaceAfter;
     return newRows;

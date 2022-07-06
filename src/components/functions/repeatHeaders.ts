@@ -28,7 +28,7 @@ export const repeatHeaders = (
   let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; });
 
   // Strip repeat data if flagged 
-  if (noProcessing || replacements.length === 0) return {
+  if (noProcessing) return {
     rows: newHeaderRows,
     columnRepeats: newColumnRepeats
   };

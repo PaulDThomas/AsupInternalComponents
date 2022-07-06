@@ -88,12 +88,6 @@ export const TablePage = () => {
         />
       }
     </div>
-    <div style={{margin: "1rem"}}>
-      <AioSingleReplacements 
-      replacements={externalSingles} 
-      setReplacements={(ret) => setExternalSingles(ret)}
-       />
-    </div>
     <div style={{
       margin: "1rem",
       padding: "1rem",
@@ -101,6 +95,12 @@ export const TablePage = () => {
       backgroundColor: "rgb(220, 220, 220)",
       borderRadius: "8px",
     }}>
+      <div style={{ margin: "1rem" }}>
+        <AioSingleReplacements
+          replacements={externalSingles}
+          setReplacements={(ret) => setExternalSingles(ret)}
+        />
+      </div>
       <button onClick={loadData}>Load</button>
       <button
         onClick={() => {
