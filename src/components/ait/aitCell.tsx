@@ -247,26 +247,26 @@ export const AitCell = ({
               <>
                 <div className="aiw-body-row">
                   <div className={"aio-label"}>Row span: </div>
-                  <div className={"aio-ro-value"}>{rowSpan ?? 1}</div>
+                  <div className={"aio-ro-value"}>{repeatRowSpan ?? rowSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(isNotRepeat && typeof addRowSpan === "function" && colSpan === 1)
+                    {(repeatRowSpan === undefined && isNotRepeat && typeof addRowSpan === "function" && colSpan === 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addRowSpan(location)} />
                       : <div className="aiox-button" />
                     }
-                    {(isNotRepeat && typeof removeRowSpan === "function") &&
+                    {(repeatRowSpan === undefined && isNotRepeat && typeof removeRowSpan === "function") &&
                       <div className="aiox-button aiox-minus" onClick={() => removeRowSpan(location)} />
                     }
                   </div>
                 </div>
                 <div className="aiw-body-row">
                   <div className={"aio-label"}>Column span: </div>
-                  <div className={"aio-ro-value"}>{colSpan ?? 1}</div>
+                  <div className={"aio-ro-value"}>{repeatColSpan ?? colSpan ?? 1}</div>
                   <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    {(isNotRepeat && typeof addColSpan === "function" && rowSpan === 1)
+                    {(repeatColSpan === undefined && isNotRepeat && typeof addColSpan === "function" && rowSpan === 1)
                       ? <div className="aiox-button aiox-plus" onClick={() => addColSpan(location)} />
                       : <div className="aiox-button" />
                     }
-                    {(isNotRepeat && typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
+                    {(repeatColSpan === undefined && isNotRepeat && typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
                   </div>
                 </div>
                 <div className="aiw-body-row">
