@@ -37,7 +37,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
               && tableSettings.columnRepeats.length > ci
               && tableSettings.columnRepeats[ci]!.colRepeat !== undefined
               && tableSettings.columnRepeats[ci]!.colRepeat!.length > 0
-              && tableSettings.columnRepeats[ci]!.colRepeat!.match(/^[[\]0,]+$/) !== null;
+              && tableSettings.columnRepeats[ci]!.colRepeat!.match(/^[[\]0,]+$/) === null;
             if (isColumnRepeat) return (<td key={ci}></td>);
             let maxColumnIndex = tableSettings.columnRepeats
               ? Math.max(...tableSettings.columnRepeats.map(crep => crep.columnIndex))
