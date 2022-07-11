@@ -182,7 +182,7 @@ export const AitRowGroup = ({
             rowGroupComments={comments ?? ""}
             updateRowGroupComments={(ret) => { returnData({ comments: ret }) }}
             addRow={row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined}
-            removeRow={rows.length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
+            removeRow={rows.filter(r => (r.rowRepeat ?? "0").match(/^[[\]0,]+$/) !== null).length > 1 && (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined) ? removeRow : undefined}
             spaceAfter={row.spaceAfter ?? false}
             rowGroupSpace={spaceAfter}
             setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
