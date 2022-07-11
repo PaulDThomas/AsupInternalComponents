@@ -193,11 +193,11 @@ export const AsupInternalTable = ({
           r.cells.splice(ci + 1, 0, n);
           // Change colSpan on previous spanner
           // Check that the target is showing
-          let lookUp = 1;
-          while (lookUp <= ci && (headerData.rows[ri - lookUp].cells[ci].colSpan ?? 0) === 0) lookUp++;
-          let targetCellAbove = headerData.rows[ri - lookUp].cells[ci];
-          if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
-          targetCellAbove.colSpan = targetCellAbove.colSpan + 1;
+          let lookback = 1;
+          while (lookback <= ci && (r.cells[ci - lookback].colSpan ?? 0) === 0) lookback++;
+          let targetCellBefore = r.cells[ci - lookback];
+          if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
+          targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
         }
         else {
           r.cells.splice(ci + 1, 0, newCell());
