@@ -6,6 +6,8 @@ export interface AsupInternalWindowProps {
   onClose?: () => void,
   style?: React.CSSProperties,
   elements?: null | React.ReactNode,
+  x?: number,
+  y?: number,
 }
 
 interface AiwContextSettings {
