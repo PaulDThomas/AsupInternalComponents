@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useState } from "react";
+import { AiwContext } from "components/aiw/aiwContext";
+import React, { useCallback, useContext } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
-import { AsupInternalWindow } from "../aiw";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
-import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
 import { TableSettingsContext } from "./aitContext";
+import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
 
 interface AitRowProps {
   aitid: string,
@@ -53,7 +53,7 @@ export const AitRow = ({
 }: AitRowProps): JSX.Element => {
 
   const tableSettings = useContext(TableSettingsContext);
-  const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
+  const aiwContext = useContext(AiwContext);
 
   // General function to return complied object
   const returnData = useCallback((rowUpdate: { cells?: AitCellData[] }) => {
@@ -97,47 +97,40 @@ export const AitRow = ({
                     menuItems={tableSettings.groupTemplateNames}
                   />
                 }
-                  <AioIconButton
-                    tipText='Row group options'
-                    iconName='aio-button-row-group'
-                    onClick={() => { setShowRowGroupOptions(!showRowGroupOptions) }}
-                  />
-                {/* Row group options window */}
-                {showRowGroupOptions && 
-                  <AsupInternalWindow
-                    key="RowGroup"
-                    Title={(rowGroupWindowTitle ?? "Row group options")}
-                    Visible={showRowGroupOptions}
-                    onClose={() => { setShowRowGroupOptions(false); }}
-                    style={{ maxHeight: "75vh" }}
-                  >
-                    <div className="aiw-body-row">
-                      <AioComment
-                        label={"Notes"}
-                        value={rowGroupComments}
-                        setValue={updateRowGroupComments}
-                        commentStyles={tableSettings.commentStyles}
-                      />
-                    </div>
-                    <>
-                      {location.tableSection === AitRowType.body && <>
-                        <div className="aiw-body-row">
-                          <AioBoolean label="Space after group" value={rowGroupSpace ?? false} setValue={setRowGroupSpace} />
-                        </div>
-                      </>}
-                    </>
-                    <div className="aiw-body-row">
-                      <AioReplacementList
-                        label={"Replacements"}
-                        replacements={replacements!}
-                        setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
-                        externalLists={tableSettings.externalLists}
-                        dontAskSpace={location.tableSection === AitRowType.header}
-                        dontAskTrail={location.tableSection === AitRowType.header}
-                      />
-                    </div>
-                  </AsupInternalWindow>
-                }
+                <AioIconButton
+                  tipText='Row group options'
+                  iconName='aio-button-row-group'
+                  onClick={() => aiwContext.openAiw({
+                    title: (rowGroupWindowTitle ?? "Row group options"),
+                    elements: (<>
+                      <div className="aiw-body-row">
+                        <AioComment
+                          label={"Notes"}
+                          value={rowGroupComments}
+                          setValue={updateRowGroupComments}
+                          commentStyles={tableSettings.commentStyles}
+                        />
+                      </div>
+                      <>
+                        {location.tableSection === AitRowType.body && <>
+                          <div className="aiw-body-row">
+                            <AioBoolean label="Space after group" value={rowGroupSpace ?? false} setValue={setRowGroupSpace} />
+                          </div>
+                        </>}
+                      </>
+                      <div className="aiw-body-row">
+                        <AioReplacementList
+                          label={"Replacements"}
+                          replacements={replacements!}
+                          setReplacements={typeof setReplacements === "function" ? ret => { setReplacements(ret, location) } : undefined}
+                          externalLists={tableSettings.externalLists}
+                          dontAskSpace={location.tableSection === AitRowType.header}
+                          dontAskTrail={location.tableSection === AitRowType.header}
+                        />
+                      </div>
+                    </>)
+                  })}
+                />
               </>)
               :
               null
@@ -168,7 +161,7 @@ export const AitRow = ({
               repeatColSpan={cell.repeatColSpan}
               repeatRowSpan={cell.repeatRowSpan}
               spaceAfterSpan={cell.spaceAfterSpan}
-              location={{...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat}}
+              location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={!isColumnRepeat && typeof addRow === "function" ? (ret) => updateCell(ret, ci) : undefined}
               readOnly={isColumnRepeat || typeof addRow !== "function"}
               addColSpan={!isColumnRepeat && typeof addRow === "function" && ci + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
