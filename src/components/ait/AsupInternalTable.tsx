@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { AiwContext } from "components/aiw/aiwContext";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
 import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { TableSettingsContext } from "./aitContext";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -41,8 +41,8 @@ export const AsupInternalTable = ({
   cellStyles,
 }: AsupInternalTableProps) => {
   // Internal state
-  const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
+  const aiwContext = useContext(AiwContext);
 
   // Explode tableData
   const [headerData, setHeaderData] = useState<AitRowGroupData | false>();
@@ -366,43 +366,45 @@ export const AsupInternalTable = ({
           <AioIconButton
             tipText="Table options"
             onClick={() => {
-              setShowOptions(!showOptions)
+              aiwContext.openAiw({
+                title: "Table options",
+                elements: (
+                  <>
+                    <div className="aiw-body-row">
+                      <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={commentStyles} />
+                    </div>
+                    {headerData !== false && headerData.rows.length === 0 ?
+                      <div className="aiw-body-row">
+                        <div className={"aio-label"}>Add header section: </div>
+                        <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                          <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
+                        </div>
+                      </div>
+                      : <></>
+                    }
+                    <div className="aiw-body-row">
+                      <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
+                    </div>
+                    <div className="aiw-body-row">
+                      <div className={"aio-label"}>Row headers: </div>
+                      <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
+                      <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                        {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
+                          ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
+                          : <div className="aiox-button" />
+                        }
+                        {(rowHeaderColumns ?? 1) > 0
+                          ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
+                          : <div className="aiox-button" />
+                        }
+                      </div>
+                    </div>
+                  </>
+                ),
+              });
             }}
             iconName={"aio-button-settings"}
           />
-          {showOptions &&
-            <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
-              <div className="aiw-body-row">
-                <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={commentStyles} />
-              </div>
-              {headerData !== false && headerData.rows.length === 0 ?
-                <div className="aiw-body-row">
-                  <div className={"aio-label"}>Add header section: </div>
-                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                    <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
-                  </div>
-                </div>
-                : <></>
-              }
-              <div className="aiw-body-row">
-                <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
-              </div>
-              <div className="aiw-body-row">
-                <div className={"aio-label"}>Row headers: </div>
-                <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
-                <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                  {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
-                    ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
-                    : <div className="aiox-button" />
-                  }
-                  {(rowHeaderColumns ?? 1) > 0
-                    ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
-                    : <div className="aiox-button" />
-                  }
-                </div>
-              </div>
-            </AsupInternalWindow>
-          }
         </div>
         <table className="ait-table">
           <thead>

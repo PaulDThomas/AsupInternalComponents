@@ -8,6 +8,7 @@ interface AioOptionDisplayProps {
   options?: AioOption[],
   setOptions?: (ret: AioOption[]) => void,
   buttonText?: string,
+  //TODO: What does buttonText do?
 }
 
 export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {

@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { AiwContext } from "components/aiw/aiwContext";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioExternalSingle, AioIconButton, AioSelect } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import "./aif.css";
 import { AifBlockLine } from "./aifInterface";
 import { replaceBlockText } from "./replaceBlockText";
@@ -40,7 +40,7 @@ export const AifLineDisplay = ({
   styleMap,
 }: AifLineDisplayProps): JSX.Element => {
 
-  const [showOptions, setShowOptions] = useState<boolean>(false);
+  const aiwContext = useContext(AiwContext);
   const returnData = useCallback((lineUpdate: { left?: string | false, centre?: string | false, right?: string | false }) => {
     if (typeof setLine !== "function") return;
     let newLine = {
@@ -82,72 +82,6 @@ export const AifLineDisplay = ({
 
   return (
     <div className={`aif-line ${(canEdit === false || typeof setLine !== "function") ? 'aif-readonly' : ''}`}>
-      {showOptions &&
-        <AsupInternalWindow
-          Title="Line options"
-          Visible={showOptions}
-          onClose={() => setShowOptions(false)}
-        >
-          <div className="aiw-body-row">
-            <AioSelect
-              label="Line type"
-              availableValues={["Left only", "Centre only", "Left, Centre and Right", "Left and Right"]}
-              value={
-                typeof left === "string" && typeof centre == "string" && typeof right === "string"
-                  ? "Left, Centre and Right"
-                  : typeof left === "string" && typeof right === "string"
-                    ? "Left and Right"
-                    : typeof left === "string"
-                      ? "Left only"
-                      : "Centre only"
-              }
-              setValue={typeof setLine === "function" ? (ret) => {
-                switch (ret) {
-                  case ("Left only"):
-                    left = left || "";
-                    centre = false;
-                    right = false;
-                    break;
-                  case ("Centre only"):
-                    left = false;
-                    centre = centre || "";
-                    right = false;
-                    break;
-                  case ("Left and Right"):
-                    left = left || "";
-                    centre = false;
-                    right = right || "";
-                    break;
-                  case ("Left, Centre and Right"):
-                  default:
-                    left = left || "";
-                    centre = centre || "";
-                    right = right || "";
-                    break;
-                }
-                returnData({ left: left, centre: centre, right: right });
-              } : undefined}
-            />
-          </div>
-          <OriginalText
-            label="Left text"
-            text={left}
-            setText={(ret) => returnData({ left: ret })}
-            styleMap={styleMap}
-          />
-          <OriginalText
-            label="Centre text"
-            text={centre}
-            setText={(ret) => returnData({ centre: ret })}
-          />
-          <OriginalText
-            label="Right text"
-            text={right}
-            setText={(ret) => returnData({ right: ret })}
-          />
-        </AsupInternalWindow>
-      }
-
       <div className="aif-line-buttons" />
       <div className="aif-line-item-holder" style={{ ...style }}>
         {typeof displayLeft === "string" &&
@@ -200,7 +134,71 @@ export const AifLineDisplay = ({
       </div>
 
       <div className="aif-line-buttons">
-        <AioIconButton onClick={() => setShowOptions(!showOptions)} iconName={"aio-button-row-options"} tipText="Options" />
+        <AioIconButton onClick={() => aiwContext.openAiw({
+          title: "Line options",
+          elements: (<>
+            <div className="aiw-body-row">
+              <AioSelect
+                label="Line type"
+                availableValues={["Left only", "Centre only", "Left, Centre and Right", "Left and Right"]}
+                value={
+                  typeof left === "string" && typeof centre == "string" && typeof right === "string"
+                    ? "Left, Centre and Right"
+                    : typeof left === "string" && typeof right === "string"
+                      ? "Left and Right"
+                      : typeof left === "string"
+                        ? "Left only"
+                        : "Centre only"
+                }
+                setValue={typeof setLine === "function" ? (ret) => {
+                  switch (ret) {
+                    case ("Left only"):
+                      left = left || "";
+                      centre = false;
+                      right = false;
+                      break;
+                    case ("Centre only"):
+                      left = false;
+                      centre = centre || "";
+                      right = false;
+                      break;
+                    case ("Left and Right"):
+                      left = left || "";
+                      centre = false;
+                      right = right || "";
+                      break;
+                    case ("Left, Centre and Right"):
+                    default:
+                      left = left || "";
+                      centre = centre || "";
+                      right = right || "";
+                      break;
+                  }
+                  returnData({ left: left, centre: centre, right: right });
+                } : undefined}
+              />
+            </div>
+            <OriginalText
+              label="Left text"
+              text={left}
+              setText={(ret) => returnData({ left: ret })}
+              styleMap={styleMap}
+            />
+            <OriginalText
+              label="Centre text"
+              text={centre}
+              setText={(ret) => returnData({ centre: ret })}
+            />
+            <OriginalText
+              label="Right text"
+              text={right}
+              setText={(ret) => returnData({ right: ret })}
+            />
+          </>)
+        })}
+          iconName={"aio-button-row-options"}
+          tipText="Options"
+        />
         {typeof addLine === "function" ? <AioIconButton onClick={addLine} iconName={"aiox-plus"} tipText="Add line" /> : <div style={{ width: "18px" }} />}
         {typeof removeLine === "function" && <AioIconButton onClick={removeLine} iconName={"aiox-minus"} tipText="Remove line" />}
       </div>
