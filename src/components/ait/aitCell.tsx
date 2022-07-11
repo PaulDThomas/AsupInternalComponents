@@ -253,7 +253,7 @@ export const AitCell = ({
                       </div>
                       <div className="aiw-body-row">
                         <AioNumber
-                          label="Width (mm)"
+                          label="min Width (mm)"
                           value={colWidth ?? 60}
                           setValue={isNotRepeat ? (ret) => returnData({ colWidth: ret }) : undefined}
                         />
