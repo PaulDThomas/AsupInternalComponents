@@ -3,15 +3,14 @@ import { AieStyleMap, AsupInternalEditor } from "./aie";
 import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
 import { AioDropSelect, AioExpander, AioExternalReplacements, AioExternalSingle, AioIconButton, AioOption, AioReplacement, AioReplacementDisplay, AioReplacementValues, AioReplacementValuesDisplay, AioString } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
-import { AsupInternalWindow, AsupInternalWindowProvider } from "./aiw";
+import { AsupInternalWindow } from "./aiw";
 import { newExternalReplacements, newExternalSingle, newReplacementValues, newRowGroup, updateReplacementVersion, updateReplToExtl, updateTableDataVersion } from "./functions";
 
 export {
   AsupInternalEditor,
   AsupInternalTable,
   AsupInternalWindow,
-  AsupInternalBlock,
-  AsupInternalWindowProvider,
+  AsupInternalBlock
 };
 export {
   AifLineType,

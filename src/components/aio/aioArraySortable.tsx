@@ -1,5 +1,5 @@
-import { AiwContext } from "components/aiw/aiwContext";
-import React, { useContext } from "react";
+import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioNewItem, AioOptionType } from "./aioInterface";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
@@ -15,47 +15,56 @@ interface AioArraySortableProps {
 
 export function AioArraySortable(props: AioArraySortableProps) {
 
-  const aiwContext = useContext(AiwContext);
+  const [showWindows, setShowWindows] = useState<Array<boolean>>(new Array(props.inputArray.length + 1).fill(false));
 
-  function addWindow(i: number) {
-    aiwContext.openAiw({
-      title: "Add item",
-      elements: (
-        <AioOptionDisplay
-          options={[
-            {
-              type: AioOptionType.select,
-              optionName: AioNewItem.newType,
-              value: "",
-              label: "New type",
-              availableValues: ["string", "number", "array", "object"]
-            },
-          ]}
-          setOptions={(ret) => {
-            // Check value is ok
-            let newItem;
-            switch (ret[0].value) {
-              case ("number"):
-                newItem = 0;
-                break;
-              case ("array"):
-                newItem = [];
-                break;
-              case ("object"):
-                newItem = {};
-                break;
-              case ("string"):
-              default:
-                newItem = "";
-            }
-            let newArray = [...props.inputArray];
-            newArray.splice(i, 0, newItem);
-            if (props.updateArray)
-              props.updateArray(newArray);
-          }}
-          buttonText="Add" />
-      ),
-    });
+  function addWindow(i: number): JSX.Element {
+    return <AsupInternalWindow
+      Title={"Add item"}
+      Visible={showWindows[i]}
+      onClose={() => {
+        const newShowWindows = [...showWindows];
+        newShowWindows[i] = false;
+        setShowWindows(newShowWindows);
+      }}
+      style={{ minHeight: "100px" }}
+    >
+      <AioOptionDisplay
+        options={[
+          {
+            type: AioOptionType.select,
+            optionName: AioNewItem.newType,
+            value: "",
+            label: "New type",
+            availableValues: ["string", "number", "array", "object"]
+          },
+        ]}
+        setOptions={(ret) => {
+          // Check value is ok
+          let newItem;
+          switch (ret[0].value) {
+            case ("number"):
+              newItem = 0;
+              break;
+            case ("array"):
+              newItem = [];
+              break;
+            case ("object"):
+              newItem = {};
+              break;
+            case ("string"):
+            default:
+              newItem = "";
+          }
+          let newArray = [...props.inputArray];
+          newArray.splice(i, 0, newItem);
+          if (props.updateArray)
+            props.updateArray(newArray);
+          const newShowWindows = [...showWindows];
+          newShowWindows[i] = false;
+          setShowWindows(newShowWindows);
+        }}
+        buttonText="Add" />
+    </AsupInternalWindow>;
   }
 
   return (
@@ -94,7 +103,17 @@ export function AioArraySortable(props: AioArraySortableProps) {
                     if (props.updateArray) props.updateArray(newArray);
                   } : undefined
                 }
-                addItem={(props.canAddItems && props.updateArray) ? () => { addWindow(i) } : undefined}
+                addItem={
+                  (props.canAddItems && props.updateArray)
+                    ?
+                    () => {
+                      const newShowWindows = [...showWindows];
+                      newShowWindows[i] = true;
+                      setShowWindows(newShowWindows);
+                    }
+                    :
+                    undefined
+                }
                 removeItem={
                   (props.updateArray && props.canRemoveItems)
                     ?
@@ -111,6 +130,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
                 canRemoveItems={props.canRemoveItems}
               >
               </AioPrintOption>
+              {(showWindows[i] && props.canAddItems) ? addWindow(i) : <></>}
             </div>
           );
         })
@@ -120,7 +140,12 @@ export function AioArraySortable(props: AioArraySortableProps) {
           <div className="aio-input-holder" />
           <div className="aiox-button-holder">
             {props.canMoveItems && <div className="aiox-button" style={{ margin: 0 }} />}
-            <div className="aiox-button aiox-plus" onClick={() => addWindow(props.inputArray.length)} />
+            <div className="aiox-button aiox-plus" onClick={() => {
+              const newShowWindows = [...showWindows];
+              newShowWindows[props.inputArray.length] = true;
+              setShowWindows(newShowWindows);
+            }} />
+            {showWindows[props.inputArray.length] && addWindow(props.inputArray.length)}
           </div>
         </div>
       }

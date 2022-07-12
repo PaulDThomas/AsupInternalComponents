@@ -1,29 +1,32 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
-import { AsupInternalWindowProps } from "./aiwContext";
+
+interface AsupInternalWindowProps {
+  Title: string,
+  Visible: boolean,
+  onClose: () => void,
+  style?: React.CSSProperties,
+  children?: | React.ReactChild | React.ReactChild[],
+}
 
 export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
 
-  // Position
-  const [x, setX] = useState<number>(
-    (props.x ?? 0) + 400 < window.innerHeight
-      ? (props.x ?? 0)
-      : Math.max(0, (props.x ?? 0) - 400)
-  );
-  const [y, setY] = useState<number>(props.y ?? 0);
+  const [showWindow, setShowWindow] = useState(props.Visible);
+  
+  // Update visibility
+  useEffect(() => { setShowWindow(props.Visible); }, [props.Visible]);
 
   return (
     <>
       <Rnd
         style={{
-          display: "flex",
+          visibility: (showWindow ? "visible" : "hidden"),
+          display:"flex",
           ...props.style,
+          position: "fixed",
         }}
-        bounds="window"
-        position={{ x, y }}
-        onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
         minHeight={(props.style && props.style.minHeight) ?? "150px"}
         minWidth={(props.style && props.style.minWidth) ?? "400px"}
         maxHeight={(props.style && props.style?.maxHeight) ?? "1000px"}
@@ -33,14 +36,15 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
       >
         <div className="aiw-inner">
           <div className={"aiw-title"}>
-            <div className={"aiw-title-text"}>{props.title}</div>
-            <div className={"aiw-title-close"} onClick={(e) => {
-              if (typeof (props.onClose) === "function") { props.onClose(); }
+            <div className={"aiw-title-text"}>{props.Title}</div>
+            <div className={"aiw-title-close"} onClick={(e) => { 
+              setShowWindow(false); 
+              if (typeof(props.onClose) === "function") { props.onClose(); }
             }}>x</div>
           </div>
           <div className={"aiw-body"}>
-            {props.elements}
-          </div>
+            {props.children}
+            </div>
         </div>
       </Rnd>
     </>

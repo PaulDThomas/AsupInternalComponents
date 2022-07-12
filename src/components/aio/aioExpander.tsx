@@ -1,5 +1,5 @@
-import { AiwContext } from "components/aiw/aiwContext";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioArraySortable } from "./aioArraySortable";
 import { AioNewItem, AioOption, AioOptionType } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
@@ -17,10 +17,9 @@ interface AioExpanderProps {
 };
 
 export const AioExpander = (props: AioExpanderProps): JSX.Element => {
-
-  const aiwContext = useContext(AiwContext);
   const [isExpanded, setIsExpanded] = useState(false);
-  
+  const [showNewItemWindow, setShowNewItemWindow] = useState(false);
+
   const onClickAdd = (ret: AioOption[]) => {
     if (props.inputObject === undefined) return;
     // Check value is ok
@@ -43,6 +42,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
       const newObject = { ...props.inputObject };
       newObject[ret[0].value] = newItem;
       props.updateObject(newObject);
+      setShowNewItemWindow(false);
     }
   }
 
@@ -139,9 +139,14 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                       <div className="aio-label" />
                       <div className="aio-input-holder" style={{ borderLeft: "0" }} />
                       <div className="aiox-button-holder">
-                        <div className="aiox-button aiox-plus" onClick={() => aiwContext.openAiw({
-                          title: "Add item",
-                          elements: (
+                        <div className="aiox-button aiox-plus" onClick={() => { setShowNewItemWindow(!showNewItemWindow) }} />
+                        {showNewItemWindow &&
+                          <AsupInternalWindow
+                            Title={"Add item"}
+                            Visible={showNewItemWindow}
+                            onClose={() => setShowNewItemWindow(false)}
+                            style={{ minHeight: "120px" }}
+                          >
                             <AioOptionDisplay
                               options={[
                                 { type: AioOptionType.string, optionName: AioNewItem.newKey, value: "", label: "New key" },
@@ -149,9 +154,8 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                               ]}
                               setOptions={onClickAdd}
                               buttonText="Add" />
-                          ),
-                        })
-                        } />
+                          </AsupInternalWindow>
+                        }
                       </div>
                     </div>
                     :

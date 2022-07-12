@@ -1,4 +1,3 @@
-import { AsupInternalWindowProvider } from 'components/aiw/AsupInternalWindowProvider';
 import { RowGroupPage } from 'pages/RowGroupPage';
 import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
 import { BlockPage } from './pages/BlockPage';
@@ -30,28 +29,26 @@ function App() {
           </ul>
         </nav>
 
-        <AsupInternalWindowProvider>
-          <Routes>
-            <Route path="/" element={<Navigate replace to="/internalcomponents/" />} />
-            <Route path="/internalcomponents/" element={<TablePage />} />
-            <Route path="/internalcomponents/block" element={<BlockPage />} />
-            <Route path="/internalcomponents/editor" element={<EditorPage />} />
-            <Route path="/internalcomponents/expander" element={<ExpanderPage />} />
-            <Route path="/internalcomponents/list" element={<ListPage />} />
-            <Route path="/internalcomponents/rowgroup" element={<RowGroupPage />} />
-            <Route path="/internalcomponents/table" element={<TablePage />} />
-            <Route path="/internalcomponents/window" element={<WindowPage />} />
-            <Route
-              path="*"
-              element={
-                <main style={{ padding: "1rem" }}>
-                  <p>There's nothing here!</p>
-                </main>
-              }
-            />
-          </Routes>
-        </AsupInternalWindowProvider>
-        
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/internalcomponents/" />} />
+          <Route path="/internalcomponents/" element={<TablePage />} />
+          <Route path="/internalcomponents/block" element={<BlockPage />} />
+          <Route path="/internalcomponents/editor" element={<EditorPage />} />
+          <Route path="/internalcomponents/expander" element={<ExpanderPage />} />
+          <Route path="/internalcomponents/list" element={<ListPage />} />
+          <Route path="/internalcomponents/rowgroup" element={<RowGroupPage />} />
+          <Route path="/internalcomponents/table" element={<TablePage />} />
+          <Route path="/internalcomponents/window" element={<WindowPage />} />
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+            }
+          />
+        </Routes>
+
       </div>
     </BrowserRouter>
   );
