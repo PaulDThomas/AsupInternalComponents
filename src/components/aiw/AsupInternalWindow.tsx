@@ -1,5 +1,5 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
+import { TableSettingsContext } from "components/ait/aitContext";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
 
@@ -11,10 +11,21 @@ interface AsupInternalWindowProps {
   children?: | React.ReactChild | React.ReactChild[],
 }
 
-export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
+export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element => {
 
+  const tableSettings = useContext(TableSettingsContext);
+  const [zIndex, setZIndex] = useState<number | null>(null);
   const [showWindow, setShowWindow] = useState(props.Visible);
   
+  const chkTop = useCallback((force: boolean) => {
+    if (zIndex === null || (force && zIndex < tableSettings.windowZIndex )) {
+      let nextIndex = tableSettings.windowZIndex + 1;
+      setZIndex(nextIndex);
+      if (typeof tableSettings.setWindowZIndex === "function") tableSettings.setWindowZIndex(nextIndex);
+    }
+  }, [tableSettings, zIndex]);
+  useEffect(() => chkTop(false), [chkTop]);
+
   // Update visibility
   useEffect(() => { setShowWindow(props.Visible); }, [props.Visible]);
 
@@ -23,7 +34,8 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
       <Rnd
         style={{
           visibility: (showWindow ? "visible" : "hidden"),
-          display:"flex",
+          display: "flex",
+          zIndex: zIndex ?? 1,
           ...props.style,
           position: "fixed",
         }}
@@ -34,17 +46,17 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
         className={"aiw-holder"}
         dragHandleClassName="aiw-title"
       >
-        <div className="aiw-inner">
+        <div className="aiw-inner" onClick={() => chkTop(true)}>
           <div className={"aiw-title"}>
             <div className={"aiw-title-text"}>{props.Title}</div>
-            <div className={"aiw-title-close"} onClick={(e) => { 
-              setShowWindow(false); 
-              if (typeof(props.onClose) === "function") { props.onClose(); }
+            <div className={"aiw-title-close"} onClick={(e) => {
+              setShowWindow(false);
+              if (typeof (props.onClose) === "function") { props.onClose(); }
             }}>x</div>
           </div>
           <div className={"aiw-body"}>
             {props.children}
-            </div>
+          </div>
         </div>
       </Rnd>
     </>

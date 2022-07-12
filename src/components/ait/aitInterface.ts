@@ -85,4 +85,6 @@ export interface AitOptionList {
   setHeaderRows?: (ret: number) => void,
   rowHeaderColumns?: number,
   setRowHeaderColumns?: (ret: number) => void,
+  windowZIndex: number,
+  setWindowZIndex?: (ret: number) => void,
 }

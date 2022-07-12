@@ -50,6 +50,7 @@ export const AsupInternalTable = ({
   const [comments, setComments] = useState<string>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
   const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
+  const [windowZIndex, setWindowZIndex] = useState<number>(10000);
 
   // Pushdown data when it it updated externally
   useEffect(() => {
@@ -359,6 +360,8 @@ export const AsupInternalTable = ({
       commentStyles: commentStyles,
       cellStyles: cellStyles,
       columnRepeats: columnRepeats,
+      windowZIndex,
+      setWindowZIndex,
     }}>
       <div className="ait-holder" style={style}>
         <div>
