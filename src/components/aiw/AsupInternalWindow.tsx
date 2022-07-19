@@ -16,9 +16,13 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
   const tableSettings = useContext(TableSettingsContext);
   const [zIndex, setZIndex] = useState<number | null>(null);
   const [showWindow, setShowWindow] = useState(props.Visible);
-  
+
+  // Position
+  const [x, setX] = useState<number>();
+  const [y, setY] = useState<number>();
+
   const chkTop = useCallback((force: boolean) => {
-    if (zIndex === null || (force && zIndex < tableSettings.windowZIndex )) {
+    if (zIndex === null || (force && zIndex < tableSettings.windowZIndex)) {
       let nextIndex = tableSettings.windowZIndex + 1;
       setZIndex(nextIndex);
       if (typeof tableSettings.setWindowZIndex === "function") tableSettings.setWindowZIndex(nextIndex);
@@ -38,6 +42,13 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
           zIndex: zIndex ?? 1,
           ...props.style,
           position: "fixed",
+        }}
+        position={x !== undefined && y !== undefined ? { x, y } : undefined}
+        onDragStop={(e, d) => {
+          if (e instanceof MouseEvent) {
+            setX(e.pageX >= 0 ? d.x : d.x - e.pageX);
+            setY(e.pageY >= 0 ? d.y : d.y - e.pageY);
+          }
         }}
         minHeight={(props.style && props.style.minHeight) ?? "150px"}
         minWidth={(props.style && props.style.minWidth) ?? "400px"}
