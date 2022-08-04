@@ -1,7 +1,8 @@
 import { TableSettingsContext } from "components/ait/aitContext";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
+import { chkPosition } from "./chkPosition";
 
 interface AsupInternalWindowProps {
   Title: string,
@@ -16,6 +17,7 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
   const tableSettings = useContext(TableSettingsContext);
   const [zIndex, setZIndex] = useState<number | null>(null);
   const [showWindow, setShowWindow] = useState(props.Visible);
+  const rndRef = useRef<Rnd>(null);
 
   // Position
   const [x, setX] = useState<number>();
@@ -31,7 +33,14 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
   useEffect(() => chkTop(false), [chkTop]);
 
   // Update visibility
-  useEffect(() => { setShowWindow(props.Visible); }, [props.Visible]);
+  useEffect(() => {
+    setShowWindow(props.Visible);
+    if (props.Visible && rndRef.current) {
+      let {newX, newY} = chkPosition(rndRef);
+      setX(newX);
+      setY(newY);
+    }
+  }, [props.Visible]);
 
   return (
     <>
@@ -43,11 +52,15 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
           ...props.style,
           position: "fixed",
         }}
+        ref={rndRef}
         position={x !== undefined && y !== undefined ? { x, y } : undefined}
         onDragStop={(e, d) => {
           if (e instanceof MouseEvent) {
-            setX(e.pageX >= 0 ? d.x : d.x - e.pageX);
-            setY(e.pageY >= 0 ? d.y : d.y - e.pageY);
+            let newX: number | undefined = d.x;
+            let newY: number | undefined = d.y;
+            ({ newX, newY } = chkPosition(rndRef, newX, newY));
+            setX(newX);
+            setY(newY);
           }
         }}
         minHeight={(props.style && props.style.minHeight) ?? "150px"}
