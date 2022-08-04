@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
 import { newCell, newRow } from "../functions";
+import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
 import { AitRow } from "./aitRow";
 
@@ -30,6 +31,7 @@ export const AitRowGroup = ({
   removeRowGroup,
 }: AitRowGroupProps): JSX.Element => {
 
+  const tableSettings = useContext(TableSettingsContext);
   // General function to return complied object
   const returnData = useCallback((rowGroupUpdate: {
     rows?: AitRowData[],
@@ -123,9 +125,10 @@ export const AitRowGroup = ({
   const addRowSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
     if (targetCell.rowSpan === undefined) targetCell.rowSpan = 1;
-    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[actualCol];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.colSpan !== 1) return;
@@ -140,15 +143,16 @@ export const AitRowGroup = ({
     hideCell.rowSpan = 0;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows]);
+  }, [returnData, rows, tableSettings.columnRepeats]);
 
   const removeRowSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
     // Check before getting hidden cell
     if (!newRows[loc.row + targetCell.rowSpan! - 1]?.cells.length) return;
-    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[actualCol];
     if (hideCell.rowSpan !== 0) return;
     // Check next column is not expanded
     if (newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column + 1].rowSpan === 0) return;
@@ -159,7 +163,7 @@ export const AitRowGroup = ({
     if (hideCell.colSpan === 0) hideCell.colSpan = 1;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows]);
+  }, [returnData, rows, tableSettings.columnRepeats]);
 
   // Output the rows
   return (

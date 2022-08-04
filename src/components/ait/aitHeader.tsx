@@ -113,9 +113,10 @@ export const AitHeader = ({
   const addColSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
     if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
-    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan];
+    let hideCell: AitCellData = newRows[loc.row].cells[actualCol + targetCell.colSpan];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.rowSpan !== 1) return;
@@ -131,13 +132,14 @@ export const AitHeader = ({
     newRows[loc.row].cells[loc.column + targetCell.colSpan - 1].colSpan = 0;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows, tableSettings.rowHeaderColumns]);
+  }, [returnData, rows, tableSettings.columnRepeats, tableSettings.rowHeaderColumns]);
 
   const removeColSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
-    let hideCell: AitCellData = newRows[loc.row].cells[loc.column + targetCell.colSpan! - 1];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
+    let hideCell: AitCellData = newRows[loc.row].cells[actualCol + targetCell.colSpan! - 1];
     // Update target cell
     targetCell.colSpan!--;
     targetCell.colWidth = (targetCell.colWidth ?? 60) - (hideCell.colWidth ?? 60);
@@ -146,14 +148,15 @@ export const AitHeader = ({
     if (hideCell.rowSpan === 0) hideCell.rowSpan = 1;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows]);
+  }, [returnData, rows, tableSettings.columnRepeats]);
 
   const addRowSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
     if (targetCell.rowSpan === undefined) targetCell.rowSpan = 1;
-    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[actualCol];
     // Check change is ok
     if (targetCell === undefined || hideCell === undefined) return;
     if (targetCell.colSpan !== 1) return;
@@ -164,15 +167,16 @@ export const AitHeader = ({
     hideCell.rowSpan = 0;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows]);
+  }, [returnData, rows, tableSettings.columnRepeats]);
 
   const removeRowSpan = useCallback((loc: AitLocation) => {
     // Get things to change
     let newRows = [...rows];
-    let targetCell: AitCellData = newRows[loc.row].cells[loc.column];
+    let actualCol = tableSettings.columnRepeats?.findIndex(c => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat) ?? loc.column;
+    let targetCell: AitCellData = newRows[loc.row].cells[actualCol];
     // Check before getting hidden cell
     if (!newRows[loc.row + targetCell.rowSpan! - 1]?.cells.length) return;
-    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[loc.column];
+    let hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan! - 1].cells[actualCol];
     if (hideCell.rowSpan !== 0) return;
     // Update target cell
     targetCell.rowSpan!--;
@@ -181,7 +185,7 @@ export const AitHeader = ({
     if (hideCell.colSpan === 0) hideCell.colSpan = 1;
     // Done
     returnData({ rows: newRows });
-  }, [returnData, rows]);
+  }, [returnData, rows, tableSettings.columnRepeats]);
 
   if (rows.length === 0) return <></>;
 
