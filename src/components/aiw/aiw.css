@@ -25,6 +25,7 @@
     font-size: 1.2rem;
     font-weight: 600;
     flex-grow: 1;
+    height: 32px;
 }
 
 .aiw-title-text {
@@ -50,10 +51,10 @@
 
 .aiw-body {
     overflow: auto;
-    margin-bottom: 6px;
+    padding-bottom: 8px;
     margin-right: 4px;
     /* fill inner minus total title height */
-    height: calc(100% - 43px); 
+    height: calc(100% - 48px); 
 }
 
 .aiw-body-row {
