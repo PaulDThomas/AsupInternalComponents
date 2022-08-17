@@ -5,12 +5,17 @@ interface AioNumberProps {
   value: number,
   label?: string,
   setValue?: (value: number) => void,
+  step?: number,
+  minValue?: number,
+  maxValue?: number,
 }
 
 export const AioNumber = (props: AioNumberProps): JSX.Element => {
 
   const [value, setValue] = useState<number>(props.value ?? 0);
-  useEffect(() => { setValue(props.value ?? 0)} , [props.value]);
+  useEffect(() => {
+    setValue(Math.max(props.minValue ?? -Infinity, Math.min(props.maxValue ?? Infinity , props.value)) ?? props.minValue ?? 0)
+  }, [props.maxValue, props.minValue, props.value]);
 
   return (
     <>
@@ -26,6 +31,9 @@ export const AioNumber = (props: AioNumberProps): JSX.Element => {
             type={"number"}
             onChange={e => setValue(parseFloat(e.currentTarget.value))}
             onBlur={_ => props.setValue!(value)}
+            step={props.step}
+            min={props.minValue}
+            max={props.maxValue}
           />
         }
       </div>
