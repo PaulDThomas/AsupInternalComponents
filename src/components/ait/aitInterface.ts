@@ -40,6 +40,7 @@ export interface AitTableData {
   comments?: string,
   rowHeaderColumns?: number, // Number of label type columns before data is presented
   noRepeatProcessing?: boolean, // Indicator is repeat lists should be processed
+  decimalAlignPercent?: number, // Decimal alignment percent
 };
 
 export interface AitCoord {
@@ -79,6 +80,8 @@ export interface AitOptionList {
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
   columnRepeats?: AitColumnRepeat[] | null,
+  colWidthMod: number,
+  decimalAlignPercent: number,
   
   /* Table options with setters */
   headerRows?: number,
@@ -87,4 +90,5 @@ export interface AitOptionList {
   setRowHeaderColumns?: (ret: number) => void,
   windowZIndex: number,
   setWindowZIndex?: (ret: number) => void,
+  setDecimalAlignPercent?: (ret: number) => void,
 }

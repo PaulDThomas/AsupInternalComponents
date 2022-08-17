@@ -40,7 +40,7 @@ export const AitCell = ({
   comments,
   colSpan,
   rowSpan,
-  colWidth,
+  colWidth = 60,
   textIndents,
   replacedText,
   repeatColSpan,
@@ -100,11 +100,11 @@ export const AitCell = ({
   // Update cell style when options change
   const cellStyle = useMemo<React.CSSProperties>(() => {
     return {
+      overflow: "visible",
       width: cellType === AitCellType.header
-        ? (colWidth !== undefined
-          ? `${colWidth * 2 + (colSpan - 1) * 4}px`
-          : "120px")
+        ? `${tableSettings.colWidthMod * colWidth}px`
         : undefined,
+      paddingLeft: (cellType === AitCellType.rowHeader && textIndents !== undefined) ? `${textIndents}rem` : undefined,
       borderLeft: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
       borderRight: tableSettings.showCellBorders && (location.column === (tableSettings.rowHeaderColumns ?? 0) - colSpan)
@@ -117,9 +117,8 @@ export const AitCell = ({
         : tableSettings.showCellBorders
           ? "1px dashed burlywood"
           : "",
-      paddingLeft: (cellType === AitCellType.rowHeader && textIndents !== undefined) ? `${textIndents}rem` : undefined,
     }
-  }, [cellType, colWidth, colSpan, tableSettings.showCellBorders, tableSettings.rowHeaderColumns, location.column, location.row, location.rowGroup, textIndents]);
+  }, [cellType, colWidth, colSpan, tableSettings.colWidthMod, tableSettings.showCellBorders, tableSettings.rowHeaderColumns, location.column, location.row, location.rowGroup, textIndents]);
 
   /** Callback for update to any cell data */
   const returnData = useCallback((cellUpdate: {
@@ -193,6 +192,7 @@ export const AitCell = ({
           editable={!currentReadOnly}
           showStyleButtons={tableSettings.cellStyles !== undefined}
           styleMap={tableSettings.cellStyles}
+          decimalAlignPercent={tableSettings.decimalAlignPercent}
         />
       </div>
 
@@ -221,6 +221,7 @@ export const AitCell = ({
                 showStyleButtons={tableSettings.cellStyles !== undefined}
                 styleMap={tableSettings.cellStyles}
                 textAlignment={justifyText}
+                decimalAlignPercent={tableSettings.decimalAlignPercent}
               />
             </div>
             <div className="aiw-body-row">
@@ -272,7 +273,7 @@ export const AitCell = ({
                 <div className="aiw-body-row">
                   <AioNumber
                     label="min Width (mm)"
-                    value={colWidth ?? 60}
+                    value={colWidth}
                     setValue={isNotRepeat ? (ret) => returnData({ colWidth: ret }) : undefined}
                   />
                 </div>

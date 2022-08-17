@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
+import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton, AioNumber } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
@@ -21,6 +21,8 @@ interface AsupInternalTableProps {
   groupTemplates?: AitRowGroupData[] | false,
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
+  colWidthMod?: number,
+  initialDecimalAlignPercent?: number,
 }
 
 /**
@@ -39,6 +41,8 @@ export const AsupInternalTable = ({
   groupTemplates,
   commentStyles,
   cellStyles,
+  colWidthMod = 2,
+  initialDecimalAlignPercent = 60,
 }: AsupInternalTableProps) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -51,6 +55,7 @@ export const AsupInternalTable = ({
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
   const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
   const [windowZIndex, setWindowZIndex] = useState<number>(10000);
+  const [decimalAlignPercent, setDecimalAlignPercent] = useState<number>(initialDecimalAlignPercent);
 
   // Pushdown data when it it updated externally
   useEffect(() => {
@@ -113,7 +118,8 @@ export const AsupInternalTable = ({
     setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
-  }, [externalLists, externalSingles, noRepeatProcessing, processedDataRef, setTableData, tableData]);
+    setDecimalAlignPercent(tableData.decimalAlignPercent ?? initialDecimalAlignPercent);
+  }, [externalLists, externalSingles, initialDecimalAlignPercent, noRepeatProcessing, processedDataRef, setTableData, tableData]);
 
   const unProcessRowGroup = useCallback((processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
     let ret = processedGroup === false
@@ -145,6 +151,7 @@ export const AsupInternalTable = ({
     comments?: string,
     rowHeaderColumns?: number,
     noRepeatProcessing?: boolean,
+    decimalAlignPercent?: number,
   }) => {
     if (typeof (setTableData) !== "function") return;
     // Unprocess header data
@@ -165,9 +172,10 @@ export const AsupInternalTable = ({
       comments: tableUpdate.comments ?? comments,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
+      decimalAlignPercent: tableUpdate.decimalAlignPercent ?? decimalAlignPercent,
     } as AitTableData;
     setTableData(r);
-  }, [setTableData, headerData, unProcessRowGroup, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
+  }, [setTableData, unProcessRowGroup, headerData, bodyData, comments, rowHeaderColumns, noRepeatProcessing, decimalAlignPercent]);
 
   // Add column 
   const addCol = useCallback((ci: number) => {
@@ -362,6 +370,8 @@ export const AsupInternalTable = ({
       columnRepeats: columnRepeats,
       windowZIndex,
       setWindowZIndex,
+      colWidthMod,
+      decimalAlignPercent,
     }}>
       <div className="ait-holder" style={style}>
         <div>
@@ -402,6 +412,14 @@ export const AsupInternalTable = ({
                     : <div className="aiox-button" />
                   }
                 </div>
+              </div>
+              <div className="aiw-body-row">
+                <AioNumber 
+                  label="Decimal align percent" 
+                  value={decimalAlignPercent} 
+                  minValue={0}
+                  maxValue={100}
+                  setValue={ret => { returnData({ decimalAlignPercent: ret }) }} />
               </div>
             </AsupInternalWindow>
           }
