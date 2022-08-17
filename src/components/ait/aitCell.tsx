@@ -40,7 +40,7 @@ export const AitCell = ({
   comments,
   colSpan,
   rowSpan,
-  colWidth = 60,
+  colWidth,
   textIndents,
   replacedText,
   repeatColSpan,
@@ -102,7 +102,7 @@ export const AitCell = ({
     return {
       overflow: "visible",
       width: cellType === AitCellType.header
-        ? `${tableSettings.colWidthMod * colWidth}px`
+        ? `${tableSettings.colWidthMod * (colWidth ?? 60)}px`
         : undefined,
       paddingLeft: (cellType === AitCellType.rowHeader && textIndents !== undefined) ? `${textIndents}rem` : undefined,
       borderLeft: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
@@ -273,7 +273,7 @@ export const AitCell = ({
                 <div className="aiw-body-row">
                   <AioNumber
                     label="min Width (mm)"
-                    value={colWidth}
+                    value={colWidth ?? 60}
                     setValue={isNotRepeat ? (ret) => returnData({ colWidth: ret }) : undefined}
                   />
                 </div>
