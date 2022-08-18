@@ -1,14 +1,14 @@
-import { AiwContext } from "components/aiw/aiwContext";
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AieStyleMap } from "../aie";
-import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton } from "../aio";
+import { AioBoolean, AioComment, AioExternalReplacements, AioExternalSingle, AioIconButton, AioNumber } from "../aio";
+import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
-import { TableSettingsContext } from "./aitContext";
 import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
+import { TableSettingsContext } from "./aitContext";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -21,6 +21,8 @@ interface AsupInternalTableProps {
   groupTemplates?: AitRowGroupData[] | false,
   commentStyles?: AieStyleMap,
   cellStyles?: AieStyleMap,
+  colWidthMod?: number,
+  initialDecimalAlignPercent?: number,
 }
 
 /**
@@ -39,10 +41,12 @@ export const AsupInternalTable = ({
   groupTemplates,
   commentStyles,
   cellStyles,
+  colWidthMod = 2,
+  initialDecimalAlignPercent = 60,
 }: AsupInternalTableProps) => {
   // Internal state
+  const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
-  const aiwContext = useContext(AiwContext);
 
   // Explode tableData
   const [headerData, setHeaderData] = useState<AitRowGroupData | false>();
@@ -50,6 +54,8 @@ export const AsupInternalTable = ({
   const [comments, setComments] = useState<string>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
   const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
+  const [windowZIndex, setWindowZIndex] = useState<number>(10000);
+  const [decimalAlignPercent, setDecimalAlignPercent] = useState<number>(initialDecimalAlignPercent);
 
   // Pushdown data when it it updated externally
   useEffect(() => {
@@ -112,7 +118,8 @@ export const AsupInternalTable = ({
     setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
-  }, [externalLists, externalSingles, noRepeatProcessing, processedDataRef, setTableData, tableData]);
+    setDecimalAlignPercent(tableData.decimalAlignPercent ?? initialDecimalAlignPercent);
+  }, [externalLists, externalSingles, initialDecimalAlignPercent, noRepeatProcessing, processedDataRef, setTableData, tableData]);
 
   const unProcessRowGroup = useCallback((processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
     let ret = processedGroup === false
@@ -144,6 +151,7 @@ export const AsupInternalTable = ({
     comments?: string,
     rowHeaderColumns?: number,
     noRepeatProcessing?: boolean,
+    decimalAlignPercent?: number,
   }) => {
     if (typeof (setTableData) !== "function") return;
     // Unprocess header data
@@ -164,9 +172,10 @@ export const AsupInternalTable = ({
       comments: tableUpdate.comments ?? comments,
       rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
       noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
+      decimalAlignPercent: tableUpdate.decimalAlignPercent ?? decimalAlignPercent,
     } as AitTableData;
     setTableData(r);
-  }, [setTableData, headerData, unProcessRowGroup, bodyData, comments, rowHeaderColumns, noRepeatProcessing]);
+  }, [setTableData, unProcessRowGroup, headerData, bodyData, comments, rowHeaderColumns, noRepeatProcessing, decimalAlignPercent]);
 
   // Add column 
   const addCol = useCallback((ci: number) => {
@@ -187,17 +196,16 @@ export const AsupInternalTable = ({
       headerData.rows = newHeader.rows.map((r, ri) => {
         // Check for colSpan
         if (ci >= 0 && (r.cells[ci + 1]?.colSpan ?? 1) === 0) {
+          // Change colSpan on previous spanner
+          let lookback = 1;
+          while (lookback <= ci && (r.cells[ci + 1 - lookback].colSpan ?? 0) === 0) lookback++;
+          let targetCellBefore = r.cells[ci + 1 - lookback];
+          if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
+          targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
           // Add in blank cell
           let n = newCell();
           n.colSpan = 0;
           r.cells.splice(ci + 1, 0, n);
-          // Change colSpan on previous spanner
-          // Check that the target is showing
-          let lookUp = 1;
-          while (lookUp <= ci && (headerData.rows[ri - lookUp].cells[ci].colSpan ?? 0) === 0) lookUp++;
-          let targetCellAbove = headerData.rows[ri - lookUp].cells[ci];
-          if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
-          targetCellAbove.colSpan = targetCellAbove.colSpan + 1;
         }
         else {
           r.cells.splice(ci + 1, 0, newCell());
@@ -360,51 +368,61 @@ export const AsupInternalTable = ({
       commentStyles: commentStyles,
       cellStyles: cellStyles,
       columnRepeats: columnRepeats,
+      windowZIndex,
+      setWindowZIndex,
+      colWidthMod,
+      decimalAlignPercent,
     }}>
       <div className="ait-holder" style={style}>
         <div>
           <AioIconButton
             tipText="Table options"
             onClick={() => {
-              aiwContext.openAiw({
-                title: "Table options",
-                elements: (
-                  <>
-                    <div className="aiw-body-row">
-                      <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={commentStyles} />
-                    </div>
-                    {headerData !== false && headerData.rows.length === 0 ?
-                      <div className="aiw-body-row">
-                        <div className={"aio-label"}>Add header section: </div>
-                        <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                          <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
-                        </div>
-                      </div>
-                      : <></>
-                    }
-                    <div className="aiw-body-row">
-                      <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
-                    </div>
-                    <div className="aiw-body-row">
-                      <div className={"aio-label"}>Row headers: </div>
-                      <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
-                      <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
-                        {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
-                          ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
-                          : <div className="aiox-button" />
-                        }
-                        {(rowHeaderColumns ?? 1) > 0
-                          ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
-                          : <div className="aiox-button" />
-                        }
-                      </div>
-                    </div>
-                  </>
-                ),
-              });
+              setShowOptions(!showOptions)
             }}
             iconName={"aio-button-settings"}
           />
+          {showOptions &&
+            <AsupInternalWindow Title={"Table options"} Visible={showOptions} onClose={() => { setShowOptions(false); }}>
+              <div className="aiw-body-row">
+                <AioComment label={"Notes"} value={comments ?? ""} setValue={setComments} commentStyles={commentStyles} />
+              </div>
+              {headerData !== false && headerData.rows.length === 0 ?
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Add header section: </div>
+                  <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                    <div className="aiox-button aiox-plus" onClick={() => addNewHeader()} />
+                  </div>
+                </div>
+                : <></>
+              }
+              <div className="aiw-body-row">
+                <AioBoolean label="Suppress repeats" value={noRepeatProcessing ?? false} setValue={ret => { returnData({ noRepeatProcessing: ret }) }} />
+              </div>
+              <div className="aiw-body-row">
+                <div className={"aio-label"}>Row headers: </div>
+                <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
+                <div className={"aiox-button-holder"} style={{ padding: "2px" }}>
+                  {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1
+                    ? <div className="aiox-button aiox-plus" onClick={() => addRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
+                  {(rowHeaderColumns ?? 1) > 0
+                    ? <div className="aiox-button aiox-minus" onClick={() => removeRowHeaderColumn()} />
+                    : <div className="aiox-button" />
+                  }
+                </div>
+              </div>
+              <div className="aiw-body-row">
+                <AioNumber 
+                  label="Decimal align percent" 
+                  value={decimalAlignPercent} 
+                  minValue={0}
+                  maxValue={100}
+                  setValue={ret => { returnData({ decimalAlignPercent: ret }) }} />
+              </div>
+            </AsupInternalWindow>
+          }
         </div>
         <table className="ait-table">
           <thead>

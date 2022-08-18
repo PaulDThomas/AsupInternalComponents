@@ -4,6 +4,9 @@ import { AitOptionList } from "./aitInterface";
 let defaultSettings: AitOptionList = {
   noRepeatProcessing: false,
   showCellBorders: true,
+  windowZIndex: 10000,
+  colWidthMod: 1.5,
+  decimalAlignPercent: 60,
 };
 
 export const TableSettingsContext = React.createContext(defaultSettings);

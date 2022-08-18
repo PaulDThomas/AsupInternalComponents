@@ -1,29 +1,68 @@
-import * as React from "react";
-import { useState } from "react";
+import { TableSettingsContext } from "components/ait/aitContext";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Rnd } from "react-rnd";
 import "./aiw.css";
-import { AsupInternalWindowProps } from "./aiwContext";
+import { chkPosition } from "./chkPosition";
 
-export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
+interface AsupInternalWindowProps {
+  Title: string,
+  Visible: boolean,
+  onClose: () => void,
+  style?: React.CSSProperties,
+  children?: | React.ReactChild | React.ReactChild[],
+}
+
+export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element => {
+
+  const tableSettings = useContext(TableSettingsContext);
+  const [zIndex, setZIndex] = useState<number | null>(null);
+  const [showWindow, setShowWindow] = useState(props.Visible);
+  const rndRef = useRef<Rnd>(null);
 
   // Position
-  const [x, setX] = useState<number>(
-    (props.x ?? 0) + 400 < window.innerHeight
-      ? (props.x ?? 0)
-      : Math.max(0, (props.x ?? 0) - 400)
-  );
-  const [y, setY] = useState<number>(props.y ?? 0);
+  const [x, setX] = useState<number>();
+  const [y, setY] = useState<number>();
+
+  const chkTop = useCallback((force: boolean) => {
+    if (zIndex === null || (force && zIndex < tableSettings.windowZIndex)) {
+      let nextIndex = tableSettings.windowZIndex + 1;
+      setZIndex(nextIndex);
+      if (typeof tableSettings.setWindowZIndex === "function") tableSettings.setWindowZIndex(nextIndex);
+    }
+  }, [tableSettings, zIndex]);
+  useEffect(() => chkTop(false), [chkTop]);
+
+  // Update visibility
+  useEffect(() => {
+    setShowWindow(props.Visible);
+    if (props.Visible && rndRef.current) {
+      let {newX, newY} = chkPosition(rndRef);
+      setX(newX);
+      setY(newY);
+    }
+  }, [props.Visible]);
 
   return (
     <>
       <Rnd
         style={{
+          visibility: (showWindow ? "visible" : "hidden"),
           display: "flex",
+          zIndex: zIndex ?? 1,
           ...props.style,
+          position: "fixed",
         }}
-        bounds="window"
-        position={{ x, y }}
-        onDragStop={(e, d) => { setX(d.x); setY(d.y); }}
+        ref={rndRef}
+        position={x !== undefined && y !== undefined ? { x, y } : undefined}
+        onDragStop={(e, d) => {
+          if (e instanceof MouseEvent) {
+            let newX: number | undefined = d.x;
+            let newY: number | undefined = d.y;
+            ({ newX, newY } = chkPosition(rndRef, newX, newY));
+            setX(newX);
+            setY(newY);
+          }
+        }}
         minHeight={(props.style && props.style.minHeight) ?? "150px"}
         minWidth={(props.style && props.style.minWidth) ?? "400px"}
         maxHeight={(props.style && props.style?.maxHeight) ?? "1000px"}
@@ -31,15 +70,16 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps) => {
         className={"aiw-holder"}
         dragHandleClassName="aiw-title"
       >
-        <div className="aiw-inner">
+        <div className="aiw-inner" onClick={() => chkTop(true)}>
           <div className={"aiw-title"}>
-            <div className={"aiw-title-text"}>{props.title}</div>
+            <div className={"aiw-title-text"}>{props.Title}</div>
             <div className={"aiw-title-close"} onClick={(e) => {
+              setShowWindow(false);
               if (typeof (props.onClose) === "function") { props.onClose(); }
             }}>x</div>
           </div>
           <div className={"aiw-body"}>
-            {props.elements}
+            {props.children}
           </div>
         </div>
       </Rnd>

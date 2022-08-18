@@ -67,6 +67,7 @@ export const replaceHeaders = (
           let targetCell = rows[ri].cells[ci];
           found = true;
           if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
+          let repeatSpan:number = Math.max(...rows.map(r => r.cells[ci].colSpan ?? 1));
 
           let midRows: AitRowData[] = rows.slice(ri).map(r => { return { aitid: r.aitid, cells: [] }; });
           let midRepeats: AitColumnRepeat[] = [];
@@ -79,7 +80,7 @@ export const replaceHeaders = (
             let lowerQuad: AitRowData[] = rows.slice(ri + 1).map(r => {
               return {
                 aitid: r.aitid,
-                cells: r.cells.slice(ci, ci + targetCell.colSpan!)
+                cells: r.cells.slice(ci, ci + repeatSpan)
               };
             });
             let nextReplacement = flattenReplacements(rv.subLists, externalLists);
@@ -96,8 +97,8 @@ export const replaceHeaders = (
             for (let ti = 0; ti < rv.texts.length; ti++) {
               let thisRepeat: AitCellData = replaceCellText(targetCell, replacement!.oldText, rv.texts[ti]);
               // Expand to cover all lower columns
-              if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > thisRepeat.colSpan!) {
-                thisRepeat.repeatColSpan = lowerProcessed[0].cells.length;
+              if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > repeatSpan) {
+                thisRepeat.repeatColSpan = lowerProcessed[0].cells.length + repeatSpan - targetCell.colSpan!;
               }
 
               // Add into mid cells
@@ -116,6 +117,10 @@ export const replaceHeaders = (
                   n.replacedText = "__filler1";
                   targetRow.cells.push(n);
                 }
+              }
+              // Add extra cells covered by repeatSpan
+              if (repeatSpan > targetCell.colSpan) {
+                targetRow.cells.push(...rows[ri].cells.slice(ci + targetCell.colSpan!, ci + repeatSpan));
               }
 
               // Add this repeat into the output
@@ -202,7 +207,7 @@ export const replaceHeaders = (
               addedCols = addedCols + nIns;
             }
           }
-          colsProcessed = targetCell.colSpan;
+          colsProcessed = repeatSpan;
 
           break;
         }
