@@ -47,50 +47,45 @@ export const repeatRows = (
       }
       // Run current replacement
       newRows = replaceRows(newRows, extReplacements![si]);
-      // Add spaceAfter for the group
-      if (spaceAfter) {
-        newRows[newRows.length - 1].spaceAfter = true;
-      }
-      // Process spaceAfter
-      for (let ri = 0; ri < newRows.length; ri++) {
-        // Start cell counter, Look down each column
-        for (let ci = 0; ci < newRows[0].cells.length; ci++) {
-          // Cycle through each column cell
-          for (let ri = 0; ri < newRows.length; ri++) {
-            let targetCell = newRows[ri].cells[ci];
-            // Add space below appropriate rows if required
-            if (
-              (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) > 0 &&
-              targetCell.spaceAfterRepeat &&
-              ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length &&
-              !newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter
-            ) {
-              newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
-              let lookback = 1;
-              // Check previous cells
-              while (lookback <= ci) {
-                let lookup = 0;
-                let found = false;
-                while (lookup <= ri && !found) {
-                  let checkCell = newRows[ri - lookup].cells[ci - lookback];
-                  if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
-                    found = true;
-                    checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
-                  }
-                  lookup++;
-                }
-                lookback++;
-              }
+    }
+  }
+
+  // Process spaceAfter, start cell counter, Look down each column
+  for (let ri = 0; ri < newRows.length; ri++) {
+    // Cycle through each column cell
+    for (let ci = 0; ci < newRows[0].cells.length; ci++) {
+
+      let targetCell = newRows[ri].cells[ci];
+      // Add space below appropriate rows if required
+      if (
+        (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) > 0 &&
+        targetCell.spaceAfterRepeat &&
+        ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length
+      ) {
+        newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
+
+        // Check previous cells
+        let lookback = 1;
+        while (lookback <= ci) {
+          let lookup = 0;
+          let found = false;
+          while (lookup <= ri && !found) {
+            let checkCell = newRows[ri - lookup].cells[ci - lookback];
+            if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
+              found = true;
+              checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
             }
+            lookup++;
           }
+          lookback++;
         }
       }
     }
   }
-  else {
-    if (spaceAfter) {
-      newRows[newRows.length - 1].spaceAfter = true;
-    }
+
+  // Add spaceAfter for the group
+  if (spaceAfter) {
+    newRows[newRows.length - 1].spaceAfter = true;
   }
 
   // Single post processing replacements
