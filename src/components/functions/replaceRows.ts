@@ -117,13 +117,6 @@ export const replaceRows = (
         if (midRows.length > 0) for (let lookleft = 1; lookleft <= ci; lookleft++) {
           midAddedRows = midRows.length - processedRows;
           midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midAddedRows);
-          // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
-          if (midRows[0].cells[0].rowSpan === 0 && (midRows[0].cells[0].repeatRowSpan ?? 0) > 0) {
-            let lookup = 1;
-            while ((newRows[ri + addedRows - lookup].cells[ci - lookleft].rowSpan ?? 1) === 0) lookup++;
-            let spanTargetCell = newRows[ri + addedRows - lookup].cells[ci - lookleft]
-            spanTargetCell.repeatRowSpan = (spanTargetCell.repeatRowSpan ?? spanTargetCell.rowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
-          }
         }
         // Add returned rows
         newRows.push(...midRows);

@@ -50,20 +50,21 @@ export const repeatRows = (
     }
   }
 
-  // Process spaceAfter, start cell counter, Look down each column
+  // Post processing...
   for (let ri = 0; ri < newRows.length; ri++) {
     // Cycle through each column cell
     for (let ci = 0; ci < newRows[0].cells.length; ci++) {
-
+      
       let targetCell = newRows[ri].cells[ci];
-      // Add space below appropriate rows if required
+
+      // Process spaceAfter, start cell counter, Look down each column
       if (
         (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) > 0 &&
         targetCell.spaceAfterRepeat &&
         ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length
-      ) {
+        ) {
         newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
-
+        
         // Check previous cells
         let lookback = 1;
         while (lookback <= ci) {
@@ -74,21 +75,31 @@ export const repeatRows = (
             if (
               checkCell.rowSpan !== 0 &&
               (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1
-            ) {
-              found = true;
-              if (
-                // Not last cell in the repeat
-                !(checkCell.spaceAfterRepeat === true && lookup === (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) - 1)
-                // Not the last cell in the row group
-                && !(spaceAfter === true && ri === newRows.length - 1)
-              )
+              ) {
+                found = true;
+                if (
+                  // Not last cell in the repeat
+                  !(checkCell.spaceAfterRepeat === true && lookup === (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) - 1)
+                  // Not the last cell in the row group
+                  && !(spaceAfter === true && ri === newRows.length - 1)
+                  )
                 checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
-            }
+              }
             lookup++;
           }
           lookback++;
         }
       }
+      
+      // Process repeatRows on hidden cells
+      // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
+      if (targetCell.rowSpan === 0 && (targetCell.repeatRowSpan ?? 0) > 0) {
+        let lookup = 1;
+        while ((newRows[ri-lookup].cells[ci].rowSpan ?? 1) === 0) lookup++;
+        let spanTargetCell = newRows[ri- lookup].cells[ci]
+        spanTargetCell.repeatRowSpan = (spanTargetCell.repeatRowSpan ?? spanTargetCell.rowSpan ?? 1) + targetCell.repeatRowSpan!;
+      }
+
     }
   }
 

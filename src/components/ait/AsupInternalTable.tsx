@@ -5,11 +5,10 @@ import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
 import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { TableSettingsContext } from "./aitContext";
-import { RowGroupPage } from "pages/RowGroupPage";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
