@@ -20,6 +20,7 @@ interface AitCellProps {
   repeatColSpan?: number,
   repeatRowSpan?: number,
   setCellData?: (ret: AitCellData) => void,
+  setColWidth?: (ret: number) => void,
   readOnly: boolean,
   location: AitLocation,
   addColSpan?: (loc: AitLocation) => void,
@@ -46,6 +47,7 @@ export const AitCell = ({
   repeatColSpan,
   repeatRowSpan,
   setCellData,
+  setColWidth,
   readOnly,
   location,
   addColSpan,
@@ -270,14 +272,19 @@ export const AitCell = ({
                     {(repeatColSpan === undefined && isNotRepeat && typeof removeColSpan === "function") && <div className="aiox-button aiox-minus" onClick={() => removeColSpan(location)} />}
                   </div>
                 </div>
-                <div className="aiw-body-row">
-                  <AioNumber
-                    label="min Width (mm)"
-                    value={colWidth ?? 60}
-                    setValue={isNotRepeat ? (ret) => returnData({ colWidth: ret }) : undefined}
-                  />
-                </div>
               </>
+              :
+              <></>
+            }
+            {(repeatColSpan ?? colSpan ?? 1) === 1 && setColWidth !== undefined
+              ?
+              <div className="aiw-body-row">
+                <AioNumber
+                  label="Width (mm)"
+                  value={colWidth ?? 60}
+                  setValue={(ret) => setColWidth(ret)}
+                />
+              </div>
               :
               <></>
             }

@@ -10,6 +10,7 @@ interface AitRowProps {
   aitid: string,
   cells: AitCellData[],
   setRowData?: (ret: AitRowData) => void,
+  setColWidth?: (colNo: number, colWidth: number) => void,
   location: AitLocation,
   replacements?: AioReplacement[],
   setReplacements?: (ret: AioReplacement[], location: AitLocation) => void,
@@ -33,6 +34,7 @@ export const AitRow = ({
   aitid,
   cells,
   setRowData,
+  setColWidth,
   location,
   replacements,
   setReplacements,
@@ -170,6 +172,7 @@ export const AitRow = ({
               spaceAfterSpan={cell.spaceAfterSpan}
               location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={!isColumnRepeat && typeof addRow === "function" ? (ret) => updateCell(ret, ci) : undefined}
+              setColWidth={setColWidth !== undefined ? (ret) => setColWidth(cr?.columnIndex ?? -1, ret) : undefined}
               readOnly={isColumnRepeat || typeof addRow !== "function"}
               addColSpan={!isColumnRepeat && typeof addRow === "function" && ci + (cell.colSpan ?? 1) < cells.length ? addColSpan : undefined}
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}

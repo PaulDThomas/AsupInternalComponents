@@ -12,6 +12,7 @@ interface AitHeaderProps {
   comments?: string,
   replacements?: AioReplacement[],
   setHeaderData: (ret: AitRowGroupData) => void,
+  setColWidth: (colNo: number, colWidth: number) => void,
 }
 
 export const AitHeader = ({
@@ -20,6 +21,7 @@ export const AitHeader = ({
   comments,
   replacements,
   setHeaderData,
+  setColWidth,
 }: AitHeaderProps): JSX.Element => {
 
   const tableSettings = useContext(TableSettingsContext);
@@ -221,6 +223,7 @@ export const AitHeader = ({
               removeRow={removeRow}
               addColSpan={addColSpan}
               removeColSpan={removeColSpan}
+              setColWidth={setColWidth}
               addRowSpan={addRowSpan}
               removeRowSpan={removeRowSpan}
             />

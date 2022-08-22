@@ -9,6 +9,7 @@ import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
 import { TableSettingsContext } from "./aitContext";
+import { RowGroupPage } from "pages/RowGroupPage";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -340,6 +341,32 @@ export const AsupInternalTable = ({
     returnData({ headerData: newHeader });
   }, [bodyData, headerData, returnData]);
 
+  // Update columnWidth
+  const setColWidth = useCallback((colNo: number, colWidth: number) => {
+    console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
+    let newHeaderData = headerData !== undefined && headerData !== false
+      ? { ...headerData, 
+        rows: headerData.rows.map(r => {
+          return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci===colNo ? colWidth : c.colWidth }; }) };
+        })
+      }
+      : headerData;
+    let newBodyData = bodyData !== undefined
+      ? bodyData.map(rg => {
+        return {
+          ...rg,
+          rows: rg.rows.map(r => {
+            return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci===colNo ? colWidth : c.colWidth }; }) };
+          })
+        };
+      })
+      : undefined;
+    returnData({
+      headerData: newHeaderData,
+      bodyData: newBodyData
+    });
+  }, [bodyData, headerData, returnData]);
+
   // Show loading if there is nothing to see
   if (bodyData === undefined
     || bodyData.length < 1
@@ -414,9 +441,9 @@ export const AsupInternalTable = ({
                 </div>
               </div>
               <div className="aiw-body-row">
-                <AioNumber 
-                  label="Decimal align percent" 
-                  value={decimalAlignPercent} 
+                <AioNumber
+                  label="Decimal align percent"
+                  value={decimalAlignPercent}
                   minValue={0}
                   maxValue={100}
                   setValue={ret => { returnData({ decimalAlignPercent: ret }) }} />
@@ -442,6 +469,7 @@ export const AsupInternalTable = ({
                 comments={headerData.comments}
                 replacements={headerData.replacements}
                 setHeaderData={(ret) => { returnData({ headerData: ret }); }}
+                setColWidth={setColWidth}
               />
             }
           </thead>
@@ -458,6 +486,7 @@ export const AsupInternalTable = ({
                     replacements={rowGroup.replacements ?? []}
                     spaceAfter={rowGroup.spaceAfter}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
+                    setColWidth={setColWidth}
                     location={{
                       tableSection: AitRowType.body,
                       rowGroup: rgi,
