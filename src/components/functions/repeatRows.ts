@@ -71,9 +71,18 @@ export const repeatRows = (
           let found = false;
           while (lookup <= ri && !found) {
             let checkCell = newRows[ri - lookup].cells[ci - lookback];
-            if ((checkCell.rowSpan !== 0 && (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1)) {
+            if (
+              checkCell.rowSpan !== 0 &&
+              (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1
+            ) {
               found = true;
-              checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
+              if (
+                // Not last cell in the repeat
+                !(checkCell.spaceAfterRepeat === true && lookup === (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) - 1)
+                // Not the last cell in the row group
+                && !(spaceAfter === true && ri === newRows.length - 1)
+              )
+                checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
             }
             lookup++;
           }
