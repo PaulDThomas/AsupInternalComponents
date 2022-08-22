@@ -172,7 +172,7 @@ export const replaceHeaders = (
           newColumnRepeats = [...newColumnRepeats, ...midRepeats];
 
           // Ensure that columns above cover the repeats
-          let nIns = midRows[0].cells.length - (targetCell.colSpan ?? 1);
+          let nIns = midRows[0].cells.length - (repeatSpan ?? 1);
           if (nIns > 0) {
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
