@@ -311,20 +311,18 @@ export const AsupInternalTable = ({
   // Add rowHeader columns
   const addRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
-    if (headerData === false) return;
     if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     // Check new column has no colspan
     if (rowHeaderColumns === bodyData[0].rows[0].cells.length - 1) return;
-    if (headerData.rows.some(r => (r.cells[rowHeaderColumns].colSpan ?? 1) !== 1)) return;
+    if (headerData !== false && headerData.rows.some(r => (r.cells[rowHeaderColumns].colSpan ?? 1) !== 1)) return;
     returnData({ rowHeaderColumns: rowHeaderColumns + 1 });
   }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Remove rowHeader columns
   const removeRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
-    if (headerData === false) return;
     if (rowHeaderColumns === 0 || rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
-    if (headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
+    if (headerData !== false && headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     // Check bodyData for cells with rowSpan
     if (bodyData.some(rg => rg.rows.some(r => (r.cells[rowHeaderColumns - 1].rowSpan ?? 1) !== 1))) return;
     returnData({ rowHeaderColumns: rowHeaderColumns - 1 });
