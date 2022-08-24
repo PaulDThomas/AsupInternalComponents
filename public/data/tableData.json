@@ -93,7 +93,7 @@
         {
           "cells": [
             {
-              "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"},{\"offset\":11,\"length\":8,\"style\":\"Notes\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">!!label!!</span> (<span classname=\"Notes\" style=\"color:royalblue\">!!unit!!</span>)</div>",
+              "text": "<div classname=\"aie-text\" data-type=\"unstyled\" data-inline-style-ranges='[{\"offset\":0,\"length\":9,\"style\":\"Optional\"},{\"offset\":11,\"length\":8,\"style\":\"Notes\"}]'><span classname=\"Optional\" style=\"color:mediumseagreen\">!!label!!</span> (<span classname=\"Notes\" style=\"color:royalblue\">&lt;&lt;unit&gt;&gt;</span>)</div>",
               "comments": "",
               "colSpan": 1,
               "rowSpan": 1,
@@ -134,7 +134,7 @@
               ],
               "subLists": [
                 {
-                  "oldText": "!!unit!!",
+                  "oldText": "&lt;&lt;unit&gt;&gt;",
                   "newTexts": [
                     {
                       "texts": [
@@ -155,7 +155,7 @@
               ],
               "subLists": [
                 {
-                  "oldText": "!!unit!!",
+                  "oldText": "&lt;&lt;unit&gt;&gt;",
                   "newTexts": [
                     {
                       "texts": [
