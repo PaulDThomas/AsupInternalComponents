@@ -4,7 +4,7 @@ import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
 import { AioDropSelect, AioExpander, AioExternalReplacements, AioExternalSingle, AioIconButton, AioOption, AioReplacement, AioReplacementDisplay, AioReplacementValues, AioReplacementValuesDisplay, AioString } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
 import { AsupInternalWindow } from "./aiw";
-import { newExternalReplacements, newExternalSingle, newReplacementValues, newRowGroup, updateReplacementVersion, updateReplToExtl, updateTableDataVersion, toHtml, fromHtml } from "./functions";
+import { fromHtml, newExternalReplacements, newExternalSingle, newReplacementValues, newRowGroup, toHtml, updateReplacementVersion, updateReplToExtl, updateTableDataVersion } from "./functions";
 
 export {
   AsupInternalEditor,
@@ -26,10 +26,10 @@ export type { AieStyleMap };
 export type { AifBlockLine };
 export type { AioExternalReplacements, AioExternalSingle, AioOption, AioReplacement, AioReplacementValues };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
-
 export {
   updateReplacementVersion,
   updateReplToExtl,
   updateTableDataVersion,
-}
+};
+
 
