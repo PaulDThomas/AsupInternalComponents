@@ -1,3 +1,4 @@
+import { toHtml } from 'components/functions';
 import { newReplacedText } from '../aie/functions/newReplacedText';
 import { AioExternalSingle } from '../aio';
 
@@ -10,5 +11,5 @@ export const replaceBlockText = (text?: string | false, rep?: AioExternalSingle)
   if (!text.includes(rep.oldText))
     return { newText: text, updated: false };
   // Make replacement
-  return { newText: newReplacedText(text, rep.oldText, rep.newText), updated: true };
+  return { newText: newReplacedText(text, rep.oldText, toHtml(rep.newText ?? "")), updated: true };
 };
