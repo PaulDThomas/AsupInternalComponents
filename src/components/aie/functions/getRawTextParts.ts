@@ -1,7 +1,9 @@
+import { fromHtml } from "../../functions";
+
 export const getRawTextParts = (s: string):string[] => {
   // Do standard replace if not aie-text or no inline styles
   if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
-    return [s];
+    return [fromHtml(s)];
   }
   else {
     // Create element to manipulate    
