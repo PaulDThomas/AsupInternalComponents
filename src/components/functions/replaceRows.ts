@@ -3,6 +3,7 @@ import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitRowData } from "../ait/aitInterface";
 import { prependCell } from "./prependCells";
 import { replaceCellText } from "./replaceCellText";
+import { toHtml } from "./tofromHtml";
 import { updateExternals } from "./updateExternals";
 
 /**
@@ -43,7 +44,7 @@ export const replaceRows = (
       console.log(`${JSON.stringify(rows)}`);
     }
     else for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
-      let cellTextParts: string[] = getRawTextParts(rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "");
+      let cellTextParts: string[] = getRawTextParts(rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "").map(tx => toHtml(tx));
       if (
         replacement !== undefined &&
         cellTextParts.some(t => t.includes(replacement!.oldText))

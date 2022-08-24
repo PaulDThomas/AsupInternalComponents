@@ -1,7 +1,6 @@
 import { AioExternalSingle } from "../aio";
 import { AitRowData } from "../ait";
 import { replaceCellText } from "./replaceCellText";
-import { toHtml } from "./tofromHtml";
 
 export function singleReplacements(externalSingles: AioExternalSingle[] | undefined, newRows: AitRowData[]): AitRowData[] {
   if (externalSingles !== undefined && externalSingles.length > 0) {
@@ -9,7 +8,7 @@ export function singleReplacements(externalSingles: AioExternalSingle[] | undefi
       if (e.oldText !== undefined && e.oldText !== "" && e.newText !== undefined) {
         newRows = newRows.map(r => {
           return {
-            ...r, cells: r.cells.map(c => replaceCellText(c, e.oldText!, toHtml(e.newText!)))
+            ...r, cells: r.cells.map(c => replaceCellText(c, e.oldText!, e.newText ?? ""))
           };
         });
       }
