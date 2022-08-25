@@ -133,7 +133,7 @@ export const AsupInternalTable = ({
               ...r,
               cells: r.cells.filter((_, ci) => (
                 columnRepeats === null
-                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.match(/^[[\]0,]+$/) !== null))
+                || (columnRepeats !== null && columnRepeats[ci] !== undefined && (columnRepeats[ci].colRepeat ?? "0").match(/^[[\]0,]+$/))
               ))
             }
           })
@@ -342,9 +342,10 @@ export const AsupInternalTable = ({
   const setColWidth = useCallback((colNo: number, colWidth: number) => {
     console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
     let newHeaderData = headerData !== undefined && headerData !== false
-      ? { ...headerData, 
+      ? {
+        ...headerData,
         rows: headerData.rows.map(r => {
-          return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci===colNo ? colWidth : c.colWidth }; }) };
+          return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth }; }) };
         })
       }
       : headerData;
@@ -353,7 +354,7 @@ export const AsupInternalTable = ({
         return {
           ...rg,
           rows: rg.rows.map(r => {
-            return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci===colNo ? colWidth : c.colWidth }; }) };
+            return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth }; }) };
           })
         };
       })
