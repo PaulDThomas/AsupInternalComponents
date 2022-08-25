@@ -128,7 +128,6 @@ export const AitHeader = ({
     if (hideCell.colSpan !== 1) return;
     // Update target cell
     targetCell.colSpan++;
-    targetCell.colWidth = (targetCell.colWidth ?? 60) + (hideCell.colWidth ?? 60);
     // Hide next cell
     hideCell.colSpan = 0;
     newRows[loc.row].cells[loc.column + targetCell.colSpan - 1].colSpan = 0;
@@ -144,7 +143,6 @@ export const AitHeader = ({
     let hideCell: AitCellData = newRows[loc.row].cells[actualCol + targetCell.colSpan! - 1];
     // Update target cell
     targetCell.colSpan!--;
-    targetCell.colWidth = (targetCell.colWidth ?? 60) - (hideCell.colWidth ?? 60);
     // Show next cell
     hideCell.colSpan = 1;
     if (hideCell.rowSpan === 0) hideCell.rowSpan = 1;
