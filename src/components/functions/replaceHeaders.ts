@@ -158,7 +158,7 @@ export const replaceHeaders = (
               if (rj < ri)
                 return {
                   aitid: r.aitid,
-                  cells: [...r.cells.slice(ci, ci + repeatSpan - 1)]
+                  cells: [...r.cells.slice(ci, ci + repeatSpan)]
                 } as AitRowData;
 
               // Return from midRow

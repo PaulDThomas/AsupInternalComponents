@@ -1,7 +1,7 @@
 {
   "name": "asupinternalcomponents",
   "description": "Components developed by Paul for clinical table generation",
-  "version": "1.3.19",
+  "version": "1.3.20",
   "author": "Paul Thomas",
   "license": "MIT",
   "main": "dist/cjs/index.js",
