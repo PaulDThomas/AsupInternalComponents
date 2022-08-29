@@ -1,12 +1,13 @@
-import { iStyleBlock } from "./aieInterface";
+import { iStyleBlock } from './aieInterface';
 
 // Ensure all full block coverage and no overlaps
 export const implodeLine = (styleBlocks: iStyleBlock[]): iStyleBlock[] => {
   // Copy input
-  let ret: iStyleBlock[] = [];
-  let cStart: number, cEnd: number, cStyleName: string|undefined;
+  const ret: iStyleBlock[] = [];
+  let cStart: number, cEnd: number, cStyleName: string | undefined;
 
-  styleBlocks.sort((a, b) => a.start - b.start)
+  styleBlocks
+    .sort((a, b) => a.start - b.start)
     .forEach((b, i, all) => {
       // Start off
       if (i === 0) {
@@ -30,14 +31,14 @@ export const implodeLine = (styleBlocks: iStyleBlock[]): iStyleBlock[] => {
         cStyleName = b.styleName;
       }
       // Always output at the end
-      if (i === all.length -1) {
+      if (i === all.length - 1) {
         ret.push({
           start: cStart,
           end: cEnd,
           styleName: cStyleName,
         });
       }
-    })
+    });
 
   return ret;
-}
+};
