@@ -67,27 +67,33 @@ export const TablePage = () => {
 
   return (<>
     <div style={{
+      marginLeft: "1rem",
+      marginRight: "1rem",
       width: "100%",
-      display: "flex",
-      justifyContent: "center",
+      // display: "flex",
+      // justifyContent: "center",
+      overflow: "auto",
+      position: "relative",
     }}>
-      {tableData === undefined ?
-        <span style={{ margin: "3rem" }}>Table loading</span>
-        :
-        <AsupInternalTable
-          tableData={tableData}
-          setTableData={(ret) => { setTableData(ret) }}
-          processedDataRef={processedTableData}
-          style={{ margin: "1rem" }}
-          showCellBorders={true}
-          externalLists={externalReplacements}
-          externalSingles={externalSingles}
-          groupTemplates={sampleGroupTemplates}
-          commentStyles={commentStyles}
-          cellStyles={cellStyles}
-          colWidthMod={1.5}
-        />
-      }
+      <div>
+        {tableData === undefined ?
+          <span style={{ margin: "3rem" }}>Table loading</span>
+          :
+          <AsupInternalTable
+            tableData={tableData}
+            setTableData={(ret) => { setTableData(ret) }}
+            processedDataRef={processedTableData}
+            style={{ margin: "1rem" }}
+            showCellBorders={true}
+            externalLists={externalReplacements}
+            externalSingles={externalSingles}
+            groupTemplates={sampleGroupTemplates}
+            commentStyles={commentStyles}
+            cellStyles={cellStyles}
+            colWidthMod={1.5}
+          />
+        }
+      </div>
     </div>
     <div style={{
       margin: "1rem",

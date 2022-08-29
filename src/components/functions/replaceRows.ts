@@ -3,6 +3,7 @@ import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitRowData } from "../ait/aitInterface";
 import { prependCell } from "./prependCells";
 import { replaceCellText } from "./replaceCellText";
+import { fromHtml } from "./tofromHtml";
 import { updateExternals } from "./updateExternals";
 
 /**
@@ -46,7 +47,8 @@ export const replaceRows = (
       let cellTextParts: string[] = getRawTextParts(rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "");
       if (
         replacement !== undefined &&
-        cellTextParts.some(t => t.includes(replacement!.oldText))
+        // Compare as non-HTML text
+        cellTextParts.some(t => t.includes(fromHtml(replacement!.oldText)))
       ) {
         // Get targetCell
         found = true;
@@ -117,13 +119,6 @@ export const replaceRows = (
         if (midRows.length > 0) for (let lookleft = 1; lookleft <= ci; lookleft++) {
           midAddedRows = midRows.length - processedRows;
           midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midAddedRows);
-          // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
-          if (midRows[0].cells[0].rowSpan === 0 && (midRows[0].cells[0].repeatRowSpan ?? 0) > 0) {
-            let lookup = 1;
-            while ((newRows[ri + addedRows - lookup].cells[ci - lookleft].rowSpan ?? 1) === 0) lookup++;
-            let spanTargetCell = newRows[ri + addedRows - lookup].cells[ci - lookleft]
-            spanTargetCell.repeatRowSpan = (spanTargetCell.repeatRowSpan ?? spanTargetCell.rowSpan ?? 1) + midRows[0].cells[0].repeatRowSpan!;
-          }
         }
         // Add returned rows
         newRows.push(...midRows);

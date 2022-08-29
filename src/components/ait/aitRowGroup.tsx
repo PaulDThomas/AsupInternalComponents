@@ -13,6 +13,7 @@ interface AitRowGroupProps {
   comments?: string,
   replacements: AioReplacement[],
   setRowGroupData: (ret: AitRowGroupData) => void,
+  setColWidth?: (colNo: number, colWidth: number) => void,
   addRowGroup?: (rgi: number, templateName?: string) => void,
   removeRowGroup?: (rgi: number) => void,
   spaceAfter?: boolean,
@@ -27,6 +28,7 @@ export const AitRowGroup = ({
   replacements,
   spaceAfter,
   setRowGroupData,
+  setColWidth,
   addRowGroup,
   removeRowGroup,
 }: AitRowGroupProps): JSX.Element => {
@@ -175,6 +177,7 @@ export const AitRowGroup = ({
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
             setRowData={(ret) => updateRow(ret, rows.findIndex(r => r.aitid === row.aitid))}
+            setColWidth={setColWidth}
             location={{...location,
               row: rows.findIndex(r => r.aitid === row.aitid),
               rowRepeat: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,

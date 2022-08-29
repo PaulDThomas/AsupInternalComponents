@@ -5,10 +5,10 @@ import { AsupInternalWindow } from "../aiw";
 import { bodyPreProcess, headerPreProcess, newCell, newRow, newRowGroup, repeatHeaders, repeatRows } from "../functions";
 import './ait.css';
 import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
 import { AitHeader } from "./aitHeader";
 import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { TableSettingsContext } from "./aitContext";
 
 interface AsupInternalTableProps {
   tableData: AitTableData,
@@ -133,7 +133,7 @@ export const AsupInternalTable = ({
               ...r,
               cells: r.cells.filter((_, ci) => (
                 columnRepeats === null
-                || (columnRepeats !== null && (columnRepeats[ci].colRepeat?.match(/^[[\]0,]+$/) !== null))
+                || (columnRepeats !== null && columnRepeats[ci] !== undefined && (columnRepeats[ci].colRepeat ?? "0").match(/^[[\]0,]+$/))
               ))
             }
           })
@@ -311,20 +311,18 @@ export const AsupInternalTable = ({
   // Add rowHeader columns
   const addRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
-    if (headerData === false) return;
     if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
     // Check new column has no colspan
     if (rowHeaderColumns === bodyData[0].rows[0].cells.length - 1) return;
-    if (headerData.rows.some(r => (r.cells[rowHeaderColumns].colSpan ?? 1) !== 1)) return;
+    if (headerData !== false && headerData.rows.some(r => (r.cells[rowHeaderColumns].colSpan ?? 1) !== 1)) return;
     returnData({ rowHeaderColumns: rowHeaderColumns + 1 });
   }, [bodyData, headerData, returnData, rowHeaderColumns]);
 
   // Remove rowHeader columns
   const removeRowHeaderColumn = useCallback(() => {
     // Check ok to proceed
-    if (headerData === false) return;
     if (rowHeaderColumns === 0 || rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined) return;
-    if (headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
+    if (headerData !== false && headerData.rows.some(r => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)) return;
     // Check bodyData for cells with rowSpan
     if (bodyData.some(rg => rg.rows.some(r => (r.cells[rowHeaderColumns - 1].rowSpan ?? 1) !== 1))) return;
     returnData({ rowHeaderColumns: rowHeaderColumns - 1 });
@@ -338,6 +336,33 @@ export const AsupInternalTable = ({
     // Create new row 
     let newHeader: AitRowGroupData = { ...headerData, rows: [newRow(bodyData[0].rows[0].cells.length, AitRowType.header)] };
     returnData({ headerData: newHeader });
+  }, [bodyData, headerData, returnData]);
+
+  // Update columnWidth
+  const setColWidth = useCallback((colNo: number, colWidth: number) => {
+    console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
+    let newHeaderData = headerData !== undefined && headerData !== false
+      ? {
+        ...headerData,
+        rows: headerData.rows.map(r => {
+          return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth }; }) };
+        })
+      }
+      : headerData;
+    let newBodyData = bodyData !== undefined
+      ? bodyData.map(rg => {
+        return {
+          ...rg,
+          rows: rg.rows.map(r => {
+            return { ...r, cells: r.cells.map((c, ci) => { return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth }; }) };
+          })
+        };
+      })
+      : undefined;
+    returnData({
+      headerData: newHeaderData,
+      bodyData: newBodyData
+    });
   }, [bodyData, headerData, returnData]);
 
   // Show loading if there is nothing to see
@@ -414,9 +439,9 @@ export const AsupInternalTable = ({
                 </div>
               </div>
               <div className="aiw-body-row">
-                <AioNumber 
-                  label="Decimal align percent" 
-                  value={decimalAlignPercent} 
+                <AioNumber
+                  label="Decimal align percent"
+                  value={decimalAlignPercent}
                   minValue={0}
                   maxValue={100}
                   setValue={ret => { returnData({ decimalAlignPercent: ret }) }} />
@@ -442,6 +467,7 @@ export const AsupInternalTable = ({
                 comments={headerData.comments}
                 replacements={headerData.replacements}
                 setHeaderData={(ret) => { returnData({ headerData: ret }); }}
+                setColWidth={setColWidth}
               />
             }
           </thead>
@@ -458,6 +484,7 @@ export const AsupInternalTable = ({
                     replacements={rowGroup.replacements ?? []}
                     spaceAfter={rowGroup.spaceAfter}
                     setRowGroupData={(ret) => { updateRowGroup(ret, rgi) }}
+                    setColWidth={setColWidth}
                     location={{
                       tableSection: AitRowType.body,
                       rowGroup: rgi,

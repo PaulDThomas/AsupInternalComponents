@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { newExternalSingle } from "../functions";
+import { fromHtml, newExternalSingle, toHtml } from "../functions";
 import { AioIconButton } from "./aioIconButton";
 import { AioExternalSingle } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
@@ -70,8 +70,8 @@ export const AioSingleReplacements = ({
         {(replacements ?? []).map((repl, i) => {
           return (
             <div key={repl.airid ?? i}>
-              <AioString label="From" value={repl.oldText} setValue={(ret) => updateReplacement({ oldText: ret }, i)} />
-              <AioString label="to" value={repl.newText} setValue={(ret) => updateReplacement({ newText: ret }, i)} />
+              <AioString label="From" value={fromHtml(repl.oldText ?? "")} setValue={(ret) => updateReplacement({ oldText: toHtml(ret) }, i)} />
+              <AioString label="to" value={fromHtml(repl.newText ?? "")} setValue={(ret) => updateReplacement({ newText: toHtml(ret) }, i)} />
 
               {typeof setReplacements === "function" &&
                 <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginBottom: '2px' }}>

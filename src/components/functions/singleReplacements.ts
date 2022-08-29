@@ -8,7 +8,7 @@ export function singleReplacements(externalSingles: AioExternalSingle[] | undefi
       if (e.oldText !== undefined && e.oldText !== "" && e.newText !== undefined) {
         newRows = newRows.map(r => {
           return {
-            ...r, cells: r.cells.map(c => replaceCellText(c, e.oldText!, e.newText!))
+            ...r, cells: r.cells.map(c => replaceCellText(c, e.oldText!, e.newText ?? ""))
           };
         });
       }

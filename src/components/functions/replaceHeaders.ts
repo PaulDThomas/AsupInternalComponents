@@ -67,7 +67,7 @@ export const replaceHeaders = (
           let targetCell = rows[ri].cells[ci];
           found = true;
           if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
-          let repeatSpan:number = Math.max(...rows.map(r => r.cells[ci].colSpan ?? 1));
+          let repeatSpan: number = Math.max(...rows.map(r => r.cells[ci].colSpan ?? 1));
 
           let midRows: AitRowData[] = rows.slice(ri).map(r => { return { aitid: r.aitid, cells: [] }; });
           let midRepeats: AitColumnRepeat[] = [];
@@ -158,7 +158,7 @@ export const replaceHeaders = (
               if (rj < ri)
                 return {
                   aitid: r.aitid,
-                  cells: [r.cells[ci]]
+                  cells: [...r.cells.slice(ci, ci + repeatSpan)]
                 } as AitRowData;
 
               // Return from midRow
@@ -172,7 +172,7 @@ export const replaceHeaders = (
           newColumnRepeats = [...newColumnRepeats, ...midRepeats];
 
           // Ensure that columns above cover the repeats
-          let nIns = midRows[0].cells.length - (targetCell.colSpan ?? 1);
+          let nIns = midRows[0].cells.length - (repeatSpan ?? 1);
           if (nIns > 0) {
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
@@ -181,12 +181,13 @@ export const replaceHeaders = (
               if (targetCellAbove !== undefined) {
                 if (targetCellAbove.colSpan === undefined) targetCellAbove.colSpan = 1;
                 // Check that the target is showing
-                let lookback = 0;
-                while (targetCellAbove.colSpan === 0 && lookback < ci) {
+                let lookup = 0;
+                while (targetCellAbove.colSpan === 0 && lookup < ci) {
                   // Move to previous cell
-                  lookback++;
-                  targetCellAbove = rows[rj].cells[ci - lookback];
+                  lookup++;
+                  targetCellAbove = rows[rj].cells[ci - lookup];
                 }
+                // Calculated new colSpan and add in fillers
                 targetCellAbove.repeatColSpan = (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan!) + nIns;
                 let newCells2: AitCellData[] = [];
                 for (let nci = 0; nci < nIns + targetCell.colSpan - 1; nci++) {
@@ -196,7 +197,7 @@ export const replaceHeaders = (
                   n.replacedText = "__filler2";
                   newCells2.push(n);
                 }
-                newHeaderRows[rj].cells.splice(ci + addedCols - lookback + 1, 0, ...newCells2);
+                newHeaderRows[rj].cells.splice(ci + addedCols - lookup + 1, 0, ...newCells2);
               }
 
               // Not found !!!
