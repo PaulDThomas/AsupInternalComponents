@@ -1,10 +1,10 @@
-import { v4 as uuidv4 } from "uuid";
-import { AioReplacementValues } from "../aio";
+import { v4 as uuidv4 } from 'uuid';
+import { AioReplacementValues } from '../aio';
 
 export const newReplacementValues = (): AioReplacementValues => {
   return {
     airid: uuidv4(),
-    texts: [""],
+    texts: [''],
     spaceAfter: false,
     subLists: [],
   };

@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
-import { AitCellType, AitRowData, AitRowType } from "../ait/aitInterface";
-import { newCell } from "./newCell";
+import { v4 as uuidv4 } from 'uuid';
+import { AitCellType, AitRowData, AitRowType } from '../ait/aitInterface';
+import { newCell } from './newCell';
 
 /**
  * Create new table row
@@ -9,7 +9,7 @@ import { newCell } from "./newCell";
  * @returns New row data
  */
 export const newRow = (l?: number, type?: AitRowType): AitRowData => {
-  let newRow: AitRowData = { aitid: uuidv4(), cells: [], };
+  const newRow: AitRowData = { aitid: uuidv4(), cells: [] };
   // Add new cells in a loop to avoid duplicate aitid
   for (let i = 0; i < (l ?? 1); i++)
     newRow.cells.push(newCell(type === AitRowType.header ? AitCellType.header : AitCellType.body));

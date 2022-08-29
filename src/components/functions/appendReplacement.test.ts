@@ -2,16 +2,18 @@ import { AioReplacement } from '../aio';
 import { appendReplacement } from './appendReplacement';
 
 describe('Check appendReplacement', () => {
-  let a: AioReplacement = { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] };
-  let b: AioReplacement = {
-    oldText: "b", newTexts: [
+  const a: AioReplacement = { oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] };
+  const b: AioReplacement = {
+    oldText: 'b',
+    newTexts: [
       {
-        texts: ["b1"], subLists: [
-          { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
-          { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-        ]
-      }
-    ]
+        texts: ['b1'],
+        subLists: [
+          { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
+          { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+        ],
+      },
+    ],
   };
 
   // Basic check
@@ -24,95 +26,119 @@ describe('Check appendReplacement', () => {
   test('Long after small', () => {
     expect(appendReplacement(b, [a])).toEqual([
       {
-        oldText: "a", newTexts: [
+        oldText: 'a',
+        newTexts: [
           {
-            texts: ["a1", "a2"], subLists: [
+            texts: ['a1', 'a2'],
+            subLists: [
               {
-                oldText: "b", newTexts: [
+                oldText: 'b',
+                newTexts: [
                   {
-                    texts: ["b1"], subLists: [
-                      { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
-                      { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
+                    texts: ['b1'],
+                    subLists: [
+                      { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
+                      { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ]);
   });
 
   test('Small after long', () => {
     expect(appendReplacement(a, [b])).toEqual([
       {
-        oldText: "b", newTexts: [
+        oldText: 'b',
+        newTexts: [
           {
-            texts: ["b1"], subLists: [
+            texts: ['b1'],
+            subLists: [
               {
-                oldText: "c", newTexts: [{
-                  texts: ["c1", "c2"], subLists: [
-                    { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] }
-                  ]
-                }]
+                oldText: 'c',
+                newTexts: [
+                  {
+                    texts: ['c1', 'c2'],
+                    subLists: [{ oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] }],
+                  },
+                ],
               },
               {
-                oldText: "d", newTexts: [{
-                  texts: ["d1", "d2"], subLists: [
-                    { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] }
-                  ]
-                }]
-              }
-            ]
-          }
-        ]
-      }
+                oldText: 'd',
+                newTexts: [
+                  {
+                    texts: ['d1', 'd2'],
+                    subLists: [{ oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] }],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
     ]);
   });
 
   test('Long after long', () => {
     expect(appendReplacement(b, [b])).toEqual([
       {
-        oldText: "b", newTexts: [
+        oldText: 'b',
+        newTexts: [
           {
-            texts: ["b1"], subLists: [
+            texts: ['b1'],
+            subLists: [
               {
-                oldText: "c", newTexts: [{
-                  texts: ["c1", "c2"], subLists: [
-                    {
-                      oldText: "b", newTexts: [
-                        {
-                          texts: ["b1"], subLists: [
-                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
-                            { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }]
+                oldText: 'c',
+                newTexts: [
+                  {
+                    texts: ['c1', 'c2'],
+                    subLists: [
+                      {
+                        oldText: 'b',
+                        newTexts: [
+                          {
+                            texts: ['b1'],
+                            subLists: [
+                              { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
+                              { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
               },
               {
-                oldText: "d", newTexts: [{
-                  texts: ["d1", "d2"], subLists: [
-                    {
-                      oldText: "b", newTexts: [
-                        {
-                          texts: ["b1"], subLists: [
-                            { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
-                            { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-                          ]
-                        }
-                      ]
-                    }
-                  ]
-                }]
-              }
-            ]
-          }
-        ]
-      }
-    ])
-  })
+                oldText: 'd',
+                newTexts: [
+                  {
+                    texts: ['d1', 'd2'],
+                    subLists: [
+                      {
+                        oldText: 'b',
+                        newTexts: [
+                          {
+                            texts: ['b1'],
+                            subLists: [
+                              { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
+                              { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
 });

@@ -1,18 +1,18 @@
-import { AioExternalReplacements, AioExternalSingle, AioReplacement } from "../aio";
-import { AitColumnRepeat, AitRowData } from "../ait";
-import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
-import { replaceHeaders } from "./replaceHeaders";
-import { singleReplacements } from "./singleReplacements";
-import { updateExternals } from "./updateExternals";
+import { AioExternalReplacements, AioExternalSingle, AioReplacement } from '../aio';
+import { AitColumnRepeat, AitRowData } from '../ait';
+import { removeRowRepeatInfo } from './removeRowRepeatInfo';
+import { replaceHeaders } from './replaceHeaders';
+import { singleReplacements } from './singleReplacements';
+import { updateExternals } from './updateExternals';
 
 /**
  * Entry function to process headers with replacements
  * @param rows Initial header rows
  * @param replacements Replacement array with new values
- * @param noProcessing Stop 
- * @param rowHeaderColumns 
+ * @param noProcessing Stop
+ * @param rowHeaderColumns
  * @param externalLists
- * @returns 
+ * @returns
  */
 export const repeatHeaders = (
   rows: AitRowData[],
@@ -21,25 +21,29 @@ export const repeatHeaders = (
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
   externalSingles?: AioExternalSingle[],
-): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[]; } => {
-
+): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[] } => {
   // Start with blank slate, need to strip repeat inforation everytime!
   let newHeaderRows: AitRowData[] = removeRowRepeatInfo(rows);
-  let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(n => { return { columnIndex: n } as AitColumnRepeat; });
+  let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(
+    (n) => {
+      return { columnIndex: n } as AitColumnRepeat;
+    },
+  );
 
-  // Strip repeat data if flagged 
-  if (noProcessing) return {
-    rows: newHeaderRows,
-    columnRepeats: newColumnRepeats
-  };
+  // Strip repeat data if flagged
+  if (noProcessing)
+    return {
+      rows: newHeaderRows,
+      columnRepeats: newColumnRepeats,
+    };
 
   // Process replacements
-  updateExternals(replacements, externalLists)!.forEach((rep) => {
-    let afterReplacement = replaceHeaders(
+  (updateExternals(replacements, externalLists) ?? []).forEach((rep) => {
+    const afterReplacement = replaceHeaders(
       rowHeaderColumns ?? 0,
       newHeaderRows,
       newColumnRepeats,
-      rep
+      rep,
     );
     newHeaderRows = afterReplacement.newHeaderRows;
     newColumnRepeats = afterReplacement.newColumnRepeats;
