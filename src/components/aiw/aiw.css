@@ -1,87 +1,87 @@
 .aiw-holder {
-    z-index: 2001;
-    border: 1px black solid;
-    border-radius: 8px;
-    margin: 0;
-    padding: 4px;
-    /* background-color: white; */
-    background-color: rgb(250, 250, 250);
-    height: 100%;
-    box-shadow: 6px 6px 6px rgb(64, 64, 64, 0.5);
+  z-index: 2001;
+  border: 1px black solid;
+  border-radius: 8px;
+  margin: 0;
+  padding: 4px;
+  /* background-color: white; */
+  background-color: rgb(250, 250, 250);
+  height: 100%;
+  box-shadow: 6px 6px 6px rgb(64, 64, 64, 0.5);
 }
 
 .aiw-inner {
-    overflow-x: none;
-    overflow-y: auto;
-    cursor: default;
-    flex-grow: 1;
+  overflow-x: none;
+  overflow-y: auto;
+  cursor: default;
+  flex-grow: 1;
 }
 
 .aiw-title {
-    text-transform: capitalize;
-    border-bottom: 1px black dashed;
-    padding-bottom: 4px;
-    margin: 0 4px 3px 4px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    flex-grow: 1;
-    height: 32px;
+  text-transform: capitalize;
+  border-bottom: 1px black dashed;
+  padding-bottom: 4px;
+  margin: 0 4px 3px 4px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  flex-grow: 1;
+  height: 32px;
 }
 
 .aiw-title-text {
-    display: inline-block;
+  display: inline-block;
 }
 
 .aiw-title-close {
-    float: right;
-    font-size: small;
+  float: right;
+  font-size: small;
 }
 
 .aiw-sub-title {
-    text-transform: capitalize;
-    margin: 6px 4px 0 4px;
-    font-size: 1.1rem;
-    font-weight: 400;
+  text-transform: capitalize;
+  margin: 6px 4px 0 4px;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
 .aiw-sub-title small {
-    width: 80px;
-    display: inline-block;
+  width: 80px;
+  display: inline-block;
 }
 
 .aiw-body {
-    overflow: auto;
-    padding-bottom: 8px;
-    margin-right: 4px;
-    /* fill inner minus total title height */
-    height: calc(100% - 48px); 
+  overflow: auto;
+  padding-bottom: 8px;
+  margin-right: 4px;
+  /* fill inner minus total title height */
+  height: calc(100% - 48px);
 }
 
 .aiw-body-row {
-    display: flex;
-    align-items: flex-start;
+  display: flex;
+  align-items: flex-start;
 }
 
 .aiw-body-row:not(:first-child) {
-    margin-top: 4px;
+  margin-top: 4px;
 }
 
 .aiw-body::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+  width: 4px;
+  height: 4px;
 }
 
 .aiw-body::-webkit-scrollbar-track {
-    background: white;
-    border-radius: 100px;
+  background: white;
+  border-radius: 100px;
 }
 
 .aiw-body::-webkit-scrollbar-thumb {
-    background: lightgrey;
-    border: none;
-    border-radius: 100px;
-  }
-  
-  .aiw-body::-webkit-scrollbar-thumb:hover {
-    background: grey;
-  }
+  background: lightgrey;
+  border: none;
+  border-radius: 100px;
+}
+
+.aiw-body::-webkit-scrollbar-thumb:hover {
+  background: grey;
+}
