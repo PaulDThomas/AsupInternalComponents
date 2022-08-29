@@ -6,17 +6,19 @@ export const WindowPage = () => {
 
   return (
     <>
-      <div style={{
-        margin: "1rem",
-        padding: "1rem",
-        border: "solid black 3px"
-      }}>
+      <div
+        style={{
+          margin: '1rem',
+          padding: '1rem',
+          border: 'solid black 3px',
+        }}
+      >
         <form>
           <label>
             Show Window
             <input
-              name="showWindowCheck"
-              type="checkbox"
+              name='showWindowCheck'
+              type='checkbox'
               checked={showWindow}
               onChange={(e) => {
                 console.log(`Changing checkbox to ${e.target.checked}`);
@@ -27,28 +29,26 @@ export const WindowPage = () => {
           <AsupInternalWindow
             Visible={showWindow}
             onClose={() => {
-              console.log(`Closing window in WindowPage`);
+              console.log('Closing window in WindowPage');
               setShowWindow(false);
-            }
-            }
-            Title={"This is the window title"}
+            }}
+            Title={'This is the window title'}
           >
-
-            <div style={{
-              backgroundColor: "cyan",
-              width: "100%",
-              height: "100%",
-              display: "flex",
-              flexGrow: 1,
-              flexDirection:"column",
-            }}>
+            <div
+              style={{
+                backgroundColor: 'cyan',
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexGrow: 1,
+                flexDirection: 'column',
+              }}
+            >
               <span>h</span>
             </div>
-
-
           </AsupInternalWindow>
         </form>
       </div>
     </>
   );
-}
+};
