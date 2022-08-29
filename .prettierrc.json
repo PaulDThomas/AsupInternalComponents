@@ -9,8 +9,5 @@
   "bracketSameLine": false,
   "arrowParens": "always",
   "endOfLine": "lf",
-  "singleAttributePerLine": true,
-  "phpVersion": "7.4",
-  "braceStyle": "psr-2",
-  "trailingCommaPHP": true
+  "singleAttributePerLine": true
 }
