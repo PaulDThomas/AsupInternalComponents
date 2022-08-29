@@ -46,7 +46,6 @@ table.ait-table {
   font-style: normal;
 }
 
-
 .ait-cell.ait-header-cell {
   vertical-align: bottom;
 }
@@ -69,7 +68,6 @@ table.ait-table {
   padding: 0;
   height: 0.5rem;
 }
-
 
 /* Cell Options button  */
 .ait-options-button {
