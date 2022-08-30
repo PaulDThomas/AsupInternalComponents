@@ -6,8 +6,8 @@ export const getRawTextParts = (s: string): string[] => {
     return [fromHtml(s)];
   } else {
     // Create element to manipulate
-    let ret: string[] = [];
-    let htmlIn: HTMLTemplateElement = document.createElement('template');
+    const ret: string[] = [];
+    const htmlIn: HTMLTemplateElement = document.createElement('template');
     htmlIn.innerHTML = s.trim();
     // Cycle through elements
     htmlIn.content.childNodes.forEach((el) => {

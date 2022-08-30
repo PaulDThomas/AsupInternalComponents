@@ -81,7 +81,7 @@ export const AitCell = ({
   );
 
   const cellType = useMemo<AitCellType>(() => {
-    let cellType =
+    const cellType =
       location.tableSection === AitRowType.body &&
       location.column < (tableSettings.rowHeaderColumns ?? 0)
         ? AitCellType.rowHeader
@@ -141,6 +141,7 @@ export const AitCell = ({
       colWidth?: number;
       textIndents?: number;
     }) => {
+      if (typeof setCellData !== 'function') return;
       const r: AitCellData = {
         aitid: aitid,
         text: cellUpdate.text ?? text,
@@ -157,7 +158,7 @@ export const AitCell = ({
         spaceAfterRepeat: spaceAfterRepeat,
         spaceAfterSpan: spaceAfterSpan,
       };
-      setCellData!(r);
+      setCellData(r);
     },
     [
       aitid,
@@ -427,7 +428,7 @@ export const AitCell = ({
                     {(textIndents ?? 0) > 0 && (
                       <div
                         className='aiox-button aiox-minus'
-                        onClick={() => returnData({ textIndents: textIndents! - 1 })}
+                        onClick={() => returnData({ textIndents: (textIndents ?? 0) - 1 })}
                       />
                     )}
                   </div>

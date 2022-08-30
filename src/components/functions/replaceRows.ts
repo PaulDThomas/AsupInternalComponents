@@ -28,7 +28,7 @@ export const replaceRows = (
   }
 
   // Set up holders
-  let newRows: AitRowData[] = [];
+  const newRows: AitRowData[] = [];
   let addedRows = 0;
   let found = false;
 
@@ -43,35 +43,35 @@ export const replaceRows = (
       console.log(`${JSON.stringify(rows)}`);
     } else
       for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
-        let cellTextParts: string[] = getRawTextParts(
+        const cellTextParts: string[] = getRawTextParts(
           rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? '',
         );
         if (
           replacement !== undefined &&
           // Compare as non-HTML text
-          cellTextParts.some((t) => t.includes(fromHtml(replacement!.oldText)))
+          cellTextParts.some((t) => t.includes(fromHtml(replacement.oldText)))
         ) {
           // Get targetCell
           found = true;
-          let targetCell = rows[ri].cells[ci];
+          const targetCell = rows[ri].cells[ci];
           targetCell.rowSpan = targetCell.rowSpan ?? 1;
 
           let midRows: AitRowData[] = [];
           let midAddedRows = 0;
 
           // Cycle through newTexts
-          for (let rvi = 0; rvi < replacement!.newTexts.length; rvi++) {
-            let rv = replacement!.newTexts[rvi];
+          for (let rvi = 0; rvi < replacement.newTexts.length; rvi++) {
+            const rv = replacement.newTexts[rvi];
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              let thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
+              const thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
 
               // Process remaining cells, including target after replacement
               let lowerQuad: AitRowData[] =
                 replacement.includeTrailing ?? false
                   ? rows.slice(ri).map((r, rj) => {
-                      let cells =
+                      const cells =
                         rj === 0
                           ? [
                               thisRepeat,
@@ -92,7 +92,7 @@ export const replaceRows = (
                     })
                   : targetCell.rowSpan > 1
                   ? rows.slice(ri, ri + targetCell.rowSpan).map((r, rj) => {
-                      let cells =
+                      const cells =
                         rj === 0
                           ? [
                               thisRepeat,
@@ -126,10 +126,10 @@ export const replaceRows = (
               // Find amount to move row cursor
               processedRows = lowerQuad.length;
               // Process lowerQuad if there are subLists
-              let subLists = updateExternals(rv.subLists, externalLists);
-              if ((subLists?.length ?? 0) > 0)
-                for (let si = 0; si < subLists!.length; si++) {
-                  lowerQuad = replaceRows(lowerQuad, subLists![si]);
+              const subLists = updateExternals(rv.subLists, externalLists);
+              if (subLists && subLists.length > 0)
+                for (let si = 0; si < subLists.length; si++) {
+                  lowerQuad = replaceRows(lowerQuad, subLists[si]);
                 }
 
               // Add spaceAfter to bottom left cell in the block

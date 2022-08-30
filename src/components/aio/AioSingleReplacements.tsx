@@ -30,7 +30,7 @@ export const AioSingleReplacements = ({
   const returnData = useCallback(
     (ret: AioExternalSingle, i: number) => {
       if (typeof setReplacements !== 'function') return;
-      let newReplacements = [...(replacements ?? [])];
+      const newReplacements = [...(replacements ?? [])];
       newReplacements[i] = ret;
       setReplacements(newReplacements);
     },
@@ -46,7 +46,7 @@ export const AioSingleReplacements = ({
         replacements.length < i - 1
       )
         return;
-      let newReplacement: AioExternalSingle = {
+      const newReplacement: AioExternalSingle = {
         airid: replacements[i].airid,
         oldText: ret.oldText ?? replacements[i].oldText,
         newText: ret.newText ?? replacements[i].newText,
@@ -59,9 +59,9 @@ export const AioSingleReplacements = ({
   const addReplacement = useCallback(
     (i: number) => {
       if (typeof setReplacements !== 'function') return;
-      let newReplacements = [...(replacements ?? [])];
+      const newReplacements = [...(replacements ?? [])];
       newReplacements.splice(i, 0, newExternalSingle());
-      setReplacements!(newReplacements);
+      setReplacements(newReplacements);
     },
     [replacements, setReplacements],
   );
@@ -69,9 +69,9 @@ export const AioSingleReplacements = ({
   const removeReplacement = useCallback(
     (i: number) => {
       if (typeof setReplacements !== 'function') return;
-      let newReplacements = [...replacements!];
+      const newReplacements = [...(replacements ?? [])];
       newReplacements.splice(i, 1);
-      setReplacements!(newReplacements);
+      setReplacements(newReplacements);
     },
     [replacements, setReplacements],
   );
@@ -111,7 +111,7 @@ export const AioSingleReplacements = ({
                     marginBottom: '2px',
                   }}
                 >
-                  {replacements!.length >= 1 && (
+                  {replacements && replacements.length >= 1 && (
                     <AioIconButton
                       iconName={'aiox-removeUp'}
                       onClick={() => removeReplacement(i)}

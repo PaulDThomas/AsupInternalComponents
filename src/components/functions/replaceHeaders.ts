@@ -58,15 +58,15 @@ export const replaceHeaders = (
     // Go through each row if we are still looking
     else {
       for (let ri = 0; ri < rows.length; ri++) {
-        let cellTextParts: string[] = getRawTextParts(
+        const cellTextParts: string[] = getRawTextParts(
           rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? '',
         );
         // React if found
-        if (cellTextParts.some((t) => t.includes(replacement!.oldText))) {
-          let targetCell = rows[ri].cells[ci];
+        if (replacement && cellTextParts.some((t) => t.includes(replacement.oldText))) {
+          const targetCell = rows[ri].cells[ci];
           found = true;
           if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
-          let repeatSpan: number = Math.max(...rows.map((r) => r.cells[ci].colSpan ?? 1));
+          const repeatSpan: number = Math.max(...rows.map((r) => r.cells[ci].colSpan ?? 1));
 
           let midRows: AitRowData[] = rows.slice(ri).map((r) => {
             return { aitid: r.aitid, cells: [] };
@@ -74,18 +74,18 @@ export const replaceHeaders = (
           let midRepeats: AitColumnRepeat[] = [];
 
           // Cycle through reach replacement value
-          for (let rvi = 0; rvi < replacement!.newTexts.length; rvi++) {
-            let rv = replacement!.newTexts[rvi];
+          for (let rvi = 0; rvi < replacement.newTexts.length; rvi++) {
+            const rv = replacement.newTexts[rvi];
 
             // Process sublist
-            let lowerQuad: AitRowData[] = rows.slice(ri + 1).map((r) => {
+            const lowerQuad: AitRowData[] = rows.slice(ri + 1).map((r) => {
               return {
                 aitid: r.aitid,
                 cells: r.cells.slice(ci, ci + repeatSpan),
               };
             });
-            let nextReplacement = flattenReplacements(rv.subLists, externalLists);
-            let { newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats } =
+            const nextReplacement = flattenReplacements(rv.subLists, externalLists);
+            const { newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats } =
               replaceHeaders(
                 0,
                 lowerQuad,
@@ -99,28 +99,32 @@ export const replaceHeaders = (
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              let thisRepeat: AitCellData = replaceCellText(
+              const thisRepeat: AitCellData = replaceCellText(
                 targetCell,
-                replacement!.oldText,
+                replacement.oldText,
                 rv.texts[ti],
               );
               // Expand to cover all lower columns
               if (lowerProcessed.length > 0 && lowerProcessed[0].cells.length > repeatSpan) {
                 thisRepeat.repeatColSpan =
-                  lowerProcessed[0].cells.length + repeatSpan - targetCell.colSpan!;
+                  lowerProcessed[0].cells.length + repeatSpan - targetCell.colSpan;
               }
 
               // Add into mid cells
-              let targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
+              const targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
               // Add usual trailing cells
-              if (thisRepeat.colSpan! > 1) {
+              if ((thisRepeat.colSpan ?? 1) > 1) {
                 targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
               }
               // Add new blank cells
-              if (thisRepeat.repeatColSpan ?? 0 > thisRepeat.colSpan!) {
-                let nIns = thisRepeat.repeatColSpan! - thisRepeat.colSpan!;
+              if (
+                thisRepeat.colSpan !== undefined &&
+                thisRepeat.repeatColSpan !== undefined &&
+                thisRepeat.repeatColSpan > thisRepeat.colSpan
+              ) {
+                const nIns = thisRepeat.repeatColSpan - thisRepeat.colSpan;
                 for (let nci = 0; nci < nIns; nci++) {
-                  let n = newCell();
+                  const n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = '__filler1';
@@ -130,7 +134,7 @@ export const replaceHeaders = (
               // Add extra cells covered by repeatSpan
               if (repeatSpan > targetCell.colSpan) {
                 targetRow.cells.push(
-                  ...rows[ri].cells.slice(ci + targetCell.colSpan!, ci + repeatSpan),
+                  ...rows[ri].cells.slice(ci + targetCell.colSpan, ci + repeatSpan),
                 );
               }
 
@@ -183,7 +187,7 @@ export const replaceHeaders = (
           newColumnRepeats = [...newColumnRepeats, ...midRepeats];
 
           // Ensure that columns above cover the repeats
-          let nIns = midRows[0].cells.length - (repeatSpan ?? 1);
+          const nIns = midRows[0].cells.length - (repeatSpan ?? 1);
           if (nIns > 0) {
             // Number of cells to insert / colSpan to increase
             for (let rj = ri - 1; rj >= 0; rj--) {
@@ -200,10 +204,10 @@ export const replaceHeaders = (
                 }
                 // Calculated new colSpan and add in fillers
                 targetCellAbove.repeatColSpan =
-                  (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan!) + nIns;
-                let newCells2: AitCellData[] = [];
+                  (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
+                const newCells2: AitCellData[] = [];
                 for (let nci = 0; nci < nIns + targetCell.colSpan - 1; nci++) {
-                  let n = newCell();
+                  const n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = '__filler2';

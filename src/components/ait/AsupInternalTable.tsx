@@ -77,7 +77,7 @@ export const AsupInternalTable = ({
   // Pushdown data when it it updated externally
   useEffect(() => {
     // Set defaults for no processing
-    let headerData = headerPreProcess(tableData.headerData);
+    const headerData = headerPreProcess(tableData.headerData);
     let columnRepeats =
       tableData.bodyData === undefined
         ? null
@@ -88,7 +88,7 @@ export const AsupInternalTable = ({
 
     // Process repeats if required
     if (processedHeaderData !== false && (processedHeaderData.rows.length ?? 0) > 0) {
-      let headerDataUpdate = repeatHeaders(
+      const headerDataUpdate = repeatHeaders(
         processedHeaderData.rows,
         processedHeaderData.replacements ?? [],
         tableData.noRepeatProcessing ?? false,
@@ -110,8 +110,8 @@ export const AsupInternalTable = ({
     setColumnRepeats(columnRepeats);
 
     // Create processed body
-    let bodyData = bodyPreProcess(tableData.bodyData);
-    let processedBodyData: AitRowGroupData[] = bodyData.map((rg) => {
+    const bodyData = bodyPreProcess(tableData.bodyData);
+    const processedBodyData: AitRowGroupData[] = bodyData.map((rg) => {
       return {
         ...rg,
         rows: repeatRows(
@@ -150,8 +150,8 @@ export const AsupInternalTable = ({
   ]);
 
   const unProcessRowGroup = useCallback(
-    (processedGroup: AitRowGroupData | false, type: AitRowType): AitRowGroupData | false => {
-      let ret =
+    (processedGroup: AitRowGroupData | false): AitRowGroupData | false => {
+      const ret =
         processedGroup === false
           ? false
           : {
@@ -192,15 +192,19 @@ export const AsupInternalTable = ({
     }) => {
       if (typeof setTableData !== 'function') return;
       // Unprocess header data
-      let headerRet =
-        tableUpdate.headerDataUnprocessed || !tableUpdate.headerData
-          ? tableUpdate.headerData ?? unProcessRowGroup(headerData!, AitRowType.header)
-          : unProcessRowGroup(tableUpdate.headerData, AitRowType.header);
+      const headerRet =
+        !tableUpdate.headerDataUnprocessed && tableUpdate.headerData
+          ? unProcessRowGroup(tableUpdate.headerData)
+          : tableUpdate.headerData
+          ? tableUpdate.headerData
+          : headerData !== false && headerData !== undefined
+          ? unProcessRowGroup(headerData)
+          : headerData;
       // Unprocess body data
-      let bodyRet =
+      const bodyRet =
         tableUpdate.bodyDataUnprocessed || !tableUpdate.bodyData
-          ? tableUpdate.bodyData ?? bodyData?.map((rg) => unProcessRowGroup(rg, AitRowType.body))
-          : tableUpdate.bodyData.map((rg) => unProcessRowGroup(rg, AitRowType.body));
+          ? tableUpdate.bodyData ?? bodyData?.map((rg) => unProcessRowGroup(rg))
+          : tableUpdate.bodyData.map((rg) => unProcessRowGroup(rg));
       // Assenble return information
       const r = {
         headerData: headerRet,
@@ -232,7 +236,7 @@ export const AsupInternalTable = ({
         return;
       // Update body data
       let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg, AitRowType.body) as AitRowGroupData,
+        (rg) => unProcessRowGroup(rg) as AitRowGroupData,
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
@@ -242,19 +246,19 @@ export const AsupInternalTable = ({
         return rg;
       });
       // Update header group
-      let newHeader = unProcessRowGroup(headerData, AitRowType.header);
+      const newHeader = unProcessRowGroup(headerData);
       if (newHeader !== false && headerData !== false) {
-        headerData.rows = newHeader.rows.map((r, ri) => {
+        headerData.rows = newHeader.rows.map((r) => {
           // Check for colSpan
           if (ci >= 0 && (r.cells[ci + 1]?.colSpan ?? 1) === 0) {
             // Change colSpan on previous spanner
             let lookback = 1;
             while (lookback <= ci && (r.cells[ci + 1 - lookback].colSpan ?? 0) === 0) lookback++;
-            let targetCellBefore = r.cells[ci + 1 - lookback];
+            const targetCellBefore = r.cells[ci + 1 - lookback];
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            let n = newCell();
+            const n = newCell();
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
@@ -282,11 +286,11 @@ export const AsupInternalTable = ({
         return;
       // Update body data
       let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg, AitRowType.body) as AitRowGroupData,
+        (rg) => unProcessRowGroup(rg) as AitRowGroupData,
       );
       newBody = newBody.map((rg) => {
         // let newRg = unProcessRowGroup(rg) as AitRowGroupData;
-        let newRg = { ...rg };
+        const newRg = { ...rg };
         newRg.rows = newRg.rows.map((r) => {
           r.cells.splice(ci, 1);
           return r;
@@ -294,11 +298,11 @@ export const AsupInternalTable = ({
         return newRg;
       });
       // Update header group
-      let newHeader = unProcessRowGroup(headerData, AitRowType.header);
+      const newHeader = unProcessRowGroup(headerData);
       if (newHeader !== false && headerData !== false) {
         headerData.rows = newHeader.rows.map((r) => {
           // Check for colSpan
-          let c = r.cells[ci];
+          const c = r.cells[ci];
           if (c.colSpan === undefined) c.colSpan = 1;
           // Reduce where a hidden cell has been removed
           if (c.colSpan === 0) {
@@ -306,7 +310,7 @@ export const AsupInternalTable = ({
             while (r.cells[ci - lookBack].colSpan === 0) {
               lookBack++;
             }
-            r.cells[ci - lookBack].colSpan!--;
+            r.cells[ci - lookBack].colSpan = (r.cells[ci - lookBack].colSpan ?? 1) - 1;
           }
           // Reveal where an expanded cell has been removed
           else if (c.colSpan > 1) {
@@ -332,7 +336,7 @@ export const AsupInternalTable = ({
   // Update to a rowGroup data
   const updateRowGroup = useCallback(
     (ret: AitRowGroupData, rgi: number) => {
-      let newBody: AitRowGroupData[] = [...(bodyData ?? [])];
+      const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
       newBody[rgi] = ret;
       returnData({ bodyData: newBody });
     },
@@ -347,14 +351,16 @@ export const AsupInternalTable = ({
       // Check ok to proceed
       if (bodyData === undefined) return;
       // Create new body, take template if it can be found
-      let newRowGroupTemplate: AitRowGroupData =
-        templateName && groupTemplates && groupTemplates.find((g) => g.name === templateName)
-          ? groupTemplates.find((g) => g.name === templateName)!
-          : { rows: [{ cells: [] }] };
+      const ix =
+        !templateName || !groupTemplates
+          ? -1
+          : groupTemplates.findIndex((g) => g.name === templateName);
+      const newRowGroupTemplate: AitRowGroupData =
+        ix > -1 && groupTemplates ? groupTemplates[ix] : { rows: [{ cells: [] }] };
       // Ensure new template meets requirements
-      let newrg = newRowGroup(bodyData[0].rows[0].cells.length, newRowGroupTemplate);
+      const newrg = newRowGroup(bodyData[0].rows[0].cells.length, newRowGroupTemplate);
       // Copy existing body and splice in new data
-      let newBody: AitRowGroupData[] = [...(bodyData ?? [])];
+      const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
       newBody.splice(rgi + 1, 0, newrg);
       // Update table body
       returnData({ bodyData: newBody });
@@ -368,7 +374,7 @@ export const AsupInternalTable = ({
       // Check ok to proceed
       if (bodyData === undefined) return;
       // Update bodyData
-      let newRowGroups: AitRowGroupData[] = [...bodyData];
+      const newRowGroups: AitRowGroupData[] = [...bodyData];
       newRowGroups.splice(rgi, 1);
       returnData({ bodyData: newRowGroups });
     },
@@ -419,7 +425,7 @@ export const AsupInternalTable = ({
     if (headerData === false) return;
     if ((headerData?.rows.length ?? 0) > 0 || bodyData === undefined) return;
     // Create new row
-    let newHeader: AitRowGroupData = {
+    const newHeader: AitRowGroupData = {
       ...headerData,
       rows: [newRow(bodyData[0].rows[0].cells.length, AitRowType.header)],
     };
@@ -430,7 +436,7 @@ export const AsupInternalTable = ({
   const setColWidth = useCallback(
     (colNo: number, colWidth: number) => {
       console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
-      let newHeaderData =
+      const newHeaderData =
         headerData !== undefined && headerData !== false
           ? {
               ...headerData,
@@ -444,7 +450,7 @@ export const AsupInternalTable = ({
               }),
             }
           : headerData;
-      let newBodyData =
+      const newBodyData =
         bodyData !== undefined
           ? bodyData.map((rg) => {
               return {
@@ -497,7 +503,7 @@ export const AsupInternalTable = ({
             ? (groupTemplates
                 .filter((g) => g.name !== undefined)
                 .map((g) => g.name)
-                .sort((a, b) => a!.localeCompare(b!)) as string[])
+                .sort((a, b) => (a ?? '').localeCompare(b ?? '')) as string[])
             : undefined,
         commentStyles: commentStyles,
         cellStyles: cellStyles,
@@ -613,7 +619,7 @@ export const AsupInternalTable = ({
             />
             {headerData !== false && (
               <AitHeader
-                aitid={headerData.aitid!}
+                aitid={headerData.aitid ?? 'header'}
                 rows={headerData.rows}
                 comments={headerData.comments}
                 replacements={headerData.replacements}
@@ -629,8 +635,8 @@ export const AsupInternalTable = ({
             {bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
               return (
                 <AitRowGroup
-                  key={rowGroup.aitid}
-                  aitid={rowGroup.aitid!}
+                  key={rowGroup.aitid ?? `row-group-${rgi}`}
+                  aitid={rowGroup.aitid ?? `row-group-${rgi}`}
                   rows={rowGroup.rows}
                   comments={rowGroup.comments}
                   replacements={rowGroup.replacements ?? []}

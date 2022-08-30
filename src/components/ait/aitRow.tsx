@@ -60,11 +60,11 @@ export const AitRow = ({
   const returnData = useCallback(
     (rowUpdate: { cells?: AitCellData[] }) => {
       if (typeof setRowData !== 'function') return;
-      let r: AitRowData = {
+      const r: AitRowData = {
         aitid: aitid,
         cells: rowUpdate.cells ?? cells,
       };
-      setRowData!(r);
+      setRowData(r);
     },
     [setRowData, aitid, cells],
   );
@@ -72,7 +72,7 @@ export const AitRow = ({
   const updateCell = useCallback(
     (ret: AitCellData, ci: number) => {
       // Create new object to send back
-      let newCells = [...cells];
+      const newCells = [...cells];
       newCells[ci] = ret;
       returnData({ cells: newCells });
     },
@@ -152,7 +152,7 @@ export const AitRow = ({
                     <div className='aiw-body-row'>
                       <AioReplacementList
                         label={'Replacements'}
-                        replacements={replacements!}
+                        replacements={replacements}
                         setReplacements={
                           typeof setReplacements === 'function'
                             ? (ret) => {
@@ -175,11 +175,11 @@ export const AitRow = ({
         {/* All cells from row */}
         {cells.map((cell: AitCellData, ci: number): JSX.Element => {
           // Get cell from column repeat
-          let cr: AitColumnRepeat | undefined =
+          const cr: AitColumnRepeat | undefined =
             Array.isArray(tableSettings.columnRepeats) && tableSettings.columnRepeats.length > ci
               ? tableSettings.columnRepeats[ci]
               : undefined;
-          let isColumnRepeat =
+          const isColumnRepeat =
             cr !== undefined && cr.colRepeat !== undefined
               ? cr.colRepeat.match(/^[[\]0,]+$/) === null
               : false;
@@ -188,10 +188,10 @@ export const AitRow = ({
           return (
             <AitCell
               key={
-                isColumnRepeat ? `${cell.aitid!}-${JSON.stringify(cr!.colRepeat!)}` : cell.aitid!
+                isColumnRepeat && cr ? `${cell.aitid}-${JSON.stringify(cr.colRepeat)}` : cell.aitid
               }
-              aitid={cell.aitid!}
-              text={cell.text ?? ''}
+              aitid={cell.aitid ?? `cell-${ci}`}
+              text={cell.text ?? `cell-${ci}`}
               justifyText={cell.justifyText}
               comments={cell.comments ?? ''}
               colSpan={cell.colSpan ?? 1}
@@ -219,7 +219,7 @@ export const AitRow = ({
               }
               removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
-                location.row! + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0) ||
+                location.row + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0) ||
                 ci < (tableSettings.rowHeaderColumns ?? 0)
                   ? addRowSpan
                   : undefined

@@ -2,7 +2,7 @@ import { AitCellData, AitRowData } from '../ait/aitInterface';
 
 export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
   return rows.map((r) => {
-    let ret: AitRowData = {
+    const ret: AitRowData = {
       aitid: r.aitid,
       cells: r.cells
         // .filter(c => !c.replacedText?.includes("__filler"))
