@@ -12,7 +12,7 @@ export function singleReplacements(
         newRows = newRows.map((r) => {
           return {
             ...r,
-            cells: r.cells.map((c) => replaceCellText(c, e.oldText!, e.newText ?? '')),
+            cells: r.cells.map((c) => replaceCellText(c, e.oldText ?? '', e.newText ?? '')),
           };
         });
       }
