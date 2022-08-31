@@ -96,18 +96,10 @@ describe('Check replace headers', () => {
     ],
   };
 
-  const fillerCell1 = {
+  const fillerCell = {
     colSpan: 0,
     repeatColSpan: 0,
-    replacedText: '__filler1',
-    rowSpan: 1,
-    text: '',
-  };
-
-  const fillerCell2 = {
-    colSpan: 0,
-    repeatColSpan: 0,
-    replacedText: '__filler2',
+    replacedText: '',
     rowSpan: 1,
     text: '',
   };
@@ -139,12 +131,12 @@ describe('Check replace headers', () => {
           { text: 'r1c3', colSpan: 0 },
           { text: 'r1c4', colSpan: 0 },
           { text: 'r1c5', colSpan: 0 },
-          fillerCell1,
+          fillerCell,
           { text: 'r1c2', colSpan: 4, replacedText: 'r1c2-rep2', repeatColSpan: 5 },
           { text: 'r1c3', colSpan: 0 },
           { text: 'r1c4', colSpan: 0 },
           { text: 'r1c5', colSpan: 0 },
-          fillerCell1,
+          fillerCell,
           { text: 'r1c6', colSpan: 4 },
           { text: 'r1c7', colSpan: 0 },
           { text: 'r1c8', colSpan: 0 },
@@ -158,12 +150,12 @@ describe('Check replace headers', () => {
           { text: 'r2c3', colSpan: 2 },
           { text: 'r2c4', colSpan: 0 },
           { text: 'r2c5', colSpan: 1, repeatColSpan: 2 },
-          fillerCell2,
+          fillerCell,
           { text: 'r2c2', rowSpan: 2 },
           { text: 'r2c3', colSpan: 2 },
           { text: 'r2c4', colSpan: 0 },
           { text: 'r2c5', colSpan: 1, repeatColSpan: 2 },
-          fillerCell2,
+          fillerCell,
           { text: 'r2c6', rowSpan: 2 },
           { text: 'r2c7', rowSpan: 2 },
           { text: 'r2c8', rowSpan: 2 },

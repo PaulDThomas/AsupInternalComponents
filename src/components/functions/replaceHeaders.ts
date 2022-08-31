@@ -127,7 +127,7 @@ export const replaceHeaders = (
                   const n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = '__filler1';
+                  n.replacedText = '';
                   targetRow.cells.push(n);
                 }
               }
@@ -210,7 +210,7 @@ export const replaceHeaders = (
                   const n = newCell();
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = '__filler2';
+                  n.replacedText = '';
                   newCells2.push(n);
                 }
                 newHeaderRows[rj].cells.splice(ci + addedCols - lookup + 1, 0, ...newCells2);

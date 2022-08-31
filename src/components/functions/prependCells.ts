@@ -26,7 +26,7 @@ export const prependCell = (
               repeatRowSpan:
                 (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + (rowsAdded ?? post.length ?? 0),
             }
-          : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: 'prependFiller' },
+          : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
         ...post[ri].cells,
       ],
       rowRepeat: post[ri].rowRepeat,

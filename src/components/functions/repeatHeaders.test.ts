@@ -93,7 +93,7 @@ describe('Check repeatHeaders', () => {
   const fillerCell1 = {
     colSpan: 0,
     repeatColSpan: 0,
-    replacedText: '__filler1',
+    replacedText: '',
     rowSpan: 1,
     text: '',
   };
@@ -101,7 +101,7 @@ describe('Check repeatHeaders', () => {
   const fillerCell2 = {
     colSpan: 0,
     repeatColSpan: 0,
-    replacedText: '__filler2',
+    replacedText: '',
     rowSpan: 1,
     text: '',
   };

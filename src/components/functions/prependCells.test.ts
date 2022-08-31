@@ -33,7 +33,7 @@ describe('Check prependCells', () => {
           );
 
           for (let reti = 1; reti < ret.length; reti++) {
-            expect(ret[reti].cells[0].replacedText).toBe('prependFiller');
+            expect(ret[reti].cells[0].replacedText).toBe('');
           }
         });
       }

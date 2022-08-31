@@ -135,7 +135,10 @@ export const replaceRows = (
               // Add spaceAfter to bottom left cell in the block
               if (rv.spaceAfter) {
                 let lookup = 0;
-                while ((lowerQuad[lowerQuad.length - 1 - lookup].cells[0].rowSpan ?? 1) === 0)
+                while (
+                  lookup < lowerQuad.length - 1 &&
+                  (lowerQuad[lowerQuad.length - 1 - lookup].cells[0].rowSpan ?? 1) === 0
+                )
                   lookup++;
                 lowerQuad[lowerQuad.length - 1 - lookup].cells[0].spaceAfterRepeat = true;
               }
