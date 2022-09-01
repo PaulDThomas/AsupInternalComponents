@@ -138,12 +138,14 @@ describe('Check repeat rows', () => {
   ];
 
   test('Complex rows', async () => {
-    const repeated = repeatRows(rows, replacements);
+    const repeated = repeatRows(rows, replacements, true, false, undefined, [
+      { oldText: 'p1', newText: 'p1!' },
+    ]);
     expect(removeUndefined(repeated)).toEqual([
       // Row 0
       {
         cells: [
-          { text: 'p', rowSpan: 2, repeatRowSpan: 24, replacedText: 'p1', spaceAfterSpan: 24 },
+          { text: 'p', rowSpan: 2, repeatRowSpan: 24, replacedText: 'p1!', spaceAfterSpan: 24 },
           { text: 's', rowSpan: 2, repeatRowSpan: 12, replacedText: 's1', spaceAfterSpan: 12 },
           { text: 't', rowSpan: 2, repeatRowSpan: 6, replacedText: 't1', spaceAfterSpan: 6 },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h1', spaceAfterSpan: 3 },
@@ -288,7 +290,6 @@ describe('Check repeat rows', () => {
         rowRepeat: '[0,0][0,0][0,1][0,1][0,0][0,0]',
         spaceAfter: true,
       },
-
       // Row 12
       {
         cells: [
