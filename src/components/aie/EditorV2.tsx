@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AieStyleButtonRow } from "./AieStyleButtonRow";
-import { AieStyleMap, drawInnerHtml, getCaretPosition } from "./functions";
-import { getHTMLfromV2Text } from "./functions/getHTMLfromV2Text";
-import { getV2TextStyle } from "./functions/getV2TextStyle";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AieStyleButtonRow } from './AieStyleButtonRow';
+import { AieStyleMap, drawInnerHtml, getCaretPosition } from './functions';
+import { getHTMLfromV2Text } from './functions/getHTMLfromV2Text';
+import { getV2TextStyle } from './functions/getV2TextStyle';
 
 interface iEditorV2 {
-  text: string,
-  setText?: (ret: string) => void,
-  customStyleMap?: AieStyleMap,
-  allowNewLine?: boolean,
-  textAlignment?: "left" | "center" | "decimal" | "right",
-  decimalAlignPercent?: number,
+  text: string;
+  setText?: (ret: string) => void;
+  customStyleMap?: AieStyleMap;
+  allowNewLine?: boolean;
+  textAlignment?: 'left' | 'center' | 'decimal' | 'right';
+  decimalAlignPercent?: number;
 }
 
 export const EditorV2 = ({
@@ -18,17 +18,16 @@ export const EditorV2 = ({
   setText,
   customStyleMap,
   allowNewLine = false,
-  textAlignment = "decimal",
+  textAlignment = 'decimal',
   decimalAlignPercent = 60,
 }: iEditorV2): JSX.Element => {
-
   // Set up reference to inner div
   const divRef = useRef<HTMLDivElement | null>(null);
-  const [currentText, setCurrentText] = useState<string>("");
-  const [currentStyleName, setCurrentStyleName] = useState<string>("");
+  const [currentText, setCurrentText] = useState<string>('');
+  const [currentStyleName, setCurrentStyleName] = useState<string>('');
   const [currentStyle, setCurrentStyle] = useState<React.CSSProperties>({});
   useEffect(() => {
-    let { newText, styleName } = getV2TextStyle(text);
+    const { newText, styleName } = getV2TextStyle(text);
     setCurrentText(newText);
     setCurrentStyleName(styleName);
     drawInnerHtml(
@@ -41,106 +40,120 @@ export const EditorV2 = ({
     );
   }, [decimalAlignPercent, text, textAlignment]);
 
-  const returnData = useCallback((ret: { text?: string }) => {
-    // Do nothing if there is nothing to do
-    if (typeof setText !== "function") return;
-    // Update via parent function
-    setText(ret.text ?? text ?? "");
-  }, [setText, text]);
+  const returnData = useCallback(
+    (ret: { text?: string }) => {
+      // Do nothing if there is nothing to do
+      if (typeof setText !== 'function') return;
+      // Update via parent function
+      setText(ret.text ?? text ?? '');
+    },
+    [setText, text],
+  );
 
   // Work out backgroup colour and border
   const [inFocus, setInFocus] = useState<boolean>(false);
   const [backBorder, setBackBorder] = useState<React.CSSProperties>({});
   useEffect(() => {
     setBackBorder({
-      background: inFocus ? "white" : "inherit",
-      border: inFocus ? "1px solid grey" : "1px solid transparent",
-    })
+      background: inFocus ? 'white' : 'inherit',
+      border: inFocus ? '1px solid grey' : '1px solid transparent',
+    });
   }, [inFocus]);
 
   // Work out justification
   const [just, setJust] = useState<React.CSSProperties>({});
   useEffect(() => {
     switch (textAlignment) {
-      case ("right"):
+      case 'right':
         setJust({
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "end",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'end',
         });
         break;
-      case ("center"):
+      case 'center':
         setJust({
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'center',
         });
         break;
-      case ("decimal"):
+      case 'decimal':
         setJust({
-          display: "block",
+          display: 'block',
         });
         break;
-      case ("left"):
+      case 'left':
       default:
         setJust({
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "start",
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'start',
         });
     }
   }, [textAlignment, currentText]);
 
-  const handleFocus = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+  const handleFocus = useCallback(() => {
     setInFocus(true);
   }, []);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === "Enter" && !allowNewLine) {
+    if (e.key === 'Enter' && !allowNewLine) {
       e.stopPropagation();
       e.preventDefault();
     }
   }
 
-  const handleKeyUp = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    let sel: Selection | null = window.getSelection();
-    if (sel && divRef.current) {
-      let range: Range = sel.getRangeAt(0);
-      if (range.collapsed) {
-        drawInnerHtml(
-          divRef,
-          setCurrentText,
-          getCaretPosition,
-          textAlignment,
-          decimalAlignPercent,
-          undefined,
-          e,
-          range);
+  const handleKeyUp = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const sel: Selection | null = window.getSelection();
+      if (sel && divRef.current) {
+        const range: Range = sel.getRangeAt(0);
+        if (range.collapsed) {
+          drawInnerHtml(
+            divRef,
+            setCurrentText,
+            getCaretPosition,
+            textAlignment,
+            decimalAlignPercent,
+            undefined,
+            e,
+            range,
+          );
+        }
       }
-    }
-  }, [decimalAlignPercent, textAlignment]);
+    },
+    [decimalAlignPercent, textAlignment],
+  );
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   function handleSelect(e: React.SyntheticEvent<HTMLDivElement>) {
     // console.log("Key select");
     // if (divRef.current) console.log(getCaretPosition(divRef.current));
   }
 
-  const handleBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
-    setInFocus(false);
-    if (typeof setText === "function") {
-      returnData({ text: getHTMLfromV2Text(currentText, currentStyleName) });
-    }
-  }, [currentStyleName, currentText, returnData, setText]);
+  const handleBlur = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (e: React.FocusEvent<HTMLDivElement>) => {
+      setInFocus(false);
+      if (typeof setText === 'function') {
+        returnData({ text: getHTMLfromV2Text(currentText, currentStyleName) });
+      }
+    },
+    [currentStyleName, currentText, returnData, setText],
+  );
 
   useEffect(() => {
-    let ix = Object.keys(customStyleMap ?? {}).findIndex(c => c === currentStyleName);
+    if (customStyleMap === undefined) return;
+    const ix = Object.keys(customStyleMap).findIndex((c) => c === currentStyleName);
     if (ix === -1) return;
-    setCurrentStyle(customStyleMap![currentStyleName].css);
+    setCurrentStyle(customStyleMap[currentStyleName].css);
   }, [currentStyleName, customStyleMap]);
 
   return (
     <div className='aiev2-outer'>
-      <div className='aiev2-line'
+      <div
+        className='aiev2-line'
         style={{
           ...backBorder,
           ...just,
@@ -149,28 +162,28 @@ export const EditorV2 = ({
         onFocusCapture={handleFocus}
         onBlur={handleBlur}
       >
-        <div className='aiev2-editing'
-          contentEditable={typeof setText === "function"}
+        <div
+          className='aiev2-editing'
+          contentEditable={typeof setText === 'function'}
           suppressContentEditableWarning
           spellCheck={false}
           ref={divRef}
           style={{
-            overflow: "hidden",
+            overflow: 'hidden',
             outline: 0,
             display: 'flex',
             alignContent: 'start',
             verticalAlign: 'top',
-            margin: "-1px",
+            margin: '-1px',
           }}
           onKeyUpCapture={handleKeyUp}
           onSelectCapture={handleSelect}
           onKeyDownCapture={handleKeyDown}
           onBlurCapture={handleBlur}
           onFocus={handleFocus}
-        >
-        </div >
-      </div >
-      {inFocus &&
+        ></div>
+      </div>
+      {inFocus && (
         <div className='aie-button-position center'>
           <div className='aie-button-holder'>
             <AieStyleButtonRow
@@ -180,7 +193,7 @@ export const EditorV2 = ({
             />
           </div>
         </div>
-      }
+      )}
     </div>
-  )
-}
+  );
+};

@@ -1,15 +1,19 @@
-import { AitCellData, AitRowData } from "../ait/aitInterface";
-import { newCell } from "./newCell";
-import { newRow } from "./newRow";
+import { AitCellData, AitRowData } from '../ait/aitInterface';
+import { newCell } from './newCell';
+import { newRow } from './newRow';
 
-export const prependCell = (pre: AitCellData, post?: AitRowData[], rowsAdded?: number): AitRowData[] => {
+export const prependCell = (
+  pre: AitCellData,
+  post?: AitRowData[],
+  rowsAdded?: number,
+): AitRowData[] => {
   if (!post) {
-    let r = newRow(1);
+    const r = newRow(1);
     r.cells = [pre];
     return [r];
   }
 
-  let newRows: AitRowData[] = [];
+  const newRows: AitRowData[] = [];
 
   // Cycle through post rows
   for (let ri = 0; ri < post.length; ri++) {
@@ -18,15 +22,15 @@ export const prependCell = (pre: AitCellData, post?: AitRowData[], rowsAdded?: n
       cells: [
         ri === 0
           ? {
-            ...pre,
-            repeatRowSpan: (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + (rowsAdded ?? post.length ?? 0)
-          }
-          : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: 'prependFiller' }
-        ,
+              ...pre,
+              repeatRowSpan:
+                (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + (rowsAdded ?? post.length ?? 0),
+            }
+          : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
         ...post[ri].cells,
       ],
       rowRepeat: post[ri].rowRepeat,
-    })
+    });
   }
   return newRows;
-}
+};

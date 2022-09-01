@@ -3,44 +3,58 @@ import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components';
 
 export const EditorPage = () => {
-  const [text1, setText1] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
-  const [text2, setText2] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
-  const [text3, setText3] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
-  const [text4, setText4] = useState(`<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>`);
+  const [text1, setText1] = useState(
+    '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
+  );
+  const [text2, setText2] = useState(
+    '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
+  );
+  const [text3, setText3] = useState(
+    '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
+  );
+  const [text4, setText4] = useState(
+    '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
+  );
 
   const dothing = () => {
-    console.log("Update");
-    var newThing = "<p color='red'>Here</p><span style='color:red'>ref</span>";
+    console.log('Update');
+    const newThing = '<p color="red">Here</p><span style="color:red">ref</span>';
     setText4(newThing);
-  }
+  };
 
   const save = () => {
-    window.localStorage.setItem('content', JSON.stringify({text1, text2, text3, text4}));
-    console.log("Saved: ");
+    window.localStorage.setItem('content', JSON.stringify({ text1, text2, text3, text4 }));
+    console.log('Saved: ');
     console.log(text4);
-  }
+  };
 
   const load = () => {
-    var saved = JSON.parse(window.localStorage.getItem('content') ?? "");
+    const saved = JSON.parse(window.localStorage.getItem('content') ?? '');
     setText1(saved.text1);
     setText2(saved.text2);
     setText3(saved.text3);
     setText4(saved.text4);
-  }
-
-  const thisStyleMap = {
-    Editable: { css: { color: "red", fontFamily: "courier", fontSize: "16pt" }, aieExclude: ["Optional", "Notes"] },
-    Optional: { css: { color: "green", fontWeight: "100", fontFamily: "serif", fontSize: "16pt" }, aieExclude: ["Editable", "Notes"] },
-    Notes: { css: { color: "blue", fontSize: "16pt" }, aieExclude: ["Editable", "Optional"] },
   };
 
-  let locn = useLocation();
+  const thisStyleMap = {
+    Editable: {
+      css: { color: 'red', fontFamily: 'courier', fontSize: '16pt' },
+      aieExclude: ['Optional', 'Notes'],
+    },
+    Optional: {
+      css: { color: 'green', fontWeight: '100', fontFamily: 'serif', fontSize: '16pt' },
+      aieExclude: ['Editable', 'Notes'],
+    },
+    Notes: { css: { color: 'blue', fontSize: '16pt' }, aieExclude: ['Editable', 'Optional'] },
+  };
+
+  const locn = useLocation();
 
   return (
     <div
       style={{
-        margin: "1rem",
-        padding: "1rem",
+        margin: '1rem',
+        padding: '1rem',
       }}
     >
       <table>
@@ -51,8 +65,8 @@ export const EditorPage = () => {
                 value={text1}
                 setValue={setText1}
                 showStyleButtons={true}
-                style={{ width: "195px", height: "100%" }}
-                textAlignment={"left"}
+                style={{ width: '195px', height: '100%' }}
+                textAlignment={'left'}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -66,8 +80,8 @@ export const EditorPage = () => {
                 value={text2}
                 setValue={setText2}
                 showStyleButtons={true}
-                style={{ width: "195px", height: "100%" }}
-                textAlignment={"decimal"}
+                style={{ width: '195px', height: '100%' }}
+                textAlignment={'decimal'}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -81,8 +95,8 @@ export const EditorPage = () => {
                 value={text3}
                 setValue={setText3}
                 showStyleButtons={true}
-                style={{ width: "196px", height: "100%" }}
-                textAlignment={"center"}
+                style={{ width: '196px', height: '100%' }}
+                textAlignment={'center'}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -94,16 +108,18 @@ export const EditorPage = () => {
         value={text4}
         setValue={setText4}
         showStyleButtons={true}
-        style={{ width: "600px", height: "100%" }}
-        textAlignment={"right"}
+        style={{ width: '600px', height: '100%' }}
+        textAlignment={'right'}
         styleMap={thisStyleMap}
       />
 
-      <div style={{
-        marginTop: "1rem",
-        padding: "1rem",
-        border: "solid black 3px"
-      }}>
+      <div
+        style={{
+          marginTop: '1rem',
+          padding: '1rem',
+          border: 'solid black 3px',
+        }}
+      >
         <div>Current location is... {locn.pathname}</div>
         <button onClick={dothing}>set</button>
         <button onClick={save}>save</button>
@@ -121,4 +137,4 @@ export const EditorPage = () => {
       </div>
     </div>
   );
-}
+};

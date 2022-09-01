@@ -1,35 +1,35 @@
-import { AioExternalReplacements, AioReplacement } from "../aio";
-import { flattenReplacements } from "./flattenReplacements";
+import { AioExternalReplacements, AioReplacement } from '../aio';
+import { flattenReplacements } from './flattenReplacements';
 
-describe("Test flattenReplacements", () => {
-  let a: AioReplacement = {
-    oldText: "a",
-    externalName: "ListE",
-    newTexts: [{ texts: ["a1", "a2"] }]
+describe('Test flattenReplacements', () => {
+  const a: AioReplacement = {
+    oldText: 'a',
+    externalName: 'ListE',
+    newTexts: [{ texts: ['a1', 'a2'] }],
   };
-  let b: AioReplacement = {
-    oldText: "b",
+  const b: AioReplacement = {
+    oldText: 'b',
     newTexts: [
       {
-        texts: ["b1"], subLists: [
+        texts: ['b1'],
+        subLists: [
           {
-            oldText: "c",
-            externalName: "ListE",
-            newTexts: [{ texts: ["c1", "c2"] }]
+            oldText: 'c',
+            externalName: 'ListE',
+            newTexts: [{ texts: ['c1', 'c2'] }],
           },
-          { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-        ]
-      }
-    ]
+          { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+        ],
+      },
+    ],
   };
-  let e: AioExternalReplacements = {
-    givenName: "ListE",
+  const e: AioExternalReplacements = {
+    givenName: 'ListE',
     newTexts: [
-      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
-      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
-    ]
+      { texts: ['Mean'], subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] }] },
+      { texts: ['SD'], subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] }] },
+    ],
   };
-
 
   // Basic check
   test('Basic checks', () => {
@@ -38,105 +38,177 @@ describe("Test flattenReplacements", () => {
     expect(flattenReplacements([b])).toEqual(b);
   });
 
-  test("Single then long", () => {
-    let c = flattenReplacements([a, b]);
+  test('Single then long', () => {
+    const c = flattenReplacements([a, b]);
     expect(c).toEqual({
-      oldText: "a", externalName: "ListE", newTexts: [
-        {
-          texts: ["a1", "a2"], subLists: [
-            {
-              oldText: "b", newTexts: [
-                {
-                  texts: ["b1"], subLists: [
-                    { oldText: "c", externalName: "ListE", newTexts: [{ texts: ["c1", "c2"] }] },
-                    { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    });
-  });
-
-  test("Long then single", () => {
-    let c = flattenReplacements([b, a]);
-    expect(c).toEqual({
-      oldText: "b", newTexts: [
-        {
-          texts: ["b1"], subLists: [
-            {
-              oldText: "c", externalName: "ListE", newTexts: [{
-                texts: ["c1", "c2"], subLists: [
-                  { oldText: "a", externalName: "ListE", newTexts: [{ texts: ["a1", "a2"] }] }
-                ]
-              }]
-            },
-            {
-              oldText: "d", newTexts: [{
-                texts: ["d1", "d2"], subLists: [
-                  { oldText: "a", externalName: "ListE", newTexts: [{ texts: ["a1", "a2"] }] }
-                ]
-              }]
-            }
-          ]
-        }
-      ]
-    });
-  });
-
-  test("Long then single with replacement", () => {
-    let c = flattenReplacements([b, a], [e]);
-    expect(c).toEqual({
-      oldText: "b", 
+      oldText: 'a',
+      externalName: 'ListE',
       newTexts: [
         {
-          texts: ["b1"], 
+          texts: ['a1', 'a2'],
           subLists: [
             {
-              oldText: "c", 
-              externalName: "ListE", 
+              oldText: 'b',
               newTexts: [
-                { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ 
-                  texts: ["xx.x"],
-                  subLists: [{
-                    oldText: "a",
-                    externalName: "ListE",
-                    newTexts: [
-                      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
-                      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
-                    ]
-                  }]
-                 }] }] },
-                { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ 
-                  texts: ["x.xx"],
-                  subLists: [{
-                    oldText: "a",
-                    externalName: "ListE",
-                    newTexts: [
-                      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
-                      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
-                    ]
-                  }]
-                }] }] },
-              ]
+                {
+                  texts: ['b1'],
+                  subLists: [
+                    { oldText: 'c', externalName: 'ListE', newTexts: [{ texts: ['c1', 'c2'] }] },
+                    { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  test('Long then single', () => {
+    const c = flattenReplacements([b, a]);
+    expect(c).toEqual({
+      oldText: 'b',
+      newTexts: [
+        {
+          texts: ['b1'],
+          subLists: [
+            {
+              oldText: 'c',
+              externalName: 'ListE',
+              newTexts: [
+                {
+                  texts: ['c1', 'c2'],
+                  subLists: [
+                    { oldText: 'a', externalName: 'ListE', newTexts: [{ texts: ['a1', 'a2'] }] },
+                  ],
+                },
+              ],
             },
             {
-              oldText: "d", newTexts: [{
-                texts: ["d1", "d2"], subLists: [
-                  {
-                    oldText: "a", externalName: "ListE", newTexts: [
-                      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
-                      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
-                    ]
-                  }
-                ]
-              }]
-            }
-          ]
-        }
-      ]
+              oldText: 'd',
+              newTexts: [
+                {
+                  texts: ['d1', 'd2'],
+                  subLists: [
+                    { oldText: 'a', externalName: 'ListE', newTexts: [{ texts: ['a1', 'a2'] }] },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  test('Long then single with replacement', () => {
+    const c = flattenReplacements([b, a], [e]);
+    expect(c).toEqual({
+      oldText: 'b',
+      newTexts: [
+        {
+          texts: ['b1'],
+          subLists: [
+            {
+              oldText: 'c',
+              externalName: 'ListE',
+              newTexts: [
+                {
+                  texts: ['Mean'],
+                  subLists: [
+                    {
+                      oldText: '!!xvals!!',
+                      newTexts: [
+                        {
+                          texts: ['xx.x'],
+                          subLists: [
+                            {
+                              oldText: 'a',
+                              externalName: 'ListE',
+                              newTexts: [
+                                {
+                                  texts: ['Mean'],
+                                  subLists: [
+                                    { oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] },
+                                  ],
+                                },
+                                {
+                                  texts: ['SD'],
+                                  subLists: [
+                                    { oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  texts: ['SD'],
+                  subLists: [
+                    {
+                      oldText: '!!xvals!!',
+                      newTexts: [
+                        {
+                          texts: ['x.xx'],
+                          subLists: [
+                            {
+                              oldText: 'a',
+                              externalName: 'ListE',
+                              newTexts: [
+                                {
+                                  texts: ['Mean'],
+                                  subLists: [
+                                    { oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] },
+                                  ],
+                                },
+                                {
+                                  texts: ['SD'],
+                                  subLists: [
+                                    { oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] },
+                                  ],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              oldText: 'd',
+              newTexts: [
+                {
+                  texts: ['d1', 'd2'],
+                  subLists: [
+                    {
+                      oldText: 'a',
+                      externalName: 'ListE',
+                      newTexts: [
+                        {
+                          texts: ['Mean'],
+                          subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] }],
+                        },
+                        {
+                          texts: ['SD'],
+                          subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] }],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   });
 });

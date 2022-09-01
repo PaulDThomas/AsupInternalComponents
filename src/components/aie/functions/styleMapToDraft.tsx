@@ -1,5 +1,5 @@
-import { DraftStyleMap } from "draft-js";
-import { AieStyleMap } from "./aieInterface";
+import { DraftStyleMap } from 'draft-js';
+import { AieStyleMap } from './aieInterface';
 
 /**
  * Change AieStyle map into Draft-js version
@@ -7,10 +7,10 @@ import { AieStyleMap } from "./aieInterface";
  * @returns Draft-js style map
  */
 export const styleMapToDraft = (styleMap?: AieStyleMap): DraftStyleMap => {
-  let d: DraftStyleMap = {};
+  const d: DraftStyleMap = {};
   if (styleMap !== undefined)
-    for (let s of Object.keys(styleMap!)) {
-      d[s] = styleMap![s].css;
+    for (const s of Object.keys(styleMap)) {
+      d[s] = styleMap[s].css;
     }
   return d;
 };

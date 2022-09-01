@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AitRowGroupData } from "../ait";
-import { rowPreProcess } from "./rowPreProcess";
+import { AitRowGroupData } from '../ait';
+import { rowPreProcess } from './rowPreProcess';
 
 /**
  * Preprocess headerData row group
- * @param rg 
+ * @param rg
  * @returns compliant row group
  */
 export const headerPreProcess = (rg?: AitRowGroupData | false): AitRowGroupData | false => {
@@ -14,5 +14,5 @@ export const headerPreProcess = (rg?: AitRowGroupData | false): AitRowGroupData 
     ...rg,
     rows: rowPreProcess(rg.rows),
     aitid: rg.aitid ?? uuidv4(),
-  }
-}
+  };
+};

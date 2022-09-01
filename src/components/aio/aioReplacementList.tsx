@@ -1,9 +1,9 @@
-import React, { useCallback } from "react";
-import { newReplacement } from "../functions";
-import { AioIconButton } from "./aioIconButton";
-import { AioExternalReplacements, AioReplacement } from "./aioInterface";
-import { AioLabel } from "./aioLabel";
-import { AioReplacementDisplay } from "./aioReplacementDisplay";
+import React, { useCallback } from 'react';
+import { newReplacement } from '../functions';
+import { AioIconButton } from './aioIconButton';
+import { AioExternalReplacements, AioReplacement } from './aioInterface';
+import { AioLabel } from './aioLabel';
+import { AioReplacementDisplay } from './aioReplacementDisplay';
 
 /**
  * Properties for AioReplacements
@@ -11,12 +11,12 @@ import { AioReplacementDisplay } from "./aioReplacementDisplay";
  * @param setValue update function
  */
 interface AioReplacementListProps {
-  label?: string,
-  replacements?: AioReplacement[],
-  setReplacements?: (ret: AioReplacement[]) => void,
-  dontAskSpace?: boolean,
-  dontAskTrail?: boolean,
-  externalLists?: AioExternalReplacements[],
+  label?: string;
+  replacements?: AioReplacement[];
+  setReplacements?: (ret: AioReplacement[]) => void;
+  dontAskSpace?: boolean;
+  dontAskTrail?: boolean;
+  externalLists?: AioExternalReplacements[];
 }
 
 /**
@@ -32,37 +32,52 @@ export const AioReplacementList = ({
   dontAskTrail,
   externalLists,
 }: AioReplacementListProps): JSX.Element => {
-
   /** Update individual replacement and send it back */
-  const updateReplacement = useCallback((ret: AioReplacement, i: number) => {
-    if (typeof setReplacements !== "function") return;
-    let newValue = [...(replacements ?? [])];
-    newValue[i] = ret;
-    setReplacements(newValue);
-  }, [replacements, setReplacements]);
+  const updateReplacement = useCallback(
+    (ret: AioReplacement, i: number) => {
+      if (typeof setReplacements !== 'function') return;
+      const newValue = [...(replacements ?? [])];
+      newValue[i] = ret;
+      setReplacements(newValue);
+    },
+    [replacements, setReplacements],
+  );
 
-  const addReplacement = useCallback((i: number) => {
-    if (typeof setReplacements !== "function") return;
-    let newReplacements = [...(replacements ?? [])];
-    newReplacements.splice(i, 0, newReplacement());
-    setReplacements!(newReplacements);
-  }, [replacements, setReplacements]);
+  const addReplacement = useCallback(
+    (i: number) => {
+      if (typeof setReplacements !== 'function') return;
+      const newReplacements = [...(replacements ?? [])];
+      newReplacements.splice(i, 0, newReplacement());
+      setReplacements(newReplacements);
+    },
+    [replacements, setReplacements],
+  );
 
-  const removeReplacement = useCallback((i: number) => {
-    if (typeof setReplacements !== "function") return;
-    let newReplacements = [...replacements!];
-    newReplacements.splice(i, 1);
-    setReplacements!(newReplacements);
-  }, [replacements, setReplacements]);
+  const removeReplacement = useCallback(
+    (i: number) => {
+      if (typeof setReplacements !== 'function') return;
+      const newReplacements = [...(replacements ?? [])];
+      newReplacements.splice(i, 1);
+      setReplacements(newReplacements);
+    },
+    [replacements, setReplacements],
+  );
 
   return (
     <>
       <AioLabel label={label} />
       <div>
-        {!label && <><span>then...</span>{" "}</>}
-        {typeof setReplacements === "function" &&
-          <div className={"aiox-button aiox-addDown"} onClick={() => addReplacement(0)} />
-        }
+        {!label && (
+          <>
+            <span>then...</span>{' '}
+          </>
+        )}
+        {typeof setReplacements === 'function' && (
+          <div
+            className={'aiox-button aiox-addDown'}
+            onClick={() => addReplacement(0)}
+          />
+        )}
         {(replacements ?? []).map((repl, i) => {
           return (
             <div key={repl.airid ?? i}>
@@ -73,21 +88,43 @@ export const AioReplacementList = ({
                 newTexts={repl.newTexts}
                 includeTrailing={repl.includeTrailing}
                 externalName={repl.externalName}
-                setReplacement={typeof setReplacements === "function" ? (ret) => updateReplacement(ret, i) : undefined}
+                setReplacement={
+                  typeof setReplacements === 'function'
+                    ? (ret) => updateReplacement(ret, i)
+                    : undefined
+                }
                 dontAskSpace={dontAskSpace}
-                dontAskTrail={i > 0 ? true: dontAskTrail}
+                dontAskTrail={i > 0 ? true : dontAskTrail}
                 externalLists={externalLists}
               />
-              {typeof setReplacements === "function" &&
-                <div className="aiox-button-holder" style={{ display: "flex", flexDirection: "row", alignContent: "center", marginBottom: '2px' }}>
-                  {replacements!.length >= 1 && <AioIconButton iconName={"aiox-removeUp"} onClick={() => removeReplacement(i)} tipText={"Remove old text"} />}
-                  <AioIconButton iconName={"aiox-addDown"} onClick={() => addReplacement(i + 1)} tipText={"Add old text"} />
+              {typeof setReplacements === 'function' && (
+                <div
+                  className='aiox-button-holder'
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    marginBottom: '2px',
+                  }}
+                >
+                  {replacements && replacements.length >= 1 && (
+                    <AioIconButton
+                      iconName={'aiox-removeUp'}
+                      onClick={() => removeReplacement(i)}
+                      tipText={'Remove old text'}
+                    />
+                  )}
+                  <AioIconButton
+                    iconName={'aiox-addDown'}
+                    onClick={() => addReplacement(i + 1)}
+                    tipText={'Add old text'}
+                  />
                 </div>
-              }
+              )}
             </div>
-          )
+          );
         })}
       </div>
     </>
   );
-}
+};

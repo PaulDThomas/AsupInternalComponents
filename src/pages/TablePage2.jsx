@@ -1,20 +1,20 @@
-import React from "react";
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react';
 
 // tell direction after drag start, the first dirction that reach 5px offset
-const DRAG_DIRECTION_NONE = "";
-const DRAG_DIRECTION_ROW = "row";
-const DRAG_DIRECTION_COLUMN = "column";
+const DRAG_DIRECTION_NONE = '';
+const DRAG_DIRECTION_ROW = 'row';
+const DRAG_DIRECTION_COLUMN = 'column';
 
 const defaultDrageState = {
   column: -1,
   row: -1,
   startPoint: null,
   direction: DRAG_DIRECTION_NONE, // row=move up down/column=move left right,
-  dropIndex: -1 // drag target
+  dropIndex: -1, // drag target
 };
 
-const ReactTableDragColumnRow = props => {
+const ReactTableDragColumnRow = (props) => {
+  // eslint-disable-next-line react/prop-types
   let { heads = [], rows = [], onDragEnd } = props;
   let [dragState, setDragState] = useState({ ...defaultDrageState });
   const headsEl = useRef(null),
@@ -23,7 +23,7 @@ const ReactTableDragColumnRow = props => {
 
   if (dragState.direction === DRAG_DIRECTION_COLUMN) {
     heads = offsetIndex(dragState.column, dragState.dropIndex, heads);
-    rows = rows.map(x => offsetIndex(dragState.column, dragState.dropIndex, x));
+    rows = rows.map((x) => offsetIndex(dragState.column, dragState.dropIndex, x));
   }
 
   if (dragState.direction === DRAG_DIRECTION_ROW) {
@@ -48,26 +48,26 @@ const ReactTableDragColumnRow = props => {
                 <td
                   key={j}
                   style={{
-                    height: "40px",
-                    width: "40px",
-                    textAlign: "center",
-                    verticalAlign: "middle",
-                    border: "1px solid black",
-                    cursor: dragState.direction ? "move" : "grab",
+                    height: '40px',
+                    width: '40px',
+                    textAlign: 'center',
+                    verticalAlign: 'middle',
+                    border: '1px solid black',
+                    cursor: dragState.direction ? 'move' : 'grab',
                     opacity:
                       dragState.direction === DRAG_DIRECTION_COLUMN
                         ? dragState.dropIndex === j
                           ? 0.5
                           : 1
                         : dragState.direction === DRAG_DIRECTION_ROW
-                          ? dragState.dropIndex === i
-                            ? 0.5
-                            : 1
+                        ? dragState.dropIndex === i
+                          ? 0.5
                           : 1
+                        : 1,
                   }}
-                  draggable="true"
-                  onDragStart={e => {
-                    console.log(`onDragStart`);
+                  draggable='true'
+                  onDragStart={(e) => {
+                    console.log('onDragStart');
                     e.dataTransfer.setDragImage(preview.current, 0, 0);
                     setDragState({
                       ...dragState,
@@ -75,18 +75,18 @@ const ReactTableDragColumnRow = props => {
                       column: j,
                       startPoint: {
                         x: e.pageX,
-                        y: e.pageY
-                      }
+                        y: e.pageY,
+                      },
                     });
                   }}
-                  onDragEnter={e => {
-                    console.log(`onDragEnter`);
+                  onDragEnter={() => {
+                    console.log('onDragEnter');
                     if (!dragState.direction) {
                       if (dragState.column !== j) {
                         setDragState({
                           ...dragState,
                           direction: DRAG_DIRECTION_COLUMN,
-                          dropIndex: j
+                          dropIndex: j,
                         });
                         return;
                       }
@@ -94,7 +94,7 @@ const ReactTableDragColumnRow = props => {
                         setDragState({
                           ...dragState,
                           direction: DRAG_DIRECTION_ROW,
-                          dropIndex: i
+                          dropIndex: i,
                         });
                         return;
                       }
@@ -105,7 +105,7 @@ const ReactTableDragColumnRow = props => {
                       if (j !== dragState.dropIndex) {
                         setDragState({
                           ...dragState,
-                          dropIndex: j
+                          dropIndex: j,
                         });
                       }
                       return;
@@ -114,27 +114,31 @@ const ReactTableDragColumnRow = props => {
                       if (i !== dragState.dropIndex) {
                         setDragState({
                           ...dragState,
-                          dropIndex: i
+                          dropIndex: i,
                         });
                       }
                       return;
                     }
                   }}
                   onDragEnd={() => {
-                    console.log(`onDragEnd`);
+                    console.log('onDragEnd');
                     onDragEnd(
                       dragState.direction,
                       dragState.direction === DRAG_DIRECTION_COLUMN
                         ? dragState.column
                         : dragState.row,
                       dragState.dropIndex,
-                      { heads, rows }
+                      { heads, rows },
                     );
                     setDragState({ ...defaultDrageState });
                   }}
                 >
                   <span>
-                    <input style={{width:"25px"}} value={y} readOnly/>
+                    <input
+                      style={{ width: '25px' }}
+                      value={y}
+                      readOnly
+                    />
                   </span>
                 </td>
               ))}
@@ -145,10 +149,10 @@ const ReactTableDragColumnRow = props => {
       <div
         ref={preview}
         style={{
-          position: "absolute",
+          position: 'absolute',
           width: 0,
           height: 0,
-          overflow: "hidden"
+          overflow: 'hidden',
         }}
       />
     </>
@@ -173,28 +177,30 @@ function offsetIndex(from, to, arr = []) {
 
 export const Table2 = () => {
   let [data, setData] = useState({
-    heads: ["a", "b", "c", "d", "e", "f"],
+    heads: ['a', 'b', 'c', 'd', 'e', 'f'],
     rows: [
       [1, 2, 3, 1, 2, 3],
       [11, 2, 3, 11, 2, 3],
       [1, 22, 3, 1, 22, 3],
-      [1, 2, 33, 1, 2, 33]
-    ]
+      [1, 2, 33, 1, 2, 33],
+    ],
   });
   return (
     <div>
       <h1>react table drag column row</h1>
-      <div style={{ padding: "1rem" }}>
+      <div style={{ padding: '1rem' }}>
         <ReactTableDragColumnRow
           heads={data.heads}
           rows={data.rows}
-          onChange={() => { console.log("drag end") }}
+          onChange={() => {
+            console.log('drag end');
+          }}
           onDragEnd={(type, from, to, newData) => {
             console.log({
               type,
               from,
               to,
-              newData
+              newData,
             });
             setData(newData);
           }}
@@ -202,5 +208,4 @@ export const Table2 = () => {
       </div>
     </div>
   );
-}
-
+};

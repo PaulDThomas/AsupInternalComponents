@@ -1,42 +1,46 @@
-import React, { useEffect, useState } from "react";
-import { AioLabel } from "./aioLabel";
+import React, { useEffect, useState } from 'react';
+import { AioLabel } from './aioLabel';
 
 interface AioNumberProps {
-  value: number,
-  label?: string,
-  setValue?: (value: number) => void,
-  step?: number,
-  minValue?: number,
-  maxValue?: number,
+  value: number;
+  label?: string;
+  setValue?: (value: number) => void;
+  step?: number;
+  minValue?: number;
+  maxValue?: number;
 }
 
 export const AioNumber = (props: AioNumberProps): JSX.Element => {
-
   const [value, setValue] = useState<number>(props.value ?? 0);
   useEffect(() => {
-    setValue(Math.max(props.minValue ?? -Infinity, Math.min(props.maxValue ?? Infinity , props.value)) ?? props.minValue ?? 0)
+    setValue(
+      Math.max(props.minValue ?? -Infinity, Math.min(props.maxValue ?? Infinity, props.value)) ??
+        props.minValue ??
+        0,
+    );
   }, [props.maxValue, props.minValue, props.value]);
 
   return (
     <>
       <AioLabel label={props.label} />
-      <div className={"aio-input-holder"}>
-        {(typeof (props.setValue) !== "function")
-          ?
+      <div className={'aio-input-holder'}>
+        {typeof props.setValue !== 'function' ? (
           <span>{props.value}</span>
-          :
+        ) : (
           <input
-            className={"aio-input"}
+            className={'aio-input'}
             value={value}
-            type={"number"}
-            onChange={e => setValue(parseFloat(e.currentTarget.value))}
-            onBlur={_ => props.setValue!(value)}
+            type={'number'}
+            onChange={(e) => setValue(parseFloat(e.currentTarget.value))}
+            onBlur={() => {
+              if (props.setValue !== undefined) props.setValue(value);
+            }}
             step={props.step}
             min={props.minValue}
             max={props.maxValue}
           />
-        }
+        )}
       </div>
     </>
   );
-}
+};

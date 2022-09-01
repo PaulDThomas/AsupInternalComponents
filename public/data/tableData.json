@@ -190,17 +190,13 @@
           "newTexts": [
             {
               "spaceAfter": true,
-              "texts": [
-                "Age"
-              ],
+              "texts": ["Age"],
               "subLists": [
                 {
                   "oldText": "&lt;&lt;unit&gt;&gt;",
                   "newTexts": [
                     {
-                      "texts": [
-                        "years"
-                      ],
+                      "texts": ["years"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -211,17 +207,13 @@
             },
             {
               "spaceAfter": true,
-              "texts": [
-                "Weight"
-              ],
+              "texts": ["Weight"],
               "subLists": [
                 {
                   "oldText": "&lt;&lt;unit&gt;&gt;",
                   "newTexts": [
                     {
-                      "texts": [
-                        "kg"
-                      ],
+                      "texts": ["kg"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -237,18 +229,14 @@
           "oldText": "!!stat!!",
           "newTexts": [
             {
-              "texts": [
-                "n"
-              ],
+              "texts": ["n"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "xxx"
-                      ],
+                      "texts": ["xxx"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -258,18 +246,14 @@
               ]
             },
             {
-              "texts": [
-                "Mean"
-              ],
+              "texts": ["Mean"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "xx.x"
-                      ],
+                      "texts": ["xx.x"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -280,18 +264,14 @@
             },
             {
               "spaceAfter": false,
-              "texts": [
-                "SD"
-              ],
+              "texts": ["SD"],
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
                       "spaceAfter": true,
-                      "texts": [
-                        "x.xx"
-                      ],
+                      "texts": ["x.xx"],
                       "subLists": []
                     }
                   ],
@@ -300,18 +280,14 @@
               ]
             },
             {
-              "texts": [
-                "Median"
-              ],
+              "texts": ["Median"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "xx.x"
-                      ],
+                      "texts": ["xx.x"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -321,18 +297,14 @@
               ]
             },
             {
-              "texts": [
-                "Min"
-              ],
+              "texts": ["Min"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "x.x"
-                      ],
+                      "texts": ["x.x"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -342,18 +314,14 @@
               ]
             },
             {
-              "texts": [
-                "Max"
-              ],
+              "texts": ["Max"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "xxx.x"
-                      ],
+                      "texts": ["xxx.x"],
                       "spaceAfter": false,
                       "subLists": []
                     }
@@ -453,21 +421,14 @@
           "newTexts": [
             {
               "spaceAfter": true,
-              "texts": [
-                "Age group 1 (&lt;&lt;unit&gt;&gt;)",
-                "Age group 2 (&lt;&lt;unit&gt;&gt;)"
-              ],
+              "texts": ["Age group 1 (&lt;&lt;unit&gt;&gt;)", "Age group 2 (&lt;&lt;unit&gt;&gt;)"],
               "subLists": [
                 {
                   "oldText": "!!category!!",
                   "newTexts": [
                     {
                       "spaceAfter": false,
-                      "texts": [
-                        "Category 1",
-                        "Category 2",
-                        "Category 3"
-                      ],
+                      "texts": ["Category 1", "Category 2", "Category 3"],
                       "subLists": []
                     }
                   ],
@@ -482,18 +443,14 @@
           "oldText": "!!stat!!",
           "newTexts": [
             {
-              "texts": [
-                "n (%)"
-              ],
+              "texts": ["n (%)"],
               "spaceAfter": false,
               "subLists": [
                 {
                   "oldText": "!!xval!!",
                   "newTexts": [
                     {
-                      "texts": [
-                        "xxx (xx.x)"
-                      ],
+                      "texts": ["xxx (xx.x)"],
                       "spaceAfter": false,
                       "subLists": []
                     }

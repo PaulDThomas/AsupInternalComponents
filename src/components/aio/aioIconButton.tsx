@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import './aioIconButton.css';
 import './aio.css';
 import './aioTip.css';
 
 interface AioIconButtonProps {
-  onClick?: (ret: string) => void
-  iconName?: string,
-  tipText?: string,
-  popUpTip?: boolean,
-  menuItems?: string[],
-  leftMenuOffset?: string,
-  style?: React.CSSProperties,
+  onClick?: (ret: string) => void;
+  iconName?: string;
+  tipText?: string;
+  popUpTip?: boolean;
+  menuItems?: string[];
+  leftMenuOffset?: string;
+  style?: React.CSSProperties;
 }
 
 export const AioIconButton = ({
@@ -22,7 +22,6 @@ export const AioIconButton = ({
   leftMenuOffset,
   style,
 }: AioIconButtonProps): JSX.Element => {
-
   // Boolean to show menu
   const [showDrop, setShowDrop] = useState<boolean>(false);
 
@@ -31,10 +30,11 @@ export const AioIconButton = ({
 
   // Handle click off the menu
   const handleClick = useCallback((e: MouseEvent) => {
-    if (menuRef.current && (
-      (e.target instanceof Element && !menuRef.current?.contains(e.target))
-      || !(e.target instanceof Element)
-    )) {
+    if (
+      menuRef.current &&
+      ((e.target instanceof Element && !menuRef.current?.contains(e.target)) ||
+        !(e.target instanceof Element))
+    ) {
       setShowDrop(false);
     }
   }, []);
@@ -46,16 +46,23 @@ export const AioIconButton = ({
   }, [handleClick, showDrop]);
 
   return (
-    <div className="aio-button-holder" style={style}>
-      <div className="aio-tip" style={{ display: "flex", alignContent: "flex-center" }}>
-        <div className={`aiox-button ${iconName ?? "aiox-down"}`}
+    <div
+      className='aio-button-holder'
+      style={style}
+    >
+      <div
+        className='aio-tip'
+        style={{ display: 'flex', alignContent: 'flex-center' }}
+      >
+        <div
+          className={`aiox-button ${iconName ?? 'aiox-down'}`}
           aria-label={tipText}
           title={tipText}
           onClick={() => {
-            if (typeof onClick !== "function") return;
+            if (typeof onClick !== 'function') return;
             // Just click if there is no drop down
             if (!menuItems || menuItems.length <= 1) {
-              onClick(menuItems?.length === 1 ? menuItems[0] : "");
+              onClick(menuItems?.length === 1 ? menuItems[0] : '');
             }
             // Or show/hide the dropdown
             else {
@@ -63,25 +70,31 @@ export const AioIconButton = ({
             }
           }}
         />
-        {popUpTip && tipText &&
-          <span className="aio-tiptext aio-tip-top">{tipText}</span>
-        }
+        {popUpTip && tipText && <span className='aio-tiptext aio-tip-top'>{tipText}</span>}
       </div>
-      {showDrop &&
-        <div ref={menuRef} className="aio-drop-items-holder" style={{ left: leftMenuOffset ?? "1.25rem", }}>
-          <div className="aio-drop-items-inner-holder">
-            {menuItems?.map((a, i) =>
-              <div key={i} className={`aio-drop-item`} onClick={e => { 
-                if (typeof onClick !== "function") return;
-                onClick(a); 
-                setShowDrop(false); 
-                }}>
-                {a.replace(/ /g, "\u00A0")}
+      {showDrop && (
+        <div
+          ref={menuRef}
+          className='aio-drop-items-holder'
+          style={{ left: leftMenuOffset ?? '1.25rem' }}
+        >
+          <div className='aio-drop-items-inner-holder'>
+            {menuItems?.map((a, i) => (
+              <div
+                key={i}
+                className={'aio-drop-item'}
+                onClick={() => {
+                  if (typeof onClick !== 'function') return;
+                  onClick(a);
+                  setShowDrop(false);
+                }}
+              >
+                {a.replace(/ /g, '\u00A0')}
               </div>
-            )}
+            ))}
           </div>
         </div>
-      }
+      )}
     </div>
   );
-}
+};
