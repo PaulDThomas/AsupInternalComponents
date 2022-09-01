@@ -1,12 +1,11 @@
 import { AioExternalSingle, AioReplacement } from 'components/aio';
 import { AitRowData } from 'components/ait';
-import { AitRowType } from 'components/ait/aitInterface';
 import { newRow } from './newRow';
 import { removeUndefined } from './removeUndefined';
 import { repeatHeaders } from './repeatHeaders';
 
 describe('Check repeatHeaders', () => {
-  const rows: AitRowData[] = [newRow(3, AitRowType.header)];
+  const rows: AitRowData[] = [newRow(3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }

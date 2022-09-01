@@ -2,16 +2,9 @@ import React, { useCallback, useContext } from 'react';
 import { AioReplacement } from '../aio';
 import { newCell, newRow } from '../functions';
 import { AitBorderRow } from './aitBorderRow';
-import {
-  AitCellData,
-  AitCellType,
-  AitLocation,
-  AitRowData,
-  AitRowGroupData,
-  AitRowType,
-} from './aitInterface';
-import { AitRow } from './aitRow';
 import { TableSettingsContext } from './aitContext';
+import { AitCellData, AitLocation, AitRowData, AitRowGroupData, AitRowType } from './aitInterface';
+import { AitRow } from './aitRow';
 
 interface AitHeaderProps {
   aitid: string;
@@ -53,7 +46,7 @@ export const AitHeader = ({
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell
-        const c = newCell(AitCellType.header);
+        const c = newCell();
         // Check rowSpans on previous row
         if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
           let riUp = 0;

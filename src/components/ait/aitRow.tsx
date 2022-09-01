@@ -196,7 +196,14 @@ export const AitRow = ({
               comments={cell.comments ?? ''}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
-              colWidth={cell.colWidth}
+              colWidth={
+                cell.colSpan === 1
+                  ? cell.colWidth
+                  : cells
+                      .slice(ci, ci + (cell.colSpan ?? 1))
+                      .map((c) => c.colWidth ?? 60)
+                      .reduce((a, b) => a + b, 0)
+              }
               textIndents={cell.textIndents ?? 0}
               replacedText={cell.replacedText}
               repeatColSpan={cell.repeatColSpan}
@@ -208,7 +215,11 @@ export const AitRow = ({
                   ? (ret) => updateCell(ret, ci)
                   : undefined
               }
-              setColWidth={setColWidth !== undefined ? (ret) => setColWidth(ci, ret) : undefined}
+              setColWidth={
+                setColWidth !== undefined && cell.colSpan === 1
+                  ? (ret) => setColWidth(ci, ret)
+                  : undefined
+              }
               readOnly={isColumnRepeat || typeof addRow !== 'function'}
               addColSpan={
                 !isColumnRepeat &&

@@ -427,7 +427,7 @@ export const AsupInternalTable = ({
     // Create new row
     const newHeader: AitRowGroupData = {
       ...headerData,
-      rows: [newRow(bodyData[0].rows[0].cells.length, AitRowType.header)],
+      rows: [newRow(bodyData[0].rows[0].cells.length)],
     };
     returnData({ headerData: newHeader });
   }, [bodyData, headerData, returnData]);

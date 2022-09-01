@@ -1,12 +1,12 @@
 import { AitRowData } from 'components/ait';
-import { AitColumnRepeat, AitRowType } from 'components/ait/aitInterface';
+import { AitColumnRepeat } from 'components/ait/aitInterface';
 import { AioReplacement } from 'index';
 import { newRow } from './newRow';
 import { removeUndefined } from './removeUndefined';
 import { replaceHeaders } from './replaceHeaders';
 
 describe('Check replace headers', () => {
-  const rows: AitRowData[] = [newRow(3, AitRowType.header)];
+  const rows: AitRowData[] = [newRow(3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }
