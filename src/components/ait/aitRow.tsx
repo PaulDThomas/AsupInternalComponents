@@ -201,7 +201,7 @@ export const AitRow = ({
                   ? cell.colWidth
                   : cells
                       .slice(ci, ci + (cell.colSpan ?? 1))
-                      .map((c) => c.colWidth ?? 60)
+                      .map((c) => c.colWidth ?? tableSettings.defaultColumnWidth)
                       .reduce((a, b) => a + b, 0)
               }
               textIndents={cell.textIndents ?? 0}

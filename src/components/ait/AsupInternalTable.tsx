@@ -38,6 +38,7 @@ interface AsupInternalTableProps {
   cellStyles?: AieStyleMap;
   colWidthMod?: number;
   initialDecimalAlignPercent?: number;
+  defaultColumnWidth?: number;
 }
 
 /**
@@ -58,6 +59,7 @@ export const AsupInternalTable = ({
   cellStyles,
   colWidthMod = 2,
   initialDecimalAlignPercent = 60,
+  defaultColumnWidth = 60,
 }: AsupInternalTableProps) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -512,6 +514,7 @@ export const AsupInternalTable = ({
         setWindowZIndex,
         colWidthMod,
         decimalAlignPercent,
+        defaultColumnWidth,
       }}
     >
       <div

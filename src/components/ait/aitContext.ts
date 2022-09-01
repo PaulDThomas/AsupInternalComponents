@@ -7,6 +7,7 @@ const defaultSettings: AitOptionList = {
   windowZIndex: 10000,
   colWidthMod: 1.5,
   decimalAlignPercent: 60,
+  defaultColumnWidth: 60,
 };
 
 export const TableSettingsContext = React.createContext(defaultSettings);
