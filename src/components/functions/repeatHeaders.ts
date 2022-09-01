@@ -21,6 +21,7 @@ export const repeatHeaders = (
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
   externalSingles?: AioExternalSingle[],
+  defaultCellWidth?: number,
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[] } => {
   // Start with blank slate, need to strip repeat inforation everytime!
   let newHeaderRows: AitRowData[] = removeRowRepeatInfo(rows);
@@ -44,6 +45,8 @@ export const repeatHeaders = (
       newHeaderRows,
       newColumnRepeats,
       rep,
+      undefined,
+      defaultCellWidth,
     );
     newHeaderRows = afterReplacement.newHeaderRows;
     newColumnRepeats = afterReplacement.newColumnRepeats;

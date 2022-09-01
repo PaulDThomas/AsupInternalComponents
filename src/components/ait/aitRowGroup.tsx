@@ -70,11 +70,11 @@ export const AitRowGroup = ({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr = newRow(0);
+      const newr = newRow(0, tableSettings.defaultColumnWidth);
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell
-        const c = newCell();
+        const c = newCell(tableSettings.defaultColumnWidth);
         // Check rowSpans on previous row
         if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
           let riUp = 0;

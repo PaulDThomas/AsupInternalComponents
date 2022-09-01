@@ -242,7 +242,7 @@ export const AsupInternalTable = ({
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
-          r.cells.splice(ci + 1, 0, newCell());
+          r.cells.splice(ci + 1, 0, newCell(defaultColumnWidth));
           return r;
         });
         return rg;
@@ -260,11 +260,11 @@ export const AsupInternalTable = ({
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            const n = newCell();
+            const n = newCell(defaultColumnWidth);
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
-            r.cells.splice(ci + 1, 0, newCell());
+            r.cells.splice(ci + 1, 0, newCell(defaultColumnWidth));
           }
           return r;
         });
@@ -360,7 +360,11 @@ export const AsupInternalTable = ({
       const newRowGroupTemplate: AitRowGroupData =
         ix > -1 && groupTemplates ? groupTemplates[ix] : { rows: [{ cells: [] }] };
       // Ensure new template meets requirements
-      const newrg = newRowGroup(bodyData[0].rows[0].cells.length, newRowGroupTemplate);
+      const newrg = newRowGroup(
+        bodyData[0].rows[0].cells.length,
+        newRowGroupTemplate,
+        defaultColumnWidth,
+      );
       // Copy existing body and splice in new data
       const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
       newBody.splice(rgi + 1, 0, newrg);
@@ -429,7 +433,7 @@ export const AsupInternalTable = ({
     // Create new row
     const newHeader: AitRowGroupData = {
       ...headerData,
-      rows: [newRow(bodyData[0].rows[0].cells.length)],
+      rows: [newRow(bodyData[0].rows[0].cells.length, defaultColumnWidth)],
     };
     returnData({ headerData: newHeader });
   }, [bodyData, headerData, returnData]);

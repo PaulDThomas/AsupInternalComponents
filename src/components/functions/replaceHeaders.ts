@@ -19,6 +19,7 @@ export const replaceHeaders = (
   columnRepeats: AitColumnRepeat[],
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
+  defaultCellWidth?: number,
 ): { newHeaderRows: AitRowData[]; newColumnRepeats: AitColumnRepeat[] } => {
   // Check there are rows
   if (rows.length === 0) return { newHeaderRows: [], newColumnRepeats: [] };
@@ -124,7 +125,7 @@ export const replaceHeaders = (
               ) {
                 const nIns = thisRepeat.repeatColSpan - thisRepeat.colSpan;
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newCell();
+                  const n = newCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = '';
@@ -207,7 +208,7 @@ export const replaceHeaders = (
                   (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
                 const newCells2: AitCellData[] = [];
                 for (let nci = 0; nci < nIns + targetCell.colSpan - 1; nci++) {
-                  const n = newCell();
+                  const n = newCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = '';

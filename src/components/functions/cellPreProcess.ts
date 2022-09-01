@@ -7,8 +7,8 @@ import { newCell } from './newCell';
  * @param cs
  * @returns compliant cell
  */
-export const cellPreProcess = (cs?: AitCellData[]): AitCellData[] => {
-  if (cs === undefined) return [newCell()];
+export const cellPreProcess = (cs?: AitCellData[], defaultCellWidth?: number): AitCellData[] => {
+  if (cs === undefined) return [newCell(defaultCellWidth)];
   // Check aitid
   return cs.map((c) => {
     return {

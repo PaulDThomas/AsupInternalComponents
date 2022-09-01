@@ -8,14 +8,14 @@ import { newRow } from './newRow';
  * @param rs
  * @returns Compliant row
  */
-export const rowPreProcess = (rs?: AitRowData[]): AitRowData[] => {
+export const rowPreProcess = (rs?: AitRowData[], defaultCellWidth?: number): AitRowData[] => {
   // Return an empty row if there is nothing
-  if (rs === undefined) return [newRow(0)];
+  if (rs === undefined) return [newRow(0, defaultCellWidth)];
   // Check aitid
   return rs.map((r) => {
     return {
       ...r,
-      cells: cellPreProcess(r.cells),
+      cells: cellPreProcess(r.cells, defaultCellWidth),
       aitid: r.aitid ?? uuidv4(),
     };
   });
