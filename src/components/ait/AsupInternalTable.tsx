@@ -367,6 +367,10 @@ export const AsupInternalTable = ({
         bodyData[0].rows[0].cells.length,
         newRowGroupTemplate,
       );
+      // Set column widths
+      newrg.rows.forEach((r) =>
+        r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),
+      );
       // Copy existing body and splice in new data
       const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
       newBody.splice(rgi + 1, 0, newrg);

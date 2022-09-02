@@ -42,7 +42,7 @@ export const AitHeader = ({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr: AitRowData = newRow(0, tableSettings.defaultCellWidth);
+      const newr: AitRowData = newRow(tableSettings.defaultCellWidth, 0);
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
