@@ -47,60 +47,45 @@ export const repeatRows = (
     }
   }
 
+  // Add spaceAfter for the group
+  if (spaceAfter) {
+    newRows[newRows.length - 1].spaceAfter = true;
+  }
+
   // Post processing...
-  for (let ri = 0; ri < newRows.length; ri++) {
+  newRows.forEach((r, ri) => {
     // Cycle through each column cell
-    for (let ci = 0; ci < newRows[0].cells.length; ci++) {
-      const targetCell = newRows[ri].cells[ci];
-
-      // Process spaceAfter, start cell counter, Look down each column
-      if (
-        (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) > 0 &&
-        targetCell.spaceAfterRepeat &&
-        ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1 < newRows.length
-      ) {
-        newRows[ri + (targetCell.repeatRowSpan ?? targetCell.rowSpan ?? 1) - 1].spaceAfter = true;
-
-        // Check previous cells
-        let lookback = 1;
-        while (lookback <= ci) {
-          let lookup = 0;
-          let found = false;
-          while (lookup <= ri && !found) {
-            const checkCell = newRows[ri - lookup].cells[ci - lookback];
-            if (
-              checkCell.rowSpan !== 0 &&
-              (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) > 1
-            ) {
-              found = true;
-              if (
-                // Not last cell in the repeat
-                !(
-                  checkCell.spaceAfterRepeat === true &&
-                  lookup === (checkCell.repeatRowSpan ?? checkCell.rowSpan ?? 1) - 1
-                ) &&
-                // Not the last cell in the row group
-                !(spaceAfter === true && ri === newRows.length - 1)
-              )
-                checkCell.spaceAfterSpan = (checkCell.spaceAfterSpan ?? 0) + 1;
-            }
-            lookup++;
-          }
-          lookback++;
+    r.cells.forEach((c, ci) => {
+      // Look for cells to check, rowSpan can have been increase by following repeats
+      if ((c.repeatRowSpan ?? c.rowSpan ?? 1) > 0 && (c.rowSpan ?? 1) !== 0) {
+        let actualSpan = newRows
+          .slice(ri + 1)
+          .map((r) => r.cells[ci])
+          .findIndex((c) => (c.rowSpan ?? 1) > 0);
+        if (actualSpan === -1) actualSpan = newRows.length - ri - 1;
+        // Check if changes need to be made
+        if (actualSpan + 1 > (c.repeatRowSpan ?? c.rowSpan ?? 1)) {
+          c.repeatRowSpan = actualSpan + 1;
         }
       }
 
-      // Process repeatRows on hidden cells
-      // Update cell above if prepended to a cell with no rowSpan, pay attention to current number of rows
-      if (targetCell.rowSpan === 0 && targetCell.repeatRowSpan && targetCell.repeatRowSpan > 0) {
-        let lookup = 1;
-        while ((newRows[ri - lookup].cells[ci].rowSpan ?? 1) === 0) lookup++;
-        const spanTargetCell = newRows[ri - lookup].cells[ci];
-        spanTargetCell.repeatRowSpan =
-          (spanTargetCell.repeatRowSpan ?? spanTargetCell.rowSpan ?? 1) + targetCell.repeatRowSpan;
+      // Add spaceAfter to the correct cell
+      if (c.spaceAfterRepeat) {
+        newRows[ri + (c.repeatRowSpan ?? c.rowSpan ?? 1) - 1].spaceAfter = true;
       }
-    }
-  }
+    });
+  });
+
+  // Look for spaceAfter on trailing rows now all spaceAfter calculated
+  newRows.forEach((r, ri) => {
+    r.cells
+      .filter((c) => (c.repeatRowSpan ?? c.rowSpan ?? 1) > 1 && (c.rowSpan ?? 1) > 0)
+      .forEach((c) => {
+        c.spaceAfterSpan = newRows
+          .slice(ri, ri + (c.repeatRowSpan ?? c.rowSpan ?? 1))
+          .filter((r) => r.spaceAfter).length;
+      });
+  });
 
   // Add spaceAfter for the group
   if (spaceAfter) {
