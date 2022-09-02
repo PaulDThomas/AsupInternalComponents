@@ -447,7 +447,6 @@ export const AsupInternalTable = ({
   // Update columnWidth
   const setColWidth = useCallback(
     (colNo: number, colWidth: number) => {
-      console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
       const newHeaderData =
         headerData !== undefined && headerData !== false
           ? {
@@ -456,7 +455,14 @@ export const AsupInternalTable = ({
                 return {
                   ...r,
                   cells: r.cells.map((c, ci) => {
-                    return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth };
+                    // Check against the column repeat number if it exists
+                    return {
+                      ...c,
+                      colWidth:
+                        ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                          ? colWidth
+                          : c.colWidth,
+                    };
                   }),
                 };
               }),
@@ -471,7 +477,14 @@ export const AsupInternalTable = ({
                   return {
                     ...r,
                     cells: r.cells.map((c, ci) => {
-                      return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth };
+                      // Check against the column repeat number if it exists
+                      return {
+                        ...c,
+                        colWidth:
+                          ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                            ? colWidth
+                            : c.colWidth,
+                      };
                     }),
                   };
                 }),
