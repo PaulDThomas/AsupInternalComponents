@@ -7,12 +7,15 @@ import { rowPreProcess } from './rowPreProcess';
  * @param rgs
  * @returns compliant row groups
  */
-export const bodyPreProcess = (rgs?: AitRowGroupData[]): AitRowGroupData[] => {
+export const bodyPreProcess = (
+  defaultCellWidth: number,
+  rgs?: AitRowGroupData[],
+): AitRowGroupData[] => {
   if (rgs === undefined) return [];
   return rgs.map((rg) => {
     return {
       ...rg,
-      rows: rowPreProcess(rg.rows),
+      rows: rowPreProcess(defaultCellWidth, rg.rows),
       aitid: rg.aitid ?? uuidv4(),
     };
   });

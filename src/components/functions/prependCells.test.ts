@@ -23,7 +23,7 @@ describe('Check prependCells', () => {
       // Set rows added
       for (let ai = 0; ai < rows.length; ai++) {
         test(`Prepend cell ${cell.text}, onto ${rows.length} row(s), with ${ai} row(s) added. `, () => {
-          const ret: AitRowData[] = prependCell(cell, rows, ai);
+          const ret: AitRowData[] = prependCell(cell, 60, rows, ai);
 
           expect(ret.length).toBe(rows.length);
           expect(ret.findIndex((r) => r.cells.length !== 2)).toBe(-1);
@@ -45,11 +45,11 @@ describe('Check prependCells', () => {
     let ret: AitRowData[] = [{ cells: [{ text: 'Start' }] }];
     let lastRowCount = ret.length;
     for (let repi = 0; repi < reps; repi++) {
-      ret = prependCell(a, ret, repi);
+      ret = prependCell(a, 60, ret, repi);
       expect(ret.length).toBe(lastRowCount);
       expect(ret.findIndex((r) => r.cells.length !== repi + 2)).toBe(-1);
       // Add in another row
-      ret.push({ cells: Array(repi + 2).fill({ ...newCell(), text: `Added:${repi}` }) });
+      ret.push({ cells: Array(repi + 2).fill({ ...newCell(60), text: `Added:${repi}` }) });
       lastRowCount = ret.length;
     }
   });

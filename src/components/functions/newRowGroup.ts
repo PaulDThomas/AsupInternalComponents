@@ -10,9 +10,9 @@ import { newRow } from './newRow';
  * @returns New row group
  */
 export const newRowGroup = (
+  defaultCellWidth: number,
   l?: number,
   newRowGroupTemplate?: AitRowGroupData,
-  defaultCellWidth?: number,
 ): AitRowGroupData => {
   return {
     aitid: uuidv4(),
@@ -30,7 +30,7 @@ export const newRowGroup = (
         aitid: uuidv4(),
         cells: newCells,
       };
-    }) ?? [newRow(l, defaultCellWidth)],
+    }) ?? [newRow(defaultCellWidth, l)],
     spaceAfter: true,
   };
 };

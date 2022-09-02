@@ -95,7 +95,7 @@ export const AitCell = ({
   const cellStyle = useMemo<React.CSSProperties>(() => {
     return {
       overflow: 'visible',
-      width: `${tableSettings.colWidthMod * (colWidth ?? tableSettings.defaultColumnWidth)}px`,
+      width: `${tableSettings.colWidthMod * (colWidth ?? tableSettings.defaultCellWidth)}px`,
       paddingLeft:
         cellType === AitCellType.rowHeader && textIndents !== undefined
           ? `${textIndents}rem`
@@ -401,7 +401,7 @@ export const AitCell = ({
             <div className='aiw-body-row'>
               <AioNumber
                 label='Width (mm)'
-                value={colWidth ?? tableSettings.defaultColumnWidth}
+                value={colWidth ?? tableSettings.defaultCellWidth}
                 setValue={setColWidth !== undefined ? (ret) => setColWidth(ret) : undefined}
               />
             </div>

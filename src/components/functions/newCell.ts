@@ -6,13 +6,13 @@ import { AitCellData } from '../ait/aitInterface';
  * @param type Type of cell to create
  * @returns data for a new blank cell
  */
-export const newCell = (defaultCellWidth?: number): AitCellData => {
+export const newCell = (cellWidth: number): AitCellData => {
   const cell: AitCellData = {
     aitid: uuidv4(),
     text: '',
     rowSpan: 1,
     colSpan: 1,
-    colWidth: defaultCellWidth,
+    colWidth: cellWidth,
   };
   return cell;
 };

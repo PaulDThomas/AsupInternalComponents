@@ -5,13 +5,13 @@ import { removeUndefined } from './removeUndefined';
 import { repeatHeaders } from './repeatHeaders';
 
 describe('Check repeatHeaders', () => {
-  const rows: AitRowData[] = [newRow(3)];
+  const rows: AitRowData[] = [newRow(60, 3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }
 
   test('Basic checks', () => {
-    const postProcess = repeatHeaders(rows, [], true, 0, [], []);
+    const postProcess = repeatHeaders(rows, [], 60, true, 0, [], []);
     expect(postProcess.rows).toEqual(rows);
     expect(postProcess.columnRepeats).toEqual([
       { columnIndex: 0 },
@@ -89,16 +89,9 @@ describe('Check repeatHeaders', () => {
     newText: 'r2c9-single',
   };
 
-  const fillerCell1 = {
+  const fillerCell = {
     colSpan: 0,
-    repeatColSpan: 0,
-    replacedText: '',
-    rowSpan: 1,
-    text: '',
-  };
-
-  const fillerCell2 = {
-    colSpan: 0,
+    colWidth: 60,
     repeatColSpan: 0,
     replacedText: '',
     rowSpan: 1,
@@ -106,7 +99,7 @@ describe('Check repeatHeaders', () => {
   };
 
   test('Complex header 1', () => {
-    const postProcess = repeatHeaders(rowsC1, replacements, false, 1, [], [singleReplacements]);
+    const postProcess = repeatHeaders(rowsC1, replacements, 60, false, 1, [], [singleReplacements]);
     expect(postProcess.columnRepeats).toEqual([
       { columnIndex: 0 },
       { columnIndex: 1, colRepeat: '[0,0]' },
@@ -132,12 +125,12 @@ describe('Check repeatHeaders', () => {
           { text: 'r1c3', colSpan: 0 },
           { text: 'r1c4', colSpan: 0 },
           { text: 'r1c5', colSpan: 0 },
-          fillerCell1,
+          fillerCell,
           { text: 'r1c2', colSpan: 4, replacedText: 'r1c2-rep2', repeatColSpan: 5 },
           { text: 'r1c3', colSpan: 0 },
           { text: 'r1c4', colSpan: 0 },
           { text: 'r1c5', colSpan: 0 },
-          fillerCell1,
+          fillerCell,
           { text: 'r1c6', colSpan: 4 },
           { text: 'r1c7', colSpan: 0 },
           { text: 'r1c8', colSpan: 0 },
@@ -151,12 +144,12 @@ describe('Check repeatHeaders', () => {
           { text: 'r2c3', colSpan: 2 },
           { text: 'r2c4', colSpan: 0 },
           { text: 'r2c5', colSpan: 1, repeatColSpan: 2 },
-          fillerCell2,
+          fillerCell,
           { text: 'r2c2', rowSpan: 2 },
           { text: 'r2c3', colSpan: 2 },
           { text: 'r2c4', colSpan: 0 },
           { text: 'r2c5', colSpan: 1, repeatColSpan: 2 },
-          fillerCell2,
+          fillerCell,
           { text: 'r2c6', rowSpan: 2 },
           { text: 'r2c7', rowSpan: 2 },
           { text: 'r2c8', rowSpan: 2 },

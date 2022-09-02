@@ -17,9 +17,9 @@ export const replaceHeaders = (
   rowHeaderColumns: number,
   rows: AitRowData[],
   columnRepeats: AitColumnRepeat[],
+  defaultCellWidth: number,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
-  defaultCellWidth?: number,
 ): { newHeaderRows: AitRowData[]; newColumnRepeats: AitColumnRepeat[] } => {
   // Check there are rows
   if (rows.length === 0) return { newHeaderRows: [], newColumnRepeats: [] };
@@ -95,6 +95,7 @@ export const replaceHeaders = (
                       return { columnIndex: n } as AitColumnRepeat;
                     })
                   : [],
+                defaultCellWidth,
                 nextReplacement,
               );
 

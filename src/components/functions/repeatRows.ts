@@ -17,6 +17,7 @@ import { updateExternals } from './updateExternals';
  */
 export const repeatRows = (
   rows: AitRowData[],
+  defaultCellWidth: number,
   replacements?: AioReplacement[],
   spaceAfter?: boolean,
   noProcessing?: boolean,
@@ -43,7 +44,7 @@ export const repeatRows = (
         extReplacements[si].includeTrailing = false;
       }
       // Run current replacement
-      newRows = replaceRows(newRows, extReplacements[si]);
+      newRows = replaceRows(newRows, defaultCellWidth, extReplacements[si]);
     }
   }
 

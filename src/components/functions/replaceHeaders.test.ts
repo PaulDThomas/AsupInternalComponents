@@ -6,7 +6,7 @@ import { removeUndefined } from './removeUndefined';
 import { replaceHeaders } from './replaceHeaders';
 
 describe('Check replace headers', () => {
-  const rows: AitRowData[] = [newRow(3)];
+  const rows: AitRowData[] = [newRow(60, 3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }
@@ -17,7 +17,7 @@ describe('Check replace headers', () => {
   ];
 
   test('Basic checks', () => {
-    const postProcess = replaceHeaders(2, rows, columnRepeats);
+    const postProcess = replaceHeaders(2, rows, columnRepeats, 60);
     expect(postProcess.newHeaderRows).toEqual(rows);
     expect(postProcess.newColumnRepeats).toEqual(columnRepeats);
   });
@@ -98,6 +98,7 @@ describe('Check replace headers', () => {
 
   const fillerCell = {
     colSpan: 0,
+    colWidth: 60,
     repeatColSpan: 0,
     replacedText: '',
     rowSpan: 1,
@@ -105,7 +106,7 @@ describe('Check replace headers', () => {
   };
 
   test('Complex header 1', () => {
-    const postProcess = replaceHeaders(1, rowsC1, columnRepeatsC1, replacement);
+    const postProcess = replaceHeaders(1, rowsC1, columnRepeatsC1, 60, replacement);
     expect(postProcess.newColumnRepeats).toEqual([
       { columnIndex: 0 },
       { columnIndex: 1, colRepeat: '[0,0]' },

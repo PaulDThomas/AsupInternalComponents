@@ -4,9 +4,9 @@ import { newRow } from './newRow';
 
 export const prependCell = (
   pre: AitCellData,
+  defaultCellWidth: number,
   post?: AitRowData[],
   rowsAdded?: number,
-  defaultCellWidth?: number,
 ): AitRowData[] => {
   if (!post) {
     const r = newRow(1, defaultCellWidth);
