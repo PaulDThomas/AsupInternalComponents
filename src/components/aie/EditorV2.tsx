@@ -146,8 +146,12 @@ export const EditorV2 = ({
   useEffect(() => {
     if (customStyleMap === undefined) return;
     const ix = Object.keys(customStyleMap).findIndex((c) => c === currentStyleName);
-    if (ix === -1) return;
-    setCurrentStyle(customStyleMap[currentStyleName].css);
+    if (ix === -1) {
+      setCurrentStyle({});
+      return;
+    } else {
+      setCurrentStyle(customStyleMap[currentStyleName].css);
+    }
   }, [currentStyleName, customStyleMap]);
 
   return (
@@ -189,7 +193,10 @@ export const EditorV2 = ({
             <AieStyleButtonRow
               styleList={Object.keys(customStyleMap || {})}
               currentStyle={currentStyleName}
-              applyStyleFunction={(ret: string) => setCurrentStyleName(ret)}
+              applyStyleFunction={(ret: string) => {
+                const newStyle = ret === currentStyleName ? '' : ret;
+                setCurrentStyleName(newStyle);
+              }}
             />
           </div>
         </div>
