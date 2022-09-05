@@ -14,6 +14,7 @@ import { updateExternals } from './updateExternals';
  */
 export const replaceRows = (
   rows: AitRowData[],
+  defaultCellWidth: number,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
 ): AitRowData[] => {
@@ -129,7 +130,7 @@ export const replaceRows = (
               const subLists = updateExternals(rv.subLists, externalLists);
               if (subLists && subLists.length > 0)
                 for (let si = 0; si < subLists.length; si++) {
-                  lowerQuad = replaceRows(lowerQuad, subLists[si]);
+                  lowerQuad = replaceRows(lowerQuad, defaultCellWidth, subLists[si]);
                 }
 
               // Add spaceAfter to bottom left cell in the block
@@ -152,7 +153,12 @@ export const replaceRows = (
           if (midRows.length > 0)
             for (let lookleft = 1; lookleft <= ci; lookleft++) {
               midAddedRows = midRows.length - processedRows;
-              midRows = prependCell(rows[ri].cells[ci - lookleft], midRows, midAddedRows);
+              midRows = prependCell(
+                rows[ri].cells[ci - lookleft],
+                defaultCellWidth,
+                midRows,
+                midAddedRows,
+              );
             }
           // Add returned rows
           newRows.push(...midRows);

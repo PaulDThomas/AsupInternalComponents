@@ -4,11 +4,11 @@ import { newRow } from './newRow';
 
 describe('Check body pre-process', () => {
   const a: AitRowGroupData = {
-    rows: [newRow()],
+    rows: [newRow(60)],
   };
 
   test('Check aitid assigned', async () => {
-    const b = bodyPreProcess([a]);
+    const b = bodyPreProcess(60, [a]);
     expect(b[0].aitid).toBeTruthy();
   });
 });

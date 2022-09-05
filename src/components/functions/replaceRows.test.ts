@@ -69,7 +69,7 @@ describe('Check complex replace rows', () => {
   };
 
   test('Complex rows', async () => {
-    const repeated = replaceRows(rows, replacement);
+    const repeated = replaceRows(rows, 60, replacement);
     expect(removeUndefined(repeated)).toEqual([
       // Row 0
       {
@@ -85,10 +85,10 @@ describe('Check complex replace rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],

@@ -9,7 +9,11 @@ import { newRow } from './newRow';
  * @param newRowGroupTemplate
  * @returns New row group
  */
-export const newRowGroup = (l?: number, newRowGroupTemplate?: AitRowGroupData): AitRowGroupData => {
+export const newRowGroup = (
+  defaultCellWidth: number,
+  l?: number,
+  newRowGroupTemplate?: AitRowGroupData,
+): AitRowGroupData => {
   return {
     aitid: uuidv4(),
     replacements: newRowGroupTemplate?.replacements ?? [],
@@ -17,14 +21,16 @@ export const newRowGroup = (l?: number, newRowGroupTemplate?: AitRowGroupData): 
       const newCells: AitCellData[] = [];
       for (let ci = 0; ci < (l ?? 1); ci++) {
         newCells.push(
-          row.cells[ci] !== undefined ? { ...row.cells[ci], aitid: uuidv4() } : newCell(),
+          row.cells[ci] !== undefined
+            ? { ...row.cells[ci], aitid: uuidv4() }
+            : newCell(defaultCellWidth),
         );
       }
       return {
         aitid: uuidv4(),
         cells: newCells,
       };
-    }) ?? [newRow()],
+    }) ?? [newRow(defaultCellWidth, l)],
     spaceAfter: true,
   };
 };

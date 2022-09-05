@@ -137,7 +137,7 @@ export const EditorV2 = ({
     (e: React.FocusEvent<HTMLDivElement>) => {
       setInFocus(false);
       if (typeof setText === 'function') {
-        returnData({ text: getHTMLfromV2Text(currentText, currentStyleName) });
+        returnData({ text: getHTMLfromV2Text(currentText, currentStyleName, currentStyle) });
       }
     },
     [currentStyleName, currentText, returnData, setText],

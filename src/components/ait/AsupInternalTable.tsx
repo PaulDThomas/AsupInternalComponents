@@ -38,7 +38,7 @@ interface AsupInternalTableProps {
   cellStyles?: AieStyleMap;
   colWidthMod?: number;
   initialDecimalAlignPercent?: number;
-  defaultColumnWidth?: number;
+  defaultCellWidth?: number;
 }
 
 /**
@@ -59,7 +59,7 @@ export const AsupInternalTable = ({
   cellStyles,
   colWidthMod = 2,
   initialDecimalAlignPercent = 60,
-  defaultColumnWidth = 60,
+  defaultCellWidth = 60,
 }: AsupInternalTableProps) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -79,7 +79,7 @@ export const AsupInternalTable = ({
   // Pushdown data when it it updated externally
   useEffect(() => {
     // Set defaults for no processing
-    const headerData = headerPreProcess(tableData.headerData);
+    const headerData = headerPreProcess(defaultCellWidth, tableData.headerData);
     let columnRepeats =
       tableData.bodyData === undefined
         ? null
@@ -93,6 +93,7 @@ export const AsupInternalTable = ({
       const headerDataUpdate = repeatHeaders(
         processedHeaderData.rows,
         processedHeaderData.replacements ?? [],
+        defaultCellWidth,
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
         externalLists,
@@ -112,12 +113,13 @@ export const AsupInternalTable = ({
     setColumnRepeats(columnRepeats);
 
     // Create processed body
-    const bodyData = bodyPreProcess(tableData.bodyData);
+    const bodyData = bodyPreProcess(defaultCellWidth, tableData.bodyData);
     const processedBodyData: AitRowGroupData[] = bodyData.map((rg) => {
       return {
         ...rg,
         rows: repeatRows(
           rg.rows,
+          defaultCellWidth,
           rg.replacements,
           rg.spaceAfter,
           noRepeatProcessing,
@@ -242,7 +244,7 @@ export const AsupInternalTable = ({
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
-          r.cells.splice(ci + 1, 0, newCell());
+          r.cells.splice(ci + 1, 0, newCell(defaultCellWidth));
           return r;
         });
         return rg;
@@ -252,7 +254,7 @@ export const AsupInternalTable = ({
       if (newHeader !== false && headerData !== false) {
         headerData.rows = newHeader.rows.map((r) => {
           // Check for colSpan
-          if (ci >= 0 && (r.cells[ci + 1]?.colSpan ?? 1) === 0) {
+          if (ci >= 0 && r.cells[ci + 1]?.colSpan === 0) {
             // Change colSpan on previous spanner
             let lookback = 1;
             while (lookback <= ci && (r.cells[ci + 1 - lookback].colSpan ?? 0) === 0) lookback++;
@@ -260,11 +262,11 @@ export const AsupInternalTable = ({
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            const n = newCell();
+            const n = newCell(defaultCellWidth);
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
-            r.cells.splice(ci + 1, 0, newCell());
+            r.cells.splice(ci + 1, 0, newCell(defaultCellWidth));
           }
           return r;
         });
@@ -360,7 +362,15 @@ export const AsupInternalTable = ({
       const newRowGroupTemplate: AitRowGroupData =
         ix > -1 && groupTemplates ? groupTemplates[ix] : { rows: [{ cells: [] }] };
       // Ensure new template meets requirements
-      const newrg = newRowGroup(bodyData[0].rows[0].cells.length, newRowGroupTemplate);
+      const newrg = newRowGroup(
+        defaultCellWidth,
+        bodyData[0].rows[0].cells.length,
+        newRowGroupTemplate,
+      );
+      // Set column widths
+      newrg.rows.forEach((r) =>
+        r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),
+      );
       // Copy existing body and splice in new data
       const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
       newBody.splice(rgi + 1, 0, newrg);
@@ -429,7 +439,7 @@ export const AsupInternalTable = ({
     // Create new row
     const newHeader: AitRowGroupData = {
       ...headerData,
-      rows: [newRow(bodyData[0].rows[0].cells.length)],
+      rows: [newRow(bodyData[0].rows[0].cells.length, defaultCellWidth)],
     };
     returnData({ headerData: newHeader });
   }, [bodyData, headerData, returnData]);
@@ -437,7 +447,6 @@ export const AsupInternalTable = ({
   // Update columnWidth
   const setColWidth = useCallback(
     (colNo: number, colWidth: number) => {
-      console.log(`ColWidth: colNo:${colNo}, newColWidth:${colWidth}`);
       const newHeaderData =
         headerData !== undefined && headerData !== false
           ? {
@@ -446,7 +455,14 @@ export const AsupInternalTable = ({
                 return {
                   ...r,
                   cells: r.cells.map((c, ci) => {
-                    return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth };
+                    // Check against the column repeat number if it exists
+                    return {
+                      ...c,
+                      colWidth:
+                        ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                          ? colWidth
+                          : c.colWidth,
+                    };
                   }),
                 };
               }),
@@ -461,7 +477,14 @@ export const AsupInternalTable = ({
                   return {
                     ...r,
                     cells: r.cells.map((c, ci) => {
-                      return { ...c, colWidth: ci === colNo ? colWidth : c.colWidth };
+                      // Check against the column repeat number if it exists
+                      return {
+                        ...c,
+                        colWidth:
+                          ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                            ? colWidth
+                            : c.colWidth,
+                      };
                     }),
                   };
                 }),
@@ -514,7 +537,7 @@ export const AsupInternalTable = ({
         setWindowZIndex,
         colWidthMod,
         decimalAlignPercent,
-        defaultColumnWidth,
+        defaultCellWidth,
       }}
     >
       <div

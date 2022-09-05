@@ -45,7 +45,7 @@ export const RowGroupPage = (): JSX.Element => {
     (ret: AitTableData): AitRowGroupData => {
       if (ret === null || ret.bodyData === undefined || ret.bodyData.length < 1) {
         return {
-          ...newRowGroup(),
+          ...newRowGroup(50),
           name: currentName,
         };
       }
@@ -124,7 +124,7 @@ export const RowGroupPage = (): JSX.Element => {
             className='aiox-button aiox-plus'
             onClick={() => {
               const newRgs = [...rowGroups];
-              const newRg = { ...newRowGroup(), name: `Group ${newRgs.length}` };
+              const newRg = { ...newRowGroup(50), name: `Group ${newRgs.length}` };
               newRgs.push(newRg);
               setRowGroups(newRgs);
               setCurrentName(newRg.name);

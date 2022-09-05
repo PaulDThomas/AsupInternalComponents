@@ -17,6 +17,7 @@ import { updateExternals } from './updateExternals';
 export const repeatHeaders = (
   rows: AitRowData[],
   replacements: AioReplacement[],
+  defaultCellWidth: number,
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
@@ -43,7 +44,9 @@ export const repeatHeaders = (
       rowHeaderColumns ?? 0,
       newHeaderRows,
       newColumnRepeats,
+      defaultCellWidth,
       rep,
+      undefined,
     );
     newHeaderRows = afterReplacement.newHeaderRows;
     newColumnRepeats = afterReplacement.newColumnRepeats;

@@ -138,7 +138,7 @@ describe('Check repeat rows', () => {
   ];
 
   test('Complex rows', async () => {
-    const repeated = repeatRows(rows, replacements, true, false, undefined, [
+    const repeated = repeatRows(rows, 60, replacements, true, false, undefined, [
       { oldText: 'p1', newText: 'p1!' },
     ]);
     expect(removeUndefined(repeated)).toEqual([
@@ -157,10 +157,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -169,9 +169,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -182,9 +182,9 @@ describe('Check repeat rows', () => {
       // Row 3
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h2', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
           { text: 'v', rowSpan: 1, replacedText: '0.xxx', spaceAfterRepeat: true },
@@ -194,10 +194,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -206,9 +206,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -219,8 +219,8 @@ describe('Check repeat rows', () => {
       // Row 6
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
           { text: 't', rowSpan: 2, repeatRowSpan: 6, replacedText: 't2', spaceAfterSpan: 6 },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h1', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
@@ -231,10 +231,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -243,9 +243,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -256,9 +256,9 @@ describe('Check repeat rows', () => {
       // Row 9
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h2', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
           { text: 'v', rowSpan: 1, replacedText: '0.xxx', spaceAfterRepeat: true },
@@ -268,10 +268,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -280,9 +280,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -293,7 +293,7 @@ describe('Check repeat rows', () => {
       // Row 12
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 5, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 5, replacedText: '' },
           { text: 's', rowSpan: 2, repeatRowSpan: 12, replacedText: 's2', spaceAfterSpan: 12 },
           { text: 't', rowSpan: 2, repeatRowSpan: 6, replacedText: 't1', spaceAfterSpan: 6 },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h1', spaceAfterSpan: 3 },
@@ -305,10 +305,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -317,9 +317,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -330,9 +330,9 @@ describe('Check repeat rows', () => {
       // Row 15
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h2', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
           { text: 'v', rowSpan: 1, replacedText: '0.xxx', spaceAfterRepeat: true },
@@ -342,10 +342,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -354,9 +354,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -367,8 +367,8 @@ describe('Check repeat rows', () => {
       // Row 18
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: '' },
           { text: 't', rowSpan: 2, repeatRowSpan: 6, replacedText: 't2', spaceAfterSpan: 6 },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h1', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
@@ -379,10 +379,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -391,9 +391,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },
@@ -404,9 +404,9 @@ describe('Check repeat rows', () => {
       // Row 21
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: '' },
           { text: 'h', rowSpan: 2, repeatRowSpan: 3, replacedText: 'h2', spaceAfterSpan: 3 },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r1' },
           { text: 'v', rowSpan: 1, replacedText: '0.xxx', spaceAfterRepeat: true },
@@ -416,10 +416,10 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: 'r', rowSpan: 1, repeatRowSpan: 1, replacedText: 'r2' },
           { text: 'v', rowSpan: 1, replacedText: ' ', spaceAfterRepeat: true },
         ],
@@ -428,9 +428,9 @@ describe('Check repeat rows', () => {
       },
       {
         cells: [
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
-          { text: '', colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          { text: '', colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
           { text: '', rowSpan: 0, repeatRowSpan: 0 },
           { text: 'c', rowSpan: 1, repeatRowSpan: 1, replacedText: 'c!', spaceAfterRepeat: true },
           { text: 'v', rowSpan: 1, replacedText: '!!' },

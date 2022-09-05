@@ -4,11 +4,12 @@ import { newRow } from './newRow';
 
 export const prependCell = (
   pre: AitCellData,
+  defaultCellWidth: number,
   post?: AitRowData[],
   rowsAdded?: number,
 ): AitRowData[] => {
   if (!post) {
-    const r = newRow(1);
+    const r = newRow(1, defaultCellWidth);
     r.cells = [pre];
     return [r];
   }
@@ -26,7 +27,7 @@ export const prependCell = (
               repeatRowSpan:
                 (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + (rowsAdded ?? post.length ?? 0),
             }
-          : { ...newCell(), rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          : { ...newCell(defaultCellWidth), rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
         ...post[ri].cells,
       ],
       rowRepeat: post[ri].rowRepeat,

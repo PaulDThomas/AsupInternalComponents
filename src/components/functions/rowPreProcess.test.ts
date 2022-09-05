@@ -11,7 +11,7 @@ describe('Check row pre process', () => {
     ],
   };
   test('Check aitid assigned', async () => {
-    const b = rowPreProcess([a]);
+    const b = rowPreProcess(60, [a]);
     expect(b[0].aitid).toBeTruthy();
   });
 });

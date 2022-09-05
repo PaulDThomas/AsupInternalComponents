@@ -26,7 +26,7 @@ export class ColouredLine {
       if (b.styleName && Object.keys(this.styles).findIndex((s) => s === b.styleName) >= 0) {
         s.dataset.style = b.styleName;
         s.style.cssText = Object.entries(this.styles[b.styleName])
-          .map(([k, v]) => `${k.replace(/[A-Z]/g, ' - $ & ').toLowerCase()}:${v}`)
+          .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
           .join(';');
       }
       h.appendChild(s);

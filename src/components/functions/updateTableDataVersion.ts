@@ -19,7 +19,10 @@ interface OldRowGroupData {
   replacements?: AioReplacement[] | oldReplacement[];
 }
 
-export const updateTableDataVersion = (inData: OldTableData | AitTableData): AitTableData => {
+export const updateTableDataVersion = (
+  inData: OldTableData | AitTableData,
+  defaultCellWidth: number,
+): AitTableData => {
   const headerData =
     inData.headerData === false
       ? false
@@ -45,5 +48,35 @@ export const updateTableDataVersion = (inData: OldTableData | AitTableData): Ait
       return org;
     }),
   };
+
+  // Ensure all column widths are consistent
+  if (
+    outData.bodyData?.some((rg) =>
+      rg.rows.map((r) => r.cells.some((c) => c.colWidth === undefined)),
+    )
+  ) {
+    const colWidths =
+      // Get all column widths
+      (
+        outData.headerData
+          ? outData.headerData.rows.map((r) => r.cells.map((c) => c.colWidth))
+          : outData.bodyData.flatMap((rg) => rg.rows.map((r) => r.cells.map((c) => c.colWidth)))
+      )
+        // Get max, or zero if totall undefined
+        .reduce(
+          (prev, cur) => cur.map((w, i) => ((w ?? 0) > (prev[i] ?? 0) ? w ?? 0 : prev[i] ?? 0)),
+          [],
+        )
+        // Replace zeros with default
+        .map((w) => (w === 0 ? defaultCellWidth : w));
+    if (outData.headerData)
+      outData.headerData?.rows.forEach((r) =>
+        r.cells.forEach((c, ci) => (c.colWidth = colWidths[ci])),
+      );
+    outData.bodyData?.forEach((rg) =>
+      rg.rows.forEach((r) => r.cells.forEach((c, ci) => (c.colWidth = colWidths[ci]))),
+    );
+  }
+
   return outData;
 };

@@ -47,7 +47,7 @@ export const TablePage = () => {
         return response.json();
       })
       .then(function (MyJson: AitTableData) {
-        setTableData(updateTableDataVersion(MyJson));
+        setTableData(updateTableDataVersion(MyJson, 40));
       });
   }, []);
 
@@ -57,8 +57,8 @@ export const TablePage = () => {
         ta.current.value = window.localStorage.getItem('tableContent') ?? '';
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current!.value?.toString() ?? '{}');
-        setTableData(updateTableDataVersion(j));
+        const j = JSON.parse(ta.current.value?.toString() ?? '{}');
+        setTableData(updateTableDataVersion(j, 40));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
@@ -120,6 +120,7 @@ export const TablePage = () => {
               commentStyles={commentStyles}
               cellStyles={cellStyles}
               colWidthMod={1.5}
+              defaultCellWidth={100}
             />
           )}
         </div>

@@ -82,7 +82,7 @@ export interface AitOptionList {
   columnRepeats?: AitColumnRepeat[] | null;
   colWidthMod: number;
   decimalAlignPercent: number;
-  defaultColumnWidth: number;
+  defaultCellWidth: number;
 
   /* Table options with setters */
   headerRows?: number;

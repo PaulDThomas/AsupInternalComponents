@@ -1,5 +1,3 @@
-import { TableSettingsContext } from 'components/ait/aitContext';
-import { useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { AitCellData } from '../ait/aitInterface';
 
@@ -8,14 +6,13 @@ import { AitCellData } from '../ait/aitInterface';
  * @param type Type of cell to create
  * @returns data for a new blank cell
  */
-export const newCell = (): AitCellData => {
-  const tableSettings = useContext(TableSettingsContext);
+export const newCell = (cellWidth: number): AitCellData => {
   const cell: AitCellData = {
     aitid: uuidv4(),
     text: '',
     rowSpan: 1,
     colSpan: 1,
-    colWidth: tableSettings.defaultColumnWidth,
+    colWidth: cellWidth,
   };
   return cell;
 };
