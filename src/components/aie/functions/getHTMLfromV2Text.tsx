@@ -3,7 +3,7 @@ export function getHTMLfromV2Text(
   styleName: string,
   style: React.CSSProperties,
 ): string {
-  if (styleName === '') return text;
+  if (styleName === '') return text.replace(/[\u200B-\u200F\uFEFF]/g, '');
   const isr = {
     length: text.length,
     offset: 0,
@@ -12,11 +12,11 @@ export function getHTMLfromV2Text(
   const cssString = Object.entries(style)
     .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
     .join(';');
-  return `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([
+  const html = `<div classname="aie-text" data-inline-style-ranges='${JSON.stringify([
     isr,
   ])}'><span classname="${styleName}" style="${cssString}">${text.replace(
     /[\u200B-\u200F\uFEFF]/g,
     '',
   )}</span></div>`;
-  // c
+  return html;
 }

@@ -140,7 +140,7 @@ export const EditorV2 = ({
         returnData({ text: getHTMLfromV2Text(currentText, currentStyleName, currentStyle) });
       }
     },
-    [currentStyleName, currentText, returnData, setText],
+    [currentStyle, currentStyleName, currentText, returnData, setText],
   );
 
   useEffect(() => {
