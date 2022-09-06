@@ -13,6 +13,8 @@ interface AitHeaderProps {
   replacements?: AioReplacement[];
   setHeaderData: (ret: AitRowGroupData) => void;
   setColWidth: (colNo: number, colWidth: number) => void;
+  addHeaderColSpan: (ret: AitLocation) => void;
+  removeHeaderColSpan: (ret: AitLocation) => void;
 }
 
 export const AitHeader = ({
@@ -22,6 +24,8 @@ export const AitHeader = ({
   replacements,
   setHeaderData,
   setColWidth,
+  addHeaderColSpan,
+  removeHeaderColSpan,
 }: AitHeaderProps): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
 
@@ -60,7 +64,7 @@ export const AitHeader = ({
       newrs.splice(ri + 1, 0, newr);
       returnData({ rows: newrs });
     },
-    [returnData, rows],
+    [returnData, rows, tableSettings.defaultCellWidth],
   );
 
   const removeRow = useCallback(
@@ -114,58 +118,6 @@ export const AitHeader = ({
       returnData({ rows: newRows });
     },
     [returnData, rows],
-  );
-
-  // Manipulate cell spans
-  const addColSpan = useCallback(
-    (loc: AitLocation) => {
-      // Get things to change
-      const newRows = [...rows];
-      const actualCol =
-        tableSettings.columnRepeats?.findIndex(
-          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
-        ) ?? loc.column;
-      const targetCell: AitCellData = newRows[loc.row].cells[actualCol];
-      if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
-      const hideCell: AitCellData = newRows[loc.row].cells[actualCol + targetCell.colSpan];
-      // Check change is ok
-      if (targetCell === undefined || hideCell === undefined) return;
-      if (targetCell.rowSpan !== 1) return;
-      if (hideCell.rowSpan !== 1) return;
-      if (loc.column + targetCell.colSpan === tableSettings.rowHeaderColumns) return;
-      if (loc.column + targetCell.colSpan >= newRows[loc.row].cells.length) return;
-      if (hideCell.colSpan !== 1) return;
-      // Update target cell
-      targetCell.colSpan++;
-      // Hide next cell
-      hideCell.colSpan = 0;
-      newRows[loc.row].cells[loc.column + targetCell.colSpan - 1].colSpan = 0;
-      // Done
-      returnData({ rows: newRows });
-    },
-    [returnData, rows, tableSettings.columnRepeats, tableSettings.rowHeaderColumns],
-  );
-
-  const removeColSpan = useCallback(
-    (loc: AitLocation) => {
-      // Get things to change
-      const newRows = [...rows];
-      const actualCol =
-        tableSettings.columnRepeats?.findIndex(
-          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
-        ) ?? loc.column;
-      const targetCell: AitCellData = newRows[loc.row].cells[actualCol];
-      const hideCell: AitCellData =
-        newRows[loc.row].cells[actualCol + (targetCell.colSpan ?? 1) - 1];
-      // Update target cell
-      targetCell.colSpan = (targetCell.colSpan ?? 1) - 1;
-      // Show next cell
-      hideCell.colSpan = 1;
-      if (hideCell.rowSpan === 0) hideCell.rowSpan = 1;
-      // Done
-      returnData({ rows: newRows });
-    },
-    [returnData, rows, tableSettings.columnRepeats],
   );
 
   const addRowSpan = useCallback(
@@ -251,8 +203,8 @@ export const AitHeader = ({
             }}
             addRow={addRow}
             removeRow={removeRow}
-            addColSpan={addColSpan}
-            removeColSpan={removeColSpan}
+            addColSpan={addHeaderColSpan}
+            removeColSpan={removeHeaderColSpan}
             setColWidth={setColWidth}
             addRowSpan={addRowSpan}
             removeRowSpan={removeRowSpan}

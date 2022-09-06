@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useState } from 'react';
 import { AieStyleMap } from '../aie';
 import {
@@ -22,7 +23,13 @@ import './ait.css';
 import { AitBorderRow } from './aitBorderRow';
 import { TableSettingsContext } from './aitContext';
 import { AitHeader } from './aitHeader';
-import { AitColumnRepeat, AitRowGroupData, AitRowType, AitTableData } from './aitInterface';
+import {
+  AitColumnRepeat,
+  AitLocation,
+  AitRowGroupData,
+  AitRowType,
+  AitTableData,
+} from './aitInterface';
 import { AitRowGroup } from './aitRowGroup';
 
 interface AsupInternalTableProps {
@@ -144,6 +151,7 @@ export const AsupInternalTable = ({
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
     setDecimalAlignPercent(tableData.decimalAlignPercent ?? initialDecimalAlignPercent);
   }, [
+    defaultCellWidth,
     externalLists,
     externalSingles,
     initialDecimalAlignPercent,
@@ -279,7 +287,7 @@ export const AsupInternalTable = ({
         rowHeaderColumns: ci < rowHeaderColumns - 1 ? rowHeaderColumns + 1 : rowHeaderColumns,
       });
     },
-    [bodyData, headerData, returnData, rowHeaderColumns, unProcessRowGroup],
+    [bodyData, defaultCellWidth, headerData, returnData, rowHeaderColumns, unProcessRowGroup],
   );
 
   // Remove column
@@ -377,7 +385,7 @@ export const AsupInternalTable = ({
       // Update table body
       returnData({ bodyData: newBody });
     },
-    [bodyData, groupTemplates, returnData],
+    [bodyData, defaultCellWidth, groupTemplates, returnData],
   );
 
   // Remove a row group from the table body
@@ -442,10 +450,10 @@ export const AsupInternalTable = ({
       rows: [newRow(bodyData[0].rows[0].cells.length, defaultCellWidth)],
     };
     returnData({ headerData: newHeader });
-  }, [bodyData, headerData, returnData]);
+  }, [bodyData, defaultCellWidth, headerData, returnData]);
 
   // Update columnWidth
-  const setColWidth = useCallback(
+  const updateColWidth = useCallback(
     (colNo: number, colWidth: number) => {
       const newHeaderData =
         headerData !== undefined && headerData !== false
@@ -458,10 +466,13 @@ export const AsupInternalTable = ({
                     // Check against the column repeat number if it exists
                     return {
                       ...c,
-                      colWidth:
-                        ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                      colWidth: columnRepeats
+                        ? columnRepeats[ci].columnIndex === columnRepeats[colNo].columnIndex
                           ? colWidth
-                          : c.colWidth,
+                          : c.colWidth
+                        : ci === colNo
+                        ? colWidth
+                        : c.colWidth,
                     };
                   }),
                 };
@@ -496,7 +507,70 @@ export const AsupInternalTable = ({
         bodyData: newBodyData,
       });
     },
-    [bodyData, headerData, returnData],
+    [bodyData, columnRepeats, headerData, returnData],
+  );
+
+  // Manipulate cell spans
+  const addHeaderColSpan = useCallback(
+    (loc: AitLocation) => {
+      if (!headerData) return;
+      // Update header group
+      const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
+      const newRows = [...newHeader.rows];
+      const actualCol =
+        columnRepeats?.findIndex(
+          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
+        ) ?? loc.column;
+
+      // Get things to change
+      const targetCell = newRows[loc.row].cells[actualCol];
+      if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
+      const hideCell = newRows[loc.row].cells[actualCol + targetCell.colSpan];
+
+      // Check change is ok
+      if (
+        targetCell === undefined ||
+        hideCell === undefined ||
+        targetCell.rowSpan !== 1 ||
+        hideCell.rowSpan !== 1 ||
+        hideCell.colSpan !== 1
+      )
+        return;
+      if (loc.column + targetCell.colSpan === rowHeaderColumns) return;
+      if (loc.column + targetCell.colSpan >= newRows[loc.row].cells.length) return;
+      if (hideCell.colSpan !== 1) return;
+      // Update target cell
+      targetCell.colSpan++;
+      // Hide next cell
+      hideCell.colSpan = 0;
+      // Done
+      returnData({ headerData: { ...newHeader, rows: newRows }, headerDataUnprocessed: true });
+    },
+    [headerData, unProcessRowGroup, columnRepeats, rowHeaderColumns, returnData],
+  );
+
+  const removeHeaderColSpan = useCallback(
+    (loc: AitLocation) => {
+      if (!headerData) return;
+      // Update header group
+      const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
+      const newRows = [...newHeader.rows];
+      // Get things to change
+      const actualCol =
+        columnRepeats?.findIndex(
+          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
+        ) ?? loc.column;
+      const targetCell = newRows[loc.row].cells[actualCol];
+      const hideCell = newRows[loc.row].cells[actualCol + (targetCell.colSpan ?? 1) - 1];
+      // Update target cell
+      targetCell.colSpan = (targetCell.colSpan ?? 1) - 1;
+      // Show next cell
+      hideCell.colSpan = 1;
+      if (hideCell.rowSpan === 0) hideCell.rowSpan = 1;
+      // Done
+      returnData({ headerData: { ...newHeader, rows: newRows }, headerDataUnprocessed: true });
+    },
+    [headerData, columnRepeats],
   );
 
   // Show loading if there is nothing to see
@@ -652,7 +726,9 @@ export const AsupInternalTable = ({
                 setHeaderData={(ret) => {
                   returnData({ headerData: ret });
                 }}
-                setColWidth={setColWidth}
+                setColWidth={updateColWidth}
+                addHeaderColSpan={addHeaderColSpan}
+                removeHeaderColSpan={removeHeaderColSpan}
               />
             )}
           </thead>
@@ -670,7 +746,7 @@ export const AsupInternalTable = ({
                   setRowGroupData={(ret) => {
                     updateRowGroup(ret, rgi);
                   }}
-                  setColWidth={setColWidth}
+                  setColWidth={updateColWidth}
                   location={{
                     tableSection: AitRowType.body,
                     rowGroup: rgi,
