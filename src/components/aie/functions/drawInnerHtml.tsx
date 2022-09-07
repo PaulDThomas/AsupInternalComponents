@@ -1,4 +1,3 @@
-import { fromHtml } from '../../functions';
 import React from 'react';
 
 export function drawInnerHtml(
@@ -13,9 +12,7 @@ export function drawInnerHtml(
 ) {
   if (!divRef.current) return;
   // Decode any HTML here too... we are going to set textContent so this is safe
-  let fullText = (
-    initialText !== undefined ? fromHtml(initialText) : divRef.current.textContent ?? ''
-  )
+  let fullText = (initialText !== undefined ? initialText : divRef.current.textContent ?? '')
     .replace(/[\u202F|\u00A0]/g, ' ')
     .trim();
   setCurrentText(fullText);

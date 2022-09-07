@@ -25,6 +25,9 @@ export const EditorPage = () => {
   const save = () => {
     window.localStorage.setItem('content', JSON.stringify({ text1, text2, text3, text4 }));
     console.log('Saved: ');
+    console.log(text1);
+    console.log(text2);
+    console.log(text3);
     console.log(text4);
   };
 
