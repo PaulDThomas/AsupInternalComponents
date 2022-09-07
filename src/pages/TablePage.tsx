@@ -57,7 +57,7 @@ export const TablePage = () => {
         ta.current.value = window.localStorage.getItem('tableContent') ?? '';
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current.value?.toString() ?? '{}');
+        const j = updateTableDataVersion(JSON.parse(ta.current.value?.toString() ?? '{}'), 40);
         setTableData(updateTableDataVersion(j, 40));
         ta.current.value = JSON.stringify(j, null, 2);
       }

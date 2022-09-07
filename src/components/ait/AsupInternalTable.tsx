@@ -491,10 +491,13 @@ export const AsupInternalTable = ({
                       // Check against the column repeat number if it exists
                       return {
                         ...c,
-                        colWidth:
-                          ci === (columnRepeats ? columnRepeats[colNo].columnIndex : colNo)
+                        colWidth: columnRepeats
+                          ? columnRepeats[ci].columnIndex === columnRepeats[colNo].columnIndex
                             ? colWidth
-                            : c.colWidth,
+                            : c.colWidth
+                          : ci === colNo
+                          ? colWidth
+                          : c.colWidth,
                       };
                     }),
                   };
