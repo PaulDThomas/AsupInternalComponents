@@ -130,10 +130,22 @@ export const EditorPage = () => {
         <pre>{text3}</pre>
         <pre>{text4}</pre>
         <h5>HTML</h5>
-        <p dangerouslySetInnerHTML={{ __html: text1 }}></p>
-        <p dangerouslySetInnerHTML={{ __html: text2 }}></p>
-        <p dangerouslySetInnerHTML={{ __html: text3 }}></p>
-        <p dangerouslySetInnerHTML={{ __html: text4 }}></p>
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: text1 }}
+        ></p>
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: text2 }}
+        ></p>
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: text3 }}
+        ></p>
+        <p
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: text4 }}
+        ></p>
       </div>
     </div>
   );

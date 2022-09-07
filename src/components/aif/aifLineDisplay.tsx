@@ -4,6 +4,7 @@ import { AioExternalSingle, AioIconButton, AioSelect } from '../aio';
 import { AsupInternalWindow } from '../aiw';
 import './aif.css';
 import { AifBlockLine } from './aifInterface';
+import { OriginalText } from './OriginalText';
 import { replaceBlockText } from './replaceBlockText';
 
 interface AifLineDisplayProps {
@@ -107,7 +108,7 @@ export const AifLineDisplay = ({
                 'Left and Right',
               ]}
               value={
-                typeof left === 'string' && typeof centre == 'string' && typeof right === 'string'
+                typeof left === 'string' && typeof centre === 'string' && typeof right === 'string'
                   ? 'Left, Centre and Right'
                   : typeof left === 'string' && typeof right === 'string'
                   ? 'Left and Right'
@@ -265,29 +266,4 @@ export const AifLineDisplay = ({
       </div>
     </div>
   );
-};
-
-const OriginalText = ({
-  text,
-  setText,
-  styleMap,
-}: {
-  label: string;
-  text: string | false | undefined;
-  setText: (ret: string) => void;
-  styleMap?: AieStyleMap;
-}): JSX.Element => {
-  if (typeof text !== 'string') return <></>;
-  else
-    return (
-      <div className='aiw-body-row'>
-        <div className={'aio-label'}>Unprocessed text: </div>
-        <AsupInternalEditor
-          value={text}
-          setValue={setText}
-          showStyleButtons={styleMap !== undefined}
-          styleMap={styleMap}
-        />
-      </div>
-    );
 };

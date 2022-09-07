@@ -117,16 +117,17 @@ export const AitCell = ({
           : '',
     };
   }, [
-    cellType,
-    colWidth,
-    colSpan,
     tableSettings.colWidthMod,
+    tableSettings.defaultCellWidth,
     tableSettings.showCellBorders,
     tableSettings.rowHeaderColumns,
+    colWidth,
+    cellType,
+    textIndents,
     location.column,
     location.row,
     location.rowGroup,
-    textIndents,
+    colSpan,
   ]);
 
   /** Callback for update to any cell data */

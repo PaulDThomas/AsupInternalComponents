@@ -7,23 +7,21 @@ import { AioPrintOption } from './aioPrintOption';
 interface AioOptionDisplayProps {
   options?: AioOption[];
   setOptions?: (ret: AioOption[]) => void;
-  buttonText?: string;
-  // TODO: What does buttonText do?
 }
 
-export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
+export const AioOptionDisplay = ({ options, setOptions }: AioOptionDisplayProps): JSX.Element => {
   // Update current options from child object
   const updateOption = useCallback(
     (ret: AioOption, i: number) => {
-      if (typeof props.setOptions !== 'function') return;
-      const newOptions = [...(props.options ?? [])];
+      if (typeof setOptions !== 'function') return;
+      const newOptions = [...(options ?? [])];
       newOptions[i].value = ret;
-      props.setOptions(newOptions);
+      setOptions(newOptions);
     },
-    [props.options, props.setOptions],
+    [options, setOptions],
   );
 
-  if (props.options === undefined)
+  if (options === undefined)
     return (
       <div className='aio-body-row'>
         <AioLabel label='No options deinfed' />
@@ -32,7 +30,7 @@ export const AioOptionDisplay = (props: AioOptionDisplayProps): JSX.Element => {
 
   return (
     <>
-      {props.options?.map((option, i) => {
+      {options?.map((option, i) => {
         return (
           <div
             className='aio-body-row'
