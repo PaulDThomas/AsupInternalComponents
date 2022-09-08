@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { AsupInternalEditor } from '../components';
 
 export const EditorPage = () => {
+  const [textarea, setTextarea] = useState<string>('');
   const [text1, setText1] = useState(
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
@@ -127,6 +128,25 @@ export const EditorPage = () => {
         <button onClick={dothing}>set</button>
         <button onClick={save}>save</button>
         <button onClick={load}>load</button>
+        <pre>
+          <textarea
+            rows={3}
+            value={textarea}
+            onChange={(e) => {
+              setTextarea(e.currentTarget.value);
+            }}
+          />
+        </pre>
+        <button
+          onClick={() => {
+            setText1(textarea);
+            setText2(textarea);
+            setText3(textarea);
+            setText4(textarea);
+          }}
+        >
+          loadtextarea
+        </button>
         <h5>Text</h5>
         <pre>{text1}</pre>
         <pre>{text2}</pre>
