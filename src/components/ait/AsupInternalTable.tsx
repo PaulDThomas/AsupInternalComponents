@@ -520,10 +520,7 @@ export const AsupInternalTable = ({
       // Update header group
       const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
       const newRows = [...newHeader.rows];
-      const actualCol =
-        columnRepeats?.findIndex(
-          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
-        ) ?? loc.column;
+      const actualCol = loc.column;
 
       // Get things to change
       const targetCell = newRows[loc.row].cells[actualCol];
@@ -559,10 +556,7 @@ export const AsupInternalTable = ({
       const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
       const newRows = [...newHeader.rows];
       // Get things to change
-      const actualCol =
-        columnRepeats?.findIndex(
-          (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
-        ) ?? loc.column;
+      const actualCol = loc.column;
       const targetCell = newRows[loc.row].cells[actualCol];
       const hideCell = newRows[loc.row].cells[actualCol + (targetCell.colSpan ?? 1) - 1];
       // Update target cell
