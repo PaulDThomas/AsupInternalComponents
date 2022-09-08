@@ -196,7 +196,8 @@ export const AitRow = ({
               comments={cell.comments ?? ''}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
-              colWidth={
+              colWidth={cell.colWidth}
+              displayColWidth={
                 cell.colSpan === 1
                   ? cell.colWidth
                   : cells

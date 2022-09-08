@@ -14,6 +14,7 @@ interface AitCellProps {
   rowSpan: number;
   colSpan: number;
   colWidth?: number;
+  displayColWidth?: number;
   textIndents?: number;
   replacedText?: string;
   repeatColSpan?: number;
@@ -41,6 +42,7 @@ export const AitCell = ({
   colSpan,
   rowSpan,
   colWidth,
+  displayColWidth,
   textIndents,
   replacedText,
   repeatColSpan,
@@ -402,7 +404,7 @@ export const AitCell = ({
             <div className='aiw-body-row'>
               <AioNumber
                 label='Width (mm)'
-                value={colWidth ?? tableSettings.defaultCellWidth}
+                value={displayColWidth ?? tableSettings.defaultCellWidth}
                 setValue={setColWidth !== undefined ? (ret) => setColWidth(ret) : undefined}
               />
             </div>
