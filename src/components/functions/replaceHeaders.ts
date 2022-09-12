@@ -208,7 +208,7 @@ export const replaceHeaders = (
                 targetCellAbove.repeatColSpan =
                   (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
                 const newCells2: AitCellData[] = [];
-                for (let nci = 0; nci < nIns + targetCell.colSpan - 1; nci++) {
+                for (let nci = 0; nci < nIns; nci++) {
                   const n = newCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
