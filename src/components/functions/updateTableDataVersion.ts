@@ -65,11 +65,12 @@ export const updateTableDataVersion = (
       )
         // Get max, or zero if totally undefined
         .reduce(
-          (prev, cur) => cur.map((w, i) => ((w ?? 0) > (prev[i] ?? 0) ? w ?? 0 : prev[i] ?? 0)),
+          (prev, cur) =>
+            cur.map((w, i) => ((w ?? 9999) < (prev[i] ?? 9999) ? w ?? 9999 : prev[i] ?? 9999)),
           [],
         )
         // Replace zeros with default
-        .map((w) => (w === 0 ? defaultCellWidth : w));
+        .map((w) => (w === 9999 ? defaultCellWidth : w));
     if (outData.headerData)
       outData.headerData?.rows.forEach((r) =>
         r.cells.forEach((c, ci) => (c.colWidth = colWidths[ci])),
