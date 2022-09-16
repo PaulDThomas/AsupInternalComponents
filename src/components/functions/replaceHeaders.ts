@@ -159,10 +159,12 @@ export const replaceHeaders = (
               } else {
                 midRepeats = [
                   ...midRepeats,
-                  {
-                    columnIndex: columnRepeats[ci].columnIndex,
-                    colRepeat: `${columnRepeats[ci].colRepeat ?? ''}${`[${rvi},${ti}]`}`,
-                  },
+                  ...Array.from(Array(repeatSpan).keys()).map((n) => {
+                    return {
+                      columnIndex: columnRepeats[ci + n].columnIndex,
+                      colRepeat: `${columnRepeats[ci].colRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                    };
+                  }),
                 ];
               }
             }
