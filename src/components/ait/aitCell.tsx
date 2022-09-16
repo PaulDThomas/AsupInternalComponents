@@ -9,7 +9,7 @@ import { TableSettingsContext } from './aitContext';
 interface AitCellProps {
   aitid: string;
   text: string;
-  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal';
+  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
   comments: string;
   rowSpan: number;
   colSpan: number;
@@ -235,8 +235,11 @@ export const AitCell = ({
         <AsupInternalEditor
           style={{ width: '100%', height: '100%', border: 'none' }}
           textAlignment={
-            justifyText ??
-            (location.column < (tableSettings.rowHeaderColumns ?? 0) ? 'left' : 'center')
+            !justifyText || justifyText === 'default'
+              ? location.column < (tableSettings.rowHeaderColumns ?? 0)
+                ? 'left'
+                : 'center'
+              : justifyText
           }
           value={displayText}
           setValue={(ret) => {

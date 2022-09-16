@@ -23,7 +23,7 @@ interface AsupInternalEditorProps {
   setValue?: (ret: string) => void;
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
-  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | 'decimal';
+  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
   decimalAlignPercent?: number;
   showStyleButtons?: boolean;
   editable?: boolean;
@@ -155,7 +155,7 @@ export const AsupInternalEditor = ({
             customStyleMap={currentStyleMap.current}
             editorState={editorState}
             onChange={setEditorState}
-            textAlignment={textAlignment}
+            textAlignment={textAlignment !== 'default' ? textAlignment : undefined}
             readOnly={editable === false || typeof setValue !== 'function'}
             handlePastedText={handlePastedText}
           />

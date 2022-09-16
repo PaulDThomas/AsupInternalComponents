@@ -9,7 +9,7 @@ interface iEditorV2 {
   setText?: (ret: string) => void;
   customStyleMap?: AieStyleMap;
   allowNewLine?: boolean;
-  textAlignment?: 'left' | 'center' | 'decimal' | 'right';
+  textAlignment?: 'left' | 'center' | 'decimal' | 'right' | 'default';
   decimalAlignPercent?: number;
 }
 

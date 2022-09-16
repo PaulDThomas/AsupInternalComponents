@@ -119,8 +119,8 @@ export const TablePage = () => {
               groupTemplates={sampleGroupTemplates}
               commentStyles={commentStyles}
               cellStyles={cellStyles}
-              colWidthMod={1.5}
-              defaultCellWidth={100}
+              colWidthMod={3}
+              defaultCellWidth={40}
             />
           )}
         </div>
