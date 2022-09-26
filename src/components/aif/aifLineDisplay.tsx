@@ -9,9 +9,9 @@ import { replaceBlockText } from './replaceBlockText';
 
 interface AifLineDisplayProps {
   aifid?: string;
-  left?: string | false;
-  centre?: string | false;
-  right?: string | false;
+  left?: string | null;
+  center?: string | null;
+  right?: string | null;
   externalSingles?: AioExternalSingle[];
   addBelow?: boolean;
   canEdit?: boolean;
@@ -27,7 +27,7 @@ interface AifLineDisplayProps {
 export const AifLineDisplay = ({
   aifid,
   left,
-  centre,
+  center,
   right,
   externalSingles,
   addBelow,
@@ -42,12 +42,12 @@ export const AifLineDisplay = ({
 }: AifLineDisplayProps): JSX.Element => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback(
-    (lineUpdate: { left?: string | false; centre?: string | false; right?: string | false }) => {
+    (lineUpdate: { left?: string | null; center?: string | null; right?: string | null }) => {
       if (typeof setLine !== 'function') return;
       const newLine = {
         aifid: aifid,
         left: lineUpdate.left ?? left,
-        centre: lineUpdate.centre ?? centre,
+        center: lineUpdate.center ?? center,
         right: lineUpdate.right ?? right,
         addBelow: addBelow,
         canEdit: canEdit,
@@ -56,18 +56,18 @@ export const AifLineDisplay = ({
       };
       setLine(newLine);
     },
-    [addBelow, aifid, canEdit, canMove, canRemove, centre, left, right, setLine],
+    [addBelow, aifid, canEdit, canMove, canRemove, center, left, right, setLine],
   );
 
   // Set up post replacement view
-  const [displayLeft, setDisplayLeft] = useState<string | false | undefined>(left);
-  const [displayCentre, setDisplayCentre] = useState<string | false | undefined>(centre);
-  const [displayRight, setDisplayRight] = useState<string | false | undefined>(right);
+  const [displayLeft, setDisplayLeft] = useState<string | null | undefined>(left);
+  const [displayCenter, setDisplayCenter] = useState<string | null | undefined>(center);
+  const [displayRight, setDisplayRight] = useState<string | null | undefined>(right);
 
   // Update for replacements
   const processReplacement = useCallback(
-    (text: string | false | undefined): string | false => {
-      if (typeof text !== 'string') return false;
+    (text: string | null | undefined): string | null => {
+      if (typeof text !== 'string') return null;
       // Process external replacements
       if (externalSingles !== undefined && externalSingles.length > 0) {
         externalSingles.forEach((repl) => {
@@ -83,7 +83,7 @@ export const AifLineDisplay = ({
   );
 
   useEffect(() => setDisplayLeft(processReplacement(left)), [left, processReplacement]);
-  useEffect(() => setDisplayCentre(processReplacement(centre)), [centre, processReplacement]);
+  useEffect(() => setDisplayCenter(processReplacement(center)), [center, processReplacement]);
   useEffect(() => setDisplayRight(processReplacement(right)), [right, processReplacement]);
 
   return (
@@ -103,18 +103,18 @@ export const AifLineDisplay = ({
               label='Line type'
               availableValues={[
                 'Left only',
-                'Centre only',
-                'Left, Centre and Right',
+                'Center only',
+                'Left, Center and Right',
                 'Left and Right',
               ]}
               value={
-                typeof left === 'string' && typeof centre === 'string' && typeof right === 'string'
-                  ? 'Left, Centre and Right'
+                typeof left === 'string' && typeof center === 'string' && typeof right === 'string'
+                  ? 'Left, Center and Right'
                   : typeof left === 'string' && typeof right === 'string'
                   ? 'Left and Right'
                   : typeof left === 'string'
                   ? 'Left only'
-                  : 'Centre only'
+                  : 'Center only'
               }
               setValue={
                 typeof setLine === 'function'
@@ -122,27 +122,27 @@ export const AifLineDisplay = ({
                       switch (ret) {
                         case 'Left only':
                           left = left || '';
-                          centre = false;
-                          right = false;
+                          center = null;
+                          right = null;
                           break;
-                        case 'Centre only':
-                          left = false;
-                          centre = centre || '';
-                          right = false;
+                        case 'Center only':
+                          left = null;
+                          center = center || '';
+                          right = null;
                           break;
                         case 'Left and Right':
                           left = left || '';
-                          centre = false;
+                          center = null;
                           right = right || '';
                           break;
-                        case 'Left, Centre and Right':
+                        case 'Left, Center and Right':
                         default:
                           left = left || '';
-                          centre = centre || '';
+                          center = center || '';
                           right = right || '';
                           break;
                       }
-                      returnData({ left: left, centre: centre, right: right });
+                      returnData({ left, center, right });
                     }
                   : undefined
               }
@@ -155,9 +155,9 @@ export const AifLineDisplay = ({
             styleMap={styleMap}
           />
           <OriginalText
-            label='Centre text'
-            text={centre}
-            setText={(ret) => returnData({ centre: ret })}
+            label='Center text'
+            text={center}
+            setText={(ret) => returnData({ center: ret })}
           />
           <OriginalText
             label='Right text'
@@ -177,9 +177,9 @@ export const AifLineDisplay = ({
             className={`aif-line-item ${displayLeft !== left ? 'aif-readonly' : ''}`}
             style={{
               width:
-                typeof centre !== 'string' && typeof right !== 'string'
+                typeof center !== 'string' && typeof right !== 'string'
                   ? '100%'
-                  : typeof centre !== 'string'
+                  : typeof center !== 'string'
                   ? '50%'
                   : '33%',
             }}
@@ -196,16 +196,16 @@ export const AifLineDisplay = ({
             />
           </div>
         )}
-        {typeof displayCentre === 'string' && (
+        {typeof displayCenter === 'string' && (
           <div
-            className={`aif-line-item ${displayCentre !== centre ? 'aif-readonly' : ''}`}
+            className={`aif-line-item ${displayCenter !== center ? 'aif-readonly' : ''}`}
             style={{ flexGrow: 1 }}
           >
             <AsupInternalEditor
-              value={displayCentre}
+              value={displayCenter}
               setValue={
-                typeof setLine === 'function' && displayCentre === centre
-                  ? (ret) => returnData({ centre: ret })
+                typeof setLine === 'function' && displayCenter === center
+                  ? (ret) => returnData({ center: ret })
                   : undefined
               }
               textAlignment={'center'}
@@ -219,9 +219,9 @@ export const AifLineDisplay = ({
             className={`aif-line-item ${displayRight !== right ? 'aif-readonly' : ''}`}
             style={{
               width:
-                typeof centre !== 'string' && typeof left !== 'string'
+                typeof center !== 'string' && typeof left !== 'string'
                   ? '100%'
-                  : typeof centre !== 'string'
+                  : typeof center !== 'string'
                   ? '50%'
                   : '33%',
             }}

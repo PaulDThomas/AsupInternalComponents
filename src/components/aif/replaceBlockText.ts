@@ -2,13 +2,13 @@ import { newReplacedText } from '../aie/functions/newReplacedText';
 import { AioExternalSingle } from '../aio';
 
 export const replaceBlockText = (
-  text?: string | false,
+  text?: string | null,
   rep?: AioExternalSingle,
-): { newText: string | false | undefined; updated: boolean } => {
+): { newText: string | null | undefined; updated: boolean } => {
   // Stop processing
   if (
     text === undefined ||
-    text === false ||
+    text === null ||
     rep === undefined ||
     rep.oldText === undefined ||
     rep.oldText === '' ||

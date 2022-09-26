@@ -7,7 +7,7 @@ export const OriginalText = ({
   styleMap,
 }: {
   label: string;
-  text: string | false | undefined;
+  text: string | null | undefined;
   setText: (ret: string) => void;
   styleMap?: AieStyleMap;
 }): JSX.Element => {
