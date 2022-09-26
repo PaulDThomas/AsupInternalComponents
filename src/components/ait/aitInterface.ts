@@ -5,7 +5,7 @@ import { AioExternalReplacements, AioReplacement } from '../aio';
 export interface AitCellData {
   aitid?: string; // Unique ID
   text: string;
-  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal';
+  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
   comments?: string;
   colSpan?: number;
   rowSpan?: number;

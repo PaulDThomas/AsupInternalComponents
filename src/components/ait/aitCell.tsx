@@ -9,11 +9,12 @@ import { TableSettingsContext } from './aitContext';
 interface AitCellProps {
   aitid: string;
   text: string;
-  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal';
+  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
   comments: string;
   rowSpan: number;
   colSpan: number;
   colWidth?: number;
+  displayColWidth?: number;
   textIndents?: number;
   replacedText?: string;
   repeatColSpan?: number;
@@ -41,6 +42,7 @@ export const AitCell = ({
   colSpan,
   rowSpan,
   colWidth,
+  displayColWidth,
   textIndents,
   replacedText,
   repeatColSpan,
@@ -117,16 +119,17 @@ export const AitCell = ({
           : '',
     };
   }, [
-    cellType,
-    colWidth,
-    colSpan,
     tableSettings.colWidthMod,
+    tableSettings.defaultCellWidth,
     tableSettings.showCellBorders,
     tableSettings.rowHeaderColumns,
+    colWidth,
+    cellType,
+    textIndents,
     location.column,
     location.row,
     location.rowGroup,
-    textIndents,
+    colSpan,
   ]);
 
   /** Callback for update to any cell data */
@@ -232,8 +235,11 @@ export const AitCell = ({
         <AsupInternalEditor
           style={{ width: '100%', height: '100%', border: 'none' }}
           textAlignment={
-            justifyText ??
-            (location.column < (tableSettings.rowHeaderColumns ?? 0) ? 'left' : 'center')
+            !justifyText || justifyText === 'default'
+              ? location.column < (tableSettings.rowHeaderColumns ?? 0)
+                ? 'left'
+                : 'center'
+              : justifyText
           }
           value={displayText}
           setValue={(ret) => {
@@ -401,7 +407,7 @@ export const AitCell = ({
             <div className='aiw-body-row'>
               <AioNumber
                 label='Width (mm)'
-                value={colWidth ?? tableSettings.defaultCellWidth}
+                value={displayColWidth ?? tableSettings.defaultCellWidth}
                 setValue={setColWidth !== undefined ? (ret) => setColWidth(ret) : undefined}
               />
             </div>

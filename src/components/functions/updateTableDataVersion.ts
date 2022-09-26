@@ -1,5 +1,6 @@
 import { AioReplacement } from '../aio';
-import { AitRowData, AitRowGroupData, AitTableData } from '../ait';
+import { AitCellData, AitRowData, AitRowGroupData, AitTableData } from '../ait';
+import { UpdateCellTextVersion } from './updateCellTextVersion';
 import { oldReplacement, updateReplacementVersion } from './updateReplacementVersion';
 
 interface OldTableData {
@@ -62,13 +63,14 @@ export const updateTableDataVersion = (
           ? outData.headerData.rows.map((r) => r.cells.map((c) => c.colWidth))
           : outData.bodyData.flatMap((rg) => rg.rows.map((r) => r.cells.map((c) => c.colWidth)))
       )
-        // Get max, or zero if totall undefined
+        // Get max, or zero if totally undefined
         .reduce(
-          (prev, cur) => cur.map((w, i) => ((w ?? 0) > (prev[i] ?? 0) ? w ?? 0 : prev[i] ?? 0)),
+          (prev, cur) =>
+            cur.map((w, i) => ((w ?? 9999) < (prev[i] ?? 9999) ? w ?? 9999 : prev[i] ?? 9999)),
           [],
         )
         // Replace zeros with default
-        .map((w) => (w === 0 ? defaultCellWidth : w));
+        .map((w) => (w === 9999 ? defaultCellWidth : w));
     if (outData.headerData)
       outData.headerData?.rows.forEach((r) =>
         r.cells.forEach((c, ci) => (c.colWidth = colWidths[ci])),
@@ -77,6 +79,37 @@ export const updateTableDataVersion = (
       rg.rows.forEach((r) => r.cells.forEach((c, ci) => (c.colWidth = colWidths[ci]))),
     );
   }
+
+  // Look for text to change to HTML, row and col span as zero
+  if (outData.headerData)
+    outData.headerData.rows.forEach(
+      (r, ri) =>
+        (r.cells = r.cells.map((c, ci, cells) => {
+          const newCell: AitCellData = {
+            ...UpdateCellTextVersion(c),
+          };
+          // Work out which direction the span is in
+          if (newCell.colSpan === 0 && newCell.rowSpan === 0) {
+            if (ci === 0) {
+              newCell.colSpan = 1;
+            } else if (ri === 0) {
+              newCell.rowSpan = 1;
+            } else if (cells[ci - 1].colSpan === 1) newCell.colSpan = 1;
+            else newCell.rowSpan = 0;
+          }
+          return newCell;
+        })),
+    );
+  outData.bodyData?.forEach((rg) =>
+    rg.rows.forEach(
+      (r) =>
+        (r.cells = r.cells.map((c) => {
+          const newCell: AitCellData = { ...UpdateCellTextVersion(c) };
+          if (newCell.colSpan === 0) newCell.colSpan = 1;
+          return newCell;
+        })),
+    ),
+  );
 
   return outData;
 };

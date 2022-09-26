@@ -1,4 +1,4 @@
-import { fromHtml } from '../../functions';
+import { fromHtml } from '../../functions/tofromHtml';
 
 export const getRawTextParts = (s: string): string[] => {
   // Do standard replace if not aie-text or no inline styles

@@ -57,7 +57,7 @@ export const TablePage = () => {
         ta.current.value = window.localStorage.getItem('tableContent') ?? '';
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current.value?.toString() ?? '{}');
+        const j = updateTableDataVersion(JSON.parse(ta.current.value?.toString() ?? '{}'), 40);
         setTableData(updateTableDataVersion(j, 40));
         ta.current.value = JSON.stringify(j, null, 2);
       }
@@ -119,8 +119,8 @@ export const TablePage = () => {
               groupTemplates={sampleGroupTemplates}
               commentStyles={commentStyles}
               cellStyles={cellStyles}
-              colWidthMod={1.5}
-              defaultCellWidth={100}
+              colWidthMod={3}
+              defaultCellWidth={40}
             />
           )}
         </div>

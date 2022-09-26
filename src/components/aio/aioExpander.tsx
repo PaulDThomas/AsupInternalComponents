@@ -211,7 +211,6 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                                 },
                               ]}
                               setOptions={onClickAdd}
-                              buttonText='Add'
                             />
                           </AsupInternalWindow>
                         )}

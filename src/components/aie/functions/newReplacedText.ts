@@ -47,6 +47,5 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
     // Return processed element
     ret = htmlIn.innerHTML;
   }
-  // Change ~ for line break for all replaced text
   return ret;
 };

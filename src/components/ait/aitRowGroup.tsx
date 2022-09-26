@@ -87,7 +87,7 @@ export const AitRowGroup = ({
       newrs.splice(ri + 1, 0, newr);
       returnData({ rows: newrs });
     },
-    [returnData, rows],
+    [returnData, rows, tableSettings.defaultCellWidth],
   );
 
   const removeRow = useCallback(

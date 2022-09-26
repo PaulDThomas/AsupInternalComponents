@@ -67,7 +67,6 @@ export function AioArraySortable(props: AioArraySortableProps) {
             newShowWindows[i] = false;
             setShowWindows(newShowWindows);
           }}
-          buttonText='Add'
         />
       </AsupInternalWindow>
     );

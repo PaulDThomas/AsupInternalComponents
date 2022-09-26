@@ -101,7 +101,7 @@ table.ait-table {
 .ait-holder {
   width: max-content;
   position: relative;
-  display: inline-flex;
+  display: block;
 }
 
 .ait-aie-holder {
