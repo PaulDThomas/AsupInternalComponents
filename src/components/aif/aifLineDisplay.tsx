@@ -46,9 +46,9 @@ export const AifLineDisplay = ({
       if (typeof setLine !== 'function') return;
       const newLine = {
         aifid: aifid,
-        left: lineUpdate.left ?? left,
-        center: lineUpdate.center ?? center,
-        right: lineUpdate.right ?? right,
+        left: lineUpdate.left !== undefined ? lineUpdate.left : left,
+        center: lineUpdate.center !== undefined ? lineUpdate.center : center,
+        right: lineUpdate.right !== undefined ? lineUpdate.right : right,
         addBelow: addBelow,
         canEdit: canEdit,
         canRemove: canRemove,
@@ -119,30 +119,28 @@ export const AifLineDisplay = ({
               setValue={
                 typeof setLine === 'function'
                   ? (ret) => {
+                      let newLeft = null;
+                      let newCenter = null;
+                      let newRight = null;
                       switch (ret) {
                         case 'Left only':
-                          left = left || '';
-                          center = null;
-                          right = null;
+                          newLeft = left || '';
                           break;
                         case 'Center only':
-                          left = null;
-                          center = center || '';
-                          right = null;
+                          newCenter = center || '';
                           break;
                         case 'Left and Right':
-                          left = left || '';
-                          center = null;
-                          right = right || '';
+                          newLeft = left || '';
+                          newRight = right || '';
                           break;
                         case 'Left, Center and Right':
                         default:
-                          left = left || '';
-                          center = center || '';
-                          right = right || '';
+                          newLeft = left || '';
+                          newCenter = center || '';
+                          newRight = right || '';
                           break;
                       }
-                      returnData({ left, center, right });
+                      returnData({ left: newLeft, center: newCenter, right: newRight });
                     }
                   : undefined
               }

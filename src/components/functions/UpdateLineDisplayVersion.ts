@@ -23,7 +23,7 @@ export const updateLineDisplayVersion = (
       newCenter = (inData as AifBlockLine).center as string;
     }
     // Ensure at least one is present
-    if (!inData.left && !newCenter && !inData.right) {
+    if (!inData.left && inData.left !== '' && !newCenter && !inData.right && inData.right !== '') {
       newCenter = '';
     }
 
