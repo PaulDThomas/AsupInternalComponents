@@ -22,6 +22,7 @@ import {
   newReplacementValues,
   newRowGroup,
   toHtml,
+  updateLineDisplayVersion,
   updateReplacementVersion,
   updateReplToExtl,
   updateTableDataVersion,
@@ -55,4 +56,9 @@ export type {
   AioReplacementValues,
 };
 export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
-export { updateReplacementVersion, updateReplToExtl, updateTableDataVersion };
+export {
+  updateReplacementVersion,
+  updateReplToExtl,
+  updateTableDataVersion,
+  updateLineDisplayVersion,
+};
