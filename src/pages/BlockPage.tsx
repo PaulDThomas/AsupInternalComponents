@@ -1,4 +1,5 @@
 import { AioSingleReplacements } from 'components/aio/AioSingleReplacements';
+import { updateLineDisplayVersion } from 'components/functions/UpdateLineDisplayVersion';
 import React, { useRef, useState } from 'react';
 import { AifBlockLine, AsupInternalBlock, AifLineType, AioExternalSingle } from '../components';
 
@@ -32,7 +33,7 @@ export const BlockPage = () => {
             Blue: { css: { color: 'blue' }, aieExclude: ['Green', 'Red'] },
             Red: { css: { color: 'red' }, aieExclude: ['Green', 'Blue'] },
           }}
-          defaultType={AifLineType.centreOnly}
+          defaultType={AifLineType.centerOnly}
         />
       </div>
 
@@ -58,7 +59,7 @@ export const BlockPage = () => {
               if (ta.current.value === '') {
                 ta.current.value = window.localStorage.getItem('blockContent') ?? '';
               }
-              const j = JSON.parse(ta.current.value ?? '[]');
+              const j = updateLineDisplayVersion(JSON.parse(ta.current.value ?? '[]'));
               setLines(j);
             } catch (e) {
               console.warn('JSON parse failed');

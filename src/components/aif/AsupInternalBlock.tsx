@@ -36,7 +36,7 @@ export const AsupInternalBlock = ({
         const newLine: AifBlockLine = {
           aifid: uuidv4(),
           left: '',
-          centre: '',
+          center: '',
           right: '',
           canEdit: true,
           canMove: true,
@@ -86,7 +86,7 @@ export const AsupInternalBlock = ({
       const newLine: AifBlockLine = {
         aifid: uuidv4(),
         left: '',
-        centre: '',
+        center: '',
         right: '',
         canEdit: true,
         canMove: true,
@@ -95,17 +95,17 @@ export const AsupInternalBlock = ({
       if (defaultType !== undefined) {
         switch (defaultType) {
           case AifLineType.leftOnly:
-            newLine.right = false;
-            newLine.centre = false;
+            newLine.right = null;
+            newLine.center = null;
             break;
           case AifLineType.leftAndRight:
-            newLine.centre = false;
+            newLine.center = null;
             break;
-          case AifLineType.centreOnly:
-            newLine.left = false;
-            newLine.right = false;
+          case AifLineType.centerOnly:
+            newLine.left = null;
+            newLine.right = null;
             break;
-          case AifLineType.leftCentreAndRight:
+          case AifLineType.leftCenterAndRight:
           default:
             break;
         }
@@ -133,7 +133,7 @@ export const AsupInternalBlock = ({
             key={l.aifid ?? li}
             aifid={l.aifid}
             left={l.left}
-            centre={l.centre}
+            center={l.center}
             right={l.right}
             addBelow={l.addBelow}
             canEdit={l.canEdit}

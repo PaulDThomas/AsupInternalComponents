@@ -1,8 +1,8 @@
 export interface AifBlockLine {
   aifid?: string; // Unique ID
-  left?: string | false; // Left aligned text in the row
-  centre?: string | false; // Centre aligned text in the row
-  right?: string | false; // Right aligned text in the row
+  left?: string | null; // Left aligned text in the row
+  center?: string | null; // Center aligned text in the row
+  right?: string | null; // Right aligned text in the row
   addBelow?: boolean; // If the user can add a line below
   canEdit?: boolean; // If the user can edit the line
   canRemove?: boolean; // If the user can remove the line
@@ -11,7 +11,7 @@ export interface AifBlockLine {
 
 export const enum AifLineType {
   leftOnly = 'Left only',
-  centreOnly = 'Centre only',
+  centerOnly = 'Center only',
   leftAndRight = 'Left and Right',
-  leftCentreAndRight = 'Left, Centre and Right',
+  leftCenterAndRight = 'Left, Center and Right',
 }
