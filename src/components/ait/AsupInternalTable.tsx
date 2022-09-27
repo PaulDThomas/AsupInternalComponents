@@ -380,10 +380,10 @@ export const AsupInternalTable = ({
         r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),
       );
       // Copy existing body and splice in new data
-      const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
+      const newBody = bodyData?.map((rg) => unProcessRowGroup(rg) as AitRowGroupData) ?? [];
       newBody.splice(rgi + 1, 0, newrg);
       // Update table body
-      returnData({ bodyData: newBody });
+      returnData({ bodyData: newBody, bodyDataUnprocessed: true });
     },
     [bodyData, defaultCellWidth, groupTemplates, returnData],
   );
