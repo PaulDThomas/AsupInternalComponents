@@ -49,6 +49,7 @@ export const ListPage = (): JSX.Element => {
                   }}
                 >
                   <AioString
+                    id='test-string'
                     value={extRepls[i].givenName}
                     setValue={(ret) => {
                       const newEx: AioExternalReplacements = { ...extRepls[i], givenName: ret };
@@ -104,6 +105,7 @@ export const ListPage = (): JSX.Element => {
                 }}
               >
                 <AioReplacementDisplay
+                  id='test-replacements'
                   noText={true}
                   oldText={''}
                   newTexts={extRepls[currentL].newTexts}

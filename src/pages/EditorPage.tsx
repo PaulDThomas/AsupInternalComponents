@@ -66,6 +66,7 @@ export const EditorPage = () => {
           <tr>
             <td>
               <AsupInternalEditor
+                id='text-left'
                 value={text1}
                 setValue={setText1}
                 showStyleButtons={true}
@@ -81,6 +82,7 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
+                id='text-decimal'
                 value={text2}
                 setValue={setText2}
                 showStyleButtons={true}
@@ -96,6 +98,7 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
+                id='text-center'
                 value={text3}
                 setValue={setText3}
                 showStyleButtons={true}
@@ -109,6 +112,7 @@ export const EditorPage = () => {
       </table>
 
       <AsupInternalEditor
+        id='text-right'
         value={text4}
         setValue={setText4}
         showStyleButtons={true}

@@ -42,7 +42,7 @@ const ReactTableDragColumnRow = (props) => {
           </tr>
         </thead>
         <tbody ref={rowsEl}>
-          {rows.map((x = [], i) => (
+          {rows.map((x, i) => (
             <tr key={i}>
               {x.map((y, j) => (
                 <td
