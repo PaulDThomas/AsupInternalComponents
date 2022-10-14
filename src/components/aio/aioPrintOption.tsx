@@ -1,17 +1,10 @@
 import * as React from 'react';
-import { AioBoolean } from './aioBoolean';
-import { AioExpander } from './aioExpander';
-import { AioOptionType, AioReplacement } from './aioInterface';
-import { AioLabel } from './aioLabel';
-import { AioNumber } from './aioNumber';
-import { AioReplacementList } from './aioReplacementList';
-import { AioSelect } from './aioSelect';
-import { AioString } from './aioString';
+import { AioOptionType } from './aioInterface';
+import { RenderLineItem } from './RenderLineItem';
 
 interface AioPrintOptionProps {
   id: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: unknown;
   label?: string;
   type?: AioOptionType | string;
   availablValues?: Array<string>;
@@ -27,154 +20,11 @@ interface AioPrintOptionProps {
   children?: React.ReactChild | React.ReactChild[];
 }
 
-interface RenderLineItemProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
-  label?: string;
-  availableValues?: Array<string>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setValue?: (value: any) => void;
-  type?: string;
-  canAddItems?: boolean;
-  canMoveItems?: boolean;
-  canRemoveItems?: boolean;
-}
-
-const RenderLineItem = (props: RenderLineItemProps): JSX.Element => {
-  // Take given type, or treat null as a string, or work out what we have
-  switch (props.type ?? (props.value === null ? 'string' : typeof props.value)) {
-    // Processing - do nothing, this should not be hit here
-    // case (AioOptionType.processing): return (<></>);
-
-    // Object, need another expander
-    case 'object':
-    case AioOptionType.object:
-      return (
-        <AioExpander
-          label={props.label}
-          inputObject={props.value}
-          updateObject={
-            props.setValue
-              ? (ret: object) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-          canAddItems={props.canAddItems}
-          canMoveItems={props.canMoveItems}
-          canRemoveItems={props.canRemoveItems}
-        />
-      );
-
-    // Replacements
-    case AioOptionType.replacements:
-      return (
-        <AioReplacementList
-          label='Replacement text'
-          replacements={props.value}
-          setReplacements={
-            props.setValue
-              ? (ret: AioReplacement[]) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
-
-    // Select
-    case AioOptionType.select:
-      return (
-        <AioSelect
-          label={props.label}
-          value={props.value}
-          availableValues={props.availableValues}
-          setValue={
-            props.setValue
-              ? (ret: string) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
-
-    // Number
-    case AioOptionType.number:
-    case 'number':
-      return (
-        <AioNumber
-          label={props.label}
-          value={props.value}
-          setValue={
-            props.setValue
-              ? (ret: number) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
-
-    // Boolean
-    case AioOptionType.boolean:
-    case 'boolean':
-      return (
-        <AioBoolean
-          label={props.label}
-          value={props.value}
-          setValue={
-            props.setValue
-              ? (ret: boolean) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
-
-    // String or default
-    case AioOptionType.string:
-    case 'string':
-      return (
-        <AioString
-          label={props.label}
-          value={props.value}
-          setValue={
-            props.setValue
-              ? (ret: string) => {
-                  if (typeof props.setValue === 'function') props.setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
-
-    // Undefined
-    case 'undefined':
-      return (
-        <AioString
-          label={props.label}
-          value={'Undefined'}
-        />
-      );
-
-    default:
-      return (
-        <AioLabel
-          label={`Missing type for ${
-            props.type ?? (props.value === null ? 'string' : typeof props.value)
-          }`}
-          noColon={true}
-        />
-      );
-  }
-};
-
 export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
   return (
     <>
       <RenderLineItem
+        id={props.id}
         value={props.value}
         label={props.label}
         setValue={props.setValue}
@@ -187,6 +37,7 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
       <div className='aiox-button-holder'>
         {typeof props.moveUp === 'function' ? (
           <div
+            id={`${props.id}-up`}
             className='aiox-button aiox-up'
             onClick={props.moveUp}
           />
@@ -200,6 +51,7 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
         )}
         {typeof props.addItem === 'function' ? (
           <div
+            id={`${props.id}-add`}
             className='aiox-button aiox-plus'
             onClick={props.addItem}
           >
@@ -210,6 +62,7 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
         )}
         {typeof props.removeItem === 'function' ? (
           <div
+            id={`${props.id}-remove`}
             className='aiox-button aiox-minus'
             onClick={props.removeItem}
           />
@@ -218,6 +71,7 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
         )}
         {typeof props.moveDown === 'function' ? (
           <div
+            id={`${props.id}-down`}
             className='aiox-button aiox-down'
             onClick={props.moveDown}
           />

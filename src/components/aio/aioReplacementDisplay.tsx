@@ -7,6 +7,7 @@ import { AioExternalReplacements, AioReplacement, AioReplacementValues } from '.
 import { AioReplacementValuesDisplay } from './aioReplacementValuesDisplay';
 
 interface AioReplacmentDisplayProps {
+  id: string;
   airid?: string;
   oldText?: string;
   newTexts: AioReplacementValues[];
@@ -24,6 +25,7 @@ interface AioReplacmentDisplayProps {
  * @param props value/setValue pair
  */
 export const AioReplacementDisplay = ({
+  id,
   airid,
   oldText,
   newTexts,
@@ -107,6 +109,7 @@ export const AioReplacementDisplay = ({
    */
   return (
     <div
+      id={id}
       className='aiord-main'
       style={{
         display: 'flex',
@@ -126,6 +129,7 @@ export const AioReplacementDisplay = ({
             </span>
           ) : (
             <input
+              id={`${id}-input`}
               className='aio-input'
               type='text'
               value={displayText}
@@ -142,6 +146,7 @@ export const AioReplacementDisplay = ({
                 <small>Include trailing rows</small>
               </label>
               <input
+                id={`${id}-includetrailing`}
                 disabled={typeof setReplacement !== 'function'}
                 style={{ margin: '6px' }}
                 type='checkbox'
@@ -157,6 +162,7 @@ export const AioReplacementDisplay = ({
         externalLists.length > 0 && (
           <div>
             <AioDropSelect
+              id={`${id}-dropselect`}
               value={externalName ?? 'with...'}
               availableValues={availableListNames}
               setValue={(ret) => {
@@ -172,6 +178,7 @@ export const AioReplacementDisplay = ({
               ?.find((e) => e.givenName === externalName)
               ?.newTexts.map((e, i) => (
                 <AioReplacementValuesDisplay
+                  id={`${id}-subdisplay`}
                   key={i}
                   texts={e.texts}
                   subLists={e.subLists}
@@ -183,6 +190,7 @@ export const AioReplacementDisplay = ({
             {newTexts.map((rv, i) => (
               <div key={rv.airid ?? i}>
                 <AioReplacementValuesDisplay
+                  id={`${id}-subdisplay`}
                   key={rv.airid}
                   airid={rv.airid}
                   texts={rv.texts}
@@ -214,12 +222,14 @@ export const AioReplacementDisplay = ({
                   >
                     {newTexts && newTexts.length > 1 && (
                       <AioIconButton
+                        id={`${id}-remove`}
                         iconName={'aiox-removeUp'}
                         onClick={() => removeNewText(i)}
                         tipText={'Remove new text'}
                       />
                     )}
                     <AioIconButton
+                      id={`${id}-add`}
                       iconName={'aiox-addDown'}
                       onClick={() => addNewText(i + 1)}
                       tipText={'Add new text'}
