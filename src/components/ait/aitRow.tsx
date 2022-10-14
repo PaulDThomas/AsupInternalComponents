@@ -7,6 +7,7 @@ import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } fro
 import { TableSettingsContext } from './aitContext';
 
 interface AitRowProps {
+  id: string;
   aitid: string;
   cells: AitCellData[];
   setRowData?: (ret: AitRowData) => void;
@@ -31,6 +32,7 @@ interface AitRowProps {
 }
 
 export const AitRow = ({
+  id,
   aitid,
   cells,
   setRowData,
@@ -81,7 +83,7 @@ export const AitRow = ({
 
   return (
     <>
-      <tr>
+      <tr id={`${id}`}>
         {/* Row group options */}
         <td
           className='ait-cell'
@@ -95,6 +97,7 @@ export const AitRow = ({
               <>
                 {typeof removeRowGroup === 'function' && (
                   <AioIconButton
+                    id={`${id}-remove-rowgroup`}
                     tipText={'Remove row group'}
                     iconName={'aiox-minus'}
                     onClick={() => removeRowGroup(location.rowGroup)}
@@ -102,6 +105,7 @@ export const AitRow = ({
                 )}
                 {typeof addRowGroup === 'function' && (
                   <AioIconButton
+                    id={`${id}-add-rowgroup`}
                     tipText={'Add row group'}
                     iconName={'aiox-plus'}
                     onClick={(ret) => {
@@ -111,6 +115,7 @@ export const AitRow = ({
                   />
                 )}
                 <AioIconButton
+                  id={`${id}-rowgroup-options`}
                   tipText='Row group options'
                   iconName='aio-button-row-group'
                   onClick={() => {
@@ -120,9 +125,10 @@ export const AitRow = ({
                 {/* Row group options window */}
                 {showRowGroupOptions && (
                   <AsupInternalWindow
+                    id={`${id}-rowgroup-options-window`}
                     key='RowGroup'
-                    Title={rowGroupWindowTitle ?? 'Row group options'}
-                    Visible={showRowGroupOptions}
+                    title={rowGroupWindowTitle ?? 'Row group options'}
+                    visible={showRowGroupOptions}
                     onClose={() => {
                       setShowRowGroupOptions(false);
                     }}
@@ -130,6 +136,7 @@ export const AitRow = ({
                   >
                     <div className='aiw-body-row'>
                       <AioComment
+                        id={`${id}-rowgroup-comment`}
                         label={'Notes'}
                         value={rowGroupComments}
                         setValue={updateRowGroupComments}
@@ -141,6 +148,7 @@ export const AitRow = ({
                         <>
                           <div className='aiw-body-row'>
                             <AioBoolean
+                              id={`${id}-spaceafter-group`}
                               label='Space after group'
                               value={rowGroupSpace ?? false}
                               setValue={setRowGroupSpace}
@@ -151,6 +159,7 @@ export const AitRow = ({
                     </>
                     <div className='aiw-body-row'>
                       <AioReplacementList
+                        id={`${id}-rowgroup-replacements`}
                         label={'Replacements'}
                         replacements={replacements}
                         setReplacements={
@@ -187,6 +196,7 @@ export const AitRow = ({
           // Render object
           return (
             <AitCell
+              id={`${id}-cell-${ci}`}
               key={
                 isColumnRepeat && cr ? `${cell.aitid}-${JSON.stringify(cr.colRepeat)}` : cell.aitid
               }
@@ -252,6 +262,7 @@ export const AitRow = ({
           >
             {typeof addRow === 'function' && (
               <AioIconButton
+                id={`${id}-add-row`}
                 tipText='Add row'
                 iconName={'aiox-plus'}
                 onClick={() => {
@@ -261,6 +272,7 @@ export const AitRow = ({
             )}
             {typeof removeRow === 'function' && (
               <AioIconButton
+                id={`${id}-remove-row`}
                 tipText='Remove row'
                 iconName={'aiox-minus'}
                 onClick={() => {
@@ -274,6 +286,7 @@ export const AitRow = ({
       {/* Additional row if required */}
       {spaceAfter !== false && (
         <AitBorderRow
+          id={`${id}-spaceafter-row`}
           spaceAfter={true}
           noBorder={true}
         />

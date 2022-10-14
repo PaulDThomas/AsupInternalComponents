@@ -7,6 +7,7 @@ import { AitCellData, AitCellType, AitLocation, AitRowType } from './aitInterfac
 import { TableSettingsContext } from './aitContext';
 
 interface AitCellProps {
+  id: string;
   aitid: string;
   text: string;
   justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
@@ -35,6 +36,7 @@ interface AitCellProps {
  * Table cell in AsupInternalTable
  */
 export const AitCell = ({
+  id,
   aitid,
   text,
   justifyText,
@@ -192,6 +194,7 @@ export const AitCell = ({
   // Render element
   return (
     <td
+      id={id}
       className={[
         'ait-cell',
         cellType === AitCellType.header
@@ -224,6 +227,7 @@ export const AitCell = ({
           >
             {/* Option buttons  */}
             <AioIconButton
+              id={`${id}-options`}
               tipText='Cell Options'
               onClick={() => setShowCellOptions(!showCellOptions)}
               iconName='aio-button-cell'
@@ -233,6 +237,7 @@ export const AitCell = ({
 
         {/* Cell text editor */}
         <AsupInternalEditor
+          id={`${id}-editor`}
           style={{ width: '100%', height: '100%', border: 'none' }}
           textAlignment={
             !justifyText || justifyText === 'default'
@@ -257,15 +262,17 @@ export const AitCell = ({
         {/* Cell options window */}
         {showCellOptions && (
           <AsupInternalWindow
+            id={`${id}-window`}
             key='Cell'
-            Title={'Cell options'}
-            Visible={showCellOptions}
+            title={'Cell options'}
+            visible={showCellOptions}
             onClose={() => {
               setShowCellOptions(false);
             }}
           >
             <div className='aiw-body-row'>
               <AioComment
+                id={`${id}-notes`}
                 label={'Notes'}
                 value={comments}
                 setValue={isNotRepeat ? (ret) => returnData({ comments: ret }) : undefined}
@@ -275,12 +282,16 @@ export const AitCell = ({
             <div className='aiw-body-row'>
               <div className={'aio-label'}>Cell location: </div>
               <div className={'aio-value'}>
-                <AioExpander inputObject={location} />
+                <AioExpander
+                  id={`${id}-location`}
+                  inputObject={location}
+                />
               </div>
             </div>
             <div className='aiw-body-row'>
               <div className={'aio-label'}>Unprocessed text: </div>
               <AsupInternalEditor
+                id={`${id}-unprocessed`}
                 value={text}
                 setValue={isNotRepeat ? (ret) => returnData({ text: ret }) : undefined}
                 style={
@@ -302,6 +313,7 @@ export const AitCell = ({
             </div>
             <div className='aiw-body-row'>
               <AioSelect
+                id={`${id}-justify`}
                 label='Justify text'
                 value={
                   justifyText === undefined
@@ -356,6 +368,7 @@ export const AitCell = ({
                     typeof addRowSpan === 'function' &&
                     colSpan === 1 ? (
                       <div
+                        id={`${id}-add-rowspan`}
                         className='aiox-button aiox-plus'
                         onClick={() => addRowSpan(location)}
                       />
@@ -366,6 +379,7 @@ export const AitCell = ({
                       isNotRepeat &&
                       typeof removeRowSpan === 'function' && (
                         <div
+                          id={`${id}-remove-rowspan`}
                           className='aiox-button aiox-minus'
                           onClick={() => removeRowSpan(location)}
                         />
@@ -384,6 +398,7 @@ export const AitCell = ({
                     typeof addColSpan === 'function' &&
                     rowSpan === 1 ? (
                       <div
+                        id={`${id}-add-colspan`}
                         className='aiox-button aiox-plus'
                         onClick={() => addColSpan(location)}
                       />
@@ -394,6 +409,7 @@ export const AitCell = ({
                       isNotRepeat &&
                       typeof removeColSpan === 'function' && (
                         <div
+                          id={`${id}-remove-colspan`}
                           className='aiox-button aiox-minus'
                           onClick={() => removeColSpan(location)}
                         />
@@ -406,6 +422,7 @@ export const AitCell = ({
             )}
             <div className='aiw-body-row'>
               <AioNumber
+                id={`${id}-width`}
                 label='Width (mm)'
                 value={displayColWidth ?? tableSettings.defaultCellWidth}
                 setValue={setColWidth !== undefined ? (ret) => setColWidth(ret) : undefined}
@@ -421,11 +438,13 @@ export const AitCell = ({
                     style={{ padding: '2px' }}
                   >
                     <div
+                      id={`${id}-add-text-indent`}
                       className='aiox-button aiox-plus'
                       onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })}
                     />
                     {(textIndents ?? 0) > 0 && (
                       <div
+                        id={`${id}-remove-text-indent`}
                         className='aiox-button aiox-minus'
                         onClick={() => returnData({ textIndents: (textIndents ?? 0) - 1 })}
                       />
@@ -441,6 +460,7 @@ export const AitCell = ({
                   >
                     {isNotRepeat && typeof addRowSpan === 'function' && colSpan === 1 ? (
                       <div
+                        id={`${id}-add-rowspan`}
                         className='aiox-button aiox-plus'
                         onClick={() => addRowSpan(location)}
                       />
@@ -449,6 +469,7 @@ export const AitCell = ({
                     )}
                     {isNotRepeat && typeof removeRowSpan === 'function' && (
                       <div
+                        id={`${id}-remove-rowspan`}
                         className='aiox-button aiox-minus'
                         onClick={() => removeRowSpan(location)}
                       />

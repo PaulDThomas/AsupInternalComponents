@@ -33,6 +33,7 @@ import {
 import { AitRowGroup } from './aitRowGroup';
 
 interface AsupInternalTableProps {
+  id: string;
   tableData: AitTableData;
   setTableData: (ret: AitTableData) => void;
   processedDataRef?: React.MutableRefObject<AitTableData | undefined>;
@@ -54,6 +55,7 @@ interface AsupInternalTableProps {
  * @returns
  */
 export const AsupInternalTable = ({
+  id,
   tableData,
   setTableData,
   processedDataRef,
@@ -355,9 +357,7 @@ export const AsupInternalTable = ({
     [bodyData, returnData],
   );
 
-  /**
-   * Add a new row group to the table body
-   */
+  // Add a new row group to the table body
   const addRowGroup = useCallback(
     (rgi: number, templateName?: string) => {
       // Check ok to proceed
@@ -617,6 +617,7 @@ export const AsupInternalTable = ({
       >
         <div>
           <AioIconButton
+            id={`${id}-table-options`}
             tipText='Table options'
             onClick={() => {
               setShowOptions(!showOptions);
@@ -625,14 +626,16 @@ export const AsupInternalTable = ({
           />
           {showOptions && (
             <AsupInternalWindow
-              Title={'Table options'}
-              Visible={showOptions}
+              id={`${id}-options-window`}
+              title={'Table options'}
+              visible={showOptions}
               onClose={() => {
                 setShowOptions(false);
               }}
             >
               <div className='aiw-body-row'>
                 <AioComment
+                  id={`${id}-table-comment`}
                   label={'Notes'}
                   value={comments ?? ''}
                   setValue={setComments}
@@ -648,6 +651,7 @@ export const AsupInternalTable = ({
                   >
                     <div
                       className='aiox-button aiox-plus'
+                      id={`${id}-add-header`}
                       onClick={() => addNewHeader()}
                     />
                   </div>
@@ -657,6 +661,7 @@ export const AsupInternalTable = ({
               )}
               <div className='aiw-body-row'>
                 <AioBoolean
+                  id={`${id}-suppress-repeats`}
                   label='Suppress repeats'
                   value={noRepeatProcessing ?? false}
                   setValue={(ret) => {
@@ -673,6 +678,7 @@ export const AsupInternalTable = ({
                 >
                   {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1 ? (
                     <div
+                      id={`${id}-add-row-header-column`}
                       className='aiox-button aiox-plus'
                       onClick={() => addRowHeaderColumn()}
                     />
@@ -682,6 +688,7 @@ export const AsupInternalTable = ({
                   {(rowHeaderColumns ?? 1) > 0 ? (
                     <div
                       className='aiox-button aiox-minus'
+                      id={`${id}-remove-row-header-column`}
                       onClick={() => removeRowHeaderColumn()}
                     />
                   ) : (
@@ -691,6 +698,7 @@ export const AsupInternalTable = ({
               </div>
               <div className='aiw-body-row'>
                 <AioNumber
+                  id={`${id}-decimal-align-percent`}
                   label='Decimal align percent'
                   value={decimalAlignPercent}
                   minValue={0}
@@ -703,9 +711,13 @@ export const AsupInternalTable = ({
             </AsupInternalWindow>
           )}
         </div>
-        <table className='ait-table'>
+        <table
+          id={id}
+          className='ait-table'
+        >
           <thead>
             <AitBorderRow
+              id={`${id}-top-border`}
               spaceAfter={true}
               changeColumns={{
                 addColumn: addCol,
@@ -716,6 +728,7 @@ export const AsupInternalTable = ({
             />
             {headerData !== false && (
               <AitHeader
+                id={`${id}-header`}
                 aitid={headerData.aitid ?? 'header'}
                 rows={headerData.rows}
                 comments={headerData.comments}
@@ -734,6 +747,7 @@ export const AsupInternalTable = ({
             {bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
               return (
                 <AitRowGroup
+                  id={`${id}-row-group-${rgi}`}
                   key={rowGroup.aitid ?? `row-group-${rgi}`}
                   aitid={rowGroup.aitid ?? `row-group-${rgi}`}
                   rows={rowGroup.rows}
@@ -767,7 +781,7 @@ export const AsupInternalTable = ({
                 />
               );
             })}
-            <AitBorderRow />
+            <AitBorderRow id={`${id}-bottom-border`} />
           </tbody>
         </table>
       </div>

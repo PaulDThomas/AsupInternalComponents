@@ -8,7 +8,8 @@ import { AioPrintOption } from './aioPrintOption';
 
 interface AioExpanderProps {
   id: string;
-  inputObject?: { [key: string]: unknown };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  inputObject?: { [key: string]: any };
   label?: string;
   showBorders?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -7,6 +7,7 @@ import { AitCellData, AitLocation, AitRowData, AitRowGroupData, AitRowType } fro
 import { AitRow } from './aitRow';
 
 interface AitHeaderProps {
+  id: string;
   aitid: string;
   rows: AitRowData[];
   comments?: string;
@@ -18,6 +19,7 @@ interface AitHeaderProps {
 }
 
 export const AitHeader = ({
+  id,
   aitid,
   rows,
   comments,
@@ -177,6 +179,7 @@ export const AitHeader = ({
       {rows.map((row: AitRowData, ri: number): JSX.Element => {
         return (
           <AitRow
+            id={`${id}-header-row-${ri}`}
             key={row.aitid ?? `row-${ri}`}
             aitid={row.aitid ?? `row-${ri}`}
             cells={row.cells}
@@ -212,6 +215,7 @@ export const AitHeader = ({
         );
       })}
       <AitBorderRow
+        id={`${id}-midtable-border`}
         spaceBefore={true}
         spaceAfter={true}
       />

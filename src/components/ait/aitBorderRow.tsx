@@ -3,6 +3,7 @@ import { AioIconButton } from '../aio';
 import { TableSettingsContext } from './aitContext';
 
 interface AitBorderRowProps {
+  id: string;
   spaceBefore?: boolean;
   spaceAfter?: boolean;
   noBorder?: boolean;
@@ -21,13 +22,14 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
   return (
     <>
       {props.changeColumns && (
-        <tr>
+        <tr id={`${props.id}`}>
           <td className='ait-cell'>
             <div
               className='ait-aie-holder'
               style={{ display: 'flex', justifyContent: 'flex-end' }}
             >
               <AioIconButton
+                id={`${props.id}-addcol-m1`}
                 tipText='Add column'
                 iconName='aiox-plus'
                 onClick={() => {
@@ -60,6 +62,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                       props.rowHeaderColumns === maxColumnIndex && ci === props.rowHeaderColumns
                     ) && (
                       <AioIconButton
+                        id={`${props.id}-remcol-${ci}`}
                         tipText='Remove column'
                         iconName='aiox-minus'
                         onClick={() => {
@@ -73,6 +76,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                     )}
                   <div style={{ flexGrow: 1 }} />
                   <AioIconButton
+                    id={`${props.id}-addcol-${ci}`}
                     tipText='Add column'
                     iconName='aiox-plus'
                     onClick={() => {
@@ -88,7 +92,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         </tr>
       )}
       {props.spaceBefore && (
-        <tr>
+        <tr id={`${props.id}-spacebeforerow`}>
           <td></td>
           {cis.map(
             (ci: number): JSX.Element => (
@@ -102,7 +106,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         </tr>
       )}
       {!props.noBorder && (
-        <tr>
+        <tr id={`${props.id}-borderrow`}>
           <td></td>
           {cis.map(
             (ci: number): JSX.Element => (
@@ -117,7 +121,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         </tr>
       )}
       {props.spaceAfter && (
-        <tr>
+        <tr id={`${props.id}-spaceafterrow`}>
           <td></td>
           {cis.map(
             (ci: number): JSX.Element => (
