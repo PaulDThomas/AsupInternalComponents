@@ -4,6 +4,7 @@ import './aio.css';
 import './aioTip.css';
 
 interface AioIconButtonProps {
+  id: string;
   onClick?: (ret: string) => void;
   iconName?: string;
   tipText?: string;
@@ -14,6 +15,7 @@ interface AioIconButtonProps {
 }
 
 export const AioIconButton = ({
+  id,
   onClick,
   iconName,
   tipText,
@@ -49,12 +51,14 @@ export const AioIconButton = ({
     <div
       className='aio-button-holder'
       style={style}
+      id={id ? `${id}-holder` : undefined}
     >
       <div
         className='aio-tip'
         style={{ display: 'flex', alignContent: 'flex-center' }}
       >
         <div
+          id={id}
           className={`aiox-button ${iconName ?? 'aiox-down'}`}
           aria-label={tipText}
           title={tipText}
@@ -77,10 +81,12 @@ export const AioIconButton = ({
           ref={menuRef}
           className='aio-drop-items-holder'
           style={{ left: leftMenuOffset ?? '1.25rem' }}
+          id={id ? `${id}-drop-items-holder` : undefined}
         >
           <div className='aio-drop-items-inner-holder'>
             {menuItems?.map((a, i) => (
               <div
+                id={id ? `${id}-drop-item-${i}` : undefined}
                 key={i}
                 className={'aio-drop-item'}
                 onClick={() => {
