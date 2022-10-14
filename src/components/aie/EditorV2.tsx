@@ -3,6 +3,7 @@ import { AieStyleButtonRow } from './AieStyleButtonRow';
 import { AieStyleMap, drawInnerHtml, getCaretPosition } from './functions';
 import { getHTMLfromV2Text } from './functions/getHTMLfromV2Text';
 import { getV2TextStyle } from './functions/getV2TextStyle';
+import './aiev2.css';
 
 interface iEditorV2 {
   text: string;
@@ -172,14 +173,6 @@ export const EditorV2 = ({
           suppressContentEditableWarning
           spellCheck={false}
           ref={divRef}
-          style={{
-            overflow: 'hidden',
-            outline: 0,
-            display: 'flex',
-            alignContent: 'start',
-            verticalAlign: 'top',
-            margin: '-1px',
-          }}
           onKeyUpCapture={handleKeyUp}
           onSelectCapture={handleSelect}
           onKeyDownCapture={handleKeyDown}

@@ -77,21 +77,25 @@ export function drawInnerHtml(
 
   // Create preceeding text if decimal aligned
   if (textAlignment === 'decimal') {
+    const line = document.createElement('div');
+    line.className = 'aiev2-decimal-line';
+    fragment.append(line);
+
     // Set up space before decimal
     const prePoint = document.createElement('span');
-    prePoint.style.display = 'inline-block';
+    prePoint.className = 'aiev2-span aiev2-span-point';
     prePoint.style.textAlign = 'right';
-    prePoint.style.width = `${decimalAlignPercent ?? 60}%`;
-    fragment.append(prePoint);
+    prePoint.style.right = `${100 - (decimalAlignPercent ?? 60)}%`;
+    line.append(prePoint);
 
     // Set up space after (and including) decimal
     const postPoint = document.createElement('span');
-    postPoint.style.display = 'inline-block';
+    postPoint.className = 'aiev2-span aiev2-span-point';
     postPoint.style.textAlign = 'left';
-    postPoint.style.width = `${100 - (decimalAlignPercent ?? 60)}%`;
-    fragment.append(postPoint);
+    postPoint.style.left = `${decimalAlignPercent ?? 60}%`;
+    line.append(postPoint);
 
-    // Add spans is there is no decimal
+    // Add spans with text if there is no decimal
     if (decimal === null || decimal === undefined) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       prePoint.append(...fixedBoundaries.filter((b) => b.span !== undefined).map((b) => b.span!));
@@ -115,7 +119,7 @@ export function drawInnerHtml(
   } else {
     // Create single span with text
     const innerSpan = document.createElement('span');
-    innerSpan.style.display = 'inline-block';
+    innerSpan.className = 'aiev2-span';
     innerSpan.style.textAlign = textAlignment ?? 'left';
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     innerSpan.append(...fixedBoundaries.filter((b) => b.span !== undefined).map((b) => b.span!));
@@ -124,6 +128,17 @@ export function drawInnerHtml(
 
   divRef.current.innerHTML = '';
   divRef.current.appendChild(fragment);
+
+  // Update height after being added to divRef for decimal lines
+  (
+    Array.from(divRef.current.getElementsByClassName('aiev2-decimal-line')) as HTMLDivElement[]
+  ).forEach((el) => {
+    el.style.height = `${Math.max(
+      ...(Array.from(el.getElementsByClassName('aiev2-span')) as HTMLSpanElement[]).map(
+        (el) => el.clientHeight,
+      ),
+    )}px`;
+  });
 
   // Update cursor position and live happily ever after
   if (range !== undefined) {
