@@ -27,12 +27,13 @@ export const WindowPage = () => {
             />
           </label>
           <AsupInternalWindow
-            Visible={showWindow}
+            id='test-window'
+            visible={showWindow}
             onClose={() => {
               console.log('Closing window in WindowPage');
               setShowWindow(false);
             }}
-            Title={'This is the window title'}
+            title={'This is the window title'}
           >
             <div
               style={{
