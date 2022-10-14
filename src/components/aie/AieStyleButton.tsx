@@ -2,6 +2,7 @@ import * as React from 'react';
 import './aie.css';
 
 interface AieStyleButtonProps {
+  id: string;
   styleName: string;
   currentStyle: Draft.DraftModel.ImmutableData.DraftInlineStyle | boolean;
   applyStyleFunction: (styleName: string) => void;
@@ -22,6 +23,7 @@ export const AieStyleButton = (props: AieStyleButtonProps): JSX.Element => {
       : '');
   return (
     <button
+      id={props.id}
       className={className}
       onMouseDown={aieClick}
       disabled={props.disabled}

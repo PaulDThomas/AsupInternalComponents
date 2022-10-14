@@ -3,6 +3,7 @@ import './aie.css';
 import { AieStyleButton } from './AieStyleButton';
 
 interface AieStyleButtonRowProps {
+  id: string;
   styleList: string[];
   currentStyle: Draft.DraftModel.ImmutableData.DraftInlineStyle | string;
   applyStyleFunction: (styleName: string) => void;
@@ -14,6 +15,7 @@ export const AieStyleButtonRow = (props: AieStyleButtonRowProps): JSX.Element =>
   for (const style of props.styleList) {
     buttons.push(
       <AieStyleButton
+        id={`${props.id}-${style}`}
         key={style}
         styleName={style}
         currentStyle={

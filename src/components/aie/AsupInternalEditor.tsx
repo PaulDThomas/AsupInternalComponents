@@ -19,6 +19,7 @@ import { styleMapToExclude } from './functions/styleMapToExclude';
 
 /** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {
+  id: string;
   value: string;
   setValue?: (ret: string) => void;
   style?: React.CSSProperties;
@@ -30,6 +31,7 @@ interface AsupInternalEditorProps {
 }
 
 export const AsupInternalEditor = ({
+  id,
   value,
   setValue,
   style,
@@ -136,12 +138,14 @@ export const AsupInternalEditor = ({
       }}
     >
       <div
+        id={`${id}-holder`}
         className='aie-holder'
         onBlur={onBlur}
         onFocus={onFocus}
       >
         {textAlignment === 'decimal' ? (
           <EditorV2
+            id={`${id}-v2editor`}
             text={editorV2Text}
             setText={
               editable !== false || typeof setValue !== 'function' ? setEditorV2Text : undefined
@@ -172,6 +176,7 @@ export const AsupInternalEditor = ({
           >
             <div className='aie-button-holder'>
               <AieStyleButtonRow
+                id={`${id}-stylebuttons`}
                 styleList={Object.keys(currentStyleMap.current)}
                 currentStyle={editorState.getCurrentInlineStyle()}
                 applyStyleFunction={aieApplyStyle}
