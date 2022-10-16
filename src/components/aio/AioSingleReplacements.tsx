@@ -11,6 +11,7 @@ import { AioString } from './aioString';
  * @param setValue update function
  */
 interface AioSingleReplacementProps {
+  id: string;
   label?: string;
   replacements?: AioExternalSingle[];
   setReplacements?: (ret: AioExternalSingle[]) => void;
@@ -22,6 +23,7 @@ interface AioSingleReplacementProps {
  * @returns JSX
  */
 export const AioSingleReplacements = ({
+  id,
   label,
   replacements,
   setReplacements,
@@ -78,10 +80,14 @@ export const AioSingleReplacements = ({
 
   return (
     <>
-      <AioLabel label={label} />
+      <AioLabel
+        id={`${id}-label`}
+        label={label}
+      />
       <div>
         {typeof setReplacements === 'function' && (
           <AioIconButton
+            id={`${id}-add`}
             iconName={'aiox-addDown'}
             onClick={() => addReplacement(0)}
             tipText={'Add text'}
@@ -91,11 +97,13 @@ export const AioSingleReplacements = ({
           return (
             <div key={repl.airid ?? i}>
               <AioString
+                id={`${id}-from`}
                 label='From'
                 value={fromHtml(repl.oldText ?? '')}
                 setValue={(ret) => updateReplacement({ oldText: toHtml(ret) }, i)}
               />
               <AioString
+                id={`${id}-to`}
                 label='to'
                 value={fromHtml(repl.newText ?? '')}
                 setValue={(ret) => updateReplacement({ newText: toHtml(ret) }, i)}
@@ -113,12 +121,14 @@ export const AioSingleReplacements = ({
                 >
                   {replacements && replacements.length >= 1 && (
                     <AioIconButton
+                      id={`${id}-remove`}
                       iconName={'aiox-removeUp'}
                       onClick={() => removeReplacement(i)}
                       tipText={'Remove text'}
                     />
                   )}
                   <AioIconButton
+                    id={`${id}-add`}
                     iconName={'aiox-addDown'}
                     onClick={() => addReplacement(i + 1)}
                     tipText={'Add text'}

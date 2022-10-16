@@ -2,8 +2,7 @@
 export interface AioOption {
   optionName?: AioNewItem;
   type: AioOptionType;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any;
+  value: unknown;
   label?: string;
   availableValues?: string[];
   readOnly?: boolean;

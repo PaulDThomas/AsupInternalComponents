@@ -8,6 +8,7 @@ import { OriginalText } from './OriginalText';
 import { replaceBlockText } from './replaceBlockText';
 
 interface AifLineDisplayProps {
+  id: string;
   aifid?: string;
   left?: string | null;
   center?: string | null;
@@ -25,6 +26,7 @@ interface AifLineDisplayProps {
 }
 
 export const AifLineDisplay = ({
+  id,
   aifid,
   left,
   center,
@@ -94,12 +96,14 @@ export const AifLineDisplay = ({
     >
       {showOptions && (
         <AsupInternalWindow
-          Title='Line options'
-          Visible={showOptions}
+          id={`${id}-options-window`}
+          title='Line options'
+          visible={showOptions}
           onClose={() => setShowOptions(false)}
         >
           <div className='aiw-body-row'>
             <AioSelect
+              id={`${id}-linetype`}
               label='Line type'
               availableValues={[
                 'Left only',
@@ -147,17 +151,20 @@ export const AifLineDisplay = ({
             />
           </div>
           <OriginalText
+            id={`${id}-unprocessed-left-text`}
             label='Left text'
             text={left}
             setText={(ret) => returnData({ left: ret })}
             styleMap={styleMap}
           />
           <OriginalText
+            id={`${id}-unprocessed-center-text`}
             label='Center text'
             text={center}
             setText={(ret) => returnData({ center: ret })}
           />
           <OriginalText
+            id={`${id}-unprocessed-right-text`}
             label='Right text'
             text={right}
             setText={(ret) => returnData({ right: ret })}
@@ -183,6 +190,7 @@ export const AifLineDisplay = ({
             }}
           >
             <AsupInternalEditor
+              id={`${id}-left-text`}
               value={displayLeft}
               setValue={
                 typeof setLine === 'function' && displayLeft === left
@@ -200,6 +208,7 @@ export const AifLineDisplay = ({
             style={{ flexGrow: 1 }}
           >
             <AsupInternalEditor
+              id={`${id}-center-text`}
               value={displayCenter}
               setValue={
                 typeof setLine === 'function' && displayCenter === center
@@ -225,6 +234,7 @@ export const AifLineDisplay = ({
             }}
           >
             <AsupInternalEditor
+              id={`${id}-right-text`}
               value={displayRight}
               setValue={
                 typeof setLine === 'function' && displayRight === right
@@ -241,12 +251,14 @@ export const AifLineDisplay = ({
 
       <div className='aif-line-buttons'>
         <AioIconButton
+          id={`${id}-show-options`}
           onClick={() => setShowOptions(!showOptions)}
           iconName={'aio-button-row-options'}
           tipText='Options'
         />
         {typeof addLine === 'function' ? (
           <AioIconButton
+            id={`${id}-add-line`}
             onClick={addLine}
             iconName={'aiox-plus'}
             tipText='Add line'
@@ -256,6 +268,7 @@ export const AifLineDisplay = ({
         )}
         {typeof removeLine === 'function' && (
           <AioIconButton
+            id={`${id}-remove-line`}
             onClick={removeLine}
             iconName={'aiox-minus'}
             tipText='Remove line'

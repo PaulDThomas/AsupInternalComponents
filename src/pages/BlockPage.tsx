@@ -22,6 +22,7 @@ export const BlockPage = () => {
         }}
       >
         <AsupInternalBlock
+          id='test-block'
           lines={lines}
           setLines={setLines}
           minLines={3}
@@ -39,6 +40,7 @@ export const BlockPage = () => {
 
       <div style={{ margin: '1rem' }}>
         <AioSingleReplacements
+          id='test-singles'
           replacements={externalSingles}
           setReplacements={(ret) => setExternalSingles(ret)}
         />

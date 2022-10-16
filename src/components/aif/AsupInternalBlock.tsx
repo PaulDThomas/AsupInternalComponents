@@ -7,6 +7,7 @@ import { AifBlockLine, AifLineType } from './aifInterface';
 import { AifLineDisplay } from './aifLineDisplay';
 
 interface AsupInternalBlockProps {
+  id: string;
   lines: AifBlockLine[];
   setLines?: (ret: AifBlockLine[]) => void;
   minLines?: number;
@@ -17,6 +18,7 @@ interface AsupInternalBlockProps {
   style?: React.CSSProperties;
 }
 export const AsupInternalBlock = ({
+  id,
   lines,
   setLines,
   minLines,
@@ -126,10 +128,14 @@ export const AsupInternalBlock = ({
   );
 
   return (
-    <div className='aif-block'>
+    <div
+      id={id}
+      className='aif-block'
+    >
       {lines.map((l: AifBlockLine, li: number) => {
         return (
           <AifLineDisplay
+            id={`${id}-line-${li}`}
             key={l.aifid ?? li}
             aifid={l.aifid}
             left={l.left}

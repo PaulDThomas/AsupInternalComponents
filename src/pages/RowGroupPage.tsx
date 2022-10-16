@@ -80,6 +80,7 @@ export const RowGroupPage = (): JSX.Element => {
                     }}
                   >
                     <AioString
+                      id='test-string'
                       value={rg.name}
                       setValue={(ret) => {
                         setCurrentName(ret);
@@ -143,6 +144,7 @@ export const RowGroupPage = (): JSX.Element => {
                 }}
               >
                 <AsupInternalTable
+                  id='test-table'
                   groupTemplates={false}
                   tableData={tableData}
                   setTableData={(ret) => {

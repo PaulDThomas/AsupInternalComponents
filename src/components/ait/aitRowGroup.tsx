@@ -6,6 +6,7 @@ import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from './aitInte
 import { AitRow } from './aitRow';
 
 interface AitRowGroupProps {
+  id: string;
   aitid: string;
   name?: string;
   location: AitLocation;
@@ -20,6 +21,7 @@ interface AitRowGroupProps {
 }
 
 export const AitRowGroup = ({
+  id,
   aitid,
   location,
   rows,
@@ -200,6 +202,7 @@ export const AitRowGroup = ({
       {rows.map((row: AitRowData, ri: number): JSX.Element => {
         return (
           <AitRow
+            id={`${id}-row-${ri}`}
             key={
               row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined
                 ? row.aitid

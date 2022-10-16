@@ -6,6 +6,7 @@ import { getV2TextStyle } from './functions/getV2TextStyle';
 import './aiev2.css';
 
 interface iEditorV2 {
+  id: string;
   text: string;
   setText?: (ret: string) => void;
   customStyleMap?: AieStyleMap;
@@ -15,6 +16,7 @@ interface iEditorV2 {
 }
 
 export const EditorV2 = ({
+  id,
   text,
   setText,
   customStyleMap,
@@ -156,8 +158,12 @@ export const EditorV2 = ({
   }, [currentStyleName, customStyleMap]);
 
   return (
-    <div className='aiev2-outer'>
+    <div
+      className='aiev2-outer'
+      id={id}
+    >
       <div
+        id={`${id}-line0-holder`}
         className='aiev2-line'
         style={{
           ...backBorder,
@@ -168,6 +174,7 @@ export const EditorV2 = ({
         onBlur={handleBlur}
       >
         <div
+          id={`${id}-line0-editable`}
           className='aiev2-editing'
           contentEditable={typeof setText === 'function'}
           suppressContentEditableWarning
@@ -184,6 +191,7 @@ export const EditorV2 = ({
         <div className='aie-button-position center'>
           <div className='aie-button-holder'>
             <AieStyleButtonRow
+              id={`${id}-stylebuttons`}
               styleList={Object.keys(customStyleMap || {})}
               currentStyle={currentStyleName}
               applyStyleFunction={(ret: string) => {

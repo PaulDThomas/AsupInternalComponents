@@ -107,6 +107,7 @@ export const TablePage = () => {
             <span style={{ margin: '3rem' }}>Table loading</span>
           ) : (
             <AsupInternalTable
+              id='test-table'
               tableData={tableData}
               setTableData={(ret) => {
                 setTableData(ret);
@@ -136,6 +137,7 @@ export const TablePage = () => {
       >
         <div style={{ margin: '1rem' }}>
           <AioSingleReplacements
+            id='test-singles'
             replacements={externalSingles}
             setReplacements={(ret) => setExternalSingles(ret)}
           />

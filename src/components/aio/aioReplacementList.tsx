@@ -11,6 +11,7 @@ import { AioReplacementDisplay } from './aioReplacementDisplay';
  * @param setValue update function
  */
 interface AioReplacementListProps {
+  id: string;
   label?: string;
   replacements?: AioReplacement[];
   setReplacements?: (ret: AioReplacement[]) => void;
@@ -25,6 +26,7 @@ interface AioReplacementListProps {
  * @returns JSX
  */
 export const AioReplacementList = ({
+  id,
   label,
   replacements,
   setReplacements,
@@ -65,7 +67,10 @@ export const AioReplacementList = ({
 
   return (
     <>
-      <AioLabel label={label} />
+      <AioLabel
+        id={`${id}-label`}
+        label={label}
+      />
       <div>
         {!label && (
           <>
@@ -74,6 +79,7 @@ export const AioReplacementList = ({
         )}
         {typeof setReplacements === 'function' && (
           <div
+            id={`${id}-addreplacement`}
             className={'aiox-button aiox-addDown'}
             onClick={() => addReplacement(0)}
           />
@@ -83,6 +89,7 @@ export const AioReplacementList = ({
             <div key={repl.airid ?? i}>
               {i > 0 && <div> and...</div>}
               <AioReplacementDisplay
+                id={`${id}-replacementdisplay-${i}`}
                 airid={repl.airid}
                 oldText={repl.oldText}
                 newTexts={repl.newTexts}
@@ -109,12 +116,14 @@ export const AioReplacementList = ({
                 >
                   {replacements && replacements.length >= 1 && (
                     <AioIconButton
+                      id={`${id}-remove`}
                       iconName={'aiox-removeUp'}
                       onClick={() => removeReplacement(i)}
                       tipText={'Remove old text'}
                     />
                   )}
                   <AioIconButton
+                    id={`${id}-add`}
                     iconName={'aiox-addDown'}
                     onClick={() => addReplacement(i + 1)}
                     tipText={'Add old text'}

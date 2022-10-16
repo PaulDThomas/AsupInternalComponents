@@ -3,6 +3,7 @@ import { AieStyleMap, AsupInternalEditor } from '../aie';
 import { AioLabel } from './aioLabel';
 
 interface AioCommentProps {
+  id: string;
   label?: string;
   value: string;
   setValue?: (value: string) => void;
@@ -10,6 +11,7 @@ interface AioCommentProps {
 }
 
 export const AioComment = ({
+  id,
   label,
   value,
   setValue,
@@ -17,9 +19,13 @@ export const AioComment = ({
 }: AioCommentProps): JSX.Element => {
   return (
     <>
-      <AioLabel label={label} />
+      <AioLabel
+        id={`${id}-label`}
+        label={label}
+      />
       <div className={'aio-input-holder'}>
         <AsupInternalEditor
+          id={`${id}-editor`}
           showStyleButtons={typeof commentStyles === 'object'}
           value={value}
           editable={typeof setValue === 'function'}

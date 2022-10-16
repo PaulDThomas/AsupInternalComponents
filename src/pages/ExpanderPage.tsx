@@ -33,6 +33,7 @@ export const ExpanderPage = () => {
         }}
       >
         <AioExpander
+          id='test-expander'
           inputObject={currentData}
           updateObject={(ret) => {
             setCurrentData(ret);
@@ -52,6 +53,7 @@ export const ExpanderPage = () => {
         }}
       >
         <AioDropSelect
+          id='test-drop-select'
           value={dropValue}
           setValue={setDropValue}
           availableValues={['Nowt', 'Summat', 'Owt', 'Reyt']}

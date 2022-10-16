@@ -5,12 +5,10 @@ import { AioOptionDisplay } from './aioOptionDisplay';
 import { AioPrintOption } from './aioPrintOption';
 
 interface AioArraySortableProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  inputArray: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updateArray?: (value: any) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  newItem?: any;
+  id: string;
+  inputArray: unknown[];
+  updateArray?: (value: unknown) => void;
+  newItem?: unknown;
   canRemoveItems?: boolean;
   canAddItems?: boolean;
   canMoveItems?: boolean;
@@ -24,8 +22,9 @@ export function AioArraySortable(props: AioArraySortableProps) {
   function addWindow(i: number): JSX.Element {
     return (
       <AsupInternalWindow
-        Title={'Add item'}
-        Visible={showWindows[i]}
+        id={`${props.id}-window-${i}`}
+        title={'Add item'}
+        visible={showWindows[i]}
         onClose={() => {
           const newShowWindows = [...showWindows];
           newShowWindows[i] = false;
@@ -34,6 +33,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
         style={{ minHeight: '100px' }}
       >
         <AioOptionDisplay
+          id={`${props.id}-optiondisplay`}
           options={[
             {
               type: AioOptionType.select,

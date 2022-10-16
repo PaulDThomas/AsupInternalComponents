@@ -5,8 +5,9 @@ import './aiw.css';
 import { chkPosition } from './chkPosition';
 
 interface AsupInternalWindowProps {
-  Title: string;
-  Visible: boolean;
+  id: string;
+  title: string;
+  visible: boolean;
   onClose: () => void;
   style?: React.CSSProperties;
   children?: React.ReactChild | React.ReactChild[];
@@ -15,7 +16,7 @@ interface AsupInternalWindowProps {
 export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
   const [zIndex, setZIndex] = useState<number | null>(null);
-  const [showWindow, setShowWindow] = useState(props.Visible);
+  const [showWindow, setShowWindow] = useState(props.visible);
   const rndRef = useRef<Rnd>(null);
 
   // Position
@@ -37,17 +38,18 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
 
   // Update visibility
   useEffect(() => {
-    setShowWindow(props.Visible);
-    if (props.Visible && rndRef.current) {
+    setShowWindow(props.visible);
+    if (props.visible && rndRef.current) {
       const { newX, newY } = chkPosition(rndRef);
       setX(newX);
       setY(newY);
     }
-  }, [props.Visible]);
+  }, [props.visible]);
 
   return (
     <>
       <Rnd
+        id={props.id}
         style={{
           visibility: showWindow ? 'visible' : 'hidden',
           display: 'flex',
@@ -78,8 +80,14 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
           onClick={() => chkTop(true)}
         >
           <div className={'aiw-title'}>
-            <div className={'aiw-title-text'}>{props.Title}</div>
             <div
+              id={`${props.id}-title`}
+              className={'aiw-title-text'}
+            >
+              {props.title}
+            </div>
+            <div
+              id={`${props.id}-close`}
               className={'aiw-title-close'}
               onClick={() => {
                 setShowWindow(false);
@@ -91,7 +99,12 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
               x
             </div>
           </div>
-          <div className={'aiw-body'}>{props.children}</div>
+          <div
+            id={`${props.id}-body`}
+            className={'aiw-body'}
+          >
+            {props.children}
+          </div>
         </div>
       </Rnd>
     </>

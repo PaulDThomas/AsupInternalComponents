@@ -4,6 +4,7 @@ import { AioExternalReplacements, AioReplacement, AioReplacementValues } from '.
 import { AioReplacementList } from './aioReplacementList';
 
 interface AioReplacementValuesDisplayProps {
+  id: string;
   airid?: string;
   texts?: string[];
   spaceAfter?: boolean;
@@ -15,6 +16,7 @@ interface AioReplacementValuesDisplayProps {
 }
 
 export const AioReplacementValuesDisplay = ({
+  id,
   airid,
   texts,
   spaceAfter,
@@ -68,6 +70,7 @@ export const AioReplacementValuesDisplay = ({
         {typeof setReplacementValue === 'function' ? (
           <>
             <textarea
+              id={id}
               className={'aio-input'}
               rows={4}
               value={text}
@@ -81,6 +84,7 @@ export const AioReplacementValuesDisplay = ({
                   <small>Space after repeat</small>
                 </label>
                 <input
+                  id={`${id}-spaceafter`}
                   style={{ margin: '6px' }}
                   type='checkbox'
                   checked={spaceAfter}
@@ -92,6 +96,7 @@ export const AioReplacementValuesDisplay = ({
         ) : (
           <>
             <div
+              id={id}
               className='aio-input'
               style={{ border: '1px black solid', borderRadius: '2px', padding: '2px' }}
             >
@@ -110,6 +115,7 @@ export const AioReplacementValuesDisplay = ({
                 <small>Space after repeat</small>
               </label>
               <input
+                id={`${id}-spaceafter`}
                 disabled
                 style={{ margin: '6px' }}
                 type='checkbox'
@@ -155,6 +161,7 @@ export const AioReplacementValuesDisplay = ({
             }}
           />
           <AioReplacementList
+            id={`${id}-sublists`}
             replacements={subLists}
             setReplacements={
               typeof setReplacementValue === 'function'

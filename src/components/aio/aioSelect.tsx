@@ -2,6 +2,7 @@ import * as React from 'react';
 import { AioLabel } from './aioLabel';
 
 interface AioSelectProps {
+  id: string;
   label?: string;
   value?: string;
   availableValues?: Array<string>;
@@ -11,12 +12,16 @@ interface AioSelectProps {
 export const AioSelect = (props: AioSelectProps): JSX.Element => {
   return (
     <>
-      <AioLabel label={props.label} />
+      <AioLabel
+        id={`${props.id}-label`}
+        label={props.label}
+      />
       <div className={'aio-input-holder'}>
         {typeof props.setValue !== 'function' ? (
-          <span>{props.value}</span>
+          <span id={props.id}>{props.value}</span>
         ) : (
           <select
+            id={props.id}
             className={'aio-select'}
             value={props.value ?? ''}
             onChange={
