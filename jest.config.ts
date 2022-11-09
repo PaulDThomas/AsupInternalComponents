@@ -25,6 +25,12 @@ const config: Config = {
   // Module file extensions for importing
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   // };
+
+  // Added by Paul
+  collectCoverage: true,
+  coverageProvider: 'v8',
+  collectCoverageFrom: ['**/*.{js,jsx}', '**/*.{ts,tsx}', '!**/node_modules/**', '!**/vendor/**'],
+  testEnvironment: 'jsdom',
 };
 
 export default config;

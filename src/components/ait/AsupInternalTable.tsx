@@ -47,6 +47,7 @@ interface AsupInternalTableProps {
   colWidthMod?: number;
   initialDecimalAlignPercent?: number;
   defaultCellWidth?: number;
+  noTableOptions?: boolean;
 }
 
 /**
@@ -69,6 +70,7 @@ export const AsupInternalTable = ({
   colWidthMod = 2,
   initialDecimalAlignPercent = 60,
   defaultCellWidth = 60,
+  noTableOptions = false,
 }: AsupInternalTableProps) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -616,14 +618,16 @@ export const AsupInternalTable = ({
         style={style}
       >
         <div>
-          <AioIconButton
-            id={`${id}-table-options`}
-            tipText='Table options'
-            onClick={() => {
-              setShowOptions(!showOptions);
-            }}
-            iconName={'aio-button-settings'}
-          />
+          {!noTableOptions && (
+            <AioIconButton
+              id={`${id}-table-options`}
+              tipText='Table options'
+              onClick={() => {
+                setShowOptions(!showOptions);
+              }}
+              iconName={'aio-button-settings'}
+            />
+          )}
           {showOptions && (
             <AsupInternalWindow
               id={`${id}-options-window`}
