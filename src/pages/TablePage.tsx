@@ -26,6 +26,7 @@ export const TablePage = () => {
     Notes: { css: { color: 'royalblue' }, aieExclude: ['Optional'] },
   };
   const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
+  const [showTableOptions, setShowTableOptions] = useState<boolean>(true);
 
   /** Load defaults */
   useEffect(() => {
@@ -108,6 +109,7 @@ export const TablePage = () => {
           ) : (
             <AsupInternalTable
               id='test-table'
+              noTableOptions={!showTableOptions}
               tableData={tableData}
               setTableData={(ret) => {
                 setTableData(ret);
@@ -135,6 +137,14 @@ export const TablePage = () => {
           borderRadius: '8px',
         }}
       >
+        <span>
+          <input
+            type='checkbox'
+            checked={showTableOptions}
+            onChange={(e) => setShowTableOptions(e.currentTarget.checked)}
+          />
+          &nbsp; Show table options
+        </span>
         <div style={{ margin: '1rem' }}>
           <AioSingleReplacements
             id='test-singles'
