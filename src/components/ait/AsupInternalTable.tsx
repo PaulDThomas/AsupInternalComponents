@@ -621,7 +621,7 @@ export const AsupInternalTable = ({
           {!noTableOptions && (
             <AioIconButton
               id={`${id}-table-options`}
-              tipText='Table options'
+              tipText='Global options'
               onClick={() => {
                 setShowOptions(!showOptions);
               }}
@@ -631,7 +631,7 @@ export const AsupInternalTable = ({
           {showOptions && (
             <AsupInternalWindow
               id={`${id}-options-window`}
-              title={'Table options'}
+              title={'Global options'}
               visible={showOptions}
               onClose={() => {
                 setShowOptions(false);

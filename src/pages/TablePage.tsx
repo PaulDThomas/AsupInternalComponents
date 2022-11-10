@@ -143,7 +143,7 @@ export const TablePage = () => {
             checked={showTableOptions}
             onChange={(e) => setShowTableOptions(e.currentTarget.checked)}
           />
-          &nbsp; Show table options
+          &nbsp; Show global options
         </span>
         <div style={{ margin: '1rem' }}>
           <AioSingleReplacements
