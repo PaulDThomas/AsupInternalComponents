@@ -134,7 +134,7 @@ export const replaceRows = (
                 }
 
               // Add spaceAfter to bottom left cell in the block
-              if (rv.spaceAfter) {
+              if (rv.spaceAfter && replacement.includeTrailing) {
                 let lookup = 0;
                 while (
                   lookup < lowerQuad.length - 1 &&
@@ -142,6 +142,8 @@ export const replaceRows = (
                 )
                   lookup++;
                 lowerQuad[lowerQuad.length - 1 - lookup].cells[0].spaceAfterRepeat = true;
+              } else if (rv.spaceAfter) {
+                lowerQuad[0].cells[0].spaceAfterRepeat = true;
               }
 
               // Expand to cover rest of the row
