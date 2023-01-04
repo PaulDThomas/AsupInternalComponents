@@ -15,6 +15,7 @@ interface AsupInternalBlockProps {
   externalSingles?: AioExternalSingle[];
   styleMap?: AieStyleMap;
   defaultType?: AifLineType;
+  canChangeType?: boolean;
   style?: React.CSSProperties;
 }
 export const AsupInternalBlock = ({
@@ -26,6 +27,7 @@ export const AsupInternalBlock = ({
   externalSingles,
   styleMap,
   defaultType,
+  canChangeType = false,
   style,
 }: AsupInternalBlockProps): JSX.Element => {
   /** Check lines object min/max rule */
@@ -55,8 +57,7 @@ export const AsupInternalBlock = ({
         return l;
       }),
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [minLines, maxLines]);
+  }, [minLines, maxLines, setLines, lines]);
 
   // General function to return complied object
   const returnData = useCallback(
@@ -93,6 +94,7 @@ export const AsupInternalBlock = ({
         canEdit: true,
         canMove: true,
         canRemove: true,
+        canChangeType: canChangeType,
       };
       if (defaultType !== undefined) {
         switch (defaultType) {
@@ -115,7 +117,7 @@ export const AsupInternalBlock = ({
       newLines.splice(li + 1, 0, newLine);
       returnData({ lines: newLines });
     },
-    [defaultType, lines, returnData],
+    [canChangeType, defaultType, lines, returnData],
   );
 
   const removeLine = useCallback(
@@ -145,6 +147,7 @@ export const AsupInternalBlock = ({
             canEdit={l.canEdit}
             canMove={l.canMove}
             canRemove={l.canRemove}
+            canChangeType={l.canChangeType}
             externalSingles={externalSingles}
             setLine={l.canEdit !== false ? (ret) => updateLine(ret, li) : undefined}
             addLine={

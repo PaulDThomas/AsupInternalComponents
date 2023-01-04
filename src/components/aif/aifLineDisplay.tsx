@@ -18,6 +18,7 @@ interface AifLineDisplayProps {
   canEdit?: boolean;
   canRemove?: boolean;
   canMove?: boolean;
+  canChangeType?: boolean;
   setLine?: (ret: AifBlockLine) => void;
   addLine?: () => void;
   removeLine?: () => void;
@@ -36,6 +37,7 @@ export const AifLineDisplay = ({
   canEdit,
   canRemove,
   canMove,
+  canChangeType = false,
   setLine,
   addLine,
   removeLine,
@@ -55,10 +57,11 @@ export const AifLineDisplay = ({
         canEdit: canEdit,
         canRemove: canRemove,
         canMove: canMove,
+        canChangeType: canChangeType,
       };
       setLine(newLine);
     },
-    [addBelow, aifid, canEdit, canMove, canRemove, center, left, right, setLine],
+    [addBelow, aifid, canChangeType, canEdit, canMove, canRemove, center, left, right, setLine],
   );
 
   // Set up post replacement view
@@ -121,7 +124,7 @@ export const AifLineDisplay = ({
                   : 'Center only'
               }
               setValue={
-                typeof setLine === 'function'
+                typeof setLine === 'function' && canChangeType
                   ? (ret) => {
                       let newLeft = null;
                       let newCenter = null;
