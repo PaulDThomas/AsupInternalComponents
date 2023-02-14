@@ -27,6 +27,7 @@ export const TablePage = () => {
   };
   const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
   const [showTableOptions, setShowTableOptions] = useState<boolean>(true);
+  const [isEditable, setIsEditable] = useState<boolean>(true);
 
   /** Load defaults */
   useEffect(() => {
@@ -114,6 +115,7 @@ export const TablePage = () => {
               setTableData={(ret) => {
                 setTableData(ret);
               }}
+              isEditable={isEditable}
               processedDataRef={processedTableData}
               style={{ margin: '1rem' }}
               showCellBorders={true}
@@ -144,6 +146,14 @@ export const TablePage = () => {
             onChange={(e) => setShowTableOptions(e.currentTarget.checked)}
           />
           &nbsp; Show global options
+        </span>
+        <span style={{ marginLeft: '1rem' }}>
+          <input
+            type='checkbox'
+            checked={isEditable}
+            onChange={(e) => setIsEditable(e.currentTarget.checked)}
+          />
+          &nbsp; Editable
         </span>
         <div style={{ margin: '1rem' }}>
           <AioSingleReplacements

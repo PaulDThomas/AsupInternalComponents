@@ -13,7 +13,7 @@ interface AitRowGroupProps {
   rows: AitRowData[];
   comments?: string;
   replacements: AioReplacement[];
-  setRowGroupData: (ret: AitRowGroupData) => void;
+  setRowGroupData?: (ret: AitRowGroupData) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
@@ -34,6 +34,7 @@ export const AitRowGroup = ({
   removeRowGroup,
 }: AitRowGroupProps): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
+
   // General function to return complied object
   const returnData = useCallback(
     (rowGroupUpdate: {
@@ -42,31 +43,33 @@ export const AitRowGroup = ({
       spaceAfter?: boolean;
       comments?: string;
     }) => {
-      if (typeof setRowGroupData !== 'function') return;
-      const r: AitRowGroupData = {
-        aitid: aitid,
-        rows: rowGroupUpdate.rows ?? rows,
-        comments: rowGroupUpdate.comments ?? comments,
-        replacements: rowGroupUpdate.replacements ?? replacements,
-        spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
-      };
-      setRowGroupData(r);
+      if (tableSettings.editable && setRowGroupData) {
+        const r: AitRowGroupData = {
+          aitid: aitid,
+          rows: rowGroupUpdate.rows ?? rows,
+          comments: rowGroupUpdate.comments ?? comments,
+          replacements: rowGroupUpdate.replacements ?? replacements,
+          spaceAfter: rowGroupUpdate.spaceAfter ?? spaceAfter,
+        };
+        setRowGroupData(r);
+      }
     },
-    [setRowGroupData, aitid, rows, comments, replacements, spaceAfter],
+    [tableSettings.editable, setRowGroupData, aitid, rows, comments, replacements, spaceAfter],
   );
 
   // Update row
   const updateRow = useCallback(
     (ret: AitRowData, ri: number) => {
       // Do nothing if readonly
-      if (typeof setRowGroupData !== 'function') return;
-      // Filter out repeat cells
-      const newRows: AitRowData[] = [...rows];
-      // Create new object to send back
-      newRows[ri] = ret;
-      returnData({ rows: newRows });
+      if (tableSettings.editable && setRowGroupData) {
+        // Filter out repeat cells
+        const newRows: AitRowData[] = [...rows];
+        // Create new object to send back
+        newRows[ri] = ret;
+        returnData({ rows: newRows });
+      }
     },
-    [setRowGroupData, rows, returnData],
+    [tableSettings.editable, setRowGroupData, rows, returnData],
   );
 
   const addRow = useCallback(
@@ -210,30 +213,43 @@ export const AitRowGroup = ({
             }
             aitid={row.aitid ?? ri.toString()}
             cells={row.cells}
-            setRowData={(ret) =>
-              updateRow(
-                ret,
-                rows.findIndex((r) => r.aitid === row.aitid),
-              )
+            setRowData={
+              tableSettings.editable
+                ? (ret) =>
+                    updateRow(
+                      ret,
+                      rows.findIndex((r) => r.aitid === row.aitid),
+                    )
+                : undefined
             }
-            setColWidth={setColWidth}
+            setColWidth={tableSettings.editable ? setColWidth : undefined}
             location={{
               ...location,
               row: rows.findIndex((r) => r.aitid === row.aitid),
               rowRepeat: !row.rowRepeat?.match(/^[[\]0,]+$/) ? row.rowRepeat : undefined,
             }}
             replacements={replacements}
-            setReplacements={(ret) => returnData({ replacements: ret })}
-            addRowGroup={addRowGroup}
-            removeRowGroup={removeRowGroup}
+            setReplacements={
+              tableSettings.editable ? (ret) => returnData({ replacements: ret }) : undefined
+            }
+            addRowGroup={tableSettings.editable ? addRowGroup : undefined}
+            removeRowGroup={tableSettings.editable ? removeRowGroup : undefined}
             rowGroupComments={comments ?? ''}
-            updateRowGroupComments={(ret) => {
-              returnData({ comments: ret });
-            }}
+            updateRowGroupComments={
+              tableSettings.editable
+                ? (ret) => {
+                    returnData({ comments: ret });
+                  }
+                : undefined
+            }
             addRow={
-              row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined ? addRow : undefined
+              (tableSettings.editable && row.rowRepeat?.match(/^[[\]0,]+$/)) ||
+              row.rowRepeat === undefined
+                ? addRow
+                : undefined
             }
             removeRow={
+              tableSettings.editable &&
               rows.filter((r) => (r.rowRepeat ?? '0').match(/^[[\]0,]+$/) !== null).length > 1 &&
               (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined)
                 ? removeRow
@@ -241,9 +257,11 @@ export const AitRowGroup = ({
             }
             spaceAfter={row.spaceAfter ?? false}
             rowGroupSpace={spaceAfter}
-            setRowGroupSpace={(ret) => returnData({ spaceAfter: ret })}
-            addRowSpan={addRowSpan}
-            removeRowSpan={removeRowSpan}
+            setRowGroupSpace={
+              tableSettings.editable ? (ret) => returnData({ spaceAfter: ret }) : undefined
+            }
+            addRowSpan={tableSettings.editable ? addRowSpan : undefined}
+            removeRowSpan={tableSettings.editable ? removeRowSpan : undefined}
           />
         );
       })}

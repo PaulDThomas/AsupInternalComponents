@@ -75,8 +75,13 @@ export const AitCell = ({
 
   // Static options/variables
   const currentReadOnly = useMemo<boolean>(() => {
-    return readOnly || typeof setCellData !== 'function' || replacedText !== undefined;
-  }, [readOnly, replacedText, setCellData]);
+    return (
+      !tableSettings.editable ||
+      readOnly ||
+      typeof setCellData !== 'function' ||
+      replacedText !== undefined
+    );
+  }, [readOnly, replacedText, setCellData, tableSettings.editable]);
   const isNotRepeat = useMemo<boolean>(
     () =>
       (location.colRepeat === undefined || location.colRepeat.match(/^[[\]0,]+$/) !== null) &&
@@ -275,7 +280,11 @@ export const AitCell = ({
                 id={`${id}-notes`}
                 label={'Notes'}
                 value={comments}
-                setValue={isNotRepeat ? (ret) => returnData({ comments: ret }) : undefined}
+                setValue={
+                  !currentReadOnly && isNotRepeat
+                    ? (ret) => returnData({ comments: ret })
+                    : undefined
+                }
                 commentStyles={tableSettings.commentStyles}
               />
             </div>
@@ -293,9 +302,11 @@ export const AitCell = ({
               <AsupInternalEditor
                 id={`${id}-unprocessed`}
                 value={text}
-                setValue={isNotRepeat ? (ret) => returnData({ text: ret }) : undefined}
+                setValue={
+                  !currentReadOnly && isNotRepeat ? (ret) => returnData({ text: ret }) : undefined
+                }
                 style={
-                  isNotRepeat
+                  !currentReadOnly && isNotRepeat
                     ? {
                         border: '1px solid black',
                         backgroundColor: 'white',
@@ -322,7 +333,7 @@ export const AitCell = ({
                 }
                 availableValues={['Default', 'Left', 'Center', 'Right', 'Decimal']}
                 setValue={
-                  isNotRepeat
+                  !currentReadOnly && isNotRepeat
                     ? (ret) => {
                         let newJ:
                           | DraftComponent.Base.DraftTextAlignment
@@ -364,6 +375,7 @@ export const AitCell = ({
                     style={{ padding: '2px' }}
                   >
                     {repeatRowSpan === undefined &&
+                    !currentReadOnly &&
                     isNotRepeat &&
                     typeof addRowSpan === 'function' &&
                     colSpan === 1 ? (
@@ -376,6 +388,7 @@ export const AitCell = ({
                       <div className='aiox-button' />
                     )}
                     {repeatRowSpan === undefined &&
+                      !currentReadOnly &&
                       isNotRepeat &&
                       typeof removeRowSpan === 'function' && (
                         <div
@@ -394,6 +407,7 @@ export const AitCell = ({
                     style={{ padding: '2px' }}
                   >
                     {repeatColSpan === undefined &&
+                    !currentReadOnly &&
                     isNotRepeat &&
                     typeof addColSpan === 'function' &&
                     rowSpan === 1 ? (
@@ -406,6 +420,7 @@ export const AitCell = ({
                       <div className='aiox-button' />
                     )}
                     {repeatColSpan === undefined &&
+                      !currentReadOnly &&
                       isNotRepeat &&
                       typeof removeColSpan === 'function' && (
                         <div
@@ -425,7 +440,7 @@ export const AitCell = ({
                 id={`${id}-width`}
                 label='Width (mm)'
                 value={displayColWidth ?? tableSettings.defaultCellWidth}
-                setValue={setColWidth !== undefined ? (ret) => setColWidth(ret) : undefined}
+                setValue={!currentReadOnly && setColWidth ? (ret) => setColWidth(ret) : undefined}
               />
             </div>
             {cellType === AitCellType.rowHeader ? (
@@ -433,48 +448,52 @@ export const AitCell = ({
                 <div className='aiw-body-row'>
                   <div className={'aio-label'}>Text indents: </div>
                   <div className={'aio-ro-value'}>{textIndents ?? 0}</div>
-                  <div
-                    className={'aiox-button-holder'}
-                    style={{ padding: '2px' }}
-                  >
+                  {!currentReadOnly && (
                     <div
-                      id={`${id}-add-text-indent`}
-                      className='aiox-button aiox-plus'
-                      onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })}
-                    />
-                    {(textIndents ?? 0) > 0 && (
+                      className={'aiox-button-holder'}
+                      style={{ padding: '2px' }}
+                    >
                       <div
-                        id={`${id}-remove-text-indent`}
-                        className='aiox-button aiox-minus'
-                        onClick={() => returnData({ textIndents: (textIndents ?? 0) - 1 })}
+                        id={`${id}-add-text-indent`}
+                        className='aiox-button aiox-plus'
+                        onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })}
                       />
-                    )}
-                  </div>
+                      {(textIndents ?? 0) > 0 && (
+                        <div
+                          id={`${id}-remove-text-indent`}
+                          className='aiox-button aiox-minus'
+                          onClick={() => returnData({ textIndents: (textIndents ?? 0) - 1 })}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
                 <div className='aiw-body-row'>
                   <div className={'aio-label'}>Row span: </div>
                   <div className={'aio-ro-value'}>{rowSpan ?? 1}</div>
-                  <div
-                    className={'aiox-button-holder'}
-                    style={{ padding: '2px' }}
-                  >
-                    {isNotRepeat && typeof addRowSpan === 'function' && colSpan === 1 ? (
-                      <div
-                        id={`${id}-add-rowspan`}
-                        className='aiox-button aiox-plus'
-                        onClick={() => addRowSpan(location)}
-                      />
-                    ) : (
-                      <div className='aiox-button' />
-                    )}
-                    {isNotRepeat && typeof removeRowSpan === 'function' && (
-                      <div
-                        id={`${id}-remove-rowspan`}
-                        className='aiox-button aiox-minus'
-                        onClick={() => removeRowSpan(location)}
-                      />
-                    )}
-                  </div>
+                  {!currentReadOnly && (
+                    <div
+                      className={'aiox-button-holder'}
+                      style={{ padding: '2px' }}
+                    >
+                      {isNotRepeat && typeof addRowSpan === 'function' && colSpan === 1 ? (
+                        <div
+                          id={`${id}-add-rowspan`}
+                          className='aiox-button aiox-plus'
+                          onClick={() => addRowSpan(location)}
+                        />
+                      ) : (
+                        <div className='aiox-button' />
+                      )}
+                      {isNotRepeat && typeof removeRowSpan === 'function' && (
+                        <div
+                          id={`${id}-remove-rowspan`}
+                          className='aiox-button aiox-minus'
+                          onClick={() => removeRowSpan(location)}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
               </>
             ) : (

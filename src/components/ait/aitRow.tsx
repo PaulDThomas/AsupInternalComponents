@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from '../aio';
 import { AsupInternalWindow } from '../aiw';
 import { AitBorderRow } from './aitBorderRow';
@@ -19,7 +19,7 @@ interface AitRowProps {
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
   rowGroupComments: string;
-  updateRowGroupComments: (ret: string) => void;
+  updateRowGroupComments?: (ret: string) => void;
   addRow?: (ri: number) => void;
   removeRow?: (ri: number) => void;
   spaceAfter?: boolean;
@@ -57,18 +57,22 @@ export const AitRow = ({
 }: AitRowProps): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
+  const editable = useMemo(() => {
+    return tableSettings.editable && typeof setRowData === 'function';
+  }, [setRowData, tableSettings.editable]);
 
   // General function to return complied object
   const returnData = useCallback(
     (rowUpdate: { cells?: AitCellData[] }) => {
-      if (typeof setRowData !== 'function') return;
-      const r: AitRowData = {
-        aitid: aitid,
-        cells: rowUpdate.cells ?? cells,
-      };
-      setRowData(r);
+      if (editable && setRowData) {
+        const r: AitRowData = {
+          aitid: aitid,
+          cells: rowUpdate.cells ?? cells,
+        };
+        setRowData(r);
+      }
     },
-    [setRowData, aitid, cells],
+    [editable, setRowData, aitid, cells],
   );
 
   const updateCell = useCallback(
@@ -95,7 +99,7 @@ export const AitRow = ({
           >
             {location.row === 0 && !location.rowRepeat ? (
               <>
-                {typeof removeRowGroup === 'function' && (
+                {editable && typeof removeRowGroup === 'function' && (
                   <AioIconButton
                     id={`${id}-remove-rowgroup`}
                     tipText={'Remove row group'}
@@ -103,7 +107,7 @@ export const AitRow = ({
                     onClick={() => removeRowGroup(location.rowGroup)}
                   />
                 )}
-                {typeof addRowGroup === 'function' && (
+                {editable && typeof addRowGroup === 'function' && (
                   <AioIconButton
                     id={`${id}-add-rowgroup`}
                     tipText={'Add row group'}
@@ -139,7 +143,7 @@ export const AitRow = ({
                         id={`${id}-rowgroup-comment`}
                         label={'Notes'}
                         value={rowGroupComments}
-                        setValue={updateRowGroupComments}
+                        setValue={editable ? updateRowGroupComments : undefined}
                         commentStyles={tableSettings.commentStyles}
                       />
                     </div>
@@ -151,7 +155,7 @@ export const AitRow = ({
                               id={`${id}-spaceafter-group`}
                               label='Space after group'
                               value={rowGroupSpace ?? false}
-                              setValue={setRowGroupSpace}
+                              setValue={editable ? setRowGroupSpace : undefined}
                             />
                           </div>
                         </>
@@ -163,7 +167,7 @@ export const AitRow = ({
                         label={'Replacements'}
                         replacements={replacements}
                         setReplacements={
-                          typeof setReplacements === 'function'
+                          editable && typeof setReplacements === 'function'
                             ? (ret) => {
                                 setReplacements(ret, location);
                               }
@@ -222,31 +226,33 @@ export const AitRow = ({
               spaceAfterSpan={cell.spaceAfterSpan}
               location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={
-                !isColumnRepeat && typeof addRow === 'function'
+                editable && !isColumnRepeat && typeof addRow === 'function'
                   ? (ret) => updateCell(ret, ci)
                   : undefined
               }
               setColWidth={
-                setColWidth !== undefined && cell.colSpan === 1
+                editable && setColWidth && cell.colSpan === 1
                   ? (ret) => setColWidth(ci, ret)
                   : undefined
               }
-              readOnly={isColumnRepeat || typeof addRow !== 'function'}
+              readOnly={!editable || isColumnRepeat || typeof addRow !== 'function'}
               addColSpan={
+                editable &&
                 !isColumnRepeat &&
                 typeof addRow === 'function' &&
                 ci + (cell.colSpan ?? 1) < cells.length
                   ? addColSpan
                   : undefined
               }
-              removeColSpan={(cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
+              removeColSpan={editable && (cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
               addRowSpan={
-                location.row + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0) ||
-                ci < (tableSettings.rowHeaderColumns ?? 0)
+                editable &&
+                (location.row + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0) ||
+                  ci < (tableSettings.rowHeaderColumns ?? 0))
                   ? addRowSpan
                   : undefined
               }
-              removeRowSpan={(cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
+              removeRowSpan={editable && (cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
               spaceAfterRepeat={cell.spaceAfterRepeat}
             />
           );
@@ -260,7 +266,7 @@ export const AitRow = ({
             className='ait-aie-holder'
             style={{ display: 'flex', justifyContent: 'flex-start', flexDirection: 'row' }}
           >
-            {typeof addRow === 'function' && (
+            {editable && addRow && (
               <AioIconButton
                 id={`${id}-add-row`}
                 tipText='Add row'
@@ -270,7 +276,7 @@ export const AitRow = ({
                 }}
               />
             )}
-            {typeof removeRow === 'function' && (
+            {editable && removeRow && (
               <AioIconButton
                 id={`${id}-remove-row`}
                 tipText='Remove row'
