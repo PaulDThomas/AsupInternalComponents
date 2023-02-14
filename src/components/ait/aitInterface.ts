@@ -85,6 +85,7 @@ export interface AitOptionList {
   defaultCellWidth: number;
 
   /* Table options with setters */
+  editable: boolean;
   headerRows?: number;
   setHeaderRows?: (ret: number) => void;
   rowHeaderColumns?: number;

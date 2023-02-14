@@ -12,7 +12,7 @@ interface AitHeaderProps {
   rows: AitRowData[];
   comments?: string;
   replacements?: AioReplacement[];
-  setHeaderData: (ret: AitRowGroupData) => void;
+  setHeaderData?: (ret: AitRowGroupData) => void;
   setColWidth: (colNo: number, colWidth: number) => void;
   addHeaderColSpan: (ret: AitLocation) => void;
   removeHeaderColSpan: (ret: AitLocation) => void;
@@ -34,13 +34,15 @@ export const AitHeader = ({
   // General function to return complied object
   const returnData = useCallback(
     (headerUpdate: { rows?: AitRowData[]; comments?: string; replacements?: AioReplacement[] }) => {
-      const r: AitRowGroupData = {
-        aitid: aitid,
-        rows: headerUpdate.rows ?? rows,
-        comments: headerUpdate.comments ?? comments,
-        replacements: headerUpdate.replacements ?? replacements,
-      };
-      setHeaderData(r);
+      if (setHeaderData) {
+        const r: AitRowGroupData = {
+          aitid: aitid,
+          rows: headerUpdate.rows ?? rows,
+          comments: headerUpdate.comments ?? comments,
+          replacements: headerUpdate.replacements ?? replacements,
+        };
+        setHeaderData(r);
+      }
     },
     [setHeaderData, aitid, rows, comments, replacements],
   );
@@ -183,11 +185,15 @@ export const AitHeader = ({
             key={row.aitid ?? `row-${ri}`}
             aitid={row.aitid ?? `row-${ri}`}
             cells={row.cells}
-            setRowData={(ret) => {
-              const newRows = [...rows];
-              newRows.splice(ri, 1, ret);
-              returnData({ rows: newRows });
-            }}
+            setRowData={
+              tableSettings.editable && typeof setHeaderData === 'function'
+                ? (ret) => {
+                    const newRows = [...rows];
+                    newRows.splice(ri, 1, ret);
+                    returnData({ rows: newRows });
+                  }
+                : undefined
+            }
             location={{
               tableSection: AitRowType.header,
               rowGroup: 0,
@@ -198,19 +204,25 @@ export const AitHeader = ({
             }}
             spaceAfter={false}
             replacements={replacements}
-            setReplacements={(ret) => returnData({ replacements: ret })}
+            setReplacements={
+              tableSettings.editable ? (ret) => returnData({ replacements: ret }) : undefined
+            }
             rowGroupWindowTitle={'Header options'}
             rowGroupComments={comments ?? ''}
-            updateRowGroupComments={(ret) => {
-              returnData({ comments: ret });
-            }}
-            addRow={addRow}
-            removeRow={removeRow}
-            addColSpan={addHeaderColSpan}
-            removeColSpan={removeHeaderColSpan}
-            setColWidth={setColWidth}
-            addRowSpan={addRowSpan}
-            removeRowSpan={removeRowSpan}
+            updateRowGroupComments={
+              tableSettings.editable
+                ? (ret) => {
+                    returnData({ comments: ret });
+                  }
+                : undefined
+            }
+            addRow={tableSettings.editable ? addRow : undefined}
+            removeRow={tableSettings.editable ? removeRow : undefined}
+            addColSpan={tableSettings.editable ? addHeaderColSpan : undefined}
+            removeColSpan={tableSettings.editable ? removeHeaderColSpan : undefined}
+            setColWidth={tableSettings.editable ? setColWidth : undefined}
+            addRowSpan={tableSettings.editable ? addRowSpan : undefined}
+            removeRowSpan={tableSettings.editable ? removeRowSpan : undefined}
           />
         );
       })}

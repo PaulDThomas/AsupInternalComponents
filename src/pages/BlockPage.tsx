@@ -21,6 +21,7 @@ export const BlockPage = () => {
           margin: '1rem',
         }}
       >
+        <h5>Titles</h5>
         <AsupInternalBlock
           id='test-block'
           lines={lines}
@@ -35,6 +36,65 @@ export const BlockPage = () => {
             Red: { css: { color: 'red' }, aieExclude: ['Green', 'Blue'] },
           }}
           defaultType={AifLineType.centerOnly}
+        />
+      </div>
+
+      <div
+        style={{
+          width: 'calc(vw - 4rem - 2px)',
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '1rem',
+          backgroundColor: 'white',
+          border: '1px solid black',
+          margin: '1rem',
+        }}
+      >
+        <h5>Footnotes</h5>
+        <AsupInternalBlock
+          id='test-block'
+          lines={lines}
+          setLines={setLines}
+          minLines={3}
+          maxLines={10}
+          externalSingles={externalSingles}
+          style={{ fontFamily: 'Courier New', fontWeight: 800 }}
+          styleMap={{
+            Green: { css: { color: 'green' }, aieExclude: ['Blue', 'Red'] },
+            Blue: { css: { color: 'blue' }, aieExclude: ['Green', 'Red'] },
+            Red: { css: { color: 'red' }, aieExclude: ['Green', 'Blue'] },
+          }}
+          defaultType={AifLineType.leftOnly}
+        />
+      </div>
+
+      <div
+        style={{
+          width: 'calc(vw - 4rem - 2px)',
+          display: 'flex',
+          justifyContent: 'center',
+          padding: '1rem',
+          backgroundColor: 'white',
+          border: '1px solid black',
+          margin: '1rem',
+        }}
+      >
+        <h5>Freeform</h5>
+        <AsupInternalBlock
+          id='test-block'
+          lines={lines}
+          setLines={setLines}
+          minLines={3}
+          maxLines={10}
+          externalSingles={externalSingles}
+          style={{ fontFamily: 'Courier New', fontWeight: 800 }}
+          styleMap={{
+            Green: { css: { color: 'green' }, aieExclude: ['Blue', 'Red'] },
+            Blue: { css: { color: 'blue' }, aieExclude: ['Green', 'Red'] },
+            Red: { css: { color: 'red' }, aieExclude: ['Green', 'Blue'] },
+          }}
+          defaultType={AifLineType.leftOnly}
+          canChangeType={true}
         />
       </div>
 

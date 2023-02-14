@@ -7,6 +7,7 @@ export interface AifBlockLine {
   canEdit?: boolean; // If the user can edit the line
   canRemove?: boolean; // If the user can remove the line
   canMove?: boolean; // If the user can move the line in an array of lines
+  canChangeType?: boolean; // Can update the type of line
 }
 
 export const enum AifLineType {

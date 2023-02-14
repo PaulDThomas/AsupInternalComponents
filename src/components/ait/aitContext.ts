@@ -8,6 +8,7 @@ const defaultSettings: AitOptionList = {
   colWidthMod: 1.5,
   decimalAlignPercent: 60,
   defaultCellWidth: 60,
+  editable: true,
 };
 
 export const TableSettingsContext = React.createContext(defaultSettings);

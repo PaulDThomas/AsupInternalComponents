@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AieStyleMap } from '../aie';
 import {
   AioBoolean,
@@ -35,7 +35,8 @@ import { AitRowGroup } from './aitRowGroup';
 interface AsupInternalTableProps {
   id: string;
   tableData: AitTableData;
-  setTableData: (ret: AitTableData) => void;
+  isEditable?: boolean;
+  setTableData?: (ret: AitTableData) => void;
   processedDataRef?: React.MutableRefObject<AitTableData | undefined>;
   externalLists?: AioExternalReplacements[];
   externalSingles?: AioExternalSingle[];
@@ -58,6 +59,7 @@ interface AsupInternalTableProps {
 export const AsupInternalTable = ({
   id,
   tableData,
+  isEditable = true,
   setTableData,
   processedDataRef,
   externalLists,
@@ -86,6 +88,11 @@ export const AsupInternalTable = ({
   const [decimalAlignPercent, setDecimalAlignPercent] = useState<number>(
     initialDecimalAlignPercent,
   );
+
+  // Editable property
+  const editable = useMemo(() => {
+    return isEditable && typeof setTableData === 'function';
+  }, [isEditable, setTableData]);
 
   // Pushdown data when it it updated externally
   useEffect(() => {
@@ -594,6 +601,7 @@ export const AsupInternalTable = ({
         rowHeaderColumns: rowHeaderColumns ?? 1,
         headerRows: headerData === false ? 0 : headerData.rows.length,
         externalLists: externalLists ?? [],
+        editable,
         groupTemplateNames:
           groupTemplates === false
             ? ['None']
@@ -621,7 +629,7 @@ export const AsupInternalTable = ({
           {!noTableOptions && (
             <AioIconButton
               id={`${id}-table-options`}
-              tipText='Table options'
+              tipText='Global options'
               onClick={() => {
                 setShowOptions(!showOptions);
               }}
@@ -631,7 +639,7 @@ export const AsupInternalTable = ({
           {showOptions && (
             <AsupInternalWindow
               id={`${id}-options-window`}
-              title={'Table options'}
+              title={'Global options'}
               visible={showOptions}
               onClose={() => {
                 setShowOptions(false);
@@ -642,7 +650,7 @@ export const AsupInternalTable = ({
                   id={`${id}-table-comment`}
                   label={'Notes'}
                   value={comments ?? ''}
-                  setValue={setComments}
+                  setValue={editable ? setComments : undefined}
                   commentStyles={commentStyles}
                 />
               </div>
@@ -656,7 +664,7 @@ export const AsupInternalTable = ({
                     <div
                       className='aiox-button aiox-plus'
                       id={`${id}-add-header`}
-                      onClick={() => addNewHeader()}
+                      onClick={editable ? () => addNewHeader() : undefined}
                     />
                   </div>
                 </div>
@@ -668,9 +676,13 @@ export const AsupInternalTable = ({
                   id={`${id}-suppress-repeats`}
                   label='Suppress repeats'
                   value={noRepeatProcessing ?? false}
-                  setValue={(ret) => {
-                    returnData({ noRepeatProcessing: ret });
-                  }}
+                  setValue={
+                    editable
+                      ? (ret) => {
+                          returnData({ noRepeatProcessing: ret });
+                        }
+                      : undefined
+                  }
                 />
               </div>
               <div className='aiw-body-row'>
@@ -680,7 +692,7 @@ export const AsupInternalTable = ({
                   className={'aiox-button-holder'}
                   style={{ padding: '2px' }}
                 >
-                  {(rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1 ? (
+                  {editable && (rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1 ? (
                     <div
                       id={`${id}-add-row-header-column`}
                       className='aiox-button aiox-plus'
@@ -689,7 +701,7 @@ export const AsupInternalTable = ({
                   ) : (
                     <div className='aiox-button' />
                   )}
-                  {(rowHeaderColumns ?? 1) > 0 ? (
+                  {editable && (rowHeaderColumns ?? 1) > 0 ? (
                     <div
                       className='aiox-button aiox-minus'
                       id={`${id}-remove-row-header-column`}
@@ -707,9 +719,13 @@ export const AsupInternalTable = ({
                   value={decimalAlignPercent}
                   minValue={0}
                   maxValue={100}
-                  setValue={(ret) => {
-                    returnData({ decimalAlignPercent: ret });
-                  }}
+                  setValue={
+                    editable
+                      ? (ret) => {
+                          returnData({ decimalAlignPercent: ret });
+                        }
+                      : undefined
+                  }
                 />
               </div>
             </AsupInternalWindow>
@@ -723,11 +739,15 @@ export const AsupInternalTable = ({
             <AitBorderRow
               id={`${id}-top-border`}
               spaceAfter={true}
-              changeColumns={{
-                addColumn: addCol,
-                removeColumn: remCol,
-                showButtons: true,
-              }}
+              changeColumns={
+                editable
+                  ? {
+                      addColumn: addCol,
+                      removeColumn: remCol,
+                      showButtons: true,
+                    }
+                  : undefined
+              }
               rowHeaderColumns={rowHeaderColumns}
             />
             {headerData !== false && (
@@ -737,9 +757,13 @@ export const AsupInternalTable = ({
                 rows={headerData.rows}
                 comments={headerData.comments}
                 replacements={headerData.replacements}
-                setHeaderData={(ret) => {
-                  returnData({ headerData: ret });
-                }}
+                setHeaderData={
+                  editable
+                    ? (ret) => {
+                        returnData({ headerData: ret });
+                      }
+                    : undefined
+                }
                 setColWidth={updateColWidth}
                 addHeaderColSpan={addHeaderColSpan}
                 removeHeaderColSpan={removeHeaderColSpan}
@@ -758,9 +782,13 @@ export const AsupInternalTable = ({
                   comments={rowGroup.comments}
                   replacements={rowGroup.replacements ?? []}
                   spaceAfter={rowGroup.spaceAfter}
-                  setRowGroupData={(ret) => {
-                    updateRowGroup(ret, rgi);
-                  }}
+                  setRowGroupData={
+                    editable
+                      ? (ret) => {
+                          updateRowGroup(ret, rgi);
+                        }
+                      : undefined
+                  }
                   setColWidth={updateColWidth}
                   location={{
                     tableSection: AitRowType.body,
