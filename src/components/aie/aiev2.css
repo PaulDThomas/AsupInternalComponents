@@ -3,7 +3,7 @@
   overflow-wrap: normal;
   outline: 0;
   display: flex;
-  align-content: start;
+  align-content: flex-start;
   vertical-align: top;
   margin: -1px;
 }
