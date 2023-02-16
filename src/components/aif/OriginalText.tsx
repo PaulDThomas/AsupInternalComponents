@@ -10,7 +10,7 @@ export const OriginalText = ({
   id: string;
   label: string;
   text: string | null | undefined;
-  setText: (ret: string) => void;
+  setText?: (ret: string) => void;
   styleMap?: AieStyleMap;
 }): JSX.Element => {
   if (typeof text !== 'string') return <></>;

@@ -30,9 +30,18 @@ export const AsupInternalBlock = ({
   canChangeType = false,
   style,
 }: AsupInternalBlockProps): JSX.Element => {
+  // General function to return complied object
+  const returnData = useCallback(
+    (linesUpdate: { lines: AifBlockLine[] }) => {
+      if (typeof setLines !== 'function') return;
+      const r: AifBlockLine[] = [...linesUpdate.lines];
+      setLines(r);
+    },
+    [setLines],
+  );
+
   /** Check lines object min/max rule */
   useEffect(() => {
-    if (typeof setLines !== 'function') return;
     let newLines = [...lines];
     if (newLines.length < Math.min(minLines ?? 1, maxLines ?? 1)) {
       const reqlines = (minLines ?? 1) - lines.length;
@@ -47,27 +56,13 @@ export const AsupInternalBlock = ({
           canRemove: true,
         };
         newLines.push(newLine);
+        returnData({ lines: newLines });
       }
     } else if (newLines.length > Math.max(minLines ?? 10, maxLines ?? 10)) {
       newLines = newLines.slice(0, maxLines ?? 10);
+      returnData({ lines: newLines });
     }
-    setLines(
-      newLines.map((l) => {
-        if (l.aifid === undefined) l.aifid = uuidv4();
-        return l;
-      }),
-    );
-  }, [minLines, maxLines, setLines, lines]);
-
-  // General function to return complied object
-  const returnData = useCallback(
-    (linesUpdate: { lines: AifBlockLine[] }) => {
-      if (typeof setLines !== 'function') return;
-      const r: AifBlockLine[] = [...linesUpdate.lines];
-      setLines(r);
-    },
-    [setLines],
-  );
+  }, [lines, maxLines, minLines, returnData]);
 
   // Update row
   const updateLine = useCallback(

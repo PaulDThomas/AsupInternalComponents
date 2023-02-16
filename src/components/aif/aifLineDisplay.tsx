@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AieStyleMap, AsupInternalEditor } from '../aie';
-import { AioExternalSingle, AioIconButton, AioSelect } from '../aio';
-import { AsupInternalWindow } from '../aiw';
+import { AioExternalSingle, AioIconButton } from '../aio';
 import './aif.css';
 import { AifBlockLine } from './aifInterface';
-import { OriginalText } from './OriginalText';
+import { AifOptionsWindow } from './aifOptionsWindow';
 import { replaceBlockText } from './replaceBlockText';
 
 interface AifLineDisplayProps {
@@ -98,81 +97,16 @@ export const AifLineDisplay = ({
       }`}
     >
       {showOptions && (
-        <AsupInternalWindow
+        <AifOptionsWindow
           id={`${id}-options-window`}
-          title='Line options'
-          visible={showOptions}
           onClose={() => setShowOptions(false)}
-        >
-          <div className='aiw-body-row'>
-            <AioSelect
-              id={`${id}-linetype`}
-              label='Line type'
-              availableValues={[
-                'Left only',
-                'Center only',
-                'Left, Center and Right',
-                'Left and Right',
-              ]}
-              value={
-                typeof left === 'string' && typeof center === 'string' && typeof right === 'string'
-                  ? 'Left, Center and Right'
-                  : typeof left === 'string' && typeof right === 'string'
-                  ? 'Left and Right'
-                  : typeof left === 'string'
-                  ? 'Left only'
-                  : 'Center only'
-              }
-              setValue={
-                typeof setLine === 'function' && canChangeType
-                  ? (ret) => {
-                      let newLeft = null;
-                      let newCenter = null;
-                      let newRight = null;
-                      switch (ret) {
-                        case 'Left only':
-                          newLeft = left || '';
-                          break;
-                        case 'Center only':
-                          newCenter = center || '';
-                          break;
-                        case 'Left and Right':
-                          newLeft = left || '';
-                          newRight = right || '';
-                          break;
-                        case 'Left, Center and Right':
-                        default:
-                          newLeft = left || '';
-                          newCenter = center || '';
-                          newRight = right || '';
-                          break;
-                      }
-                      returnData({ left: newLeft, center: newCenter, right: newRight });
-                    }
-                  : undefined
-              }
-            />
-          </div>
-          <OriginalText
-            id={`${id}-unprocessed-left-text`}
-            label='Left text'
-            text={left}
-            setText={(ret) => returnData({ left: ret })}
-            styleMap={styleMap}
-          />
-          <OriginalText
-            id={`${id}-unprocessed-center-text`}
-            label='Center text'
-            text={center}
-            setText={(ret) => returnData({ center: ret })}
-          />
-          <OriginalText
-            id={`${id}-unprocessed-right-text`}
-            label='Right text'
-            text={right}
-            setText={(ret) => returnData({ right: ret })}
-          />
-        </AsupInternalWindow>
+          left={left}
+          center={center}
+          right={right}
+          returnData={typeof setLine === 'function' ? returnData : undefined}
+          canChangeType={canChangeType}
+          styleMap={styleMap}
+        />
       )}
 
       <div className='aif-line-buttons' />
