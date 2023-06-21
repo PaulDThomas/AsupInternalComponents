@@ -16,7 +16,7 @@ export const cellPreProcess = (defaultCellWidth: number, cs?: AitCellData[]): Ai
       colSpan: c.colSpan ?? 1,
       rowSpan: c.rowSpan ?? 1,
       colWidth: c.colWidth ?? defaultCellWidth,
-      aitid: c.aitid ?? uuidv4(),
+      aitid: c.aitid && c.aitid.length > 4 ? c.aitid : uuidv4(),
     };
   });
 };
