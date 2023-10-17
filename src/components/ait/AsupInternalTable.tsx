@@ -650,7 +650,13 @@ export const AsupInternalTable = ({
                   id={`${id}-table-comment`}
                   label={'Notes'}
                   value={comments ?? ''}
-                  setValue={editable ? setComments : undefined}
+                  setValue={
+                    editable
+                      ? (ret) => {
+                          returnData({ comments: ret });
+                        }
+                      : undefined
+                  }
                   commentStyles={commentStyles}
                 />
               </div>
