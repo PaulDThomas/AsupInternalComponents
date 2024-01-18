@@ -17,7 +17,7 @@ export const OriginalText = ({
   else
     return (
       <div className='aiw-body-row'>
-        <div className={'aio-label'}>Unprocessed text: </div>
+        <div className={'aio-label'}>Unprocessed text:</div>
         <AsupInternalEditor
           id={id}
           value={text}

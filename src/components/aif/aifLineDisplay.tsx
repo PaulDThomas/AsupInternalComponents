@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { AieStyleMap, AsupInternalEditor } from '../aie';
 import { AioExternalSingle, AioIconButton } from '../aio';
 import './aif.css';
@@ -63,11 +63,6 @@ export const AifLineDisplay = ({
     [addBelow, aifid, canChangeType, canEdit, canMove, canRemove, center, left, right, setLine],
   );
 
-  // Set up post replacement view
-  const [displayLeft, setDisplayLeft] = useState<string | null | undefined>(left);
-  const [displayCenter, setDisplayCenter] = useState<string | null | undefined>(center);
-  const [displayRight, setDisplayRight] = useState<string | null | undefined>(right);
-
   // Update for replacements
   const processReplacement = useCallback(
     (text: string | null | undefined): string | null => {
@@ -86,9 +81,10 @@ export const AifLineDisplay = ({
     [externalSingles],
   );
 
-  useEffect(() => setDisplayLeft(processReplacement(left)), [left, processReplacement]);
-  useEffect(() => setDisplayCenter(processReplacement(center)), [center, processReplacement]);
-  useEffect(() => setDisplayRight(processReplacement(right)), [right, processReplacement]);
+  // Set up post replacement view
+  const displayLeft = useMemo(() => processReplacement(left), [left, processReplacement]);
+  const displayCenter = useMemo(() => processReplacement(center), [center, processReplacement]);
+  const displayRight = useMemo(() => processReplacement(right), [right, processReplacement]);
 
   return (
     <div

@@ -22,5 +22,5 @@ export const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string =
   }
   return `<div classname="aie-text" data-key="${b.key}" data-type="${
     b.type
-  }" data-inline-style-ranges='${JSON.stringify(b.inlineStyleRanges)}'>${chars.join('')}</div>`;
+  }" data-inline-style-ranges="${JSON.stringify(b.inlineStyleRanges)}">${chars.join('')}</div>`;
 };

@@ -303,10 +303,12 @@ export const AitCell = ({
                 id={`${id}-unprocessed`}
                 value={text}
                 setValue={
-                  !currentReadOnly && isNotRepeat ? (ret) => returnData({ text: ret }) : undefined
+                  !readOnly && setCellData && isNotRepeat && tableSettings.editable
+                    ? (ret) => returnData({ text: ret })
+                    : undefined
                 }
                 style={
-                  !currentReadOnly && isNotRepeat
+                  !readOnly && setCellData && isNotRepeat && tableSettings.editable
                     ? {
                         border: '1px solid black',
                         backgroundColor: 'white',
