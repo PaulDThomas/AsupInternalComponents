@@ -13,17 +13,20 @@ export function getHTMLfromV2Text(
     },
   ]);
 
+  const html = document.createElement('div');
+  html.setAttribute('classname', 'aie-text');
+  html.dataset.inlineStyleRanges = isr;
+
+  const span = document.createElement('span');
+  if (styleName !== '') {
+    span.setAttribute('classname', styleName);
+  }
+
   const cssString = Object.entries(style)
     .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
     .join(';');
+  span.setAttribute('style', cssString);
+  span.innerHTML = toHtml(text.replace(/[\u200B-\u200F\uFEFF]/g, ''));
 
-  let html = `<div classname="aie-text" data-inline-style-ranges="${isr}">`;
-
-  html += `<span${styleName !== '' ? `classname="${styleName}" style="${cssString}"` : ''}>${toHtml(
-    text.replace(/[\u200B-\u200F\uFEFF]/g, ''),
-  )}</span>`;
-
-  html += '</div>';
-
-  return html;
+  return html.outerHTML;
 }
