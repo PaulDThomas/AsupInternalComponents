@@ -1,3 +1,5 @@
+import { fromHtml } from '../../functions/tofromHtml';
+
 /**
  * Replace text in HTML string, updating inline-style-ranges
  * @param s
@@ -23,9 +25,10 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
       const inlineStyleRanges: { offset: number; length: number; style: string }[] = [];
       // Update element text
       const child = htmlIn.content.children[i] as HTMLDivElement;
-      child.innerHTML = child.innerHTML.replaceAll(oldPhrase, newPhrase);
       // Get new style lengths
       for (let j = 0; j < child.childNodes.length; j++) {
+        child.childNodes[j].textContent =
+          child.childNodes[j].textContent?.replaceAll(oldPhrase, fromHtml(newPhrase)) ?? '';
         // Should only be possible to have span and #text
         if (child.childNodes[j].nodeName === 'SPAN') {
           const subchild = child.childNodes[j] as HTMLSpanElement;
