@@ -1,7 +1,7 @@
 {
   "name": "asupinternalcomponents",
   "description": "Components developed by Paul for clinical table generation",
-  "version": "1.5.14",
+  "version": "1.5.15",
   "author": "Paul Thomas",
   "license": "MIT",
   "repository": {
@@ -27,7 +27,7 @@
     "start": "react-scripts start",
     "test": "react-scripts test --coverage",
     "eject": "react-scripts eject",
-    "rollup": "rollup -c",
+    "build": "rollup -c",
     "prepare": "husky install"
   },
   "homepage": ".",

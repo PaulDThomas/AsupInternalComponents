@@ -21,12 +21,15 @@ export function getHTMLfromV2Text(
   if (styleName !== '') {
     span.setAttribute('classname', styleName);
   }
+  html.appendChild(span);
 
   const cssString = Object.entries(style)
     .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
     .join(';');
   span.setAttribute('style', cssString);
-  span.innerHTML = toHtml(text.replace(/[\u200B-\u200F\uFEFF]/g, ''));
+
+  const textContent = document.createTextNode(toHtml(text.replace(/[\u200B-\u200F\uFEFF]/g, '')));
+  span.appendChild(textContent);
 
   return html.outerHTML;
 }
