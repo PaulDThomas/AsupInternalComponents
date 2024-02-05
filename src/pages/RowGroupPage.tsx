@@ -71,8 +71,8 @@ export const RowGroupPage = (): JSX.Element => {
           <div>
             {rowGroups
               .filter((rg) => rg.name !== 'Empty section')
-              .map((rg) => (
-                <div key={rg.name}>
+              .map((rg, rgi) => (
+                <div key={`${rgi}-${rg.name}`}>
                   <span
                     onFocus={() => {
                       rg2Table(rowGroups.find((rgi) => rgi.name === rg.name));

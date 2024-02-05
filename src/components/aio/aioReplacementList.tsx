@@ -86,7 +86,7 @@ export const AioReplacementList = ({
         )}
         {(replacements ?? []).map((repl, i) => {
           return (
-            <div key={repl.airid ?? i}>
+            <div key={`${i}-${repl.airid}`}>
               {i > 0 && <div> and...</div>}
               <AioReplacementDisplay
                 id={`${id}-replacementdisplay-${i}`}

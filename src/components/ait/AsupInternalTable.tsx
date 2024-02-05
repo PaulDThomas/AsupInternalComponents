@@ -782,7 +782,7 @@ export const AsupInternalTable = ({
               return (
                 <AitRowGroup
                   id={`${id}-row-group-${rgi}`}
-                  key={rowGroup.aitid ?? `row-group-${rgi}`}
+                  key={`row-group-${rgi}-${rowGroup.aitid}`}
                   aitid={rowGroup.aitid ?? `row-group-${rgi}`}
                   rows={rowGroup.rows}
                   comments={rowGroup.comments}
