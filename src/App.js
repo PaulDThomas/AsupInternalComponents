@@ -7,6 +7,7 @@ import { ListPage } from './pages/ListPage';
 import './pages/pages.css';
 import { TablePage } from './pages/TablePage';
 import { WindowPage } from './pages/WindowPage';
+import { CurrentPage } from './pages/CurrentPage';
 
 const activeClass = ({ isActive }) => (isActive ? 'active' : 'inactive');
 
@@ -95,7 +96,7 @@ function App() {
           />
           <Route
             path='/internalcomponents/'
-            element={<TablePage />}
+            element={<CurrentPage />}
           />
           <Route
             path='/internalcomponents/block'

@@ -62,7 +62,9 @@ export const AioIconButton = ({
           className={`aiox-button ${iconName ?? 'aiox-down'}`}
           aria-label={tipText}
           title={tipText}
-          onClick={() => {
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
             if (typeof onClick !== 'function') return;
             // Just click if there is no drop down
             if (!menuItems || menuItems.length <= 1) {

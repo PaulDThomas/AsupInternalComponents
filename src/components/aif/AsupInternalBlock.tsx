@@ -133,7 +133,7 @@ export const AsupInternalBlock = ({
         return (
           <AifLineDisplay
             id={`${id}-line-${li}`}
-            key={l.aifid ?? li}
+            key={`${li}-${l.aifid}`}
             aifid={l.aifid}
             left={l.left}
             center={l.center}

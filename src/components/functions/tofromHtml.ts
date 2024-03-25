@@ -2,6 +2,8 @@ export const toHtml = (text: string): string =>
   text
     .replace(/&/g, '&amp;')
     .replace(/>/g, '&gt;')
+    .replace(/≥/g, '&ge;')
+    .replace(/≤/g, '&le;')
     .replace(/</g, '&lt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;')
@@ -16,5 +18,7 @@ export const fromHtml = (text: string): string =>
     .replace(/&apos;/g, "'")
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, '<')
+    .replace(/&le;/g, '≤')
+    .replace(/&ge;/g, '≥')
     .replace(/&gt;/g, '>')
     .replace(/&amp;/g, '&');

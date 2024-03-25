@@ -13,17 +13,23 @@ export function getHTMLfromV2Text(
     },
   ]);
 
+  const html = document.createElement('div');
+  html.setAttribute('classname', 'aie-text');
+  html.dataset.inlineStyleRanges = isr;
+
+  const span = document.createElement('span');
+  if (styleName !== '') {
+    span.setAttribute('classname', styleName);
+  }
+  html.appendChild(span);
+
   const cssString = Object.entries(style)
     .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
     .join(';');
+  span.setAttribute('style', cssString);
 
-  let html = `<div classname="aie-text" data-inline-style-ranges='${isr}'>`;
+  const textContent = document.createTextNode(toHtml(text.replace(/[\u200B-\u200F\uFEFF]/g, '')));
+  span.appendChild(textContent);
 
-  html += `<span${styleName !== '' ? `classname="${styleName}" style="${cssString}"` : ''}>${toHtml(
-    text.replace(/[\u200B-\u200F\uFEFF]/g, ''),
-  )}</span>`;
-
-  html += '</div>';
-
-  return html;
+  return html.outerHTML;
 }

@@ -95,7 +95,7 @@ export const AioSingleReplacements = ({
         )}
         {(replacements ?? []).map((repl, i) => {
           return (
-            <div key={repl.airid ?? i}>
+            <div key={`${i}-${repl.airid}`}>
               <AioString
                 id={`${id}-from`}
                 label='From'

@@ -650,7 +650,13 @@ export const AsupInternalTable = ({
                   id={`${id}-table-comment`}
                   label={'Notes'}
                   value={comments ?? ''}
-                  setValue={editable ? setComments : undefined}
+                  setValue={
+                    editable
+                      ? (ret) => {
+                          returnData({ comments: ret });
+                        }
+                      : undefined
+                  }
                   commentStyles={commentStyles}
                 />
               </div>
@@ -776,7 +782,7 @@ export const AsupInternalTable = ({
               return (
                 <AitRowGroup
                   id={`${id}-row-group-${rgi}`}
-                  key={rowGroup.aitid ?? `row-group-${rgi}`}
+                  key={`row-group-${rgi}-${rowGroup.aitid}`}
                   aitid={rowGroup.aitid ?? `row-group-${rgi}`}
                   rows={rowGroup.rows}
                   comments={rowGroup.comments}

@@ -188,7 +188,7 @@ export const AioReplacementDisplay = ({
         ) : (
           <>
             {newTexts.map((rv, i) => (
-              <div key={rv.airid ?? i}>
+              <div key={`${i}-${rv.airid}`}>
                 <AioReplacementValuesDisplay
                   id={`${id}-subdisplay`}
                   key={rv.airid}

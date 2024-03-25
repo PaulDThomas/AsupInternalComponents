@@ -7,7 +7,6 @@ import { toHtml } from '../../functions';
  * @param dsm Style map that has been applied
  * @returns HTML string of the content
  */
-
 export const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string => {
   // Explode string
   let chars = b.text.split('');
@@ -20,7 +19,12 @@ export const htmlBlock = (b: RawDraftContentBlock, dsm: DraftStyleMap): string =
       .join(';')}">${chars[s.offset]}`;
     chars[s.offset + s.length - 1] = `${chars[s.offset + s.length - 1]}</span>`;
   }
-  return `<div classname="aie-text" data-key="${b.key}" data-type="${
-    b.type
-  }" data-inline-style-ranges='${JSON.stringify(b.inlineStyleRanges)}'>${chars.join('')}</div>`;
+
+  const ret = document.createElement('div');
+  ret.setAttribute('classname', 'aie-text');
+  ret.dataset.key = b.key;
+  ret.dataset.type = b.type;
+  ret.dataset.inlineStyleRanges = JSON.stringify(b.inlineStyleRanges);
+  ret.innerHTML = chars.join('');
+  return ret.outerHTML;
 };

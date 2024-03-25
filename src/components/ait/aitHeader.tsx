@@ -182,7 +182,7 @@ export const AitHeader = ({
         return (
           <AitRow
             id={`${id}-header-row-${ri}`}
-            key={row.aitid ?? `row-${ri}`}
+            key={`row-${ri}-${row.aitid}`}
             aitid={row.aitid ?? `row-${ri}`}
             cells={row.cells}
             setRowData={
