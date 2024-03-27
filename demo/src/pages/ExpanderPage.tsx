@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { AioDropSelect, AioExpander } from "../components";
+import { AioDropSelect, AioExpander } from "../../../src/components";
 
 export const ExpanderPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -11,7 +11,7 @@ export const ExpanderPage = () => {
   /** Load defaults */
   useEffect(() => {
     /** Load table data as an example */
-    fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, {
+    fetch("public/tableData.json", {
       headers: { "Content-Type": "application/json", Accept: "application/json" },
     })
       .then(function (response) {

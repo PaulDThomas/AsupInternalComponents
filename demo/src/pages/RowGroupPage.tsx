@@ -5,7 +5,7 @@ import {
   AitTableData,
   AsupInternalTable,
   newRowGroup,
-} from "../components";
+} from "../../../src/components";
 
 export const RowGroupPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -190,7 +190,7 @@ export const RowGroupPage = (): JSX.Element => {
         <button
           onClick={() => {
             /** Load row group templates */
-            fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, {
+            fetch("public/groupTemplates.json", {
               headers: { "Content-Type": "application/json", Accept: "application/json" },
             })
               .then(function (response) {

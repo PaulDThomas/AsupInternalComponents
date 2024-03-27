@@ -8,7 +8,7 @@ import {
   AitTableData,
   AsupInternalTable,
   updateTableDataVersion,
-} from "../components";
+} from "../../../src/components";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -32,7 +32,7 @@ export const TablePage = () => {
   /** Load defaults */
   useEffect(() => {
     /** Load row group templates */
-    fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, {
+    fetch("public/groupTemplates.json", {
       headers: { "Content-Type": "application/json", Accept: "application/json" },
     })
       .then(function (response) {
@@ -42,7 +42,7 @@ export const TablePage = () => {
         setSampleGroupTempaltes(MyJson);
       });
     /** Load table data */
-    fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, {
+    fetch("public/tableData.json", {
       headers: { "Content-Type": "application/json", Accept: "application/json" },
     })
       .then(function (response) {

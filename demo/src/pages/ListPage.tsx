@@ -5,7 +5,7 @@ import {
   AioString,
   newExternalReplacements,
   updateReplToExtl,
-} from "../components";
+} from "../../../src/components";
 
 export const ListPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

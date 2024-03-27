@@ -1,5 +1,5 @@
 import React from "react";
-import { AsupInternalBlock } from "../components/aif/AsupInternalBlock";
+import { AsupInternalBlock } from "../../../src/components/aif/AsupInternalBlock";
 
 export const CurrentPage = () => {
   const [left, setLeft] = React.useState<string>("");

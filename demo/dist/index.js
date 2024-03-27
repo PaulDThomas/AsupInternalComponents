@@ -32997,7 +32997,7 @@ ${frame.code}`;
           var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
           parcelHelpers.defineInteropFlag(exports);
           var _jsxDevRuntime = require("react/jsx-dev-runtime");
-          var _rowGroupPage = require("pages/RowGroupPage");
+          var _rowGroupPage = require("../src/pages/RowGroupPage");
           var _reactRouterDom = require("react-router-dom");
           var _blockPage = require("./pages/BlockPage");
           var _editorPage = require("./pages/EditorPage");

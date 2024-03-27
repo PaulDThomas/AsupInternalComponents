@@ -1,7 +1,12 @@
 import { AioSingleReplacements } from "components/aio/AioSingleReplacements";
 import { updateLineDisplayVersion } from "components/functions/UpdateLineDisplayVersion";
 import React, { useRef, useState } from "react";
-import { AifBlockLine, AsupInternalBlock, AifLineType, AioExternalSingle } from "../components";
+import {
+  AifBlockLine,
+  AsupInternalBlock,
+  AifLineType,
+  AioExternalSingle,
+} from "../../../src/components";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

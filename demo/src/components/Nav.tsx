@@ -1,0 +1,40 @@
+import { ActiveNav } from "./ActiveNav";
+
+export const Nav = () => (
+  <nav>
+    <ul>
+      <ActiveNav
+        to="/"
+        label="Current"
+      />
+      <ActiveNav
+        to="/block"
+        label="Block"
+      />
+      <ActiveNav
+        to="/editor"
+        label="Editor"
+      />
+      <ActiveNav
+        to="/expander"
+        label="Expander"
+      />
+      <ActiveNav
+        to="/list"
+        label="List"
+      />
+      <ActiveNav
+        to="/rowgroup"
+        label="RowGroups"
+      />
+      <ActiveNav
+        to="/table"
+        label="Table"
+      />
+      <ActiveNav
+        to="/window"
+        label="Window"
+      />
+    </ul>
+  </nav>
+);

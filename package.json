@@ -32,7 +32,7 @@
   ],
   "scripts": {
     "build": "parcel build src/main.ts",
-    "start": "rmdir /q/s .\\.parcel-cache && parcel public/index.html",
+    "start": "rmdir /q/s .\\.parcel-cache && parcel demo/index.html",
     "prepare": "husky",
     "test": "jest",
     "test:watch": "jest --watch"
@@ -56,23 +56,22 @@
     "@parcel/transformer-sass": "^2.12.0",
     "@parcel/transformer-typescript-types": "^2.12.0",
     "@parcel/transformer-webmanifest": "^2.12.0",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/draft-js": "^0.11.9",
-    "@types/jest": "^28.1.8",
+    "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.0",
-    "@types/node": "^16.18.91",
+    "@types/node": "^20.11.30",
     "@types/react": "^18.2.72",
     "@types/react-dom": "^18.2.22",
-    "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
-    "@typescript-eslint/parser": "^5.62.0",
+    "@types/uuid": "^9.0.8",
+    "@typescript-eslint/eslint-plugin": "^7.4.0",
+    "@typescript-eslint/parser": "^7.4.0",
     "eslint": "^8.57.0",
-    "eslint-config-prettier": "^8.10.0",
-    "eslint-config-react-app": "^7.0.1",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jest": "^27.9.0",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "^9.0.11",
@@ -81,13 +80,14 @@
     "jest-watch-typeahead": "^2.2.2",
     "lint-staged": "^15.2.2",
     "parcel": "^2.12.0",
+    "parcel-reporter-static-files-copy": "^1.5.3",
     "postcss": "^8.4.38",
-    "prettier": "^2.8.8",
+    "prettier": "^3.2.5",
     "process": "^0.11.10",
     "react-router-dom": "^6.2.1",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5",
+    "typescript": "5.3.2",
     "typescript-plugin-css-modules": "^5.1.0"
   },
   "@parcel/transformer-js": {
@@ -102,6 +102,15 @@
       "dashedIndents": true
     }
   },
+  "staticFiles": [
+    {
+      "staticPath": "demo/public/static",
+      "staticOutPath": "public",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ],
   "eslintConfig": {
     "extends": [
       "react-app",

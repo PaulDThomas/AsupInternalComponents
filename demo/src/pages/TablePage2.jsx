@@ -60,10 +60,10 @@ const ReactTableDragColumnRow = (props) => {
                           ? 0.5
                           : 1
                         : dragState.direction === DRAG_DIRECTION_ROW
-                        ? dragState.dropIndex === i
-                          ? 0.5
-                          : 1
-                        : 1,
+                          ? dragState.dropIndex === i
+                            ? 0.5
+                            : 1
+                          : 1,
                   }}
                   draggable="true"
                   onDragStart={(e) => {
