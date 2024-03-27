@@ -1,6 +1,5 @@
-import { AitRowData } from "components/ait";
-import { AitColumnRepeat } from "components/ait/aitInterface";
-import { AioReplacement } from "index";
+import { AioReplacement } from "../aio/aioInterface";
+import { AitColumnRepeat, AitRowData } from "../ait/aitInterface";
 import { newRow } from "./newRow";
 import { removeUndefined } from "./removeUndefined";
 import { replaceHeaders } from "./replaceHeaders";
