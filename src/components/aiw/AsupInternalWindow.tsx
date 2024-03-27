@@ -1,8 +1,8 @@
-import { TableSettingsContext } from 'components/ait/aitContext';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Rnd } from 'react-rnd';
-import './aiw.css';
-import { chkPosition } from './chkPosition';
+import { TableSettingsContext } from "../ait/aitContext";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { Rnd } from "react-rnd";
+import "./aiw.css";
+import { chkPosition } from "./chkPosition";
 
 interface AsupInternalWindowProps {
   id: string;
@@ -28,7 +28,7 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
       if (zIndex === null || (force && zIndex < tableSettings.windowZIndex)) {
         const nextIndex = tableSettings.windowZIndex + 1;
         setZIndex(nextIndex);
-        if (typeof tableSettings.setWindowZIndex === 'function')
+        if (typeof tableSettings.setWindowZIndex === "function")
           tableSettings.setWindowZIndex(nextIndex);
       }
     },
@@ -51,11 +51,11 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
       <Rnd
         id={props.id}
         style={{
-          visibility: showWindow ? 'visible' : 'hidden',
-          display: 'flex',
+          visibility: showWindow ? "visible" : "hidden",
+          display: "flex",
           zIndex: zIndex ?? 1,
           ...props.style,
-          position: 'fixed',
+          position: "fixed",
         }}
         ref={rndRef}
         position={x !== undefined && y !== undefined ? { x, y } : undefined}
@@ -68,30 +68,30 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
             setY(newY);
           }
         }}
-        minHeight={(props.style && props.style.minHeight) ?? '150px'}
-        minWidth={(props.style && props.style.minWidth) ?? '400px'}
-        maxHeight={(props.style && props.style?.maxHeight) ?? '1000px'}
-        maxWidth={(props.style && props.style?.maxWidth) ?? '1000px'}
-        className={'aiw-holder'}
-        dragHandleClassName='aiw-title'
+        minHeight={(props.style && props.style.minHeight) ?? "150px"}
+        minWidth={(props.style && props.style.minWidth) ?? "400px"}
+        maxHeight={(props.style && props.style?.maxHeight) ?? "1000px"}
+        maxWidth={(props.style && props.style?.maxWidth) ?? "1000px"}
+        className={"aiw-holder"}
+        dragHandleClassName="aiw-title"
       >
         <div
-          className='aiw-inner'
+          className="aiw-inner"
           onClick={() => chkTop(true)}
         >
-          <div className={'aiw-title'}>
+          <div className={"aiw-title"}>
             <div
               id={`${props.id}-title`}
-              className={'aiw-title-text'}
+              className={"aiw-title-text"}
             >
               {props.title}
             </div>
             <div
               id={`${props.id}-close`}
-              className={'aiw-title-close'}
+              className={"aiw-title-close"}
               onClick={() => {
                 setShowWindow(false);
-                if (typeof props.onClose === 'function') {
+                if (typeof props.onClose === "function") {
                   props.onClose();
                 }
               }}
@@ -101,7 +101,7 @@ export const AsupInternalWindow = (props: AsupInternalWindowProps): JSX.Element 
           </div>
           <div
             id={`${props.id}-body`}
-            className={'aiw-body'}
+            className={"aiw-body"}
           >
             {props.children}
           </div>

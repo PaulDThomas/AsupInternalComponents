@@ -1,5 +1,4 @@
-import structuredClone from '@ungap/structured-clone';
-import { AioReplacement } from '../aio';
+import { AioReplacement } from "../aio";
 
 export const appendReplacement = (
   incoming: AioReplacement,

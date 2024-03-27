@@ -1,6 +1,5 @@
-import structuredClone from '@ungap/structured-clone';
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from '../aio';
-import { updateExternals } from './updateExternals';
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
+import { updateExternals } from "./updateExternals";
 
 export const updateExternal = (
   rep: AioReplacement,
