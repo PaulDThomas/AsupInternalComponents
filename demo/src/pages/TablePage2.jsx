@@ -16,7 +16,7 @@ const defaultDrageState = {
 const ReactTableDragColumnRow = (props) => {
   // eslint-disable-next-line react/prop-types
   let { heads = [], rows = [], onDragEnd } = props;
-  let [dragState, setDragState] = useState({ ...defaultDrageState });
+  const [dragState, setDragState] = useState({ ...defaultDrageState });
   const headsEl = useRef(null),
     rowsEl = useRef(null),
     preview = useRef(null);
@@ -30,7 +30,6 @@ const ReactTableDragColumnRow = (props) => {
     rows = offsetIndex(dragState.row, dragState.dropIndex, rows);
   }
 
-  // console.log(JSON.stringify(dragState))
   return (
     <>
       <table>
