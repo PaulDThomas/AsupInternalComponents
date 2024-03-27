@@ -101,7 +101,7 @@ export const AioReplacementList = ({
                     : undefined
                 }
                 dontAskSpace={dontAskSpace}
-                dontAskTrail={i > 0 ? true : dontAskTrail}
+                dontAskTrail={dontAskTrail}
                 externalLists={externalLists}
               />
               {typeof setReplacements === "function" && (

@@ -219,10 +219,10 @@ export const AsupInternalTable = ({
         !tableUpdate.headerDataUnprocessed && tableUpdate.headerData
           ? unProcessRowGroup(tableUpdate.headerData)
           : tableUpdate.headerData
-          ? tableUpdate.headerData
-          : headerData !== false && headerData !== undefined
-          ? unProcessRowGroup(headerData)
-          : headerData;
+            ? tableUpdate.headerData
+            : headerData !== false && headerData !== undefined
+              ? unProcessRowGroup(headerData)
+              : headerData;
       // Unprocess body data
       const bodyRet =
         tableUpdate.bodyDataUnprocessed || !tableUpdate.bodyData
@@ -480,8 +480,8 @@ export const AsupInternalTable = ({
                           ? colWidth
                           : c.colWidth
                         : ci === colNo
-                        ? colWidth
-                        : c.colWidth,
+                          ? colWidth
+                          : c.colWidth,
                     };
                   }),
                 };
@@ -505,8 +505,8 @@ export const AsupInternalTable = ({
                             ? colWidth
                             : c.colWidth
                           : ci === colNo
-                          ? colWidth
-                          : c.colWidth,
+                            ? colWidth
+                            : c.colWidth,
                       };
                     }),
                   };
@@ -606,11 +606,11 @@ export const AsupInternalTable = ({
           groupTemplates === false
             ? ["None"]
             : groupTemplates !== undefined
-            ? (groupTemplates
-                .filter((g) => g.name !== undefined)
-                .map((g) => g.name)
-                .sort((a, b) => (a ?? "").localeCompare(b ?? "")) as string[])
-            : undefined,
+              ? (groupTemplates
+                  .filter((g) => g.name !== undefined)
+                  .map((g) => g.name)
+                  .sort((a, b) => (a ?? "").localeCompare(b ?? "")) as string[])
+              : undefined,
         commentStyles: commentStyles,
         cellStyles: cellStyles,
         columnRepeats: columnRepeats,
