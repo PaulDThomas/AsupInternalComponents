@@ -1,7 +1,7 @@
-import { AioExternalReplacements, AioReplacement } from '../aio';
-import { appendReplacement } from './appendReplacement';
-import { newReplacement } from './newReplacement';
-import { updateExternals } from './updateExternals';
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { appendReplacement } from "./appendReplacement";
+import { newReplacement } from "./newReplacement";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Consolidate replacements array into a single replacement

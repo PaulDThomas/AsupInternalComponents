@@ -1,15 +1,15 @@
-import { RowGroupPage } from 'pages/RowGroupPage';
-import { BrowserRouter, Navigate, NavLink, Route, Routes } from 'react-router-dom';
-import { BlockPage } from './pages/BlockPage';
-import { EditorPage } from './pages/EditorPage';
-import { ExpanderPage } from './pages/ExpanderPage';
-import { ListPage } from './pages/ListPage';
-import './pages/pages.css';
-import { TablePage } from './pages/TablePage';
-import { WindowPage } from './pages/WindowPage';
-import { CurrentPage } from './pages/CurrentPage';
+import { RowGroupPage } from "pages/RowGroupPage";
+import { BrowserRouter, Navigate, NavLink, Route, Routes } from "react-router-dom";
+import { BlockPage } from "./pages/BlockPage";
+import { EditorPage } from "./pages/EditorPage";
+import { ExpanderPage } from "./pages/ExpanderPage";
+import { ListPage } from "./pages/ListPage";
+import "./pages/pages.css";
+import { TablePage } from "./pages/TablePage";
+import { WindowPage } from "./pages/WindowPage";
+import { CurrentPage } from "./pages/CurrentPage";
 
-const activeClass = ({ isActive }) => (isActive ? 'active' : 'inactive');
+const activeClass = ({ isActive }) => (isActive ? "active" : "inactive");
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
           <ul>
             <li>
               <NavLink
-                to='/internalcomponents/'
+                to="/internalcomponents/"
                 className={activeClass}
               >
                 Current
@@ -27,7 +27,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/block'
+                to="/internalcomponents/block"
                 className={activeClass}
               >
                 TiFo block
@@ -35,7 +35,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/list'
+                to="/internalcomponents/list"
                 className={activeClass}
               >
                 Lists
@@ -43,7 +43,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/rowgroup'
+                to="/internalcomponents/rowgroup"
                 className={activeClass}
               >
                 RowGroups
@@ -51,7 +51,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/table'
+                to="/internalcomponents/table"
                 className={activeClass}
               >
                 Table
@@ -59,7 +59,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/editor'
+                to="/internalcomponents/editor"
                 className={activeClass}
               >
                 Editor
@@ -67,7 +67,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/expander'
+                to="/internalcomponents/expander"
                 className={activeClass}
               >
                 Expander
@@ -75,7 +75,7 @@ function App() {
             </li>
             <li>
               <NavLink
-                to='/internalcomponents/window'
+                to="/internalcomponents/window"
                 className={activeClass}
               >
                 Window
@@ -86,50 +86,50 @@ function App() {
 
         <Routes>
           <Route
-            path='/'
+            path="/"
             element={
               <Navigate
                 replace
-                to='/internalcomponents/'
+                to="/internalcomponents/"
               />
             }
           />
           <Route
-            path='/internalcomponents/'
+            path="/internalcomponents/"
             element={<CurrentPage />}
           />
           <Route
-            path='/internalcomponents/block'
+            path="/internalcomponents/block"
             element={<BlockPage />}
           />
           <Route
-            path='/internalcomponents/editor'
+            path="/internalcomponents/editor"
             element={<EditorPage />}
           />
           <Route
-            path='/internalcomponents/expander'
+            path="/internalcomponents/expander"
             element={<ExpanderPage />}
           />
           <Route
-            path='/internalcomponents/list'
+            path="/internalcomponents/list"
             element={<ListPage />}
           />
           <Route
-            path='/internalcomponents/rowgroup'
+            path="/internalcomponents/rowgroup"
             element={<RowGroupPage />}
           />
           <Route
-            path='/internalcomponents/table'
+            path="/internalcomponents/table"
             element={<TablePage />}
           />
           <Route
-            path='/internalcomponents/window'
+            path="/internalcomponents/window"
             element={<WindowPage />}
           />
           <Route
-            path='*'
+            path="*"
             element={
-              <main style={{ padding: '1rem' }}>
+              <main style={{ padding: "1rem" }}>
                 <p>There&apos;s nothing here!</p>
               </main>
             }

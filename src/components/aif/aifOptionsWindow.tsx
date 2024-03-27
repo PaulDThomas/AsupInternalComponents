@@ -1,8 +1,8 @@
-import React from 'react';
-import { AieStyleMap } from '../aie';
-import { AioSelect } from '../aio/aioSelect';
-import { AsupInternalWindow } from '../aiw/AsupInternalWindow';
-import { OriginalText } from './OriginalText';
+import React from "react";
+import { AieStyleMap } from "../aie";
+import { AioSelect } from "../aio/aioSelect";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { OriginalText } from "./OriginalText";
 
 interface AifOptionsWindowProps {
   id: string;
@@ -32,23 +32,23 @@ export const AifOptionsWindow = ({
   return (
     <AsupInternalWindow
       id={id}
-      title='Line options'
+      title="Line options"
       visible={true}
       onClose={onClose}
     >
-      <div className='aiw-body-row'>
+      <div className="aiw-body-row">
         <AioSelect
           id={`${id}-linetype`}
-          label='Line type'
-          availableValues={['Left only', 'Center only', 'Left, Center and Right', 'Left and Right']}
+          label="Line type"
+          availableValues={["Left only", "Center only", "Left, Center and Right", "Left and Right"]}
           value={
-            typeof left === 'string' && typeof center === 'string' && typeof right === 'string'
-              ? 'Left, Center and Right'
-              : typeof left === 'string' && typeof right === 'string'
-              ? 'Left and Right'
-              : typeof left === 'string'
-              ? 'Left only'
-              : 'Center only'
+            typeof left === "string" && typeof center === "string" && typeof right === "string"
+              ? "Left, Center and Right"
+              : typeof left === "string" && typeof right === "string"
+              ? "Left and Right"
+              : typeof left === "string"
+              ? "Left only"
+              : "Center only"
           }
           setValue={
             returnData && canChangeType
@@ -57,21 +57,21 @@ export const AifOptionsWindow = ({
                   let newCenter = null;
                   let newRight = null;
                   switch (ret) {
-                    case 'Left only':
-                      newLeft = left || '';
+                    case "Left only":
+                      newLeft = left || "";
                       break;
-                    case 'Center only':
-                      newCenter = center || '';
+                    case "Center only":
+                      newCenter = center || "";
                       break;
-                    case 'Left and Right':
-                      newLeft = left || '';
-                      newRight = right || '';
+                    case "Left and Right":
+                      newLeft = left || "";
+                      newRight = right || "";
                       break;
-                    case 'Left, Center and Right':
+                    case "Left, Center and Right":
                     default:
-                      newLeft = left || '';
-                      newCenter = center || '';
-                      newRight = right || '';
+                      newLeft = left || "";
+                      newCenter = center || "";
+                      newRight = right || "";
                       break;
                   }
                   returnData({ left: newLeft, center: newCenter, right: newRight });
@@ -82,21 +82,21 @@ export const AifOptionsWindow = ({
       </div>
       <OriginalText
         id={`${id}-unprocessed-left-text`}
-        label='Left text'
+        label="Left text"
         text={left}
         setText={returnData ? (ret) => returnData({ left: ret }) : undefined}
         styleMap={styleMap}
       />
       <OriginalText
         id={`${id}-unprocessed-center-text`}
-        label='Center text'
+        label="Center text"
         text={center}
         setText={returnData ? (ret) => returnData({ center: ret }) : undefined}
         styleMap={styleMap}
       />
       <OriginalText
         id={`${id}-unprocessed-right-text`}
-        label='Right text'
+        label="Right text"
         text={right}
         setText={returnData ? (ret) => returnData({ right: ret }) : undefined}
         styleMap={styleMap}

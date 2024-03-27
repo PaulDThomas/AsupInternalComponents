@@ -1,6 +1,6 @@
-import * as React from 'react';
-import './aie.css';
-import { AieStyleButton } from './AieStyleButton';
+import * as React from "react";
+import "./aie.css";
+import { AieStyleButton } from "./AieStyleButton";
 
 interface AieStyleButtonRowProps {
   id: string;
@@ -19,10 +19,10 @@ export const AieStyleButtonRow = (props: AieStyleButtonRowProps): JSX.Element =>
         key={style}
         styleName={style}
         currentStyle={
-          typeof props.currentStyle === 'string' ? style === props.currentStyle : props.currentStyle
+          typeof props.currentStyle === "string" ? style === props.currentStyle : props.currentStyle
         }
         applyStyleFunction={props.applyStyleFunction}
-        disabled={props.disabled && props.currentStyle !== 'string'}
+        disabled={props.disabled && props.currentStyle !== "string"}
       />,
     );
   }

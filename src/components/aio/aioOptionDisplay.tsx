@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
-import './aio.css';
-import { AioOption } from './aioInterface';
-import { AioLabel } from './aioLabel';
-import { AioPrintOption } from './aioPrintOption';
+import React, { useCallback } from "react";
+import "./aio.css";
+import { AioOption } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
+import { AioPrintOption } from "./aioPrintOption";
 
 interface AioOptionDisplayProps {
   id: string;
@@ -18,7 +18,7 @@ export const AioOptionDisplay = ({
   // Update current options from child object
   const updateOption = useCallback(
     (ret: AioOption, i: number) => {
-      if (typeof setOptions !== 'function') return;
+      if (typeof setOptions !== "function") return;
       const newOptions = [...(options ?? [])];
       (newOptions[i].value as AioOption) = ret;
       setOptions(newOptions);
@@ -28,10 +28,10 @@ export const AioOptionDisplay = ({
 
   if (options === undefined)
     return (
-      <div className='aio-body-row'>
+      <div className="aio-body-row">
         <AioLabel
           id={`${id}-label`}
-          label='No options deinfed'
+          label="No options deinfed"
         />
       </div>
     );
@@ -41,7 +41,7 @@ export const AioOptionDisplay = ({
       {options?.map((option, i) => {
         return (
           <div
-            className='aio-body-row'
+            className="aio-body-row"
             key={i}
           >
             <AioPrintOption

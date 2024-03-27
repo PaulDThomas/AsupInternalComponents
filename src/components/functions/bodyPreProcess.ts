@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { AitRowGroupData } from '../ait';
-import { rowPreProcess } from './rowPreProcess';
+import { v4 as uuidv4 } from "uuid";
+import { AitRowGroupData } from "../ait";
+import { rowPreProcess } from "./rowPreProcess";
 
 /**
  * Preprocessing for bodyData row groups

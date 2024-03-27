@@ -1,4 +1,4 @@
-import { AifBlockLine } from '../aif/aifInterface';
+import { AifBlockLine } from "../aif/aifInterface";
 
 interface OldBlockLine {
   aifid?: string; // Unique ID
@@ -17,14 +17,14 @@ export const updateLineDisplayVersion = (
   return inArray.map((inData) => {
     // Check options for new center
     let newCenter: string | null = null;
-    if (typeof (inData as OldBlockLine).centre === 'string') {
+    if (typeof (inData as OldBlockLine).centre === "string") {
       newCenter = (inData as OldBlockLine).centre as string;
-    } else if (typeof (inData as AifBlockLine).center === 'string') {
+    } else if (typeof (inData as AifBlockLine).center === "string") {
       newCenter = (inData as AifBlockLine).center as string;
     }
     // Ensure at least one is present
-    if (!inData.left && inData.left !== '' && !newCenter && !inData.right && inData.right !== '') {
-      newCenter = '';
+    if (!inData.left && inData.left !== "" && !newCenter && !inData.right && inData.right !== "") {
+      newCenter = "";
     }
 
     return {

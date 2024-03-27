@@ -1,9 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react";
 
 // tell direction after drag start, the first dirction that reach 5px offset
-const DRAG_DIRECTION_NONE = '';
-const DRAG_DIRECTION_ROW = 'row';
-const DRAG_DIRECTION_COLUMN = 'column';
+const DRAG_DIRECTION_NONE = "";
+const DRAG_DIRECTION_ROW = "row";
+const DRAG_DIRECTION_COLUMN = "column";
 
 const defaultDrageState = {
   column: -1,
@@ -48,12 +48,12 @@ const ReactTableDragColumnRow = (props) => {
                 <td
                   key={j}
                   style={{
-                    height: '40px',
-                    width: '40px',
-                    textAlign: 'center',
-                    verticalAlign: 'middle',
-                    border: '1px solid black',
-                    cursor: dragState.direction ? 'move' : 'grab',
+                    height: "40px",
+                    width: "40px",
+                    textAlign: "center",
+                    verticalAlign: "middle",
+                    border: "1px solid black",
+                    cursor: dragState.direction ? "move" : "grab",
                     opacity:
                       dragState.direction === DRAG_DIRECTION_COLUMN
                         ? dragState.dropIndex === j
@@ -65,9 +65,9 @@ const ReactTableDragColumnRow = (props) => {
                           : 1
                         : 1,
                   }}
-                  draggable='true'
+                  draggable="true"
                   onDragStart={(e) => {
-                    console.log('onDragStart');
+                    console.log("onDragStart");
                     e.dataTransfer.setDragImage(preview.current, 0, 0);
                     setDragState({
                       ...dragState,
@@ -80,7 +80,7 @@ const ReactTableDragColumnRow = (props) => {
                     });
                   }}
                   onDragEnter={() => {
-                    console.log('onDragEnter');
+                    console.log("onDragEnter");
                     if (!dragState.direction) {
                       if (dragState.column !== j) {
                         setDragState({
@@ -121,7 +121,7 @@ const ReactTableDragColumnRow = (props) => {
                     }
                   }}
                   onDragEnd={() => {
-                    console.log('onDragEnd');
+                    console.log("onDragEnd");
                     onDragEnd(
                       dragState.direction,
                       dragState.direction === DRAG_DIRECTION_COLUMN
@@ -135,7 +135,7 @@ const ReactTableDragColumnRow = (props) => {
                 >
                   <span>
                     <input
-                      style={{ width: '25px' }}
+                      style={{ width: "25px" }}
                       value={y}
                       readOnly
                     />
@@ -149,10 +149,10 @@ const ReactTableDragColumnRow = (props) => {
       <div
         ref={preview}
         style={{
-          position: 'absolute',
+          position: "absolute",
           width: 0,
           height: 0,
-          overflow: 'hidden',
+          overflow: "hidden",
         }}
       />
     </>
@@ -177,7 +177,7 @@ function offsetIndex(from, to, arr = []) {
 
 export const Table2 = () => {
   let [data, setData] = useState({
-    heads: ['a', 'b', 'c', 'd', 'e', 'f'],
+    heads: ["a", "b", "c", "d", "e", "f"],
     rows: [
       [1, 2, 3, 1, 2, 3],
       [11, 2, 3, 11, 2, 3],
@@ -188,12 +188,12 @@ export const Table2 = () => {
   return (
     <div>
       <h1>react table drag column row</h1>
-      <div style={{ padding: '1rem' }}>
+      <div style={{ padding: "1rem" }}>
         <ReactTableDragColumnRow
           heads={data.heads}
           rows={data.rows}
           onChange={() => {
-            console.log('drag end');
+            console.log("drag end");
           }}
           onDragEnd={(type, from, to, newData) => {
             console.log({

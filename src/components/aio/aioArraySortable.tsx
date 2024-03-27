@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { AsupInternalWindow } from '../aiw/AsupInternalWindow';
-import { AioNewItem, AioOptionType } from './aioInterface';
-import { AioOptionDisplay } from './aioOptionDisplay';
-import { AioPrintOption } from './aioPrintOption';
+import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { AioNewItem, AioOptionType } from "./aioInterface";
+import { AioOptionDisplay } from "./aioOptionDisplay";
+import { AioPrintOption } from "./aioPrintOption";
 
 interface AioArraySortableProps {
   id: string;
@@ -23,14 +23,14 @@ export function AioArraySortable(props: AioArraySortableProps) {
     return (
       <AsupInternalWindow
         id={`${props.id}-window-${i}`}
-        title={'Add item'}
+        title={"Add item"}
         visible={showWindows[i]}
         onClose={() => {
           const newShowWindows = [...showWindows];
           newShowWindows[i] = false;
           setShowWindows(newShowWindows);
         }}
-        style={{ minHeight: '100px' }}
+        style={{ minHeight: "100px" }}
       >
         <AioOptionDisplay
           id={`${props.id}-optiondisplay`}
@@ -38,27 +38,27 @@ export function AioArraySortable(props: AioArraySortableProps) {
             {
               type: AioOptionType.select,
               optionName: AioNewItem.newType,
-              value: '',
-              label: 'New type',
-              availableValues: ['string', 'number', 'array', 'object'],
+              value: "",
+              label: "New type",
+              availableValues: ["string", "number", "array", "object"],
             },
           ]}
           setOptions={(ret) => {
             // Check value is ok
             let newItem;
             switch (ret[0].value) {
-              case 'number':
+              case "number":
                 newItem = 0;
                 break;
-              case 'array':
+              case "array":
                 newItem = [];
                 break;
-              case 'object':
+              case "object":
                 newItem = {};
                 break;
-              case 'string':
+              case "string":
               default:
-                newItem = '';
+                newItem = "";
             }
             const newArray = [...props.inputArray];
             newArray.splice(i, 0, newItem);
@@ -75,8 +75,8 @@ export function AioArraySortable(props: AioArraySortableProps) {
   return (
     <>
       {props.inputArray.length === 0 && (
-        <div className='aio-body-row'>
-          <div className='aio-label'>
+        <div className="aio-body-row">
+          <div className="aio-label">
             <em>Empty array</em>
           </div>
         </div>
@@ -87,7 +87,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
           const id = value ?? i;
           return (
             <div
-              className='aio-body-row'
+              className="aio-body-row"
               key={i}
             >
               <AioPrintOption
@@ -153,19 +153,19 @@ export function AioArraySortable(props: AioArraySortableProps) {
       }
       {props.canAddItems && (
         <div
-          className='aio-body-row'
+          className="aio-body-row"
           key={props.inputArray.length}
         >
-          <div className='aio-input-holder' />
-          <div className='aiox-button-holder'>
+          <div className="aio-input-holder" />
+          <div className="aiox-button-holder">
             {props.canMoveItems && (
               <div
-                className='aiox-button'
+                className="aiox-button"
                 style={{ margin: 0 }}
               />
             )}
             <div
-              className='aiox-button aiox-plus'
+              className="aiox-button aiox-plus"
               onClick={() => {
                 const newShowWindows = [...showWindows];
                 newShowWindows[props.inputArray.length] = true;

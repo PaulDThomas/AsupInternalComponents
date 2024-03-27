@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AioLabel } from './aioLabel';
+import React, { useEffect, useState } from "react";
+import { AioLabel } from "./aioLabel";
 
 interface AioNumberProps {
   id: string;
@@ -27,15 +27,15 @@ export const AioNumber = (props: AioNumberProps): JSX.Element => {
         id={`${props.id}-label`}
         label={props.label}
       />
-      <div className={'aio-input-holder'}>
-        {typeof props.setValue !== 'function' ? (
+      <div className={"aio-input-holder"}>
+        {typeof props.setValue !== "function" ? (
           <span>{props.value}</span>
         ) : (
           <input
             id={props.id}
-            className={'aio-input'}
+            className={"aio-input"}
             value={value}
-            type={'number'}
+            type={"number"}
             onChange={(e) => setValue(parseFloat(e.currentTarget.value))}
             onBlur={() => {
               if (props.setValue !== undefined) props.setValue(value);

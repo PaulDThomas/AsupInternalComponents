@@ -1,30 +1,30 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from "react";
 import {
   AioString,
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
   newRowGroup,
-} from '../components';
+} from "../components";
 
 export const RowGroupPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
   const [rowGroups, setRowGroups] = useState<AitRowGroupData[]>([]);
   const [tableData, setTableData] = useState<AitTableData | null>(null);
-  const [currentName, setCurrentName] = useState<string>('');
+  const [currentName, setCurrentName] = useState<string>("");
 
   const loadData = useCallback(() => {
     try {
-      if (ta.current && ta.current.value === '') {
-        ta.current.value = window.localStorage.getItem('rowGroupContent') ?? '';
+      if (ta.current && ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem("rowGroupContent") ?? "";
       }
       if (ta.current) {
-        const j: AitRowGroupData[] = JSON.parse(ta.current.value?.toString() ?? '[]');
+        const j: AitRowGroupData[] = JSON.parse(ta.current.value?.toString() ?? "[]");
         setRowGroups(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
-      console.log('JSON parse failed');
+      console.log("JSON parse failed");
       console.dir(e);
     }
   }, []);
@@ -61,26 +61,26 @@ export const RowGroupPage = (): JSX.Element => {
     <>
       <div
         style={{
-          width: '100%',
-          margin: '1.5rem',
-          display: 'flex',
+          width: "100%",
+          margin: "1.5rem",
+          display: "flex",
         }}
       >
-        <div style={{ width: '30%' }}>
+        <div style={{ width: "30%" }}>
           <h4>Available row groups</h4>
           <div>
             {rowGroups
-              .filter((rg) => rg.name !== 'Empty section')
+              .filter((rg) => rg.name !== "Empty section")
               .map((rg, rgi) => (
                 <div key={`${rgi}-${rg.name}`}>
                   <span
                     onFocus={() => {
                       rg2Table(rowGroups.find((rgi) => rgi.name === rg.name));
-                      setCurrentName(rg.name ?? '');
+                      setCurrentName(rg.name ?? "");
                     }}
                   >
                     <AioString
-                      id='test-string'
+                      id="test-string"
                       value={rg.name}
                       setValue={(ret) => {
                         setCurrentName(ret);
@@ -95,7 +95,7 @@ export const RowGroupPage = (): JSX.Element => {
                     />
                   </span>
                   <div
-                    className='aiox-button aiox-minus'
+                    className="aiox-button aiox-minus"
                     onClick={() => {
                       const newRgs = [...rowGroups];
                       newRgs.splice(
@@ -109,11 +109,11 @@ export const RowGroupPage = (): JSX.Element => {
                   {tableData && currentName === rg.name && (
                     <div
                       style={{
-                        display: 'inline-block',
-                        marginLeft: '0.5rem',
-                        height: '1rem',
-                        width: '1rem',
-                        backgroundColor: 'green',
+                        display: "inline-block",
+                        marginLeft: "0.5rem",
+                        height: "1rem",
+                        width: "1rem",
+                        backgroundColor: "green",
                       }}
                     />
                   )}
@@ -122,7 +122,7 @@ export const RowGroupPage = (): JSX.Element => {
           </div>
           {/* Add list button */}
           <div
-            className='aiox-button aiox-plus'
+            className="aiox-button aiox-plus"
             onClick={() => {
               const newRgs = [...rowGroups];
               const newRg = { ...newRowGroup(50), name: `Group ${newRgs.length}` };
@@ -132,19 +132,19 @@ export const RowGroupPage = (): JSX.Element => {
             }}
           />
         </div>
-        <div style={{ width: '70%' }}>
+        <div style={{ width: "70%" }}>
           <h4>Row group</h4>
           <div>
             {tableData && (
               <div
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
                 }}
               >
                 <AsupInternalTable
-                  id='test-table'
+                  id="test-table"
                   groupTemplates={false}
                   tableData={tableData}
                   setTableData={(ret) => {
@@ -167,11 +167,11 @@ export const RowGroupPage = (): JSX.Element => {
 
       <div
         style={{
-          margin: '1rem',
-          padding: '1rem',
-          border: 'solid black 3px',
-          backgroundColor: 'rgb(220, 220, 220)',
-          borderRadius: '8px',
+          margin: "1rem",
+          padding: "1rem",
+          border: "solid black 3px",
+          backgroundColor: "rgb(220, 220, 220)",
+          borderRadius: "8px",
         }}
       >
         <button onClick={loadData}>Load</button>
@@ -181,17 +181,17 @@ export const RowGroupPage = (): JSX.Element => {
             // Show intended data
             ta.current.value = JSON.stringify(rowGroups, null, 2);
             // Save string
-            window.localStorage.setItem('rowGroupContent', JSON.stringify(rowGroups));
+            window.localStorage.setItem("rowGroupContent", JSON.stringify(rowGroups));
           }}
         >
           Save
         </button>
-        <span style={{ paddingLeft: '1rem', paddingRight: '1rem' }}>(browser storage)</span>
+        <span style={{ paddingLeft: "1rem", paddingRight: "1rem" }}>(browser storage)</span>
         <button
           onClick={() => {
             /** Load row group templates */
             fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, {
-              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              headers: { "Content-Type": "application/json", Accept: "application/json" },
             })
               .then(function (response) {
                 return response.json();
@@ -206,7 +206,7 @@ export const RowGroupPage = (): JSX.Element => {
 
         <pre>
           <textarea
-            style={{ width: '98%', height: '200px' }}
+            style={{ width: "98%", height: "200px" }}
             ref={ta}
           />
         </pre>

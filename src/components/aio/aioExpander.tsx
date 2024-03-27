@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { AsupInternalWindow } from '../aiw/AsupInternalWindow';
-import { AioArraySortable } from './aioArraySortable';
-import { AioNewItem, AioOption, AioOptionType } from './aioInterface';
-import { AioLabel } from './aioLabel';
-import { AioOptionDisplay } from './aioOptionDisplay';
-import { AioPrintOption } from './aioPrintOption';
+import React, { useState } from "react";
+import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { AioArraySortable } from "./aioArraySortable";
+import { AioNewItem, AioOption, AioOptionType } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
+import { AioOptionDisplay } from "./aioOptionDisplay";
+import { AioPrintOption } from "./aioPrintOption";
 
 interface AioExpanderProps {
   id: string;
@@ -27,24 +27,24 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
     if (props.inputObject === undefined) return;
     // Check value is ok
     if (
-      ret[0].value !== '' &&
+      ret[0].value !== "" &&
       Object.keys(props.inputObject).indexOf(ret[0].value as string) === -1 &&
       props.updateObject
     ) {
       let newItem;
       switch (ret[1].value) {
-        case 'number':
+        case "number":
           newItem = 0;
           break;
-        case 'array':
+        case "array":
           newItem = [];
           break;
-        case 'object':
+        case "object":
           newItem = {};
           break;
-        case 'string':
+        case "string":
         default:
-          newItem = '';
+          newItem = "";
       }
       const newObject: { [key: string]: unknown } = { ...props.inputObject };
       newObject[ret[0].value as string] = newItem;
@@ -68,49 +68,49 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         />
         <div
           id={props.id}
-          className='aio-input-holder'
+          className="aio-input-holder"
         >
           <span
             id={`${props.id}-expander`}
-            className='aiox closed'
+            className="aiox closed"
           >
-            {typeof props.inputObject === 'object' && (
+            {typeof props.inputObject === "object" && (
               <div
                 id={`${props.id}-expanderbutton`}
-                className='aiox-button aiox-open-close'
+                className="aiox-button aiox-open-close"
                 onClick={() => setIsExpanded(true)}
               />
             )}
             <span
               id={`${props.id}-valueholder`}
-              className='aiox-value'
+              className="aiox-value"
             >
               {Array.isArray(props.inputObject) ? (
-                Object.values(props.inputObject).filter((el) => typeof el === 'object').length >
+                Object.values(props.inputObject).filter((el) => typeof el === "object").length >
                 0 ? (
-                  `${props.inputObject.length} item${props.inputObject.length !== 1 ? 's' : ''}`
+                  `${props.inputObject.length} item${props.inputObject.length !== 1 ? "s" : ""}`
                 ) : (
-                  Object.values(props.inputObject).join(', ')
+                  Object.values(props.inputObject).join(", ")
                 )
-              ) : typeof props.inputObject === 'object' &&
+              ) : typeof props.inputObject === "object" &&
                 props.inputObject !== undefined &&
                 props.inputObject !== null ? (
                 Object.keys(props.inputObject)
                   .map((a: string) => {
-                    return props.inputObject && typeof props.inputObject[a] === 'object'
+                    return props.inputObject && typeof props.inputObject[a] === "object"
                       ? a
                       : props.inputObject !== undefined
                       ? props.inputObject[a]
                       : a;
                   })
-                  .join(', ')
+                  .join(", ")
               ) : props.inputObject !== undefined && props.inputObject !== null ? (
                 <AioPrintOption
                   id={`${props.id}-one`}
                   value={props.inputObject}
                 />
               ) : (
-                'Input object is not defined'
+                "Input object is not defined"
               )}
             </span>
           </span>
@@ -129,18 +129,18 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
         />
         <div
           id={`${props.id}`}
-          className='aio-input-holder'
+          className="aio-input-holder"
         >
           <span
             id={`${props.id}-expander`}
-            className='aiox open'
+            className="aiox open"
           >
             <div
               id={`${props.id}-expanderbutton`}
-              className='aiox-button aiox-open-close'
+              className="aiox-button aiox-open-close"
               onClick={() => setIsExpanded(false)}
             />
-            <div className={`aiox-table ${props.showBorders && 'show-borders'}`}>
+            <div className={`aiox-table ${props.showBorders && "show-borders"}`}>
               {Array.isArray(props.inputObject) ? (
                 <AioArraySortable
                   id={`${props.id}-arraysortable`}
@@ -155,9 +155,9 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                   {Object.keys(props.inputObject).length === 0 && (
                     <div
                       id={`${props.id}-empty`}
-                      className='aio-body-row'
+                      className="aio-body-row"
                     >
-                      <div className='aio-label'>
+                      <div className="aio-label">
                         <em>Empty object</em>
                       </div>
                     </div>
@@ -166,7 +166,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                     if (!props.inputObject) return <></>;
                     return (
                       <div
-                        className='aio-body-row'
+                        className="aio-body-row"
                         key={i}
                       >
                         <AioPrintOption
@@ -200,17 +200,17 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                   })}
                   {props.canAddItems && props.updateObject ? (
                     <div
-                      className='aio-body-row'
-                      key={'n'}
+                      className="aio-body-row"
+                      key={"n"}
                     >
-                      <div className='aio-label' />
+                      <div className="aio-label" />
                       <div
-                        className='aio-input-holder'
-                        style={{ borderLeft: '0' }}
+                        className="aio-input-holder"
+                        style={{ borderLeft: "0" }}
                       />
-                      <div className='aiox-button-holder'>
+                      <div className="aiox-button-holder">
                         <div
-                          className='aiox-button aiox-plus'
+                          className="aiox-button aiox-plus"
                           onClick={() => {
                             setShowNewItemWindow(!showNewItemWindow);
                           }}
@@ -218,10 +218,10 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                         {showNewItemWindow && (
                           <AsupInternalWindow
                             id={`${props.id}-newitemwindow`}
-                            title={'Add item'}
+                            title={"Add item"}
                             visible={showNewItemWindow}
                             onClose={() => setShowNewItemWindow(false)}
-                            style={{ minHeight: '120px' }}
+                            style={{ minHeight: "120px" }}
                           >
                             <AioOptionDisplay
                               id={`${props.id}-optiondisplay`}
@@ -229,15 +229,15 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                                 {
                                   type: AioOptionType.string,
                                   optionName: AioNewItem.newKey,
-                                  value: '',
-                                  label: 'New key',
+                                  value: "",
+                                  label: "New key",
                                 },
                                 {
                                   type: AioOptionType.select,
                                   optionName: AioNewItem.newType,
-                                  value: '',
-                                  label: 'New type',
-                                  availableValues: ['string', 'number', 'array', 'object'],
+                                  value: "",
+                                  label: "New type",
+                                  availableValues: ["string", "number", "array", "object"],
                                 },
                               ]}
                               setOptions={onClickAdd}

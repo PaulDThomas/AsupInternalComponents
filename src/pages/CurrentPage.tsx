@@ -1,11 +1,11 @@
-import React from 'react';
-import { AsupInternalBlock } from '../components/aif/AsupInternalBlock';
+import React from "react";
+import { AsupInternalBlock } from "../components/aif/AsupInternalBlock";
 
 export const CurrentPage = () => {
-  const [left, setLeft] = React.useState<string>('');
+  const [left, setLeft] = React.useState<string>("");
   const pageBy = React.useMemo(
     () => ({
-      aifid: 'page-by',
+      aifid: "page-by",
       left: left,
       addBelow: false,
       canRemove: false,
@@ -18,40 +18,40 @@ export const CurrentPage = () => {
 
   return (
     <AsupInternalBlock
-      id='pageby'
+      id="pageby"
       style={{
-        fontFamily: 'Courier New',
-        fontSize: '9pt',
+        fontFamily: "Courier New",
+        fontSize: "9pt",
         fontWeight: 500,
       }}
       lines={[pageBy]}
-      setLines={(ret) => ret[0].left !== left && setLeft(ret[0].left ?? '')}
+      setLines={(ret) => ret[0].left !== left && setLeft(ret[0].left ?? "")}
       externalSingles={[
         {
-          oldText: '=',
-          newText: '<=',
+          oldText: "=",
+          newText: "<=",
         },
       ]}
       styleMap={{
         Optional: {
-          css: { color: 'seagreen' },
-          aieExclude: ['Notes', 'Superscript', 'O^', 'N^'],
+          css: { color: "seagreen" },
+          aieExclude: ["Notes", "Superscript", "O^", "N^"],
         },
         Notes: {
-          css: { color: 'royalblue' },
-          aieExclude: ['Optional', 'Superscript', 'O^', 'N^'],
+          css: { color: "royalblue" },
+          aieExclude: ["Optional", "Superscript", "O^", "N^"],
         },
         Superscript: {
-          css: { verticalAlign: 'super', fontSize: 'small' },
-          aieExclude: ['Optional', 'Notes', 'O^', 'N^'],
+          css: { verticalAlign: "super", fontSize: "small" },
+          aieExclude: ["Optional", "Notes", "O^", "N^"],
         },
-        'O^': {
-          css: { color: 'seagreen', verticalAlign: 'super', fontSize: 'small' },
-          aieExclude: ['Optional', 'Notes', 'Superscript', 'N^'],
+        "O^": {
+          css: { color: "seagreen", verticalAlign: "super", fontSize: "small" },
+          aieExclude: ["Optional", "Notes", "Superscript", "N^"],
         },
-        'N^': {
-          css: { color: 'royalblue', verticalAlign: 'super', fontSize: 'small' },
-          aieExclude: ['Optional', 'Notes', 'Superscript', 'O^'],
+        "N^": {
+          css: { color: "royalblue", verticalAlign: "super", fontSize: "small" },
+          aieExclude: ["Optional", "Notes", "Superscript", "O^"],
         },
       }}
       minLines={1}

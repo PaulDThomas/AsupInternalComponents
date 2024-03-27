@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { AioOptionType } from './aioInterface';
-import { RenderLineItem } from './RenderLineItem';
+import * as React from "react";
+import { AioOptionType } from "./aioInterface";
+import { RenderLineItem } from "./RenderLineItem";
 
 interface AioPrintOptionProps {
   id: string;
@@ -34,25 +34,25 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
         canMoveItems={props.canMoveItems}
         canRemoveItems={props.canRemoveItems}
       />
-      <div className='aiox-button-holder'>
-        {typeof props.moveUp === 'function' ? (
+      <div className="aiox-button-holder">
+        {typeof props.moveUp === "function" ? (
           <div
             id={`${props.id}-up`}
-            className='aiox-button aiox-up'
+            className="aiox-button aiox-up"
             onClick={props.moveUp}
           />
-        ) : typeof props.moveDown === 'function' ? (
+        ) : typeof props.moveDown === "function" ? (
           <div
-            className='aiox-button'
+            className="aiox-button"
             style={{ margin: 0 }}
           />
         ) : (
           <></>
         )}
-        {typeof props.addItem === 'function' ? (
+        {typeof props.addItem === "function" ? (
           <div
             id={`${props.id}-add`}
-            className='aiox-button aiox-plus'
+            className="aiox-button aiox-plus"
             onClick={props.addItem}
           >
             {props.children}
@@ -60,23 +60,23 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
         ) : (
           <></>
         )}
-        {typeof props.removeItem === 'function' ? (
+        {typeof props.removeItem === "function" ? (
           <div
             id={`${props.id}-remove`}
-            className='aiox-button aiox-minus'
+            className="aiox-button aiox-minus"
             onClick={props.removeItem}
           />
         ) : (
           <></>
         )}
-        {typeof props.moveDown === 'function' ? (
+        {typeof props.moveDown === "function" ? (
           <div
             id={`${props.id}-down`}
-            className='aiox-button aiox-down'
+            className="aiox-button aiox-down"
             onClick={props.moveDown}
           />
         ) : (
-          ''
+          ""
         )}
       </div>
     </>

@@ -1,11 +1,11 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from "react";
 import {
   AioExternalReplacements,
   AioReplacementDisplay,
   AioString,
   newExternalReplacements,
   updateReplToExtl,
-} from '../components';
+} from "../components";
 
 export const ListPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -14,17 +14,17 @@ export const ListPage = (): JSX.Element => {
 
   const loadData = useCallback(() => {
     try {
-      if (ta.current && ta.current.value === '') {
-        ta.current.value = window.localStorage.getItem('listContent') ?? '';
+      if (ta.current && ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem("listContent") ?? "";
       }
       if (ta.current) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const j: any = JSON.parse(ta.current.value?.toString() ?? '[]');
+        const j: any = JSON.parse(ta.current.value?.toString() ?? "[]");
         setExtRepls(updateReplToExtl(j));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
-      console.log('JSON parse failed');
+      console.log("JSON parse failed");
       console.dir(e);
     }
   }, []);
@@ -33,12 +33,12 @@ export const ListPage = (): JSX.Element => {
     <>
       <div
         style={{
-          width: '100%',
-          margin: '1.5rem',
-          display: 'flex',
+          width: "100%",
+          margin: "1.5rem",
+          display: "flex",
         }}
       >
-        <div style={{ width: '30%' }}>
+        <div style={{ width: "30%" }}>
           <h4>Available lists</h4>
           <div>
             {extRepls.map((l, i) => (
@@ -49,7 +49,7 @@ export const ListPage = (): JSX.Element => {
                   }}
                 >
                   <AioString
-                    id='test-string'
+                    id="test-string"
                     value={extRepls[i].givenName}
                     setValue={(ret) => {
                       const newEx: AioExternalReplacements = { ...extRepls[i], givenName: ret };
@@ -60,7 +60,7 @@ export const ListPage = (): JSX.Element => {
                   />
                 </span>
                 <div
-                  className='aiox-button aiox-minus'
+                  className="aiox-button aiox-minus"
                   onClick={() => {
                     const newLi = [...extRepls];
                     newLi.splice(i, 1);
@@ -71,11 +71,11 @@ export const ListPage = (): JSX.Element => {
                 {i === currentL && (
                   <div
                     style={{
-                      display: 'inline-block',
-                      marginLeft: '0.5rem',
-                      height: '1rem',
-                      width: '1rem',
-                      backgroundColor: 'green',
+                      display: "inline-block",
+                      marginLeft: "0.5rem",
+                      height: "1rem",
+                      width: "1rem",
+                      backgroundColor: "green",
                     }}
                   />
                 )}
@@ -84,7 +84,7 @@ export const ListPage = (): JSX.Element => {
           </div>
           {/* Add list button */}
           <div
-            className='aiox-button aiox-plus'
+            className="aiox-button aiox-plus"
             onClick={() => {
               const newRepls = [...extRepls];
               newRepls.push(newExternalReplacements());
@@ -93,21 +93,21 @@ export const ListPage = (): JSX.Element => {
             }}
           />
         </div>
-        <div style={{ width: '70%' }}>
+        <div style={{ width: "70%" }}>
           <h4>List values</h4>
           <div>
             {currentL >= 0 && (
               <div
                 style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.5rem',
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
                 }}
               >
                 <AioReplacementDisplay
-                  id='test-replacements'
+                  id="test-replacements"
                   noText={true}
-                  oldText={''}
+                  oldText={""}
                   newTexts={extRepls[currentL].newTexts}
                   setReplacement={(ret) => {
                     const e: AioExternalReplacements = {
@@ -127,11 +127,11 @@ export const ListPage = (): JSX.Element => {
 
       <div
         style={{
-          margin: '1rem',
-          padding: '1rem',
-          border: 'solid black 3px',
-          backgroundColor: 'rgb(220, 220, 220)',
-          borderRadius: '8px',
+          margin: "1rem",
+          padding: "1rem",
+          border: "solid black 3px",
+          backgroundColor: "rgb(220, 220, 220)",
+          borderRadius: "8px",
         }}
       >
         <button onClick={loadData}>Load</button>
@@ -141,15 +141,15 @@ export const ListPage = (): JSX.Element => {
             // Show intended data
             ta.current.value = JSON.stringify(extRepls, null, 2);
             // Save string
-            window.localStorage.setItem('listContent', JSON.stringify(extRepls));
+            window.localStorage.setItem("listContent", JSON.stringify(extRepls));
           }}
         >
           Save
         </button>
-        <span style={{ paddingLeft: '1rem' }}>(browser storage)</span>
+        <span style={{ paddingLeft: "1rem" }}>(browser storage)</span>
         <pre>
           <textarea
-            style={{ width: '98%', height: '200px' }}
+            style={{ width: "98%", height: "200px" }}
             ref={ta}
           />
         </pre>

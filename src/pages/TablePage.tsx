@@ -1,5 +1,5 @@
-import { AioSingleReplacements } from 'components/aio/AioSingleReplacements';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { AioSingleReplacements } from "components/aio/AioSingleReplacements";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   AieStyleMap,
   AioExternalReplacements,
@@ -8,7 +8,7 @@ import {
   AitTableData,
   AsupInternalTable,
   updateTableDataVersion,
-} from '../components';
+} from "../components";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -16,14 +16,14 @@ export const TablePage = () => {
   const processedTableData = useRef<AitTableData>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
   const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
-  const [listStatus, setListStatus] = useState<string>('');
+  const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
-    Optional: { css: { color: 'mediumseagreen' }, aieExclude: ['Notes'] },
-    Notes: { css: { color: 'royalblue' }, aieExclude: ['Optional'] },
+    Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] },
   };
   const cellStyles: AieStyleMap = {
-    Optional: { css: { color: 'mediumseagreen' }, aieExclude: ['Notes'] },
-    Notes: { css: { color: 'royalblue' }, aieExclude: ['Optional'] },
+    Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] },
   };
   const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
   const [showTableOptions, setShowTableOptions] = useState<boolean>(true);
@@ -33,7 +33,7 @@ export const TablePage = () => {
   useEffect(() => {
     /** Load row group templates */
     fetch(`${process.env.PUBLIC_URL}/data/groupTemplates.json`, {
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
     })
       .then(function (response) {
         return response.json();
@@ -43,7 +43,7 @@ export const TablePage = () => {
       });
     /** Load table data */
     fetch(`${process.env.PUBLIC_URL}/data/tableData.json`, {
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
     })
       .then(function (response) {
         return response.json();
@@ -55,16 +55,16 @@ export const TablePage = () => {
 
   const loadData = useCallback(() => {
     try {
-      if (ta.current && ta.current.value === '') {
-        ta.current.value = window.localStorage.getItem('tableContent') ?? '';
+      if (ta.current && ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem("tableContent") ?? "";
       }
       if (ta.current) {
-        const j = updateTableDataVersion(JSON.parse(ta.current.value?.toString() ?? '{}'), 40);
+        const j = updateTableDataVersion(JSON.parse(ta.current.value?.toString() ?? "{}"), 40);
         setTableData(updateTableDataVersion(j, 40));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
-      console.log('JSON parse failed');
+      console.log("JSON parse failed");
       console.dir(e);
     }
   }, []);
@@ -72,22 +72,22 @@ export const TablePage = () => {
   const loadReplacements = useCallback(() => {
     try {
       const j: AioExternalReplacements[] = JSON.parse(
-        window.localStorage.getItem('listContent') ?? '[]',
+        window.localStorage.getItem("listContent") ?? "[]",
       );
       setExternalReplacements(j);
       const g: AitRowGroupData[] = JSON.parse(
-        window.localStorage.getItem('rowGroupContent') ?? '[]',
+        window.localStorage.getItem("rowGroupContent") ?? "[]",
       );
       setSampleGroupTempaltes(g);
       setListStatus(
-        `Loaded ${j.length} lists: ${j.map((rv) => rv.givenName).join(', ')}, RG templates: ${g
+        `Loaded ${j.length} lists: ${j.map((rv) => rv.givenName).join(", ")}, RG templates: ${g
           .map((rg) => rg.name)
-          .join(', ')}`,
+          .join(", ")}`,
       );
     } catch (e) {
-      console.log('JSON parse from listContent failed');
+      console.log("JSON parse from listContent failed");
       console.dir(e);
-      setListStatus('Error loading external list data');
+      setListStatus("Error loading external list data");
     }
   }, []);
 
@@ -95,21 +95,21 @@ export const TablePage = () => {
     <>
       <div
         style={{
-          marginLeft: '1rem',
-          marginRight: '1rem',
-          width: '100%',
+          marginLeft: "1rem",
+          marginRight: "1rem",
+          width: "100%",
           // display: "flex",
           // justifyContent: "center",
-          overflow: 'auto',
-          position: 'relative',
+          overflow: "auto",
+          position: "relative",
         }}
       >
         <div>
           {tableData === undefined ? (
-            <span style={{ margin: '3rem' }}>Table loading</span>
+            <span style={{ margin: "3rem" }}>Table loading</span>
           ) : (
             <AsupInternalTable
-              id='test-table'
+              id="test-table"
               noTableOptions={!showTableOptions}
               tableData={tableData}
               setTableData={(ret) => {
@@ -117,7 +117,7 @@ export const TablePage = () => {
               }}
               isEditable={isEditable}
               processedDataRef={processedTableData}
-              style={{ margin: '1rem' }}
+              style={{ margin: "1rem" }}
               showCellBorders={true}
               externalLists={externalReplacements}
               externalSingles={externalSingles}
@@ -132,32 +132,32 @@ export const TablePage = () => {
       </div>
       <div
         style={{
-          margin: '1rem',
-          padding: '1rem',
-          border: 'solid black 3px',
-          backgroundColor: 'rgb(220, 220, 220)',
-          borderRadius: '8px',
+          margin: "1rem",
+          padding: "1rem",
+          border: "solid black 3px",
+          backgroundColor: "rgb(220, 220, 220)",
+          borderRadius: "8px",
         }}
       >
         <span>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={showTableOptions}
             onChange={(e) => setShowTableOptions(e.currentTarget.checked)}
           />
           &nbsp; Show global options
         </span>
-        <span style={{ marginLeft: '1rem' }}>
+        <span style={{ marginLeft: "1rem" }}>
           <input
-            type='checkbox'
+            type="checkbox"
             checked={isEditable}
             onChange={(e) => setIsEditable(e.currentTarget.checked)}
           />
           &nbsp; Editable
         </span>
-        <div style={{ margin: '1rem' }}>
+        <div style={{ margin: "1rem" }}>
           <AioSingleReplacements
-            id='test-singles'
+            id="test-singles"
             replacements={externalSingles}
             setReplacements={(ret) => setExternalSingles(ret)}
           />
@@ -169,16 +169,16 @@ export const TablePage = () => {
             // Show intended data
             ta.current.value = JSON.stringify(tableData, null, 2);
             // Save string
-            window.localStorage.setItem('tableContent', JSON.stringify(tableData));
+            window.localStorage.setItem("tableContent", JSON.stringify(tableData));
           }}
         >
           Save
         </button>
-        <span style={{ paddingLeft: '1rem' }}>(browser storage)</span>
+        <span style={{ paddingLeft: "1rem" }}>(browser storage)</span>
 
         <button
           onClick={loadReplacements}
-          style={{ marginLeft: '1rem', marginRight: '0.5rem' }}
+          style={{ marginLeft: "1rem", marginRight: "0.5rem" }}
         >
           Load lists
         </button>
@@ -186,7 +186,7 @@ export const TablePage = () => {
 
         <pre>
           <textarea
-            style={{ width: '98%', height: '200px' }}
+            style={{ width: "98%", height: "200px" }}
             ref={ta}
           />
         </pre>

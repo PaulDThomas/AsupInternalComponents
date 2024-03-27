@@ -1,6 +1,6 @@
-import { AitCellData, AitRowData } from '../ait/aitInterface';
-import { newCell } from './newCell';
-import { newRow } from './newRow';
+import { AitCellData, AitRowData } from "../ait/aitInterface";
+import { newCell } from "./newCell";
+import { newRow } from "./newRow";
 
 export const prependCell = (
   pre: AitCellData,
@@ -27,7 +27,7 @@ export const prependCell = (
               repeatRowSpan:
                 (pre.repeatRowSpan ?? pre.rowSpan ?? 1) + (rowsAdded ?? post.length ?? 0),
             }
-          : { ...newCell(defaultCellWidth), rowSpan: 0, repeatRowSpan: 0, replacedText: '' },
+          : { ...newCell(defaultCellWidth), rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
         ...post[ri].cells,
       ],
       rowRepeat: post[ri].rowRepeat,

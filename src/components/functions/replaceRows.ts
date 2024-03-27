@@ -1,10 +1,10 @@
-import { getRawTextParts } from '../aie/functions/getRawTextParts';
-import { AioExternalReplacements, AioReplacement } from '../aio/aioInterface';
-import { AitRowData } from '../ait/aitInterface';
-import { prependCell } from './prependCells';
-import { replaceCellText } from './replaceCellText';
-import { fromHtml } from './tofromHtml';
-import { updateExternals } from './updateExternals';
+import { getRawTextParts } from "../aie/functions/getRawTextParts";
+import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
+import { AitRowData } from "../ait/aitInterface";
+import { prependCell } from "./prependCells";
+import { replaceCellText } from "./replaceCellText";
+import { fromHtml } from "./tofromHtml";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Recursive function to replace column header information
@@ -21,9 +21,9 @@ export const replaceRows = (
   // Look for match, is there is one to find
   if (
     replacement === undefined ||
-    replacement.oldText === '' ||
+    replacement.oldText === "" ||
     replacement.newTexts.length === 0 ||
-    replacement.newTexts[0].texts.join('') === ''
+    replacement.newTexts[0].texts.join("") === ""
   ) {
     return rows;
   }
@@ -39,13 +39,13 @@ export const replaceRows = (
   let emergencyExit = 0;
   while (ri < rows.length && emergencyExit < 10000) {
     if (ri >= rows.length || rows[ri] === undefined || rows[ri].cells.length === undefined) {
-      console.warn('High ri value somehow');
+      console.warn("High ri value somehow");
       console.log(`ri: ${ri}`);
       console.log(`${JSON.stringify(rows)}`);
     } else
       for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
         const cellTextParts: string[] = getRawTextParts(
-          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? '',
+          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
         );
         if (
           replacement !== undefined &&
@@ -87,7 +87,7 @@ export const replaceRows = (
                             ];
                       return {
                         aitid: r.aitid,
-                        rowRepeat: `${r.rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                        rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                         cells: cells,
                       };
                     })
@@ -108,14 +108,14 @@ export const replaceRows = (
                             ];
                       return {
                         aitid: r.aitid,
-                        rowRepeat: `${r.rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                        rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                         cells: cells,
                       };
                     })
                   : [
                       {
                         aitid: rows[ri].aitid,
-                        rowRepeat: `${rows[ri].rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                        rowRepeat: `${rows[ri].rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                         cells: [
                           thisRepeat,
                           ...rows[ri].cells

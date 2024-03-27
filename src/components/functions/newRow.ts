@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { AitRowData } from '../ait/aitInterface';
-import { newCell } from './newCell';
+import { v4 as uuidv4 } from "uuid";
+import { AitRowData } from "../ait/aitInterface";
+import { newCell } from "./newCell";
 
 export const newRow = (defaultCellWidth: number, l?: number): AitRowData => {
   const newRow: AitRowData = { aitid: uuidv4(), cells: [] };

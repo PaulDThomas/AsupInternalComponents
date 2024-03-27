@@ -1,9 +1,9 @@
-import { AioExternalReplacements, AioExternalSingle, AioReplacement } from '../aio';
-import { AitColumnRepeat, AitRowData } from '../ait';
-import { removeRowRepeatInfo } from './removeRowRepeatInfo';
-import { replaceHeaders } from './replaceHeaders';
-import { singleReplacements } from './singleReplacements';
-import { updateExternals } from './updateExternals';
+import { AioExternalReplacements, AioExternalSingle, AioReplacement } from "../aio";
+import { AitColumnRepeat, AitRowData } from "../ait";
+import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
+import { replaceHeaders } from "./replaceHeaders";
+import { singleReplacements } from "./singleReplacements";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Entry function to process headers with replacements

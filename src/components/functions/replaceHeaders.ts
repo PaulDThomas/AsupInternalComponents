@@ -1,10 +1,10 @@
-import { getRawTextParts } from '../aie/functions/getRawTextParts';
-import { AioExternalReplacements, AioReplacement } from '../aio';
-import { AitCellData, AitColumnRepeat, AitRowData } from '../ait';
-import { appendCells } from './appendCells';
-import { flattenReplacements } from './flattenReplacements';
-import { newCell } from './newCell';
-import { replaceCellText } from './replaceCellText';
+import { getRawTextParts } from "../aie/functions/getRawTextParts";
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
+import { appendCells } from "./appendCells";
+import { flattenReplacements } from "./flattenReplacements";
+import { newCell } from "./newCell";
+import { replaceCellText } from "./replaceCellText";
 
 /**
  * Recursive function to replace column header information
@@ -37,9 +37,9 @@ export const replaceHeaders = (
     // Look for match, is there is one to find
     let found =
       replacement === undefined ||
-      replacement.oldText === '' ||
+      replacement.oldText === "" ||
       replacement.newTexts.length === 0 ||
-      replacement.newTexts[0].texts.join('') === '';
+      replacement.newTexts[0].texts.join("") === "";
     colsProcessed = 1;
 
     // Add next column if the text is already found
@@ -60,7 +60,7 @@ export const replaceHeaders = (
     else {
       for (let ri = 0; ri < rows.length; ri++) {
         const cellTextParts: string[] = getRawTextParts(
-          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? '',
+          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
         );
         // React if found
         if (replacement && cellTextParts.some((t) => t.includes(replacement.oldText))) {
@@ -129,7 +129,7 @@ export const replaceHeaders = (
                   const n = newCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = '';
+                  n.replacedText = "";
                   targetRow.cells.push(n);
                 }
               }
@@ -150,8 +150,8 @@ export const replaceHeaders = (
                   ...(lowerColumnRepeats ?? []).map((crep) => {
                     return {
                       columnIndex: columnRepeats[ci].columnIndex + crep.columnIndex,
-                      colRepeat: `${columnRepeats[ci].colRepeat ?? ''}${`[${rvi},${ti}]${
-                        crep.colRepeat ?? ''
+                      colRepeat: `${columnRepeats[ci].colRepeat ?? ""}${`[${rvi},${ti}]${
+                        crep.colRepeat ?? ""
                       }`}`,
                     } as AitColumnRepeat;
                   }),
@@ -162,7 +162,7 @@ export const replaceHeaders = (
                   ...Array.from(Array(repeatSpan).keys()).map((n) => {
                     return {
                       columnIndex: columnRepeats[ci + n].columnIndex,
-                      colRepeat: `${columnRepeats[ci].colRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                      colRepeat: `${columnRepeats[ci].colRepeat ?? ""}${`[${rvi},${ti}]`}`,
                     };
                   }),
                 ];
@@ -214,7 +214,7 @@ export const replaceHeaders = (
                   const n = newCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = '';
+                  n.replacedText = "";
                   newCells2.push(n);
                 }
                 newHeaderRows[rj].cells.splice(ci + addedCols - lookup + 1, 0, ...newCells2);
@@ -222,7 +222,7 @@ export const replaceHeaders = (
 
               // Not found !!!
               else {
-                console.warn('Have not found the target cell above the column header replacement');
+                console.warn("Have not found the target cell above the column header replacement");
               }
               // Update number of columns added so far
               addedCols = addedCols + nIns;

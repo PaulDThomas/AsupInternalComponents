@@ -1,11 +1,11 @@
-import { DraftComponent } from 'draft-js';
-import { AieStyleMap } from '../aie';
-import { AioExternalReplacements, AioReplacement } from '../aio';
+import { DraftComponent } from "draft-js";
+import { AieStyleMap } from "../aie";
+import { AioExternalReplacements, AioReplacement } from "../aio";
 
 export interface AitCellData {
   aitid?: string; // Unique ID
   text: string;
-  justifyText?: DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
+  justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments?: string;
   colSpan?: number;
   rowSpan?: number;
@@ -61,14 +61,14 @@ export interface AitColumnRepeat {
 }
 
 export enum AitCellType {
-  header = 'header',
-  rowHeader = 'rowHeader',
-  body = 'body',
+  header = "header",
+  rowHeader = "rowHeader",
+  body = "body",
 }
 
 export enum AitRowType {
-  header = 'header',
-  body = 'body',
+  header = "header",
+  body = "body",
 }
 
 export interface AitOptionList {

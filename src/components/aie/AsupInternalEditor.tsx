@@ -5,17 +5,17 @@ import {
   Editor,
   EditorState,
   Modifier,
-} from 'draft-js';
-import 'draft-js/dist/Draft.css';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import './aie.css';
-import { AieStyleButtonRow } from './AieStyleButtonRow';
-import { EditorV2 } from './EditorV2';
-import { AieStyleExcludeMap, AieStyleMap } from './functions/aieInterface';
-import { loadFromHTML } from './functions/loadFromHTML';
-import { saveToHTML } from './functions/saveToHTML';
-import { styleMapToDraft } from './functions/styleMapToDraft';
-import { styleMapToExclude } from './functions/styleMapToExclude';
+} from "draft-js";
+import "draft-js/dist/Draft.css";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import "./aie.css";
+import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { EditorV2 } from "./EditorV2";
+import { AieStyleExcludeMap, AieStyleMap } from "./functions/aieInterface";
+import { loadFromHTML } from "./functions/loadFromHTML";
+import { saveToHTML } from "./functions/saveToHTML";
+import { styleMapToDraft } from "./functions/styleMapToDraft";
+import { styleMapToExclude } from "./functions/styleMapToExclude";
 
 /** Interface for the AsupInternalEditor component */
 interface AsupInternalEditorProps {
@@ -24,7 +24,7 @@ interface AsupInternalEditorProps {
   setValue?: (ret: string) => void;
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
-  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | 'decimal' | 'default';
+  textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   decimalAlignPercent?: number;
   showStyleButtons?: boolean;
   editable?: boolean;
@@ -43,10 +43,10 @@ export const AsupInternalEditor = ({
 }: AsupInternalEditorProps) => {
   /** Current editor state */
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [editorV2Text, setEditorV2Text] = useState('');
+  const [editorV2Text, setEditorV2Text] = useState("");
   useEffect(() => setEditorV2Text(value), [value]);
   /** Current button state */
-  const [buttonState, setButtonState] = useState('hidden');
+  const [buttonState, setButtonState] = useState("hidden");
 
   // Add default style map
   const currentStyleMap = useRef<DraftStyleMap>(styleMapToDraft(styleMap));
@@ -55,15 +55,15 @@ export const AsupInternalEditor = ({
   // Show or hide style buttons
   const onFocus = useCallback(() => {
     if (showStyleButtons) {
-      setButtonState('');
+      setButtonState("");
     }
   }, [showStyleButtons]);
 
   // Only send data base onBlur of editor
   const onBlur = useCallback(() => {
-    setButtonState('hidden');
-    if (typeof setValue === 'function') {
-      if (textAlignment !== 'decimal') {
+    setButtonState("hidden");
+    if (typeof setValue === "function") {
+      if (textAlignment !== "decimal") {
         setValue(
           saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current),
         );
@@ -123,8 +123,8 @@ export const AsupInternalEditor = ({
           text.trim(),
         );
       }
-      setEditorState(EditorState.push(editorState, newContent, 'insert-characters'));
-      return 'handled';
+      setEditorState(EditorState.push(editorState, newContent, "insert-characters"));
+      return "handled";
     },
     [editorState],
   );
@@ -132,23 +132,23 @@ export const AsupInternalEditor = ({
   // Render the component
   return (
     <div
-      className='aie-outer'
+      className="aie-outer"
       style={{
         ...style,
       }}
     >
       <div
         id={`${id}-holder`}
-        className='aie-holder'
+        className="aie-holder"
         onBlur={onBlur}
         onFocus={onFocus}
       >
-        {textAlignment === 'decimal' ? (
+        {textAlignment === "decimal" ? (
           <EditorV2
             id={`${id}-v2editor`}
             text={editorV2Text}
             setText={
-              editable !== false || typeof setValue !== 'function' ? setEditorV2Text : undefined
+              editable !== false || typeof setValue !== "function" ? setEditorV2Text : undefined
             }
             customStyleMap={styleMap}
             textAlignment={textAlignment}
@@ -159,22 +159,22 @@ export const AsupInternalEditor = ({
             customStyleMap={currentStyleMap.current}
             editorState={editorState}
             onChange={setEditorState}
-            textAlignment={textAlignment !== 'default' ? textAlignment : undefined}
-            readOnly={editable === false || typeof setValue !== 'function'}
+            textAlignment={textAlignment !== "default" ? textAlignment : undefined}
+            readOnly={editable === false || typeof setValue !== "function"}
             handlePastedText={handlePastedText}
           />
         )}
       </div>
 
-      {textAlignment !== 'decimal' &&
-        !(editable === false || typeof setValue !== 'function') &&
-        buttonState !== 'hidden' && (
+      {textAlignment !== "decimal" &&
+        !(editable === false || typeof setValue !== "function") &&
+        buttonState !== "hidden" && (
           <div
             className={`aie-button-position ${
-              textAlignment !== undefined ? textAlignment : 'left'
+              textAlignment !== undefined ? textAlignment : "left"
             }`}
           >
-            <div className='aie-button-holder'>
+            <div className="aie-button-holder">
               <AieStyleButtonRow
                 id={`${id}-stylebuttons`}
                 styleList={Object.keys(currentStyleMap.current)}

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { AsupInternalEditor } from '../components';
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { AsupInternalEditor } from "../components";
 
 export const EditorPage = () => {
-  const [textarea, setTextarea] = useState<string>('');
+  const [textarea, setTextarea] = useState<string>("");
   const [text1, setText1] = useState(
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
@@ -18,14 +18,14 @@ export const EditorPage = () => {
   );
 
   const dothing = () => {
-    console.log('Update');
+    console.log("Update");
     const newThing = '<p color="red">Here</p><span style="color:red">ref</span>';
     setText4(newThing);
   };
 
   const save = () => {
-    window.localStorage.setItem('content', JSON.stringify({ text1, text2, text3, text4 }));
-    console.log('Saved: ');
+    window.localStorage.setItem("content", JSON.stringify({ text1, text2, text3, text4 }));
+    console.log("Saved: ");
     console.log(text1);
     console.log(text2);
     console.log(text3);
@@ -33,7 +33,7 @@ export const EditorPage = () => {
   };
 
   const load = () => {
-    const saved = JSON.parse(window.localStorage.getItem('content') ?? '');
+    const saved = JSON.parse(window.localStorage.getItem("content") ?? "");
     setText1(saved.text1);
     setText2(saved.text2);
     setText3(saved.text3);
@@ -42,14 +42,14 @@ export const EditorPage = () => {
 
   const thisStyleMap = {
     Editable: {
-      css: { color: 'red', fontFamily: 'courier', fontSize: '16pt' },
-      aieExclude: ['Optional', 'Notes'],
+      css: { color: "red", fontFamily: "courier", fontSize: "16pt" },
+      aieExclude: ["Optional", "Notes"],
     },
     Optional: {
-      css: { color: 'green', fontWeight: '100', fontFamily: 'serif', fontSize: '16pt' },
-      aieExclude: ['Editable', 'Notes'],
+      css: { color: "green", fontWeight: "100", fontFamily: "serif", fontSize: "16pt" },
+      aieExclude: ["Editable", "Notes"],
     },
-    Notes: { css: { color: 'blue', fontSize: '16pt' }, aieExclude: ['Editable', 'Optional'] },
+    Notes: { css: { color: "blue", fontSize: "16pt" }, aieExclude: ["Editable", "Optional"] },
   };
 
   const locn = useLocation();
@@ -57,8 +57,8 @@ export const EditorPage = () => {
   return (
     <div
       style={{
-        margin: '1rem',
-        padding: '1rem',
+        margin: "1rem",
+        padding: "1rem",
       }}
     >
       <table>
@@ -66,12 +66,12 @@ export const EditorPage = () => {
           <tr>
             <td>
               <AsupInternalEditor
-                id='text-left'
+                id="text-left"
                 value={text1}
                 setValue={setText1}
                 showStyleButtons={true}
-                style={{ width: '195px', height: '100%' }}
-                textAlignment={'left'}
+                style={{ width: "195px", height: "100%" }}
+                textAlignment={"left"}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -82,12 +82,12 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
-                id='text-decimal'
+                id="text-decimal"
                 value={text2}
                 setValue={setText2}
                 showStyleButtons={true}
-                style={{ width: '195px', height: '100%' }}
-                textAlignment={'decimal'}
+                style={{ width: "195px", height: "100%" }}
+                textAlignment={"decimal"}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -98,12 +98,12 @@ export const EditorPage = () => {
             <td></td>
             <td>
               <AsupInternalEditor
-                id='text-center'
+                id="text-center"
                 value={text3}
                 setValue={setText3}
                 showStyleButtons={true}
-                style={{ width: '196px', height: '100%' }}
-                textAlignment={'center'}
+                style={{ width: "196px", height: "100%" }}
+                textAlignment={"center"}
                 styleMap={thisStyleMap}
               />
             </td>
@@ -112,20 +112,20 @@ export const EditorPage = () => {
       </table>
 
       <AsupInternalEditor
-        id='text-right'
+        id="text-right"
         value={text4}
         setValue={setText4}
         showStyleButtons={true}
-        style={{ width: '600px', height: '100%' }}
-        textAlignment={'right'}
+        style={{ width: "600px", height: "100%" }}
+        textAlignment={"right"}
         styleMap={thisStyleMap}
       />
 
       <div
         style={{
-          marginTop: '1rem',
-          padding: '1rem',
-          border: 'solid black 3px',
+          marginTop: "1rem",
+          padding: "1rem",
+          border: "solid black 3px",
         }}
       >
         <div>Current location is... {locn.pathname}</div>

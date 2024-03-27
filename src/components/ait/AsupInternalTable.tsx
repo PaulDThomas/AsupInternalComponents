@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { AieStyleMap } from '../aie';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { AieStyleMap } from "../aie";
 import {
   AioBoolean,
   AioComment,
@@ -8,8 +8,8 @@ import {
   AioExternalSingle,
   AioIconButton,
   AioNumber,
-} from '../aio';
-import { AsupInternalWindow } from '../aiw';
+} from "../aio";
+import { AsupInternalWindow } from "../aiw";
 import {
   bodyPreProcess,
   headerPreProcess,
@@ -18,19 +18,19 @@ import {
   newRowGroup,
   repeatHeaders,
   repeatRows,
-} from '../functions';
-import './ait.css';
-import { AitBorderRow } from './aitBorderRow';
-import { TableSettingsContext } from './aitContext';
-import { AitHeader } from './aitHeader';
+} from "../functions";
+import "./ait.css";
+import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
+import { AitHeader } from "./aitHeader";
 import {
   AitColumnRepeat,
   AitLocation,
   AitRowGroupData,
   AitRowType,
   AitTableData,
-} from './aitInterface';
-import { AitRowGroup } from './aitRowGroup';
+} from "./aitInterface";
+import { AitRowGroup } from "./aitRowGroup";
 
 interface AsupInternalTableProps {
   id: string;
@@ -91,7 +91,7 @@ export const AsupInternalTable = ({
 
   // Editable property
   const editable = useMemo(() => {
-    return isEditable && typeof setTableData === 'function';
+    return isEditable && typeof setTableData === "function";
   }, [isEditable, setTableData]);
 
   // Pushdown data when it it updated externally
@@ -157,7 +157,7 @@ export const AsupInternalTable = ({
       processedDataRef.current = { bodyData: processedBodyData, headerData: processedHeaderData };
 
     // Info that is not processed
-    setComments(tableData.comments ?? '');
+    setComments(tableData.comments ?? "");
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
     setDecimalAlignPercent(tableData.decimalAlignPercent ?? initialDecimalAlignPercent);
@@ -191,7 +191,7 @@ export const AsupInternalTable = ({
                         columnRepeats === null ||
                         (columnRepeats !== null &&
                           columnRepeats[ci] !== undefined &&
-                          (columnRepeats[ci].colRepeat ?? '0').match(/^[[\]0,]+$/)),
+                          (columnRepeats[ci].colRepeat ?? "0").match(/^[[\]0,]+$/)),
                     ),
                   };
                 }),
@@ -213,7 +213,7 @@ export const AsupInternalTable = ({
       noRepeatProcessing?: boolean;
       decimalAlignPercent?: number;
     }) => {
-      if (typeof setTableData !== 'function') return;
+      if (typeof setTableData !== "function") return;
       // Unprocess header data
       const headerRet =
         !tableUpdate.headerDataUnprocessed && tableUpdate.headerData
@@ -604,12 +604,12 @@ export const AsupInternalTable = ({
         editable,
         groupTemplateNames:
           groupTemplates === false
-            ? ['None']
+            ? ["None"]
             : groupTemplates !== undefined
             ? (groupTemplates
                 .filter((g) => g.name !== undefined)
                 .map((g) => g.name)
-                .sort((a, b) => (a ?? '').localeCompare(b ?? '')) as string[])
+                .sort((a, b) => (a ?? "").localeCompare(b ?? "")) as string[])
             : undefined,
         commentStyles: commentStyles,
         cellStyles: cellStyles,
@@ -622,34 +622,34 @@ export const AsupInternalTable = ({
       }}
     >
       <div
-        className='ait-holder'
+        className="ait-holder"
         style={style}
       >
         <div>
           {!noTableOptions && (
             <AioIconButton
               id={`${id}-table-options`}
-              tipText='Global options'
+              tipText="Global options"
               onClick={() => {
                 setShowOptions(!showOptions);
               }}
-              iconName={'aio-button-settings'}
+              iconName={"aio-button-settings"}
             />
           )}
           {showOptions && (
             <AsupInternalWindow
               id={`${id}-options-window`}
-              title={'Global options'}
+              title={"Global options"}
               visible={showOptions}
               onClose={() => {
                 setShowOptions(false);
               }}
             >
-              <div className='aiw-body-row'>
+              <div className="aiw-body-row">
                 <AioComment
                   id={`${id}-table-comment`}
-                  label={'Notes'}
-                  value={comments ?? ''}
+                  label={"Notes"}
+                  value={comments ?? ""}
                   setValue={
                     editable
                       ? (ret) => {
@@ -661,14 +661,14 @@ export const AsupInternalTable = ({
                 />
               </div>
               {headerData !== false && headerData.rows.length === 0 ? (
-                <div className='aiw-body-row'>
-                  <div className={'aio-label'}>Add header section: </div>
+                <div className="aiw-body-row">
+                  <div className={"aio-label"}>Add header section: </div>
                   <div
-                    className={'aiox-button-holder'}
-                    style={{ padding: '2px' }}
+                    className={"aiox-button-holder"}
+                    style={{ padding: "2px" }}
                   >
                     <div
-                      className='aiox-button aiox-plus'
+                      className="aiox-button aiox-plus"
                       id={`${id}-add-header`}
                       onClick={editable ? () => addNewHeader() : undefined}
                     />
@@ -677,10 +677,10 @@ export const AsupInternalTable = ({
               ) : (
                 <></>
               )}
-              <div className='aiw-body-row'>
+              <div className="aiw-body-row">
                 <AioBoolean
                   id={`${id}-suppress-repeats`}
-                  label='Suppress repeats'
+                  label="Suppress repeats"
                   value={noRepeatProcessing ?? false}
                   setValue={
                     editable
@@ -691,37 +691,37 @@ export const AsupInternalTable = ({
                   }
                 />
               </div>
-              <div className='aiw-body-row'>
-                <div className={'aio-label'}>Row headers: </div>
-                <div className={'aio-ro-value'}>{rowHeaderColumns ?? 1}</div>
+              <div className="aiw-body-row">
+                <div className={"aio-label"}>Row headers: </div>
+                <div className={"aio-ro-value"}>{rowHeaderColumns ?? 1}</div>
                 <div
-                  className={'aiox-button-holder'}
-                  style={{ padding: '2px' }}
+                  className={"aiox-button-holder"}
+                  style={{ padding: "2px" }}
                 >
                   {editable && (rowHeaderColumns ?? 1) < bodyData[0].rows[0].cells.length - 1 ? (
                     <div
                       id={`${id}-add-row-header-column`}
-                      className='aiox-button aiox-plus'
+                      className="aiox-button aiox-plus"
                       onClick={() => addRowHeaderColumn()}
                     />
                   ) : (
-                    <div className='aiox-button' />
+                    <div className="aiox-button" />
                   )}
                   {editable && (rowHeaderColumns ?? 1) > 0 ? (
                     <div
-                      className='aiox-button aiox-minus'
+                      className="aiox-button aiox-minus"
                       id={`${id}-remove-row-header-column`}
                       onClick={() => removeRowHeaderColumn()}
                     />
                   ) : (
-                    <div className='aiox-button' />
+                    <div className="aiox-button" />
                   )}
                 </div>
               </div>
-              <div className='aiw-body-row'>
+              <div className="aiw-body-row">
                 <AioNumber
                   id={`${id}-decimal-align-percent`}
-                  label='Decimal align percent'
+                  label="Decimal align percent"
                   value={decimalAlignPercent}
                   minValue={0}
                   maxValue={100}
@@ -739,7 +739,7 @@ export const AsupInternalTable = ({
         </div>
         <table
           id={id}
-          className='ait-table'
+          className="ait-table"
         >
           <thead>
             <AitBorderRow
@@ -759,7 +759,7 @@ export const AsupInternalTable = ({
             {headerData !== false && (
               <AitHeader
                 id={`${id}-header`}
-                aitid={headerData.aitid ?? 'header'}
+                aitid={headerData.aitid ?? "header"}
                 rows={headerData.rows}
                 comments={headerData.comments}
                 replacements={headerData.replacements}

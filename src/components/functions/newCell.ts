@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
-import { AitCellData } from '../ait/aitInterface';
+import { v4 as uuidv4 } from "uuid";
+import { AitCellData } from "../ait/aitInterface";
 
 /**
  * Create a blank new cell
@@ -9,7 +9,7 @@ import { AitCellData } from '../ait/aitInterface';
 export const newCell = (cellWidth: number): AitCellData => {
   const cell: AitCellData = {
     aitid: uuidv4(),
-    text: '',
+    text: "",
     rowSpan: 1,
     colSpan: 1,
     colWidth: cellWidth,

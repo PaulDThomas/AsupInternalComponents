@@ -1,4 +1,4 @@
-import { AitCellData, AitRowData } from '../ait/aitInterface';
+import { AitCellData, AitRowData } from "../ait/aitInterface";
 
 export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
   return rows.map((r) => {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { AieStyleMap, AsupInternalEditor } from '../aie';
+import React from "react";
+import { AieStyleMap, AsupInternalEditor } from "../aie";
 
 export const OriginalText = ({
   id,
@@ -13,11 +13,11 @@ export const OriginalText = ({
   setText?: (ret: string) => void;
   styleMap?: AieStyleMap;
 }): JSX.Element => {
-  if (typeof text !== 'string') return <></>;
+  if (typeof text !== "string") return <></>;
   else
     return (
-      <div className='aiw-body-row'>
-        <div className={'aio-label'}>Unprocessed text:</div>
+      <div className="aiw-body-row">
+        <div className={"aio-label"}>Unprocessed text:</div>
         <AsupInternalEditor
           id={id}
           value={text}

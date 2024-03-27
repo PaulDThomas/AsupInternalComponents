@@ -1,5 +1,5 @@
-import { newReplacedText } from '../aie/functions/newReplacedText';
-import { AitCellData } from '../ait';
+import { newReplacedText } from "../aie/functions/newReplacedText";
+import { AitCellData } from "../ait";
 
 export const replaceCellText = (
   cell: AitCellData,

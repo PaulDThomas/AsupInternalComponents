@@ -1,4 +1,4 @@
-import { AitRowData } from '../ait/aitInterface';
+import { AitRowData } from "../ait/aitInterface";
 
 /**
  * Print row data as a character print with new lines, tabs
@@ -7,17 +7,17 @@ import { AitRowData } from '../ait/aitInterface';
  */
 export const printRows = (rs: AitRowData[]): string => {
   return (
-    '\t' +
+    "\t" +
     rs
       .map((r) =>
         r.cells
           .map((c) =>
             c !== undefined
-              ? `${c.text} ${c.replacedText ? ' => ' + c.replacedText : ''}`
-              : '!!UNDEF!!',
+              ? `${c.text} ${c.replacedText ? " => " + c.replacedText : ""}`
+              : "!!UNDEF!!",
           )
-          .join('\u2506'),
+          .join("\u2506"),
       )
-      .join('\n\t')
+      .join("\n\t")
   );
 };

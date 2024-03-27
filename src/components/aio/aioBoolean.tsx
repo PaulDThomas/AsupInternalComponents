@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { AioLabel } from './aioLabel';
+import * as React from "react";
+import { AioLabel } from "./aioLabel";
 
 interface AioBooleanProps {
   id: string;
@@ -15,17 +15,17 @@ export const AioBoolean = (props: AioBooleanProps): JSX.Element => {
         id={`${props.id}-label`}
         label={props.label}
       />
-      <div className={'aio-input-holder'}>
-        {typeof props.setValue !== 'function' ? (
+      <div className={"aio-input-holder"}>
+        {typeof props.setValue !== "function" ? (
           <span id={props.id}>{props.value}</span>
         ) : (
           <input
             id={props.id}
-            className={'aio-input-checkbox'}
+            className={"aio-input-checkbox"}
             checked={props.value}
-            type={'checkbox'}
+            type={"checkbox"}
             onChange={
-              typeof props.setValue === 'function'
+              typeof props.setValue === "function"
                 ? (e: React.ChangeEvent<HTMLInputElement>) => {
                     if (props.setValue) props.setValue(e.currentTarget.checked);
                   }

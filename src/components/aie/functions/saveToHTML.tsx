@@ -1,5 +1,5 @@
-import { DraftStyleMap, RawDraftContentState } from 'draft-js';
-import { htmlBlock } from './htmlBlock';
+import { DraftStyleMap, RawDraftContentState } from "draft-js";
+import { htmlBlock } from "./htmlBlock";
 
 /**
  * Aggregate function to change editor contents into HTML string
@@ -8,5 +8,5 @@ import { htmlBlock } from './htmlBlock';
  * @returns URI encoded HTML string of the content
  */
 export const saveToHTML = (d: RawDraftContentState, dsm: DraftStyleMap): string => {
-  return d.blocks.map((b) => htmlBlock(b, dsm)).join('');
+  return d.blocks.map((b) => htmlBlock(b, dsm)).join("");
 };

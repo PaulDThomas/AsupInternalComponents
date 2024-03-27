@@ -1,31 +1,31 @@
-import { AioExternalReplacements, AioReplacement } from '../aio';
-import { updateExternal } from './updateExternal';
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { updateExternal } from "./updateExternal";
 
-describe('Check updateExternals', () => {
+describe("Check updateExternals", () => {
   const a: AioReplacement = {
-    oldText: 'a',
-    externalName: 'ListE',
-    newTexts: [{ texts: ['a1', 'a2'] }],
+    oldText: "a",
+    externalName: "ListE",
+    newTexts: [{ texts: ["a1", "a2"] }],
   };
   const e: AioExternalReplacements = {
-    givenName: 'ListE',
+    givenName: "ListE",
     newTexts: [
-      { texts: ['Mean'], subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] }] },
-      { texts: ['SD'], subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] }] },
+      { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },
+      { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
     ],
   };
 
-  test('Into single', () => {
+  test("Into single", () => {
     const c = updateExternal(a, [e]);
     expect(c).toEqual({
-      oldText: 'a',
-      externalName: 'ListE',
+      oldText: "a",
+      externalName: "ListE",
       newTexts: [
         {
-          texts: ['Mean'],
-          subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['xx.x'] }] }],
+          texts: ["Mean"],
+          subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }],
         },
-        { texts: ['SD'], subLists: [{ oldText: '!!xvals!!', newTexts: [{ texts: ['x.xx'] }] }] },
+        { texts: ["SD"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["x.xx"] }] }] },
       ],
     });
   });

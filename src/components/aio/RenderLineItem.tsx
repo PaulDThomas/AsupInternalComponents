@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { AioBoolean } from './aioBoolean';
-import { AioExpander } from './aioExpander';
-import { AioOptionType, AioReplacement } from './aioInterface';
-import { AioLabel } from './aioLabel';
-import { AioNumber } from './aioNumber';
-import { AioReplacementList } from './aioReplacementList';
-import { AioSelect } from './aioSelect';
-import { AioString } from './aioString';
+import * as React from "react";
+import { AioBoolean } from "./aioBoolean";
+import { AioExpander } from "./aioExpander";
+import { AioOptionType, AioReplacement } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
+import { AioNumber } from "./aioNumber";
+import { AioReplacementList } from "./aioReplacementList";
+import { AioSelect } from "./aioSelect";
+import { AioString } from "./aioString";
 
 interface iRenderLineItem {
   id: string;
@@ -32,11 +32,11 @@ export const RenderLineItem = ({
   canRemoveItems,
 }: iRenderLineItem): JSX.Element => {
   // Take given type, or treat null as a string, or work out what we have
-  switch (type ?? (value === null ? 'string' : typeof value)) {
+  switch (type ?? (value === null ? "string" : typeof value)) {
     // Processing - do nothing, this should not be hit here
     // case (AioOptionType.processing): return (<></>);
     // Object, need another expander
-    case 'object':
+    case "object":
     case AioOptionType.object:
       return (
         <AioExpander
@@ -46,7 +46,7 @@ export const RenderLineItem = ({
           updateObject={
             setValue
               ? (ret: { [key: string]: unknown }) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -61,12 +61,12 @@ export const RenderLineItem = ({
       return (
         <AioReplacementList
           id={id}
-          label='Replacement text'
+          label="Replacement text"
           replacements={value as AioReplacement[] | undefined}
           setReplacements={
             setValue
               ? (ret: AioReplacement[]) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -84,7 +84,7 @@ export const RenderLineItem = ({
           setValue={
             setValue
               ? (ret: string) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -93,7 +93,7 @@ export const RenderLineItem = ({
 
     // Number
     case AioOptionType.number:
-    case 'number':
+    case "number":
       return (
         <AioNumber
           id={id}
@@ -102,7 +102,7 @@ export const RenderLineItem = ({
           setValue={
             setValue
               ? (ret: number) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -111,7 +111,7 @@ export const RenderLineItem = ({
 
     // Boolean
     case AioOptionType.boolean:
-    case 'boolean':
+    case "boolean":
       return (
         <AioBoolean
           id={id}
@@ -120,7 +120,7 @@ export const RenderLineItem = ({
           setValue={
             setValue
               ? (ret: boolean) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -129,7 +129,7 @@ export const RenderLineItem = ({
 
     // String or default
     case AioOptionType.string:
-    case 'string':
+    case "string":
       return (
         <AioString
           id={id}
@@ -138,7 +138,7 @@ export const RenderLineItem = ({
           setValue={
             setValue
               ? (ret: string) => {
-                  if (typeof setValue === 'function') setValue(ret);
+                  if (typeof setValue === "function") setValue(ret);
                 }
               : undefined
           }
@@ -146,12 +146,12 @@ export const RenderLineItem = ({
       );
 
     // Undefined
-    case 'undefined':
+    case "undefined":
       return (
         <AioString
           id={id}
           label={label}
-          value={'Undefined'}
+          value={"Undefined"}
         />
       );
 
@@ -159,7 +159,7 @@ export const RenderLineItem = ({
       return (
         <AioLabel
           id={`${id}-missing`}
-          label={`Missing type for ${type ?? (value === null ? 'string' : typeof value)}`}
+          label={`Missing type for ${type ?? (value === null ? "string" : typeof value)}`}
           noColon={true}
         />
       );

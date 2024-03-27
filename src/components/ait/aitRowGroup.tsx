@@ -1,9 +1,9 @@
-import React, { useCallback, useContext } from 'react';
-import { AioReplacement } from '../aio';
-import { newCell, newRow } from '../functions';
-import { TableSettingsContext } from './aitContext';
-import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from './aitInterface';
-import { AitRow } from './aitRow';
+import React, { useCallback, useContext } from "react";
+import { AioReplacement } from "../aio";
+import { newCell, newRow } from "../functions";
+import { TableSettingsContext } from "./aitContext";
+import { AitCellData, AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
+import { AitRow } from "./aitRow";
 
 interface AitRowGroupProps {
   id: string;
@@ -234,7 +234,7 @@ export const AitRowGroup = ({
             }
             addRowGroup={tableSettings.editable ? addRowGroup : undefined}
             removeRowGroup={tableSettings.editable ? removeRowGroup : undefined}
-            rowGroupComments={comments ?? ''}
+            rowGroupComments={comments ?? ""}
             updateRowGroupComments={
               tableSettings.editable
                 ? (ret) => {
@@ -250,7 +250,7 @@ export const AitRowGroup = ({
             }
             removeRow={
               tableSettings.editable &&
-              rows.filter((r) => (r.rowRepeat ?? '0').match(/^[[\]0,]+$/) !== null).length > 1 &&
+              rows.filter((r) => (r.rowRepeat ?? "0").match(/^[[\]0,]+$/) !== null).length > 1 &&
               (row.rowRepeat?.match(/^[[\]0,]+$/) || row.rowRepeat === undefined)
                 ? removeRow
                 : undefined

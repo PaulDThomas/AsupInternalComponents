@@ -1,10 +1,10 @@
-import React, { useCallback, useContext } from 'react';
-import { AioReplacement } from '../aio';
-import { newCell, newRow } from '../functions';
-import { AitBorderRow } from './aitBorderRow';
-import { TableSettingsContext } from './aitContext';
-import { AitCellData, AitLocation, AitRowData, AitRowGroupData, AitRowType } from './aitInterface';
-import { AitRow } from './aitRow';
+import React, { useCallback, useContext } from "react";
+import { AioReplacement } from "../aio";
+import { newCell, newRow } from "../functions";
+import { AitBorderRow } from "./aitBorderRow";
+import { TableSettingsContext } from "./aitContext";
+import { AitCellData, AitLocation, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
+import { AitRow } from "./aitRow";
 
 interface AitHeaderProps {
   id: string;
@@ -186,7 +186,7 @@ export const AitHeader = ({
             aitid={row.aitid ?? `row-${ri}`}
             cells={row.cells}
             setRowData={
-              tableSettings.editable && typeof setHeaderData === 'function'
+              tableSettings.editable && typeof setHeaderData === "function"
                 ? (ret) => {
                     const newRows = [...rows];
                     newRows.splice(ri, 1, ret);
@@ -200,15 +200,15 @@ export const AitHeader = ({
               row: rows.findIndex((r) => r.aitid === row.aitid),
               column: -1,
               rowRepeat: undefined,
-              colRepeat: '',
+              colRepeat: "",
             }}
             spaceAfter={false}
             replacements={replacements}
             setReplacements={
               tableSettings.editable ? (ret) => returnData({ replacements: ret }) : undefined
             }
-            rowGroupWindowTitle={'Header options'}
-            rowGroupComments={comments ?? ''}
+            rowGroupWindowTitle={"Header options"}
+            rowGroupComments={comments ?? ""}
             updateRowGroupComments={
               tableSettings.editable
                 ? (ret) => {

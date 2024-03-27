@@ -1,12 +1,12 @@
-import { AitCellData, AitRowData } from '../ait';
-import { newCell } from './newCell';
-import { prependCell } from './prependCells';
+import { AitCellData, AitRowData } from "../ait";
+import { newCell } from "./newCell";
+import { prependCell } from "./prependCells";
 
-describe('Check prependCells', () => {
+describe("Check prependCells", () => {
   // Set up cell data
-  const a: AitCellData = { text: 'A' };
-  const b: AitCellData = { text: 'B', rowSpan: 2 };
-  const c: AitCellData = { text: 'C', repeatRowSpan: 3 };
+  const a: AitCellData = { text: "A" };
+  const b: AitCellData = { text: "B", rowSpan: 2 };
+  const c: AitCellData = { text: "C", repeatRowSpan: 3 };
   const cellsA = [a, b, c];
 
   // Set up row data
@@ -33,7 +33,7 @@ describe('Check prependCells', () => {
           );
 
           for (let reti = 1; reti < ret.length; reti++) {
-            expect(ret[reti].cells[0].replacedText).toBe('');
+            expect(ret[reti].cells[0].replacedText).toBe("");
           }
         });
       }
@@ -42,7 +42,7 @@ describe('Check prependCells', () => {
 
   const reps = 5;
   test(`${reps} prepends`, () => {
-    let ret: AitRowData[] = [{ cells: [{ text: 'Start' }] }];
+    let ret: AitRowData[] = [{ cells: [{ text: "Start" }] }];
     let lastRowCount = ret.length;
     for (let repi = 0; repi < reps; repi++) {
       ret = prependCell(a, 60, ret, repi);

@@ -1,4 +1,4 @@
-import { AitRowData } from '../ait/aitInterface';
+import { AitRowData } from "../ait/aitInterface";
 
 /**
  * Add rows to the right of more rows
