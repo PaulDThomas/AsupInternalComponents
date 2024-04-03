@@ -21,7 +21,6 @@ export const WindowPage = () => {
               type="checkbox"
               checked={showWindow}
               onChange={(e) => {
-                console.log(`Changing checkbox to ${e.target.checked}`);
                 setShowWindow(e.target.checked);
               }}
             />
@@ -30,7 +29,6 @@ export const WindowPage = () => {
             id="test-window"
             visible={showWindow}
             onClose={() => {
-              console.log("Closing window in WindowPage");
               setShowWindow(false);
             }}
             title={"This is the window title"}

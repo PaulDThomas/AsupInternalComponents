@@ -1,9 +1,10 @@
 import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio";
-import { AitCellData, AitColumnRepeat, AitRowData } from "../ait";
+import { AitColumnRepeat, AitRowData } from "../ait";
+import { AitHeaderCellData, AitHeaderRowData } from "../ait/aitInterface";
 import { appendCells } from "./appendCells";
 import { flattenReplacements } from "./flattenReplacements";
-import { newCell } from "./newCell";
+import { newHeaderCell } from "./newCell";
 import { replaceCellText } from "./replaceCellText";
 
 /**
@@ -15,17 +16,17 @@ import { replaceCellText } from "./replaceCellText";
  */
 export const replaceHeaders = (
   rowHeaderColumns: number,
-  rows: AitRowData[],
+  rows: AitHeaderRowData[],
   columnRepeats: AitColumnRepeat[],
   defaultCellWidth: number,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
-): { newHeaderRows: AitRowData[]; newColumnRepeats: AitColumnRepeat[] } => {
+): { newHeaderRows: AitHeaderRowData[]; newColumnRepeats: AitColumnRepeat[] } => {
   // Check there are rows
   if (rows.length === 0) return { newHeaderRows: [], newColumnRepeats: [] };
 
   // Set up holders
-  let newHeaderRows: AitRowData[] = rows.map((r) => {
+  let newHeaderRows: AitHeaderRowData[] = rows.map((r) => {
     return { aitid: r.aitid, cells: [] };
   });
   let newColumnRepeats: AitColumnRepeat[] = [];
@@ -50,7 +51,7 @@ export const replaceHeaders = (
           return {
             aitid: r.aitid,
             cells: [r.cells[ci]],
-          } as AitRowData;
+          } as AitHeaderRowData;
         }),
       );
       newColumnRepeats = [...newColumnRepeats, columnRepeats[ci]];
@@ -101,7 +102,7 @@ export const replaceHeaders = (
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              const thisRepeat: AitCellData = replaceCellText(
+              const thisRepeat: AitHeaderCellData = replaceCellText(
                 targetCell,
                 replacement.oldText,
                 rv.texts[ti],
@@ -126,7 +127,7 @@ export const replaceHeaders = (
               ) {
                 const nIns = thisRepeat.repeatColSpan - thisRepeat.colSpan;
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newCell(defaultCellWidth);
+                  const n = newHeaderCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = "";
@@ -209,9 +210,9 @@ export const replaceHeaders = (
                 // Calculated new colSpan and add in fillers
                 targetCellAbove.repeatColSpan =
                   (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
-                const newCells2: AitCellData[] = [];
+                const newCells2: AitHeaderCellData[] = [];
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newCell(defaultCellWidth);
+                  const n = newHeaderCell(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   n.replacedText = "";

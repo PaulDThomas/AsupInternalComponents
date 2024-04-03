@@ -7,15 +7,18 @@ export interface AitCellData {
   text: string;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments?: string;
-  colSpan?: number;
-  rowSpan?: number;
   colWidth?: number;
   textIndents?: number; // Spaces/tabs at the start of the cell
   replacedText?: string; // Visible text after any list replacements
-  repeatColSpan?: number; // ColSpan after any list replacements
   repeatRowSpan?: number; // RowSpan after any list replacements
   spaceAfterRepeat?: boolean; // If a blank row is required after this repeat
   spaceAfterSpan?: number; // Number of rowSpaceAfters being crossed
+}
+
+export interface AitHeaderCellData extends AitCellData {
+  colSpan?: number;
+  rowSpan?: number;
+  repeatColSpan?: number; // ColSpan after any list replacements
 }
 
 export interface AitRowData {
@@ -23,6 +26,10 @@ export interface AitRowData {
   rowRepeat?: string; // Repeat ID
   cells: AitCellData[];
   spaceAfter?: boolean; // Indicator if there is space after a row
+}
+
+export interface AitHeaderRowData extends AitRowData {
+  cells: AitHeaderCellData[];
 }
 
 export interface AitRowGroupData {
@@ -34,8 +41,12 @@ export interface AitRowGroupData {
   replacements?: AioReplacement[]; // Replacement lists to use for repeats
 }
 
+export interface AitHeaderGroupData extends AitRowGroupData {
+  rows: AitHeaderRowData[];
+}
+
 export interface AitTableData {
-  headerData?: AitRowGroupData | false;
+  headerData?: AitHeaderGroupData | false;
   bodyData?: AitRowGroupData[];
   comments?: string;
   rowHeaderColumns?: number; // Number of label type columns before data is presented

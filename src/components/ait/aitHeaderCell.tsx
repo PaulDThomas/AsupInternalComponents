@@ -4,23 +4,30 @@ import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { TableSettingsContext } from "./aitContext";
-import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
+import { AitCellData, AitHeaderCellData, AitLocation } from "./aitInterface";
 
-interface AitCellProps {
+interface AitHeaderCellProps {
   id: string;
   aitid: string;
   text: string;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments: string;
+  rowSpan: number;
+  colSpan: number;
   colWidth?: number;
   displayColWidth?: number;
   textIndents?: number;
   replacedText?: string;
+  repeatColSpan?: number;
   repeatRowSpan?: number;
   setCellData?: (ret: AitCellData) => void;
   setColWidth?: (ret: number) => void;
   readOnly: boolean;
   location: AitLocation;
+  addColSpan?: (loc: AitLocation) => void;
+  removeColSpan?: (loc: AitLocation) => void;
+  addRowSpan?: (loc: AitLocation) => void;
+  removeRowSpan?: (loc: AitLocation) => void;
   spaceAfterRepeat?: boolean;
   spaceAfterSpan?: number;
 }
@@ -28,24 +35,31 @@ interface AitCellProps {
 /*
  * Table cell in AsupInternalTable
  */
-export const AitCell = ({
+export const AitHeaderCell = ({
   id,
   aitid,
   text,
   justifyText,
   comments,
+  colSpan,
+  rowSpan,
   colWidth,
   displayColWidth,
   textIndents,
   replacedText,
+  repeatColSpan,
   repeatRowSpan,
   setCellData,
   setColWidth,
   readOnly,
   location,
+  addColSpan,
+  removeColSpan,
+  addRowSpan,
+  removeRowSpan,
   spaceAfterRepeat,
   spaceAfterSpan,
-}: AitCellProps) => {
+}: AitHeaderCellProps) => {
   // Context
   const tableSettings = useContext(TableSettingsContext);
   // Data holder
@@ -75,29 +89,16 @@ export const AitCell = ({
     [location],
   );
 
-  const cellType = useMemo<AitCellType>(() => {
-    const cellType =
-      location.tableSection === AitRowType.body &&
-      location.column < (tableSettings.rowHeaderColumns ?? 0)
-        ? AitCellType.rowHeader
-        : AitCellType.body;
-    return cellType;
-  }, [location.column, location.tableSection, tableSettings.rowHeaderColumns]);
-
   // Update cell style when options change
   const cellStyle = useMemo<React.CSSProperties>(() => {
     return {
       overflow: "visible",
       width: `${tableSettings.colWidthMod * (colWidth ?? tableSettings.defaultCellWidth)}px`,
-      paddingLeft:
-        cellType === AitCellType.rowHeader && textIndents !== undefined
-          ? `${textIndents}rem`
-          : undefined,
       borderLeft: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
       borderBottom: tableSettings.showCellBorders ? "1px dashed burlywood" : "",
       borderRight:
         tableSettings.showCellBorders &&
-        location.column === (tableSettings.rowHeaderColumns ?? 0) - 1
+        location.column === (tableSettings.rowHeaderColumns ?? 0) - colSpan
           ? "1px solid burlywood"
           : tableSettings.showCellBorders
             ? "1px dashed burlywood"
@@ -115,11 +116,10 @@ export const AitCell = ({
     tableSettings.showCellBorders,
     tableSettings.rowHeaderColumns,
     colWidth,
-    cellType,
-    textIndents,
     location.column,
     location.row,
     location.rowGroup,
+    colSpan,
   ]);
 
   /** Callback for update to any cell data */
@@ -131,30 +131,33 @@ export const AitCell = ({
       colWidth?: number;
       textIndents?: number;
     }) => {
-      if (setCellData) {
-        const r: AitCellData = {
-          aitid: aitid,
-          text: cellUpdate.text ?? text,
-          justifyText:
-            cellUpdate.justifyText === null ? undefined : cellUpdate.justifyText ?? justifyText,
-          comments: cellUpdate.comments ?? comments,
-          colWidth: cellUpdate.colWidth ?? colWidth,
-          textIndents: cellUpdate.textIndents ?? textIndents ?? 0,
-          replacedText: replacedText,
-          repeatRowSpan: repeatRowSpan,
-          spaceAfterRepeat: spaceAfterRepeat,
-          spaceAfterSpan: spaceAfterSpan,
-        };
-        setCellData(r);
-      }
+      if (typeof setCellData !== "function") return;
+      const r: AitHeaderCellData = {
+        aitid: aitid,
+        text: cellUpdate.text ?? text,
+        justifyText:
+          cellUpdate.justifyText === null ? undefined : cellUpdate.justifyText ?? justifyText,
+        comments: cellUpdate.comments ?? comments,
+        colSpan: colSpan,
+        rowSpan: rowSpan,
+        colWidth: cellUpdate.colWidth ?? colWidth,
+        textIndents: cellUpdate.textIndents ?? textIndents ?? 0,
+        replacedText: replacedText,
+        repeatColSpan: repeatColSpan,
+        spaceAfterRepeat: spaceAfterRepeat,
+        spaceAfterSpan: spaceAfterSpan,
+      };
+      setCellData(r);
     },
     [
       aitid,
+      colSpan,
       colWidth,
       comments,
       justifyText,
-      repeatRowSpan,
+      repeatColSpan,
       replacedText,
+      rowSpan,
       setCellData,
       spaceAfterRepeat,
       spaceAfterSpan,
@@ -171,15 +174,18 @@ export const AitCell = ({
     setButtonState("hidden");
   };
 
+  // Do not render if there is no rowSpan or colSpan
+  if (colSpan === 0 || rowSpan === 0 || repeatColSpan === 0 || repeatRowSpan === 0) return <></>;
+
   // Render element
   return (
     <td
       id={id}
-      className={[
-        "ait-cell",
-        cellType === AitCellType.rowHeader ? "ait-row-header-cell" : "ait-body-cell",
-        currentReadOnly ? "ait-readonly-cell" : "",
-      ].join(" ")}
+      className={["ait-cell", "ait-header-cell", currentReadOnly ? "ait-readonly-cell" : ""]
+        .filter((c) => c !== "")
+        .join(" ")}
+      colSpan={repeatColSpan ?? colSpan ?? 1}
+      rowSpan={(repeatRowSpan ?? rowSpan ?? 1) + (spaceAfterSpan ?? 0)}
       style={cellStyle}
       data-location-table-section={location.tableSection}
       data-location-row-group={location.rowGroup}
@@ -337,6 +343,70 @@ export const AitCell = ({
               />
             </div>
             <div className="aiw-body-row">
+              <div className={"aio-label"}>Row span: </div>
+              <div className={"aio-ro-value"}>{repeatRowSpan ?? rowSpan ?? 1}</div>
+              <div
+                className={"aiox-button-holder"}
+                style={{ padding: "2px" }}
+              >
+                {repeatRowSpan === undefined &&
+                !currentReadOnly &&
+                isNotRepeat &&
+                typeof addRowSpan === "function" &&
+                colSpan === 1 ? (
+                  <div
+                    id={`${id}-add-rowspan`}
+                    className="aiox-button aiox-plus"
+                    onClick={() => addRowSpan(location)}
+                  />
+                ) : (
+                  <div className="aiox-button" />
+                )}
+                {repeatRowSpan === undefined &&
+                  !currentReadOnly &&
+                  isNotRepeat &&
+                  typeof removeRowSpan === "function" && (
+                    <div
+                      id={`${id}-remove-rowspan`}
+                      className="aiox-button aiox-minus"
+                      onClick={() => removeRowSpan(location)}
+                    />
+                  )}
+              </div>
+            </div>
+            <div className="aiw-body-row">
+              <div className={"aio-label"}>Column span: </div>
+              <div className={"aio-ro-value"}>{repeatColSpan ?? colSpan ?? 1}</div>
+              <div
+                className={"aiox-button-holder"}
+                style={{ padding: "2px" }}
+              >
+                {repeatColSpan === undefined &&
+                !currentReadOnly &&
+                isNotRepeat &&
+                typeof addColSpan === "function" &&
+                rowSpan === 1 ? (
+                  <div
+                    id={`${id}-add-colspan`}
+                    className="aiox-button aiox-plus"
+                    onClick={() => addColSpan(location)}
+                  />
+                ) : (
+                  <div className="aiox-button" />
+                )}
+                {repeatColSpan === undefined &&
+                  !currentReadOnly &&
+                  isNotRepeat &&
+                  typeof removeColSpan === "function" && (
+                    <div
+                      id={`${id}-remove-colspan`}
+                      className="aiox-button aiox-minus"
+                      onClick={() => removeColSpan(location)}
+                    />
+                  )}
+              </div>
+            </div>
+            <div className="aiw-body-row">
               <AioNumber
                 id={`${id}-width`}
                 label="Width (mm)"
@@ -344,38 +414,6 @@ export const AitCell = ({
                 setValue={!currentReadOnly && setColWidth ? (ret) => setColWidth(ret) : undefined}
               />
             </div>
-            {cellType === AitCellType.rowHeader ? (
-              <>
-                <div className="aiw-body-row">
-                  <div className={"aio-label"}>Text indents: </div>
-                  <div className={"aio-ro-value"}>{textIndents ?? 0}</div>
-                  {!currentReadOnly && (
-                    <div
-                      className={"aiox-button-holder"}
-                      style={{ padding: "2px" }}
-                    >
-                      <div
-                        id={`${id}-add-text-indent`}
-                        className="aiox-button aiox-plus"
-                        onClick={() => returnData({ textIndents: (textIndents ?? 0) + 1 })}
-                      />
-                      {(textIndents ?? 0) > 0 && (
-                        <div
-                          id={`${id}-remove-text-indent`}
-                          className="aiox-button aiox-minus"
-                          onClick={() => returnData({ textIndents: (textIndents ?? 0) - 1 })}
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div className="aiw-body-row">
-                  <div className={"aio-label"}>Row span: 1</div>
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
           </AsupInternalWindow>
         )}
       </div>

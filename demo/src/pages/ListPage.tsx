@@ -24,7 +24,7 @@ export const ListPage = (): JSX.Element => {
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
-      console.log("JSON parse failed");
+      console.warn("JSON parse failed");
       console.dir(e);
     }
   }, []);

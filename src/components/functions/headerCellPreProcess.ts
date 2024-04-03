@@ -1,4 +1,4 @@
-import { AitCellData } from "../ait";
+import { AitHeaderCellData } from "components/ait/aitInterface";
 import { v4 as uuidv4 } from "uuid";
 import { newCell } from "./newCell";
 
@@ -7,7 +7,10 @@ import { newCell } from "./newCell";
  * @param cs
  * @returns compliant cell
  */
-export const cellPreProcess = (defaultCellWidth: number, cs?: AitCellData[]): AitCellData[] => {
+export const headerCellPreProcess = (
+  defaultCellWidth: number,
+  cs?: AitHeaderCellData[],
+): AitHeaderCellData[] => {
   if (cs === undefined) return [newCell(defaultCellWidth)];
   // Check aitid
   return cs.map((c) => {
@@ -22,6 +25,9 @@ export const cellPreProcess = (defaultCellWidth: number, cs?: AitCellData[]): Ai
       repeatRowSpan: c.repeatRowSpan,
       spaceAfterRepeat: c.spaceAfterRepeat,
       spaceAfterSpan: c.spaceAfterSpan,
+      colSpan: c.colSpan,
+      rowSpan: c.rowSpan,
+      repeatColSpan: c.repeatColSpan,
     };
   });
 };

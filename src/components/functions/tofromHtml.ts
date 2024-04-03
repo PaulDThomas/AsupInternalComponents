@@ -14,8 +14,8 @@ export const fromHtml = (text: string): string =>
   text
     .replace(/&nbsp;/g, "\u00A0")
     .replace(/<br\/>/g, "\n")
-    // eslint-disable-next-line quotes
     .replace(/&apos;/g, "'")
+    // eslint-disable-next-line quotes
     .replace(/&quot;/g, '"')
     .replace(/&lt;/g, "<")
     .replace(/&le;/g, "≤")

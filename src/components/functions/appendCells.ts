@@ -1,4 +1,4 @@
-import { AitRowData } from "../ait/aitInterface";
+import { AitHeaderRowData, AitRowData } from "../ait/aitInterface";
 
 /**
  * Add rows to the right of more rows
@@ -6,11 +6,14 @@ import { AitRowData } from "../ait/aitInterface";
  * @param append block of rows to add to the right
  * @returns Consolidated rows
  */
-export const appendCells = (base: AitRowData[], append: AitRowData[]): AitRowData[] => {
+export const appendCells = <T extends AitRowData | AitHeaderRowData>(
+  base: T[],
+  append: T[],
+): T[] => {
   return base.map((r, ri) => {
     return {
       aitid: r.aitid,
       cells: [...r.cells, ...append[ri].cells],
-    } as AitRowData;
+    } as T;
   });
 };

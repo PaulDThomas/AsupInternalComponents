@@ -53,46 +53,6 @@ export const repeatRows = (
     newRows[newRows.length - 1].spaceAfter = true;
   }
 
-  // Post processing...
-  newRows.forEach((r, ri) => {
-    // Cycle through each column cell
-    r.cells.forEach((c, ci) => {
-      // Look for cells to check, rowSpan can have been increase by following repeats
-      if ((c.repeatRowSpan ?? c.rowSpan ?? 1) > 0 && (c.rowSpan ?? 1) !== 0) {
-        let actualSpan = newRows
-          .slice(ri + 1)
-          .map((r) => r.cells[ci])
-          .findIndex((c) => (c.rowSpan ?? 1) > 0);
-        if (actualSpan === -1) actualSpan = newRows.length - ri - 1;
-        // Check if changes need to be made
-        if (actualSpan + 1 > (c.repeatRowSpan ?? c.rowSpan ?? 1)) {
-          c.repeatRowSpan = actualSpan + 1;
-        }
-      }
-
-      // Add spaceAfter to the correct cell
-      if (c.spaceAfterRepeat) {
-        newRows[ri + (c.repeatRowSpan ?? c.rowSpan ?? 1) - 1].spaceAfter = true;
-      }
-    });
-  });
-
-  // Look for spaceAfter on trailing rows now all spaceAfter calculated
-  newRows.forEach((r, ri) => {
-    r.cells
-      .filter((c) => (c.repeatRowSpan ?? c.rowSpan ?? 1) > 1 && (c.rowSpan ?? 1) > 0)
-      .forEach((c) => {
-        c.spaceAfterSpan = newRows
-          .slice(ri, ri + (c.repeatRowSpan ?? c.rowSpan ?? 1))
-          .filter((r) => r.spaceAfter).length;
-      });
-  });
-
-  // Add spaceAfter for the group
-  if (spaceAfter) {
-    newRows[newRows.length - 1].spaceAfter = true;
-  }
-
   // Single post processing replacements
   newRows = singleReplacements(externalSingles, newRows);
 

@@ -25,12 +25,15 @@ import { TableSettingsContext } from "./aitContext";
 import { AitHeader } from "./aitHeader";
 import {
   AitColumnRepeat,
+  AitHeaderGroupData,
   AitLocation,
   AitRowGroupData,
   AitRowType,
   AitTableData,
 } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
+import { unProcessRowGroup } from "../functions/unProcessRowGroup";
+import { newHeaderCell } from "../functions/newCell";
 
 interface AsupInternalTableProps {
   id: string;
@@ -79,7 +82,7 @@ export const AsupInternalTable = ({
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
 
   // Explode tableData
-  const [headerData, setHeaderData] = useState<AitRowGroupData | false>();
+  const [headerData, setHeaderData] = useState<AitHeaderGroupData | false>();
   const [bodyData, setBodyData] = useState<AitRowGroupData[]>();
   const [comments, setComments] = useState<string>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
@@ -172,35 +175,6 @@ export const AsupInternalTable = ({
     tableData,
   ]);
 
-  const unProcessRowGroup = useCallback(
-    (processedGroup: AitRowGroupData | false): AitRowGroupData | false => {
-      const ret =
-        processedGroup === false
-          ? false
-          : {
-              ...processedGroup,
-              rows: processedGroup.rows
-                .filter(
-                  (r) => r.rowRepeat === undefined || r.rowRepeat.match(/^[[\]0,]+$/) !== null,
-                )
-                .map((r) => {
-                  return {
-                    ...r,
-                    cells: r.cells.filter(
-                      (_, ci) =>
-                        columnRepeats === null ||
-                        (columnRepeats !== null &&
-                          columnRepeats[ci] !== undefined &&
-                          (columnRepeats[ci].colRepeat ?? "0").match(/^[[\]0,]+$/)),
-                    ),
-                  };
-                }),
-            };
-      return ret;
-    },
-    [columnRepeats],
-  );
-
   // Unprocess data on the way back up
   const returnData = useCallback(
     (tableUpdate: {
@@ -213,31 +187,32 @@ export const AsupInternalTable = ({
       noRepeatProcessing?: boolean;
       decimalAlignPercent?: number;
     }) => {
-      if (typeof setTableData !== "function") return;
-      // Unprocess header data
-      const headerRet =
-        !tableUpdate.headerDataUnprocessed && tableUpdate.headerData
-          ? unProcessRowGroup(tableUpdate.headerData)
-          : tableUpdate.headerData
-            ? tableUpdate.headerData
-            : headerData !== false && headerData !== undefined
-              ? unProcessRowGroup(headerData)
-              : headerData;
-      // Unprocess body data
-      const bodyRet =
-        tableUpdate.bodyDataUnprocessed || !tableUpdate.bodyData
-          ? tableUpdate.bodyData ?? bodyData?.map((rg) => unProcessRowGroup(rg))
-          : tableUpdate.bodyData.map((rg) => unProcessRowGroup(rg));
-      // Assenble return information
-      const r = {
-        headerData: headerRet,
-        bodyData: bodyRet,
-        comments: tableUpdate.comments ?? comments,
-        rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
-        noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
-        decimalAlignPercent: tableUpdate.decimalAlignPercent ?? decimalAlignPercent,
-      } as AitTableData;
-      setTableData(r);
+      if (setTableData) {
+        // Unprocess header data
+        const headerRet =
+          !tableUpdate.headerDataUnprocessed && tableUpdate.headerData
+            ? unProcessRowGroup(tableUpdate.headerData, columnRepeats)
+            : tableUpdate.headerData
+              ? tableUpdate.headerData
+              : headerData !== false && headerData !== undefined
+                ? unProcessRowGroup(headerData, columnRepeats)
+                : headerData;
+        // Unprocess body data
+        const bodyRet =
+          tableUpdate.bodyDataUnprocessed || !tableUpdate.bodyData
+            ? tableUpdate.bodyData ?? bodyData?.map((rg) => unProcessRowGroup(rg, columnRepeats))
+            : tableUpdate.bodyData.map((rg) => unProcessRowGroup(rg, columnRepeats));
+        // Assenble return information
+        const r = {
+          headerData: headerRet,
+          bodyData: bodyRet,
+          comments: tableUpdate.comments ?? comments,
+          rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
+          noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
+          decimalAlignPercent: tableUpdate.decimalAlignPercent ?? decimalAlignPercent,
+        } as AitTableData;
+        setTableData(r);
+      }
     },
     [
       setTableData,
@@ -259,7 +234,7 @@ export const AsupInternalTable = ({
         return;
       // Update body data
       let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg) as AitRowGroupData,
+        (rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData,
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
@@ -269,8 +244,8 @@ export const AsupInternalTable = ({
         return rg;
       });
       // Update header group
-      const newHeader = unProcessRowGroup(headerData);
-      if (newHeader !== false && headerData !== false) {
+      const newHeader = headerData && unProcessRowGroup(headerData, columnRepeats);
+      if (newHeader !== false) {
         headerData.rows = newHeader.rows.map((r) => {
           // Check for colSpan
           if (ci >= 0 && r.cells[ci + 1]?.colSpan === 0) {
@@ -281,11 +256,11 @@ export const AsupInternalTable = ({
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            const n = newCell(defaultCellWidth);
+            const n = newHeaderCell(defaultCellWidth);
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
-            r.cells.splice(ci + 1, 0, newCell(defaultCellWidth));
+            r.cells.splice(ci + 1, 0, newHeaderCell(defaultCellWidth));
           }
           return r;
         });
@@ -309,7 +284,7 @@ export const AsupInternalTable = ({
         return;
       // Update body data
       let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg) as AitRowGroupData,
+        (rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData,
       );
       newBody = newBody.map((rg) => {
         // let newRg = unProcessRowGroup(rg) as AitRowGroupData;
@@ -321,8 +296,8 @@ export const AsupInternalTable = ({
         return newRg;
       });
       // Update header group
-      const newHeader = unProcessRowGroup(headerData);
-      if (newHeader !== false && headerData !== false) {
+      const newHeader = headerData && unProcessRowGroup(headerData, columnRepeats);
+      if (newHeader !== false) {
         headerData.rows = newHeader.rows.map((r) => {
           // Check for colSpan
           const c = r.cells[ci];
@@ -389,7 +364,8 @@ export const AsupInternalTable = ({
         r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),
       );
       // Copy existing body and splice in new data
-      const newBody = bodyData?.map((rg) => unProcessRowGroup(rg) as AitRowGroupData) ?? [];
+      const newBody =
+        bodyData?.map((rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData) ?? [];
       newBody.splice(rgi + 1, 0, newrg);
       // Update table body
       returnData({ bodyData: newBody, bodyDataUnprocessed: true });
@@ -438,11 +414,6 @@ export const AsupInternalTable = ({
     if (
       headerData !== false &&
       headerData.rows.some((r) => (r.cells[rowHeaderColumns - 1].colSpan ?? 1) !== 1)
-    )
-      return;
-    // Check bodyData for cells with rowSpan
-    if (
-      bodyData.some((rg) => rg.rows.some((r) => (r.cells[rowHeaderColumns - 1].rowSpan ?? 1) !== 1))
     )
       return;
     returnData({ rowHeaderColumns: rowHeaderColumns - 1 });
@@ -527,7 +498,7 @@ export const AsupInternalTable = ({
     (loc: AitLocation) => {
       if (!headerData) return;
       // Update header group
-      const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
+      const newHeader = unProcessRowGroup(headerData, columnRepeats);
       const newRows = [...newHeader.rows];
       const actualCol = loc.column;
 
@@ -562,7 +533,7 @@ export const AsupInternalTable = ({
     (loc: AitLocation) => {
       if (!headerData) return;
       // Update header group
-      const newHeader = unProcessRowGroup(headerData) as AitRowGroupData;
+      const newHeader = unProcessRowGroup(headerData, columnRepeats);
       const newRows = [...newHeader.rows];
       // Get things to change
       const actualCol = loc.column;

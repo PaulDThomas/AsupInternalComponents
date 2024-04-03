@@ -64,7 +64,7 @@ export const TablePage = () => {
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
-      console.log("JSON parse failed");
+      console.warn("JSON parse failed");
       console.dir(e);
     }
   }, []);
@@ -85,7 +85,7 @@ export const TablePage = () => {
           .join(", ")}`,
       );
     } catch (e) {
-      console.log("JSON parse from listContent failed");
+      console.warn("JSON parse from listContent failed");
       console.dir(e);
       setListStatus("Error loading external list data");
     }

@@ -1,15 +1,22 @@
-import React, { useCallback, useContext } from "react";
+import { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
-import { newCell, newRow } from "../functions";
+import { newRow } from "../functions";
+import { newHeaderCell } from "../functions/newCell";
 import { AitBorderRow } from "./aitBorderRow";
 import { TableSettingsContext } from "./aitContext";
-import { AitCellData, AitLocation, AitRowData, AitRowGroupData, AitRowType } from "./aitInterface";
-import { AitRow } from "./aitRow";
+import { AitHeaderRow } from "./aitHeaderRow";
+import {
+  AitHeaderRowData,
+  AitLocation,
+  AitRowData,
+  AitRowGroupData,
+  AitRowType,
+} from "./aitInterface";
 
 interface AitHeaderProps {
   id: string;
   aitid: string;
-  rows: AitRowData[];
+  rows: AitHeaderRowData[];
   comments?: string;
   replacements?: AioReplacement[];
   setHeaderData?: (ret: AitRowGroupData) => void;
@@ -50,11 +57,11 @@ export const AitHeader = ({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr: AitRowData = newRow(tableSettings.defaultCellWidth, 0);
+      const newr: AitHeaderRowData = newRow(tableSettings.defaultCellWidth, 0);
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
-        const c = newCell(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
+        const c = newHeaderCell(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
         // Check rowSpans on previous row
         if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
           let riUp = 0;
@@ -132,9 +139,9 @@ export const AitHeader = ({
         tableSettings.columnRepeats?.findIndex(
           (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
         ) ?? loc.column;
-      const targetCell: AitCellData = newRows[loc.row].cells[actualCol];
+      const targetCell = newRows[loc.row].cells[actualCol];
       if (targetCell.rowSpan === undefined) targetCell.rowSpan = 1;
-      const hideCell: AitCellData = newRows[loc.row + targetCell.rowSpan]?.cells[actualCol];
+      const hideCell = newRows[loc.row + targetCell.rowSpan]?.cells[actualCol];
       // Check change is ok
       if (targetCell === undefined || hideCell === undefined) return;
       if (targetCell.colSpan !== 1) return;
@@ -157,11 +164,10 @@ export const AitHeader = ({
         tableSettings.columnRepeats?.findIndex(
           (c) => c.columnIndex === loc.column && c.colRepeat === loc.colRepeat,
         ) ?? loc.column;
-      const targetCell: AitCellData = newRows[loc.row].cells[actualCol];
+      const targetCell = newRows[loc.row].cells[actualCol];
       // Check before getting hidden cell
       if (!newRows[loc.row + (targetCell.rowSpan ?? 1) - 1]?.cells.length) return;
-      const hideCell: AitCellData =
-        newRows[loc.row + (targetCell.rowSpan ?? 1) - 1].cells[actualCol];
+      const hideCell = newRows[loc.row + (targetCell.rowSpan ?? 1) - 1].cells[actualCol];
       if (hideCell.rowSpan !== 0) return;
       // Update target cell
       targetCell.rowSpan = (targetCell.rowSpan ?? 1) - 1;
@@ -180,7 +186,7 @@ export const AitHeader = ({
     <>
       {rows.map((row: AitRowData, ri: number): JSX.Element => {
         return (
-          <AitRow
+          <AitHeaderRow
             id={`${id}-header-row-${ri}`}
             key={`row-${ri}-${row.aitid}`}
             aitid={row.aitid ?? `row-${ri}`}

@@ -1,16 +1,23 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from "../aio";
 import { AsupInternalWindow } from "../aiw";
 import { AitBorderRow } from "./aitBorderRow";
-import { AitCell } from "./aitCell";
-import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
 import { TableSettingsContext } from "./aitContext";
+import { AitHeaderCell } from "./aitHeaderCell";
+import {
+  AitColumnRepeat,
+  AitHeaderCellData,
+  AitHeaderRowData,
+  AitLocation,
+  AitRowData,
+  AitRowType,
+} from "./aitInterface";
 
-interface AitRowProps {
+interface AitHeaderRowProps {
   id: string;
   aitid: string;
-  cells: AitCellData[];
-  setRowData?: (ret: AitRowData) => void;
+  cells: AitHeaderCellData[];
+  setRowData?: (ret: AitHeaderRowData) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   location: AitLocation;
   replacements?: AioReplacement[];
@@ -23,11 +30,15 @@ interface AitRowProps {
   addRow?: (ri: number) => void;
   removeRow?: (ri: number) => void;
   spaceAfter?: boolean;
+  addColSpan?: (loc: AitLocation) => void;
+  removeColSpan?: (loc: AitLocation) => void;
+  addRowSpan?: (loc: AitLocation) => void;
+  removeRowSpan?: (loc: AitLocation) => void;
   rowGroupSpace?: boolean;
   setRowGroupSpace?: (ret: boolean) => void;
 }
 
-export const AitRow = ({
+export const AitHeaderRow = ({
   id,
   aitid,
   cells,
@@ -44,9 +55,13 @@ export const AitRow = ({
   addRow,
   removeRow,
   spaceAfter,
+  addColSpan,
+  removeColSpan,
+  addRowSpan,
+  removeRowSpan,
   rowGroupSpace,
   setRowGroupSpace,
-}: AitRowProps): JSX.Element => {
+}: AitHeaderRowProps): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const editable = useMemo(() => {
@@ -55,7 +70,7 @@ export const AitRow = ({
 
   // General function to return complied object
   const returnData = useCallback(
-    (rowUpdate: { cells?: AitCellData[] }) => {
+    (rowUpdate: { cells?: AitHeaderCellData[] }) => {
       if (editable && setRowData) {
         const r: AitRowData = {
           aitid: aitid,
@@ -68,7 +83,7 @@ export const AitRow = ({
   );
 
   const updateCell = useCallback(
-    (ret: AitCellData, ci: number) => {
+    (ret: AitHeaderCellData, ci: number) => {
       // Create new object to send back
       const newCells = [...cells];
       newCells[ci] = ret;
@@ -178,7 +193,7 @@ export const AitRow = ({
         </td>
 
         {/* All cells from row */}
-        {cells.map((cell: AitCellData, ci: number): JSX.Element => {
+        {cells.map((cell: AitHeaderCellData, ci: number): JSX.Element => {
           // Get cell from column repeat
           const cr: AitColumnRepeat | undefined =
             Array.isArray(tableSettings.columnRepeats) && tableSettings.columnRepeats.length > ci
@@ -191,7 +206,7 @@ export const AitRow = ({
 
           // Render object
           return (
-            <AitCell
+            <AitHeaderCell
               id={`${id}-cell-${ci}`}
               key={
                 isColumnRepeat && cr ? `${cell.aitid}-${JSON.stringify(cr.colRepeat)}` : cell.aitid
@@ -200,11 +215,20 @@ export const AitRow = ({
               text={cell.text ?? `cell-${ci}`}
               justifyText={cell.justifyText}
               comments={cell.comments ?? ""}
+              colSpan={cell.colSpan ?? 1}
+              rowSpan={cell.rowSpan ?? 1}
               colWidth={cell.colWidth}
-              displayColWidth={cell.colWidth}
+              displayColWidth={
+                cell.colSpan === 1
+                  ? cell.colWidth
+                  : cells
+                      .slice(ci, ci + (cell.colSpan ?? 1))
+                      .map((c) => c.colWidth ?? tableSettings.defaultCellWidth)
+                      .reduce((a, b) => a + b, 0)
+              }
               textIndents={cell.textIndents ?? 0}
               replacedText={cell.replacedText}
-              repeatRowSpan={cell.repeatRowSpan}
+              repeatColSpan={cell.repeatColSpan}
               spaceAfterSpan={cell.spaceAfterSpan}
               location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={
@@ -212,8 +236,30 @@ export const AitRow = ({
                   ? (ret) => updateCell(ret, ci)
                   : undefined
               }
-              setColWidth={editable && setColWidth ? (ret) => setColWidth(ci, ret) : undefined}
+              setColWidth={
+                editable && setColWidth && cell.colSpan === 1
+                  ? (ret) => setColWidth(ci, ret)
+                  : undefined
+              }
               readOnly={!editable || isColumnRepeat || typeof addRow !== "function"}
+              addColSpan={
+                editable &&
+                !isColumnRepeat &&
+                typeof addRow === "function" &&
+                ci + (cell.colSpan ?? 1) < cells.length
+                  ? addColSpan
+                  : undefined
+              }
+              removeColSpan={editable && (cell.colSpan ?? 1) > 1 ? removeColSpan : undefined}
+              addRowSpan={
+                editable &&
+                (location.row + (cell.rowSpan ?? 1) < (tableSettings.headerRows ?? 0) ||
+                  ci < (tableSettings.rowHeaderColumns ?? 0))
+                  ? addRowSpan
+                  : undefined
+              }
+              removeRowSpan={editable && (cell.rowSpan ?? 1) > 1 ? removeRowSpan : undefined}
+              spaceAfterRepeat={cell.spaceAfterRepeat}
             />
           );
         })}
@@ -250,7 +296,7 @@ export const AitRow = ({
         </td>
       </tr>
       {/* Additional row if required */}
-      {(spaceAfter !== false || cells.some((c) => c.spaceAfterRepeat)) && (
+      {spaceAfter !== false && (
         <AitBorderRow
           id={`${id}-spaceafter-row`}
           spaceAfter={true}

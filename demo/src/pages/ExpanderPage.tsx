@@ -88,7 +88,7 @@ export const ExpanderPage = () => {
               const j = JSON.parse(ta.current.value ?? "[]");
               setCurrentData(j);
             } catch (e) {
-              console.log("JSON parse failed");
+              console.warn("JSON parse failed");
               console.dir(e);
             }
           }}
