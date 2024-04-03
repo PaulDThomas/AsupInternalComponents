@@ -8,7 +8,6 @@ import { newReplacement } from "./newReplacement";
 import { newReplacementValues } from "./newReplacementValues";
 import { newRow } from "./newRow";
 import { newRowGroup } from "./newRowGroup";
-import { objEqual } from "./objEqual";
 import { repeatHeaders } from "./repeatHeaders";
 import { repeatRows } from "./repeatRows";
 import { fromHtml, toHtml } from "./tofromHtml";
@@ -20,7 +19,6 @@ export {
   fromHtml,
   bodyPreProcess,
   headerPreProcess,
-  objEqual,
   newCell,
   newExternalReplacements,
   newExternalSingle,
