@@ -10,15 +10,15 @@ export interface AitCellData {
   colWidth?: number;
   textIndents?: number; // Spaces/tabs at the start of the cell
   replacedText?: string; // Visible text after any list replacements
-  repeatRowSpan?: number; // RowSpan after any list replacements
   spaceAfterRepeat?: boolean; // If a blank row is required after this repeat
-  spaceAfterSpan?: number; // Number of rowSpaceAfters being crossed
 }
 
 export interface AitHeaderCellData extends AitCellData {
   colSpan?: number;
   rowSpan?: number;
   repeatColSpan?: number; // ColSpan after any list replacements
+  repeatRowSpan?: number; // RowSpan after any list replacements
+  spaceAfterSpan?: number; // Number of rowSpaceAfters being crossed
 }
 
 export interface AitRowData {

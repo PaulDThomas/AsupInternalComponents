@@ -1,11 +1,12 @@
+import { AitHeaderRowData } from "components/ait/aitInterface";
 import { AioExternalSingle } from "../aio";
 import { AitRowData } from "../ait";
 import { replaceCellText } from "./replaceCellText";
 
-export function singleReplacements(
+export function singleReplacements<T extends AitRowData | AitHeaderRowData>(
   externalSingles: AioExternalSingle[] | undefined,
-  newRows: AitRowData[],
-): AitRowData[] {
+  newRows: T[],
+): T[] {
   if (externalSingles !== undefined && externalSingles.length > 0) {
     externalSingles.forEach((e) => {
       if (e.oldText !== undefined && e.oldText !== "" && e.newText !== undefined) {

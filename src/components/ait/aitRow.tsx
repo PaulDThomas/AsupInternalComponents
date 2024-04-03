@@ -204,8 +204,6 @@ export const AitRow = ({
               displayColWidth={cell.colWidth}
               textIndents={cell.textIndents ?? 0}
               replacedText={cell.replacedText}
-              repeatRowSpan={cell.repeatRowSpan}
-              spaceAfterSpan={cell.spaceAfterSpan}
               location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={
                 editable && !isColumnRepeat && typeof addRow === "function"

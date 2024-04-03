@@ -16,13 +16,11 @@ interface AitCellProps {
   displayColWidth?: number;
   textIndents?: number;
   replacedText?: string;
-  repeatRowSpan?: number;
   setCellData?: (ret: AitCellData) => void;
   setColWidth?: (ret: number) => void;
   readOnly: boolean;
   location: AitLocation;
   spaceAfterRepeat?: boolean;
-  spaceAfterSpan?: number;
 }
 
 /*
@@ -38,13 +36,12 @@ export const AitCell = ({
   displayColWidth,
   textIndents,
   replacedText,
-  repeatRowSpan,
+
   setCellData,
   setColWidth,
   readOnly,
   location,
   spaceAfterRepeat,
-  spaceAfterSpan,
 }: AitCellProps) => {
   // Context
   const tableSettings = useContext(TableSettingsContext);
@@ -141,9 +138,7 @@ export const AitCell = ({
           colWidth: cellUpdate.colWidth ?? colWidth,
           textIndents: cellUpdate.textIndents ?? textIndents ?? 0,
           replacedText: replacedText,
-          repeatRowSpan: repeatRowSpan,
           spaceAfterRepeat: spaceAfterRepeat,
-          spaceAfterSpan: spaceAfterSpan,
         };
         setCellData(r);
       }
@@ -153,11 +148,9 @@ export const AitCell = ({
       colWidth,
       comments,
       justifyText,
-      repeatRowSpan,
       replacedText,
       setCellData,
       spaceAfterRepeat,
-      spaceAfterSpan,
       text,
       textIndents,
     ],

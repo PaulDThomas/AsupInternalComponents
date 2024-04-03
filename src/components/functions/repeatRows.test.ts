@@ -7,23 +7,16 @@ describe("Check repeat rows", () => {
   const rows: AitRowData[] = [
     {
       cells: [
-        { text: "p", rowSpan: 2 },
-        { text: "s", rowSpan: 2 },
-        { text: "t", rowSpan: 2 },
-        { text: "h", rowSpan: 2 },
+        { text: "p" },
+        { text: "s" },
+        { text: "t" },
+        { text: "h" },
         { text: "r" },
         { text: "v" },
       ],
     },
     {
-      cells: [
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "c" },
-        { text: "v" },
-      ],
+      cells: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "c" }, { text: "v" }],
     },
   ];
 
@@ -145,12 +138,12 @@ describe("Check repeat rows", () => {
       // Row 0
       {
         cells: [
-          { text: "p", rowSpan: 2, repeatRowSpan: 24, replacedText: "p1!", spaceAfterSpan: 24 },
-          { text: "s", rowSpan: 2, repeatRowSpan: 12, replacedText: "s1", spaceAfterSpan: 12 },
-          { text: "t", rowSpan: 2, repeatRowSpan: 6, replacedText: "t1", spaceAfterSpan: 6 },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h1", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
+          { text: "p", replacedText: "p1!" },
+          { text: "s", replacedText: "s1" },
+          { text: "t", replacedText: "t1" },
+          { text: "h", replacedText: "h1" },
+          { text: "r", replacedText: "r1" },
+          { text: "v", replacedText: "0.xxx", spaceAfterRepeat: true },
         ],
         rowRepeat: "[0,0][0,0][0,0][0,0][0,0][0,0]",
         spaceAfter: true,
@@ -342,10 +335,10 @@ describe("Check repeat rows", () => {
       },
       {
         cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
           { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
           { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
         ],
@@ -354,9 +347,9 @@ describe("Check repeat rows", () => {
       },
       {
         cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
           { text: "", rowSpan: 0, repeatRowSpan: 0 },
           { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
           { text: "v", rowSpan: 1, replacedText: "!!" },
@@ -367,8 +360,8 @@ describe("Check repeat rows", () => {
       // Row 18
       {
         cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
+          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
           { text: "t", rowSpan: 2, repeatRowSpan: 6, replacedText: "t2", spaceAfterSpan: 6 },
           { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h1", spaceAfterSpan: 3 },
           { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
