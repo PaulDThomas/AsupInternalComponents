@@ -2,9 +2,9 @@ import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitHeaderCellData, AitLocation } from "./aitInterface";
+import { ContextWindow } from "@asup/context-menu";
 
 interface AitHeaderCellProps {
   id: string;
@@ -241,7 +241,7 @@ export const AitHeaderCell = ({
       <div>
         {/* Cell options window */}
         {showCellOptions && (
-          <AsupInternalWindow
+          <ContextWindow
             id={`${id}-window`}
             key="Cell"
             title={"Cell options"}
@@ -414,7 +414,7 @@ export const AitHeaderCell = ({
                 setValue={!currentReadOnly && setColWidth ? (ret) => setColWidth(ret) : undefined}
               />
             </div>
-          </AsupInternalWindow>
+          </ContextWindow>
         )}
       </div>
     </td>

@@ -14,7 +14,6 @@ import {
   AioString,
 } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
-import { AsupInternalWindow } from "./aiw";
 import {
   fromHtml,
   newExternalReplacements,
@@ -28,7 +27,7 @@ import {
   updateTableDataVersion,
 } from "./functions";
 
-export { AsupInternalEditor, AsupInternalTable, AsupInternalWindow, AsupInternalBlock };
+export { AsupInternalEditor, AsupInternalTable, AsupInternalBlock };
 export {
   AifLineType,
   AioExpander,

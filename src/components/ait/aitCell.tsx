@@ -2,9 +2,9 @@ import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import { TableSettingsContext } from "./aitContext";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
+import { ContextWindow } from "@asup/context-menu";
 
 interface AitCellProps {
   id: string;
@@ -228,7 +228,7 @@ export const AitCell = ({
       <div>
         {/* Cell options window */}
         {showCellOptions && (
-          <AsupInternalWindow
+          <ContextWindow
             id={`${id}-window`}
             key="Cell"
             title={"Cell options"}
@@ -369,7 +369,7 @@ export const AitCell = ({
             ) : (
               <></>
             )}
-          </AsupInternalWindow>
+          </ContextWindow>
         )}
       </div>
     </td>

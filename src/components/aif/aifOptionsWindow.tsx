@@ -1,8 +1,8 @@
 import React from "react";
 import { AieStyleMap } from "../aie";
 import { AioSelect } from "../aio/aioSelect";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { OriginalText } from "./OriginalText";
+import { ContextWindow } from "@asup/context-menu";
 
 interface AifOptionsWindowProps {
   id: string;
@@ -30,7 +30,7 @@ export const AifOptionsWindow = ({
   styleMap,
 }: AifOptionsWindowProps): JSX.Element => {
   return (
-    <AsupInternalWindow
+    <ContextWindow
       id={id}
       title="Line options"
       visible={true}
@@ -45,10 +45,10 @@ export const AifOptionsWindow = ({
             typeof left === "string" && typeof center === "string" && typeof right === "string"
               ? "Left, Center and Right"
               : typeof left === "string" && typeof right === "string"
-              ? "Left and Right"
-              : typeof left === "string"
-              ? "Left only"
-              : "Center only"
+                ? "Left and Right"
+                : typeof left === "string"
+                  ? "Left only"
+                  : "Center only"
           }
           setValue={
             returnData && canChangeType
@@ -101,6 +101,6 @@ export const AifOptionsWindow = ({
         setText={returnData ? (ret) => returnData({ right: ret }) : undefined}
         styleMap={styleMap}
       />
-    </AsupInternalWindow>
+    </ContextWindow>
   );
 };

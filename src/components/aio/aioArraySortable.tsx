@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
 import { AioNewItem, AioOptionType } from "./aioInterface";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
+import { ContextWindow } from "@asup/context-menu";
 
 interface AioArraySortableProps {
   id: string;
@@ -21,7 +21,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
 
   function addWindow(i: number): JSX.Element {
     return (
-      <AsupInternalWindow
+      <ContextWindow
         id={`${props.id}-window-${i}`}
         title={"Add item"}
         visible={showWindows[i]}
@@ -68,7 +68,7 @@ export function AioArraySortable(props: AioArraySortableProps) {
             setShowWindows(newShowWindows);
           }}
         />
-      </AsupInternalWindow>
+      </ContextWindow>
     );
   }
 

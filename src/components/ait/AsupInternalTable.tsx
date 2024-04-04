@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { ContextWindow } from "@asup/context-menu";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AieStyleMap } from "../aie";
 import {
@@ -9,7 +10,6 @@ import {
   AioIconButton,
   AioNumber,
 } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import {
   bodyPreProcess,
   headerPreProcess,
@@ -19,6 +19,8 @@ import {
   repeatHeaders,
   repeatRows,
 } from "../functions";
+import { newHeaderCell } from "../functions/newCell";
+import { unProcessRowGroup } from "../functions/unProcessRowGroup";
 import "./ait.css";
 import { AitBorderRow } from "./aitBorderRow";
 import { TableSettingsContext } from "./aitContext";
@@ -32,8 +34,6 @@ import {
   AitTableData,
 } from "./aitInterface";
 import { AitRowGroup } from "./aitRowGroup";
-import { unProcessRowGroup } from "../functions/unProcessRowGroup";
-import { newHeaderCell } from "../functions/newCell";
 
 interface AsupInternalTableProps {
   id: string;
@@ -608,7 +608,7 @@ export const AsupInternalTable = ({
             />
           )}
           {showOptions && (
-            <AsupInternalWindow
+            <ContextWindow
               id={`${id}-options-window`}
               title={"Global options"}
               visible={showOptions}
@@ -705,7 +705,7 @@ export const AsupInternalTable = ({
                   }
                 />
               </div>
-            </AsupInternalWindow>
+            </ContextWindow>
           )}
         </div>
         <table

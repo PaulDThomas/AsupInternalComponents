@@ -14,8 +14,8 @@ import { ListPage } from "./pages/ListPage";
 import { RowGroupPage } from "./pages/RowGroupPage";
 import { TablePage } from "./pages/TablePage";
 import { Table2 } from "./pages/TablePage2";
-import { WindowPage } from "./pages/WindowPage";
-import "./pages/pages.css";
+import "./pages/pages.module.css";
+import { ContextWindowStack } from "@asup/context-menu";
 
 export interface DemoPage {
   label: string;
@@ -31,7 +31,6 @@ const pages: DemoPage[] = [
   { label: "RowGroups", component: <RowGroupPage /> },
   { label: "Table", component: <TablePage /> },
   { label: "DragTable", component: <Table2 /> },
-  { label: "Window", component: <WindowPage /> },
 ];
 
 const Root = () => {
@@ -39,10 +38,10 @@ const Root = () => {
   return location.pathname === "/" ? (
     <Navigate to="/current" />
   ) : (
-    <div>
+    <ContextWindowStack>
       <Nav pages={pages} />
       <Outlet />
-    </div>
+    </ContextWindowStack>
   );
 };
 

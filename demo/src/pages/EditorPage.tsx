@@ -5,20 +5,25 @@ import { AsupInternalEditor } from "../../../src/components";
 export const EditorPage = () => {
   const [textarea, setTextarea] = useState<string>("");
   const [text1, setText1] = useState(
+    // eslint-disable-next-line quotes
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
   const [text2, setText2] = useState(
+    // eslint-disable-next-line quotes
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
   const [text3, setText3] = useState(
+    // eslint-disable-next-line quotes
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
   const [text4, setText4] = useState(
+    // eslint-disable-next-line quotes
     '<div classname="aie-text" data-inline-style-ranges="[{&quot;offset&quot;:0,&quot;length&quot;:5,&quot;style&quot;:&quot;Notes&quot;}]"><span classname="Notes" style="color:blue;font-size:16pt">Notes</span>  work</div>',
   );
 
   const dothing = () => {
     console.log("Update");
+    // eslint-disable-next-line quotes
     const newThing = '<p color="red">Here</p><span style="color:red">ref</span>';
     setText4(newThing);
   };

@@ -14,7 +14,7 @@ const defaultDrageState = {
 };
 
 const ReactTableDragColumnRow = (props) => {
-  // eslint-disable-next-line react/prop-types
+  // eslint-disable-next-line react/prop-types, prefer-const
   let { heads = [], rows = [], onDragEnd } = props;
   const [dragState, setDragState] = useState({ ...defaultDrageState });
   const headsEl = useRef(null),
@@ -160,13 +160,13 @@ const ReactTableDragColumnRow = (props) => {
 
 function offsetIndex(from, to, arr = []) {
   if (from < to) {
-    let start = arr.slice(0, from),
+    const start = arr.slice(0, from),
       between = arr.slice(from + 1, to + 1),
       end = arr.slice(to + 1);
     return [...start, ...between, arr[from], ...end];
   }
   if (from > to) {
-    let start = arr.slice(0, to),
+    const start = arr.slice(0, to),
       between = arr.slice(to, from),
       end = arr.slice(from + 1);
     return [...start, arr[from], ...between, ...end];
@@ -175,7 +175,7 @@ function offsetIndex(from, to, arr = []) {
 }
 
 export const Table2 = () => {
-  let [data, setData] = useState({
+  const [data, setData] = useState({
     heads: ["a", "b", "c", "d", "e", "f"],
     rows: [
       [1, 2, 3, 1, 2, 3],

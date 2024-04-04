@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { AsupInternalWindow } from "../aiw/AsupInternalWindow";
+import { ContextWindow } from "@asup/context-menu";
+import { useState } from "react";
 import { AioArraySortable } from "./aioArraySortable";
 import { AioNewItem, AioOption, AioOptionType } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
@@ -100,8 +100,8 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                     return props.inputObject && typeof props.inputObject[a] === "object"
                       ? a
                       : props.inputObject !== undefined
-                      ? props.inputObject[a]
-                      : a;
+                        ? props.inputObject[a]
+                        : a;
                   })
                   .join(", ")
               ) : props.inputObject !== undefined && props.inputObject !== null ? (
@@ -216,7 +216,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                           }}
                         />
                         {showNewItemWindow && (
-                          <AsupInternalWindow
+                          <ContextWindow
                             id={`${props.id}-newitemwindow`}
                             title={"Add item"}
                             visible={showNewItemWindow}
@@ -242,7 +242,7 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
                               ]}
                               setOptions={onClickAdd}
                             />
-                          </AsupInternalWindow>
+                          </ContextWindow>
                         )}
                       </div>
                     </div>

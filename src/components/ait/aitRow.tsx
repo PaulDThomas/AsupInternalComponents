@@ -1,10 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import { ContextWindow } from "@asup/context-menu";
+import { useCallback, useContext, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from "../aio";
-import { AsupInternalWindow } from "../aiw";
 import { AitBorderRow } from "./aitBorderRow";
 import { AitCell } from "./aitCell";
-import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
 import { TableSettingsContext } from "./aitContext";
+import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
 
 interface AitRowProps {
   id: string;
@@ -120,7 +120,7 @@ export const AitRow = ({
                 />
                 {/* Row group options window */}
                 {showRowGroupOptions && (
-                  <AsupInternalWindow
+                  <ContextWindow
                     id={`${id}-rowgroup-options-window`}
                     key="RowGroup"
                     title={rowGroupWindowTitle ?? "Row group options"}
@@ -170,7 +170,7 @@ export const AitRow = ({
                         dontAskTrail={location.tableSection === AitRowType.header}
                       />
                     </div>
-                  </AsupInternalWindow>
+                  </ContextWindow>
                 )}
               </>
             ) : null}
