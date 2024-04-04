@@ -1,6 +1,7 @@
 import { AitCellData } from "components/ait";
+import { AitHeaderCellData } from "components/ait/aitInterface";
 
-export const UpdateCellTextVersion = (cell: AitCellData): AitCellData => {
+export const UpdateCellTextVersion = <T extends AitCellData | AitHeaderCellData>(cell: T): T => {
   return {
     ...cell,
     text:

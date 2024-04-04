@@ -38,7 +38,6 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@swc/helpers": "^0.5.7",
     "draft-js": "^0.11.7",
     "lodash": "^4.17.21",
     "react": "^18.0.0",

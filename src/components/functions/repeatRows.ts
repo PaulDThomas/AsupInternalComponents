@@ -52,6 +52,12 @@ export const repeatRows = (
   if (spaceAfter) {
     newRows[newRows.length - 1].spaceAfter = true;
   }
+  // Check row space after
+  newRows.forEach((row) => {
+    if (row.cells.some((cell) => cell.spaceAfterRepeat)) {
+      row.spaceAfter = true;
+    }
+  });
 
   // Single post processing replacements
   newRows = singleReplacements(externalSingles, newRows);
