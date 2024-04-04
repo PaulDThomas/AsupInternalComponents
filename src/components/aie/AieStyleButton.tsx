@@ -1,5 +1,5 @@
-import * as React from 'react';
-import './aie.css';
+import * as React from "react";
+import "./aie.css";
 
 interface AieStyleButtonProps {
   id: string;
@@ -16,11 +16,11 @@ export const AieStyleButton = (props: AieStyleButtonProps): JSX.Element => {
     props.applyStyleFunction(props.styleName);
   };
   const className =
-    'aie-button' +
-    ((typeof props.currentStyle === 'boolean' && props.currentStyle === true) ||
-    (typeof props.currentStyle !== 'boolean' && props.currentStyle.has(props.styleName))
-      ? ' active'
-      : '');
+    "aie-button" +
+    ((typeof props.currentStyle === "boolean" && props.currentStyle === true) ||
+    (typeof props.currentStyle !== "boolean" && props.currentStyle.has(props.styleName))
+      ? " active"
+      : "");
   return (
     <button
       id={props.id}

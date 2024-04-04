@@ -1,5 +1,5 @@
-import structuredClone from '@ungap/structured-clone';
-import { AioReplacement } from '../aio';
+import { cloneDeep } from "lodash";
+import { AioReplacement } from "../aio";
 
 export const appendReplacement = (
   incoming: AioReplacement,
@@ -8,7 +8,7 @@ export const appendReplacement = (
   let newSubLists: AioReplacement[] = [];
 
   if (subLists === undefined || subLists.length === 0) {
-    newSubLists.push(structuredClone(incoming));
+    newSubLists.push(cloneDeep(incoming));
   } else {
     newSubLists = subLists.map((s) => {
       return {

@@ -1,5 +1,5 @@
-import { AioExternalReplacements, AioReplacement } from '../aio';
-import { updateExternal } from './updateExternal';
+import { AioExternalReplacements, AioReplacement } from "../aio";
+import { updateExternal } from "./updateExternal";
 
 /** Update base list with external lists */
 export const updateExternals = (

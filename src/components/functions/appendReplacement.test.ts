@@ -1,44 +1,44 @@
-import { AioReplacement } from '../aio';
-import { appendReplacement } from './appendReplacement';
+import { AioReplacement } from "../aio";
+import { appendReplacement } from "./appendReplacement";
 
-describe('Check appendReplacement', () => {
-  const a: AioReplacement = { oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] };
+describe("Check appendReplacement", () => {
+  const a: AioReplacement = { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] };
   const b: AioReplacement = {
-    oldText: 'b',
+    oldText: "b",
     newTexts: [
       {
-        texts: ['b1'],
+        texts: ["b1"],
         subLists: [
-          { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
-          { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+          { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
+          { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] },
         ],
       },
     ],
   };
 
   // Basic check
-  test('Append to empty', () => {
+  test("Append to empty", () => {
     expect(appendReplacement(a, undefined)).toEqual([a]);
     expect(appendReplacement(b, undefined)).toEqual([b]);
   });
 
   // Check append each way
-  test('Long after small', () => {
+  test("Long after small", () => {
     expect(appendReplacement(b, [a])).toEqual([
       {
-        oldText: 'a',
+        oldText: "a",
         newTexts: [
           {
-            texts: ['a1', 'a2'],
+            texts: ["a1", "a2"],
             subLists: [
               {
-                oldText: 'b',
+                oldText: "b",
                 newTexts: [
                   {
-                    texts: ['b1'],
+                    texts: ["b1"],
                     subLists: [
-                      { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
-                      { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                      { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
+                      { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] },
                     ],
                   },
                 ],
@@ -50,29 +50,29 @@ describe('Check appendReplacement', () => {
     ]);
   });
 
-  test('Small after long', () => {
+  test("Small after long", () => {
     expect(appendReplacement(a, [b])).toEqual([
       {
-        oldText: 'b',
+        oldText: "b",
         newTexts: [
           {
-            texts: ['b1'],
+            texts: ["b1"],
             subLists: [
               {
-                oldText: 'c',
+                oldText: "c",
                 newTexts: [
                   {
-                    texts: ['c1', 'c2'],
-                    subLists: [{ oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] }],
+                    texts: ["c1", "c2"],
+                    subLists: [{ oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] }],
                   },
                 ],
               },
               {
-                oldText: 'd',
+                oldText: "d",
                 newTexts: [
                   {
-                    texts: ['d1', 'd2'],
-                    subLists: [{ oldText: 'a', newTexts: [{ texts: ['a1', 'a2'] }] }],
+                    texts: ["d1", "d2"],
+                    subLists: [{ oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] }],
                   },
                 ],
               },
@@ -83,28 +83,28 @@ describe('Check appendReplacement', () => {
     ]);
   });
 
-  test('Long after long', () => {
+  test("Long after long", () => {
     expect(appendReplacement(b, [b])).toEqual([
       {
-        oldText: 'b',
+        oldText: "b",
         newTexts: [
           {
-            texts: ['b1'],
+            texts: ["b1"],
             subLists: [
               {
-                oldText: 'c',
+                oldText: "c",
                 newTexts: [
                   {
-                    texts: ['c1', 'c2'],
+                    texts: ["c1", "c2"],
                     subLists: [
                       {
-                        oldText: 'b',
+                        oldText: "b",
                         newTexts: [
                           {
-                            texts: ['b1'],
+                            texts: ["b1"],
                             subLists: [
-                              { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
-                              { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                              { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
+                              { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] },
                             ],
                           },
                         ],
@@ -114,19 +114,19 @@ describe('Check appendReplacement', () => {
                 ],
               },
               {
-                oldText: 'd',
+                oldText: "d",
                 newTexts: [
                   {
-                    texts: ['d1', 'd2'],
+                    texts: ["d1", "d2"],
                     subLists: [
                       {
-                        oldText: 'b',
+                        oldText: "b",
                         newTexts: [
                           {
-                            texts: ['b1'],
+                            texts: ["b1"],
                             subLists: [
-                              { oldText: 'c', newTexts: [{ texts: ['c1', 'c2'], subLists: [] }] },
-                              { oldText: 'd', newTexts: [{ texts: ['d1', 'd2'] }] },
+                              { oldText: "c", newTexts: [{ texts: ["c1", "c2"], subLists: [] }] },
+                              { oldText: "d", newTexts: [{ texts: ["d1", "d2"] }] },
                             ],
                           },
                         ],

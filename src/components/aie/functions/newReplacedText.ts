@@ -1,4 +1,4 @@
-import { fromHtml } from '../../functions/tofromHtml';
+import { fromHtml } from "../../functions/tofromHtml";
 
 /**
  * Replace text in HTML string, updating inline-style-ranges
@@ -10,13 +10,13 @@ import { fromHtml } from '../../functions/tofromHtml';
 export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string): string => {
   let ret: string;
   // Do standard replace if not aie-text or no inline styles
-  if (!s.match(/^<div classname=["']aie-text/i) || !s.includes('data-inline-style-ranges')) {
+  if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
     ret = s.replaceAll(oldPhrase, newPhrase);
   }
   // Otherwise work out new style points
   else {
     // Create element to manipulate
-    const htmlIn = document.createElement('template');
+    const htmlIn = document.createElement("template");
     htmlIn.innerHTML = s.trim();
     // Cycle through each block as a div
     for (let i = 0; i < htmlIn.content.children.length; i++) {
@@ -28,14 +28,14 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
       // Get new style lengths
       for (let j = 0; j < child.childNodes.length; j++) {
         child.childNodes[j].textContent =
-          child.childNodes[j].textContent?.replaceAll(oldPhrase, fromHtml(newPhrase)) ?? '';
+          child.childNodes[j].textContent?.replaceAll(oldPhrase, fromHtml(newPhrase)) ?? "";
         // Should only be possible to have span and #text
-        if (child.childNodes[j].nodeName === 'SPAN') {
+        if (child.childNodes[j].nodeName === "SPAN") {
           const subchild = child.childNodes[j] as HTMLSpanElement;
           inlineStyleRanges.push({
             offset: pos,
             length: subchild.textContent?.length ?? 0,
-            style: subchild.attributes.getNamedItem('classname')?.value ?? '',
+            style: subchild.attributes.getNamedItem("classname")?.value ?? "",
           });
           pos = pos + (subchild.textContent?.length ?? 0);
         }

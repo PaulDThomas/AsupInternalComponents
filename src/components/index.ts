@@ -1,5 +1,5 @@
-import { AieStyleMap, AsupInternalEditor } from './aie';
-import { AifBlockLine, AifLineType, AsupInternalBlock } from './aif';
+import { AieStyleMap, AsupInternalEditor } from "./aie";
+import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
 import {
   AioDropSelect,
   AioExpander,
@@ -12,9 +12,9 @@ import {
   AioReplacementValues,
   AioReplacementValuesDisplay,
   AioString,
-} from './aio';
-import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from './ait';
-import { AsupInternalWindow } from './aiw';
+} from "./aio";
+import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
+import { AsupInternalWindow } from "./aiw";
 import {
   fromHtml,
   newExternalReplacements,
@@ -26,7 +26,7 @@ import {
   updateReplacementVersion,
   updateReplToExtl,
   updateTableDataVersion,
-} from './functions';
+} from "./functions";
 
 export { AsupInternalEditor, AsupInternalTable, AsupInternalWindow, AsupInternalBlock };
 export {

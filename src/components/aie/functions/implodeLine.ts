@@ -1,4 +1,4 @@
-import { iStyleBlock } from './aieInterface';
+import { iStyleBlock } from "./aieInterface";
 
 // Ensure all full block coverage and no overlaps
 export const implodeLine = (styleBlocks: iStyleBlock[]): iStyleBlock[] => {

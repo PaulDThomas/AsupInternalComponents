@@ -36,16 +36,16 @@ export interface AioExternalSingle {
 }
 
 export enum AioOptionType {
-  string = 'string',
-  number = 'number',
-  array = 'array',
-  object = 'object',
-  boolean = 'boolean',
-  select = 'select',
-  replacements = 'replacements',
+  string = "string",
+  number = "number",
+  array = "array",
+  object = "object",
+  boolean = "boolean",
+  select = "select",
+  replacements = "replacements",
 }
 
 export enum AioNewItem {
-  newKey = 'newKey',
-  newType = 'newType',
+  newKey = "newKey",
+  newType = "newType",
 }

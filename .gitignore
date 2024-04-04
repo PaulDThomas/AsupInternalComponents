@@ -6,7 +6,8 @@
 .pnp.js
 
 # utility
-/.vscode
+/.parcel-cache
+deploy.ps1
 
 # testing
 /coverage

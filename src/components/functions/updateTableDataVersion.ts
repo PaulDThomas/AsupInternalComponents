@@ -1,7 +1,8 @@
-import { AioReplacement } from '../aio';
-import { AitCellData, AitRowData, AitRowGroupData, AitTableData } from '../ait';
-import { UpdateCellTextVersion } from './updateCellTextVersion';
-import { oldReplacement, updateReplacementVersion } from './updateReplacementVersion';
+import { AitHeaderCellData } from "components/ait/aitInterface";
+import { AioReplacement } from "../aio";
+import { AitCellData, AitRowData, AitRowGroupData, AitTableData } from "../ait";
+import { UpdateCellTextVersion } from "./updateCellTextVersion";
+import { oldReplacement, updateReplacementVersion } from "./updateReplacementVersion";
 
 interface OldTableData {
   headerData?: OldRowGroupData;
@@ -28,14 +29,14 @@ export const updateTableDataVersion = (
     inData.headerData === false
       ? false
       : inData.headerData !== undefined
-      ? ({
-          ...inData.headerData,
-          replacements:
-            inData.headerData?.replacements !== undefined
-              ? updateReplacementVersion(inData.headerData?.replacements)
-              : undefined,
-        } as AitRowGroupData)
-      : undefined;
+        ? ({
+            ...inData.headerData,
+            replacements:
+              inData.headerData?.replacements !== undefined
+                ? updateReplacementVersion(inData.headerData?.replacements)
+                : undefined,
+          } as AitRowGroupData)
+        : undefined;
   const outData: AitTableData = {
     ...inData,
     headerData: headerData,
@@ -85,7 +86,7 @@ export const updateTableDataVersion = (
     outData.headerData.rows.forEach(
       (r, ri) =>
         (r.cells = r.cells.map((c, ci, cells) => {
-          const newCell: AitCellData = {
+          const newCell: AitHeaderCellData = {
             ...UpdateCellTextVersion(c),
           };
           // Work out which direction the span is in
@@ -105,7 +106,6 @@ export const updateTableDataVersion = (
       (r) =>
         (r.cells = r.cells.map((c) => {
           const newCell: AitCellData = { ...UpdateCellTextVersion(c) };
-          if (newCell.colSpan === 0) newCell.colSpan = 1;
           return newCell;
         })),
     ),

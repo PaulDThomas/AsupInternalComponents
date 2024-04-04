@@ -1,5 +1,5 @@
-import React from 'react';
-import { Rnd } from 'react-rnd';
+import React from "react";
+import { Rnd } from "react-rnd";
 
 export const chkPosition = (
   windowRef: React.RefObject<Rnd>,

@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { AieStyleMap } from '../aie';
-import { AioExternalSingle } from '../aio';
-import './aif.css';
-import { AifBlockLine, AifLineType } from './aifInterface';
-import { AifLineDisplay } from './aifLineDisplay';
+import React, { useCallback, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { AieStyleMap } from "../aie";
+import { AioExternalSingle } from "../aio";
+import "./aif.css";
+import { AifBlockLine, AifLineType } from "./aifInterface";
+import { AifLineDisplay } from "./aifLineDisplay";
 
 interface AsupInternalBlockProps {
   id: string;
@@ -33,7 +33,7 @@ export const AsupInternalBlock = ({
   // General function to return complied object
   const returnData = useCallback(
     (linesUpdate: { lines: AifBlockLine[] }) => {
-      if (typeof setLines !== 'function') return;
+      if (typeof setLines !== "function") return;
       const r: AifBlockLine[] = [...linesUpdate.lines];
       setLines(r);
     },
@@ -48,9 +48,9 @@ export const AsupInternalBlock = ({
       for (let i = 0; i < reqlines; i++) {
         const newLine: AifBlockLine = {
           aifid: uuidv4(),
-          left: '',
-          center: '',
-          right: '',
+          left: "",
+          center: "",
+          right: "",
           canEdit: true,
           canMove: true,
           canRemove: true,
@@ -68,7 +68,7 @@ export const AsupInternalBlock = ({
   const updateLine = useCallback(
     (ret: AifBlockLine, li: number) => {
       // Do nothing if readonly
-      if (typeof setLines !== 'function') return;
+      if (typeof setLines !== "function") return;
 
       // Create new object to send back
       const newLines = [...lines];
@@ -83,9 +83,9 @@ export const AsupInternalBlock = ({
       const newLines = [...lines];
       const newLine: AifBlockLine = {
         aifid: uuidv4(),
-        left: '',
-        center: '',
-        right: '',
+        left: "",
+        center: "",
+        right: "",
         canEdit: true,
         canMove: true,
         canRemove: true,
@@ -127,7 +127,7 @@ export const AsupInternalBlock = ({
   return (
     <div
       id={id}
-      className='aif-block'
+      className="aif-block"
     >
       {lines.map((l: AifBlockLine, li: number) => {
         return (

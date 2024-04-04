@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import { fromHtml, newReplacementValues, toHtml } from '../functions';
-import { AioDropSelect } from './aioDropSelect';
-import { AioIconButton } from './aioIconButton';
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from './aioInterface';
-import { AioReplacementValuesDisplay } from './aioReplacementValuesDisplay';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { fromHtml, newReplacementValues, toHtml } from "../functions";
+import { AioDropSelect } from "./aioDropSelect";
+import { AioIconButton } from "./aioIconButton";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./aioInterface";
+import { AioReplacementValuesDisplay } from "./aioReplacementValuesDisplay";
 
 interface AioReplacmentDisplayProps {
   id: string;
@@ -37,13 +37,13 @@ export const AioReplacementDisplay = ({
   dontAskTrail,
   noText: noOldText,
 }: AioReplacmentDisplayProps): JSX.Element => {
-  const [displayText, setDisplayText] = useState<string>(fromHtml(oldText ?? ''));
+  const [displayText, setDisplayText] = useState<string>(fromHtml(oldText ?? ""));
   useEffect(() => {
-    setDisplayText(fromHtml(oldText ?? ''));
+    setDisplayText(fromHtml(oldText ?? ""));
   }, [oldText]);
 
   const availableListNames = useMemo<string[]>(() => {
-    const a: string[] = ['with...'];
+    const a: string[] = ["with..."];
     const exl: string[] = [];
     externalLists?.map((rep) => {
       if (rep.givenName !== undefined) {
@@ -65,17 +65,17 @@ export const AioReplacementDisplay = ({
       includeTrailing?: boolean;
       externalName?: string;
     }) => {
-      if (typeof setReplacement !== 'function') return;
+      if (typeof setReplacement !== "function") return;
       // Create new object
       const r: AioReplacement = {
         airid: newReplacement.airid ?? airid ?? uuidv4(),
-        oldText: newReplacement.oldText ?? oldText ?? '',
+        oldText: newReplacement.oldText ?? oldText ?? "",
         newTexts: newReplacement.newTexts ?? newTexts,
         includeTrailing: newReplacement.includeTrailing ?? includeTrailing,
         externalName: newReplacement.externalName ?? externalName,
       };
       // Remove default
-      if (r.externalName === 'with...') delete r.externalName;
+      if (r.externalName === "with...") delete r.externalName;
 
       // Update existing object
       setReplacement(r);
@@ -85,7 +85,7 @@ export const AioReplacementDisplay = ({
 
   const addNewText = useCallback(
     (i: number) => {
-      if (typeof setReplacement !== 'function') return;
+      if (typeof setReplacement !== "function") return;
       const nts = [...newTexts];
       nts.splice(i, 0, newReplacementValues());
       returnData({ newTexts: nts });
@@ -95,7 +95,7 @@ export const AioReplacementDisplay = ({
 
   const removeNewText = useCallback(
     (i: number) => {
-      if (typeof setReplacement !== 'function') return;
+      if (typeof setReplacement !== "function") return;
       const nts = [...newTexts];
       nts.splice(i, 1);
       returnData({ newTexts: nts });
@@ -110,46 +110,46 @@ export const AioReplacementDisplay = ({
   return (
     <div
       id={id}
-      className='aiord-main'
+      className="aiord-main"
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '2px',
-        border: '1px dotted burlywood',
-        padding: '2px',
-        borderRadius: '4px,',
-        margin: '2px',
+        display: "flex",
+        flexDirection: "column",
+        gap: "2px",
+        border: "1px dotted burlywood",
+        padding: "2px",
+        borderRadius: "4px,",
+        margin: "2px",
       }}
     >
       {!noOldText && (
         <div>
-          {typeof setReplacement !== 'function' ? (
-            <span className='aio-replaceText'>
-              {oldText !== '' ? fromHtml(oldText ?? '') : <em>Nothing</em>}
+          {typeof setReplacement !== "function" ? (
+            <span className="aio-replaceText">
+              {oldText !== "" ? fromHtml(oldText ?? "") : <em>Nothing</em>}
             </span>
           ) : (
             <input
               id={`${id}-input`}
-              className='aio-input'
-              type='text'
+              className="aio-input"
+              type="text"
               value={displayText}
               onChange={(e) => setDisplayText(e.currentTarget.value)}
               onBlur={(e) => {
                 returnData({ oldText: toHtml(e.currentTarget.value) });
               }}
-              style={{ minWidth: 0, width: '170px' }}
+              style={{ minWidth: 0, width: "170px" }}
             />
           )}
           {!dontAskTrail && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <label>
                 <small>Include trailing rows</small>
               </label>
               <input
                 id={`${id}-includetrailing`}
-                disabled={typeof setReplacement !== 'function'}
-                style={{ margin: '6px' }}
-                type='checkbox'
+                disabled={typeof setReplacement !== "function"}
+                style={{ margin: "6px" }}
+                type="checkbox"
                 checked={includeTrailing}
                 onChange={(e) => returnData({ includeTrailing: e.currentTarget.checked })}
               />
@@ -157,13 +157,13 @@ export const AioReplacementDisplay = ({
           )}
         </div>
       )}
-      {typeof setReplacement === 'function' &&
+      {typeof setReplacement === "function" &&
         externalLists !== undefined &&
         externalLists.length > 0 && (
           <div>
             <AioDropSelect
               id={`${id}-dropselect`}
-              value={externalName ?? 'with...'}
+              value={externalName ?? "with..."}
               availableValues={availableListNames}
               setValue={(ret) => {
                 returnData({ externalName: ret });
@@ -198,9 +198,9 @@ export const AioReplacementDisplay = ({
                   subLists={rv.subLists}
                   externalLists={externalLists}
                   dontAskSpace={dontAskSpace}
-                  dontAskTrail={typeof setReplacement === 'function' ? dontAskTrail : true}
+                  dontAskTrail={typeof setReplacement === "function" ? dontAskTrail : true}
                   setReplacementValue={
-                    typeof setReplacement === 'function'
+                    typeof setReplacement === "function"
                       ? (ret) => {
                           const nts = [...newTexts];
                           nts.splice(i, 1, ret);
@@ -209,30 +209,30 @@ export const AioReplacementDisplay = ({
                       : undefined
                   }
                 />
-                {typeof setReplacement === 'function' && (
+                {typeof setReplacement === "function" && (
                   <div
-                    className='aiox-button-holder'
+                    className="aiox-button-holder"
                     style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      alignContent: 'center',
-                      marginLeft: '2.5rem',
-                      marginTop: '2px',
+                      display: "flex",
+                      flexDirection: "row",
+                      alignContent: "center",
+                      marginLeft: "2.5rem",
+                      marginTop: "2px",
                     }}
                   >
                     {newTexts && newTexts.length > 1 && (
                       <AioIconButton
                         id={`${id}-remove`}
-                        iconName={'aiox-removeUp'}
+                        iconName={"aiox-removeUp"}
                         onClick={() => removeNewText(i)}
-                        tipText={'Remove new text'}
+                        tipText={"Remove new text"}
                       />
                     )}
                     <AioIconButton
                       id={`${id}-add`}
-                      iconName={'aiox-addDown'}
+                      iconName={"aiox-addDown"}
                       onClick={() => addNewText(i + 1)}
-                      tipText={'Add new text'}
+                      tipText={"Add new text"}
                     />
                   </div>
                 )}

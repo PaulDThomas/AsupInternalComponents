@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { AioLabel } from './aioLabel';
+import React, { useEffect, useState } from "react";
+import { AioLabel } from "./aioLabel";
 
 interface AioStringProps {
   id: string;
@@ -9,9 +9,9 @@ interface AioStringProps {
 }
 
 export const AioString = (props: AioStringProps): JSX.Element => {
-  const [value, setValue] = useState<string>(props.value ?? '');
+  const [value, setValue] = useState<string>(props.value ?? "");
   useEffect(() => {
-    setValue(props.value ?? '');
+    setValue(props.value ?? "");
   }, [props.value]);
 
   return (
@@ -20,15 +20,15 @@ export const AioString = (props: AioStringProps): JSX.Element => {
         id={`${props.id}-label`}
         label={props.label}
       />
-      <div className={'aio-input-holder'}>
-        {typeof props.setValue !== 'function' ? (
+      <div className={"aio-input-holder"}>
+        {typeof props.setValue !== "function" ? (
           <span id={props.id}>{value}</span>
         ) : (
           <input
             id={props.id}
-            className={'aio-input'}
-            value={value ?? ''}
-            type='text'
+            className={"aio-input"}
+            value={value ?? ""}
+            type="text"
             onChange={(e) => {
               setValue(e.currentTarget.value);
             }}

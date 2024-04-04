@@ -1,3 +1,3 @@
-import { AsupInternalWindow } from './AsupInternalWindow';
+import { AsupInternalWindow } from "./AsupInternalWindow";
 
 export { AsupInternalWindow };

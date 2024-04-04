@@ -1,7 +1,7 @@
-import { v4 as uuidv4 } from 'uuid';
-import { newCell } from './newCell';
-import { AitCellData, AitRowGroupData } from '../ait';
-import { newRow } from './newRow';
+import { v4 as uuidv4 } from "uuid";
+import { newCell } from "./newCell";
+import { AitCellData, AitRowGroupData } from "../ait";
+import { newRow } from "./newRow";
 
 /**
  * Add newRowGroupTemplate to existing body

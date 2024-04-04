@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from '../aio';
+import { v4 as uuidv4 } from "uuid";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 
 interface oldReplacementText {
   text: string;
@@ -39,7 +39,7 @@ export function updateReplacementVersion(
       };
       const newRep: AioReplacement = {
         airid: uuidv4(),
-        oldText: oldRep.replacementTexts[0].text ?? '',
+        oldText: oldRep.replacementTexts[0].text ?? "",
         newTexts: [newRV],
         includeTrailing: false,
         externalName: oldRep.externalName,

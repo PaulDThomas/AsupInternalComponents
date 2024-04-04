@@ -11,8 +11,8 @@ export interface AifBlockLine {
 }
 
 export const enum AifLineType {
-  leftOnly = 'Left only',
-  centerOnly = 'Center only',
-  leftAndRight = 'Left and Right',
-  leftCenterAndRight = 'Left, Center and Right',
+  leftOnly = "Left only",
+  centerOnly = "Center only",
+  leftAndRight = "Left and Right",
+  leftCenterAndRight = "Left, Center and Right",
 }

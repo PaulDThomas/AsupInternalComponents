@@ -1,9 +1,9 @@
-import React, { useCallback } from 'react';
-import { newReplacement } from '../functions';
-import { AioIconButton } from './aioIconButton';
-import { AioExternalReplacements, AioReplacement } from './aioInterface';
-import { AioLabel } from './aioLabel';
-import { AioReplacementDisplay } from './aioReplacementDisplay';
+import React, { useCallback } from "react";
+import { newReplacement } from "../functions";
+import { AioIconButton } from "./aioIconButton";
+import { AioExternalReplacements, AioReplacement } from "./aioInterface";
+import { AioLabel } from "./aioLabel";
+import { AioReplacementDisplay } from "./aioReplacementDisplay";
 
 /**
  * Properties for AioReplacements
@@ -37,7 +37,7 @@ export const AioReplacementList = ({
   /** Update individual replacement and send it back */
   const updateReplacement = useCallback(
     (ret: AioReplacement, i: number) => {
-      if (typeof setReplacements !== 'function') return;
+      if (typeof setReplacements !== "function") return;
       const newValue = [...(replacements ?? [])];
       newValue[i] = ret;
       setReplacements(newValue);
@@ -47,7 +47,7 @@ export const AioReplacementList = ({
 
   const addReplacement = useCallback(
     (i: number) => {
-      if (typeof setReplacements !== 'function') return;
+      if (typeof setReplacements !== "function") return;
       const newReplacements = [...(replacements ?? [])];
       newReplacements.splice(i, 0, newReplacement());
       setReplacements(newReplacements);
@@ -57,7 +57,7 @@ export const AioReplacementList = ({
 
   const removeReplacement = useCallback(
     (i: number) => {
-      if (typeof setReplacements !== 'function') return;
+      if (typeof setReplacements !== "function") return;
       const newReplacements = [...(replacements ?? [])];
       newReplacements.splice(i, 1);
       setReplacements(newReplacements);
@@ -74,13 +74,13 @@ export const AioReplacementList = ({
       <div>
         {!label && (
           <>
-            <span>then...</span>{' '}
+            <span>then...</span>{" "}
           </>
         )}
-        {typeof setReplacements === 'function' && (
+        {typeof setReplacements === "function" && (
           <div
             id={`${id}-addreplacement`}
-            className={'aiox-button aiox-addDown'}
+            className={"aiox-button aiox-addDown"}
             onClick={() => addReplacement(0)}
           />
         )}
@@ -96,37 +96,37 @@ export const AioReplacementList = ({
                 includeTrailing={repl.includeTrailing}
                 externalName={repl.externalName}
                 setReplacement={
-                  typeof setReplacements === 'function'
+                  typeof setReplacements === "function"
                     ? (ret) => updateReplacement(ret, i)
                     : undefined
                 }
                 dontAskSpace={dontAskSpace}
-                dontAskTrail={i > 0 ? true : dontAskTrail}
+                dontAskTrail={dontAskTrail}
                 externalLists={externalLists}
               />
-              {typeof setReplacements === 'function' && (
+              {typeof setReplacements === "function" && (
                 <div
-                  className='aiox-button-holder'
+                  className="aiox-button-holder"
                   style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignContent: 'center',
-                    marginBottom: '2px',
+                    display: "flex",
+                    flexDirection: "row",
+                    alignContent: "center",
+                    marginBottom: "2px",
                   }}
                 >
                   {replacements && replacements.length >= 1 && (
                     <AioIconButton
                       id={`${id}-remove`}
-                      iconName={'aiox-removeUp'}
+                      iconName={"aiox-removeUp"}
                       onClick={() => removeReplacement(i)}
-                      tipText={'Remove old text'}
+                      tipText={"Remove old text"}
                     />
                   )}
                   <AioIconButton
                     id={`${id}-add`}
-                    iconName={'aiox-addDown'}
+                    iconName={"aiox-addDown"}
                     onClick={() => addReplacement(i + 1)}
-                    tipText={'Add old text'}
+                    tipText={"Add old text"}
                   />
                 </div>
               )}

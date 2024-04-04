@@ -1,5 +1,5 @@
-import React from 'react';
-import { AitOptionList } from './aitInterface';
+import React from "react";
+import { AitOptionList } from "./aitInterface";
 
 const defaultSettings: AitOptionList = {
   noRepeatProcessing: false,

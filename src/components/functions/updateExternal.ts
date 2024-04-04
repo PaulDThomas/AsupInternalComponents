@@ -1,6 +1,6 @@
-import structuredClone from '@ungap/structured-clone';
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from '../aio';
-import { updateExternals } from './updateExternals';
+import { cloneDeep } from "lodash";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
+import { updateExternals } from "./updateExternals";
 
 export const updateExternal = (
   rep: AioReplacement,
@@ -11,9 +11,7 @@ export const updateExternal = (
       ? exts.findIndex((e) => e.givenName === rep.externalName)
       : -1;
   let found: AioReplacementValues[] | undefined =
-    ix > -1 && exts !== undefined && exts.length > ix
-      ? structuredClone(exts[ix].newTexts)
-      : undefined;
+    ix > -1 && exts !== undefined && exts.length > ix ? cloneDeep(exts[ix].newTexts) : undefined;
   if (!found) {
     found = rep.newTexts.some((nt) => nt.subLists !== undefined)
       ? rep.newTexts.map((nts) => {

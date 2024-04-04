@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { AieStyleButtonRow } from './AieStyleButtonRow';
-import { AieStyleMap, drawInnerHtml, getCaretPosition } from './functions';
-import { getHTMLfromV2Text } from './functions/getHTMLfromV2Text';
-import { getV2TextStyle } from './functions/getV2TextStyle';
-import './aiev2.css';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { AieStyleButtonRow } from "./AieStyleButtonRow";
+import { AieStyleMap, drawInnerHtml, getCaretPosition } from "./functions";
+import { getHTMLfromV2Text } from "./functions/getHTMLfromV2Text";
+import { getV2TextStyle } from "./functions/getV2TextStyle";
+import "./aiev2.css";
 
 interface iEditorV2 {
   id: string;
@@ -11,7 +11,7 @@ interface iEditorV2 {
   setText?: (ret: string) => void;
   customStyleMap?: AieStyleMap;
   allowNewLine?: boolean;
-  textAlignment?: 'left' | 'center' | 'decimal' | 'right' | 'default';
+  textAlignment?: "left" | "center" | "decimal" | "right" | "default";
   decimalAlignPercent?: number;
 }
 
@@ -21,13 +21,13 @@ export const EditorV2 = ({
   setText,
   customStyleMap,
   allowNewLine = false,
-  textAlignment = 'decimal',
+  textAlignment = "decimal",
   decimalAlignPercent = 60,
 }: iEditorV2): JSX.Element => {
   // Set up reference to inner div
   const divRef = useRef<HTMLDivElement | null>(null);
-  const [currentText, setCurrentText] = useState<string>('');
-  const [currentStyleName, setCurrentStyleName] = useState<string>('');
+  const [currentText, setCurrentText] = useState<string>("");
+  const [currentStyleName, setCurrentStyleName] = useState<string>("");
   const [currentStyle, setCurrentStyle] = useState<React.CSSProperties>({});
   useEffect(() => {
     const { newText, styleName } = getV2TextStyle(text);
@@ -46,9 +46,9 @@ export const EditorV2 = ({
   const returnData = useCallback(
     (ret: { text?: string }) => {
       // Do nothing if there is nothing to do
-      if (typeof setText !== 'function') return;
+      if (typeof setText !== "function") return;
       // Update via parent function
-      setText(ret.text ?? text ?? '');
+      setText(ret.text ?? text ?? "");
     },
     [setText, text],
   );
@@ -58,8 +58,8 @@ export const EditorV2 = ({
   const [backBorder, setBackBorder] = useState<React.CSSProperties>({});
   useEffect(() => {
     setBackBorder({
-      background: inFocus ? 'white' : 'inherit',
-      border: inFocus ? '1px solid grey' : '1px solid transparent',
+      background: inFocus ? "white" : "inherit",
+      border: inFocus ? "1px solid grey" : "1px solid transparent",
     });
   }, [inFocus]);
 
@@ -67,31 +67,31 @@ export const EditorV2 = ({
   const [just, setJust] = useState<React.CSSProperties>({});
   useEffect(() => {
     switch (textAlignment) {
-      case 'right':
+      case "right":
         setJust({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'end',
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "end",
         });
         break;
-      case 'center':
+      case "center":
         setJust({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'center',
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "center",
         });
         break;
-      case 'decimal':
+      case "decimal":
         setJust({
-          display: 'block',
+          display: "block",
         });
         break;
-      case 'left':
+      case "left":
       default:
         setJust({
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'start',
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "start",
         });
     }
   }, [textAlignment, currentText]);
@@ -101,7 +101,7 @@ export const EditorV2 = ({
   }, []);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === 'Enter' && !allowNewLine) {
+    if (e.key === "Enter" && !allowNewLine) {
       e.stopPropagation();
       e.preventDefault();
     }
@@ -139,7 +139,7 @@ export const EditorV2 = ({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (e: React.FocusEvent<HTMLDivElement>) => {
       setInFocus(false);
-      if (typeof setText === 'function') {
+      if (typeof setText === "function") {
         const text = getHTMLfromV2Text(currentText, currentStyleName, currentStyle);
         returnData({ text });
       }
@@ -160,12 +160,12 @@ export const EditorV2 = ({
 
   return (
     <div
-      className='aiev2-outer'
+      className="aiev2-outer"
       id={id}
     >
       <div
         id={`${id}-line0-holder`}
-        className='aiev2-line'
+        className="aiev2-line"
         style={{
           ...backBorder,
           ...just,
@@ -176,8 +176,8 @@ export const EditorV2 = ({
       >
         <div
           id={`${id}-line0-editable`}
-          className='aiev2-editing'
-          contentEditable={typeof setText === 'function'}
+          className="aiev2-editing"
+          contentEditable={typeof setText === "function"}
           suppressContentEditableWarning
           spellCheck={false}
           ref={divRef}
@@ -189,14 +189,14 @@ export const EditorV2 = ({
         ></div>
       </div>
       {inFocus && (
-        <div className='aie-button-position center'>
-          <div className='aie-button-holder'>
+        <div className="aie-button-position center">
+          <div className="aie-button-holder">
             <AieStyleButtonRow
               id={`${id}-stylebuttons`}
               styleList={Object.keys(customStyleMap || {})}
               currentStyle={currentStyleName}
               applyStyleFunction={(ret: string) => {
-                const newStyle = ret === currentStyleName ? '' : ret;
+                const newStyle = ret === currentStyleName ? "" : ret;
                 setCurrentStyleName(newStyle);
               }}
             />

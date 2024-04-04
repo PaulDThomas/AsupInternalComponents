@@ -1,6 +1,6 @@
-import { AitCellData } from '../ait';
-import { v4 as uuidv4 } from 'uuid';
-import { newCell } from './newCell';
+import { AitCellData } from "../ait";
+import { v4 as uuidv4 } from "uuid";
+import { newCell } from "./newCell";
 
 /**
  * Preprocessing for cells
@@ -12,11 +12,14 @@ export const cellPreProcess = (defaultCellWidth: number, cs?: AitCellData[]): Ai
   // Check aitid
   return cs.map((c) => {
     return {
-      ...c,
-      colSpan: c.colSpan ?? 1,
-      rowSpan: c.rowSpan ?? 1,
-      colWidth: c.colWidth ?? defaultCellWidth,
       aitid: c.aitid && c.aitid.length > 4 ? c.aitid : uuidv4(),
+      text: c.text,
+      justifyText: c.justifyText,
+      comments: c.comments,
+      colWidth: c.colWidth ?? defaultCellWidth,
+      textIndents: c.textIndents,
+      replacedText: c.replacedText,
+      spaceAfterRepeat: c.spaceAfterRepeat,
     };
   });
 };

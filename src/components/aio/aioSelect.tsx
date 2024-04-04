@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { AioLabel } from './aioLabel';
+import * as React from "react";
+import { AioLabel } from "./aioLabel";
 
 interface AioSelectProps {
   id: string;
@@ -16,16 +16,16 @@ export const AioSelect = (props: AioSelectProps): JSX.Element => {
         id={`${props.id}-label`}
         label={props.label}
       />
-      <div className={'aio-input-holder'}>
-        {typeof props.setValue !== 'function' ? (
+      <div className={"aio-input-holder"}>
+        {typeof props.setValue !== "function" ? (
           <span id={props.id}>{props.value}</span>
         ) : (
           <select
             id={props.id}
-            className={'aio-select'}
-            value={props.value ?? ''}
+            className={"aio-select"}
+            value={props.value ?? ""}
             onChange={
-              typeof props.setValue === 'function'
+              typeof props.setValue === "function"
                 ? (e: React.ChangeEvent<HTMLSelectElement>) => {
                     if (props.setValue) props.setValue(e.currentTarget.value);
                   }

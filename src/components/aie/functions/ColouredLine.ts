@@ -1,7 +1,7 @@
-import { iColouredLine, iColourStyles, iStyleBlock } from './aieInterface';
-import { explodeLine } from './explodeLine';
-import { getHtmlString } from './getHtmlString';
-import { implodeLine } from './implodeLine';
+import { iColouredLine, iColourStyles, iStyleBlock } from "./aieInterface";
+import { explodeLine } from "./explodeLine";
+import { getHtmlString } from "./getHtmlString";
+import { implodeLine } from "./implodeLine";
 
 export class ColouredLine {
   // Variables
@@ -20,21 +20,21 @@ export class ColouredLine {
         } else return b;
       }),
     ).forEach((b) => {
-      const s = document.createElement('span');
-      s.className = 'aie-block';
-      s.textContent = this.text.replace(/[\u202F| ]/g, '\u00A0').substring(b.start, b.end);
+      const s = document.createElement("span");
+      s.className = "aie-block";
+      s.textContent = this.text.replace(/[\u202F| ]/g, "\u00A0").substring(b.start, b.end);
       if (b.styleName && Object.keys(this.styles).findIndex((s) => s === b.styleName) >= 0) {
         s.dataset.style = b.styleName;
         s.style.cssText = Object.entries(this.styles[b.styleName])
-          .map(([k, v]) => `${k.replace(/[A-Z]/g, '-$&').toLowerCase()}:${v}`)
-          .join(';');
+          .map(([k, v]) => `${k.replace(/[A-Z]/g, "-$&").toLowerCase()}:${v}`)
+          .join(";");
       }
       h.appendChild(s);
     });
     return h;
   }
   get htmlString(): string {
-    return getHtmlString(this.html, 'aie-line');
+    return getHtmlString(this.html, "aie-line");
   }
 
   // Constructor
@@ -42,7 +42,7 @@ export class ColouredLine {
   constructor(arg: string, styles?: iColourStyles);
   constructor(arg: string, styles?: iColourStyles, styleBlocks?: iStyleBlock[]);
   constructor(arg: string | iColouredLine, styles?: iColourStyles, styleBlocks?: iStyleBlock[]) {
-    if (typeof arg === 'string') {
+    if (typeof arg === "string") {
       this.text = arg;
       this.styles = styles ?? {};
       this.styleBlocks = explodeLine(styleBlocks ?? [], arg.length);

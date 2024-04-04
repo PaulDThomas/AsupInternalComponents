@@ -1,10 +1,9 @@
-import { getRawTextParts } from '../aie/functions/getRawTextParts';
-import { AioExternalReplacements, AioReplacement } from '../aio/aioInterface';
-import { AitRowData } from '../ait/aitInterface';
-import { prependCell } from './prependCells';
-import { replaceCellText } from './replaceCellText';
-import { fromHtml } from './tofromHtml';
-import { updateExternals } from './updateExternals';
+import { getRawTextParts } from "../aie/functions/getRawTextParts";
+import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
+import { AitRowData } from "../ait/aitInterface";
+import { replaceCellText } from "./replaceCellText";
+import { fromHtml } from "./tofromHtml";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Recursive function to replace column header information
@@ -21,16 +20,15 @@ export const replaceRows = (
   // Look for match, is there is one to find
   if (
     replacement === undefined ||
-    replacement.oldText === '' ||
+    replacement.oldText === "" ||
     replacement.newTexts.length === 0 ||
-    replacement.newTexts[0].texts.join('') === ''
+    replacement.newTexts[0].texts.join("") === ""
   ) {
     return rows;
   }
 
   // Set up holders
   const newRows: AitRowData[] = [];
-  let addedRows = 0;
   let found = false;
 
   // Look through each cell
@@ -39,13 +37,14 @@ export const replaceRows = (
   let emergencyExit = 0;
   while (ri < rows.length && emergencyExit < 10000) {
     if (ri >= rows.length || rows[ri] === undefined || rows[ri].cells.length === undefined) {
-      console.warn('High ri value somehow');
-      console.log(`ri: ${ri}`);
-      console.log(`${JSON.stringify(rows)}`);
+      console.group("High ri value somehow");
+      console.warn(`ri: ${ri}`);
+      console.warn(`${JSON.stringify(rows)}`);
+      console.groupEnd();
     } else
       for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
         const cellTextParts: string[] = getRawTextParts(
-          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? '',
+          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
         );
         if (
           replacement !== undefined &&
@@ -55,10 +54,8 @@ export const replaceRows = (
           // Get targetCell
           found = true;
           const targetCell = rows[ri].cells[ci];
-          targetCell.rowSpan = targetCell.rowSpan ?? 1;
 
-          let midRows: AitRowData[] = [];
-          let midAddedRows = 0;
+          const midRows: AitRowData[] = [];
 
           // Cycle through newTexts
           for (let rvi = 0; rvi < replacement.newTexts.length; rvi++) {
@@ -87,35 +84,14 @@ export const replaceRows = (
                             ];
                       return {
                         aitid: r.aitid,
-                        rowRepeat: `${r.rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
-                        cells: cells,
-                      };
-                    })
-                  : targetCell.rowSpan > 1
-                  ? rows.slice(ri, ri + targetCell.rowSpan).map((r, rj) => {
-                      const cells =
-                        rj === 0
-                          ? [
-                              thisRepeat,
-                              ...r.cells
-                                .slice(ci + 1)
-                                .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
-                            ]
-                          : [
-                              ...r.cells
-                                .slice(ci)
-                                .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
-                            ];
-                      return {
-                        aitid: r.aitid,
-                        rowRepeat: `${r.rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                        rowRepeat: `${r.rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                         cells: cells,
                       };
                     })
                   : [
                       {
                         aitid: rows[ri].aitid,
-                        rowRepeat: `${rows[ri].rowRepeat ?? ''}${`[${rvi},${ti}]`}`,
+                        rowRepeat: `${rows[ri].rowRepeat ?? ""}${`[${rvi},${ti}]`}`,
                         cells: [
                           thisRepeat,
                           ...rows[ri].cells
@@ -133,39 +109,32 @@ export const replaceRows = (
                   lowerQuad = replaceRows(lowerQuad, defaultCellWidth, subLists[si]);
                 }
 
-              // Add spaceAfter to bottom left cell in the block
-              if (rv.spaceAfter && replacement.includeTrailing) {
-                let lookup = 0;
-                while (
-                  lookup < lowerQuad.length - 1 &&
-                  (lowerQuad[lowerQuad.length - 1 - lookup].cells[0].rowSpan ?? 1) === 0
-                )
-                  lookup++;
-                lowerQuad[lowerQuad.length - 1 - lookup].cells[0].spaceAfterRepeat = true;
-              } else if (rv.spaceAfter) {
-                lowerQuad[0].cells[0].spaceAfterRepeat = true;
-              }
-
               // Expand to cover rest of the row
               midRows.push(...lowerQuad);
+
+              // Add spaceAfter to bottom left cell in the block
+              if (rv.spaceAfter) {
+                midRows[midRows.length - 1].cells[0].spaceAfterRepeat = true;
+              }
             }
           }
 
           // Add preceeding cells from current row
           if (midRows.length > 0)
-            for (let lookleft = 1; lookleft <= ci; lookleft++) {
-              midAddedRows = midRows.length - processedRows;
-              midRows = prependCell(
-                rows[ri].cells[ci - lookleft],
-                defaultCellWidth,
-                midRows,
-                midAddedRows,
+            midRows.forEach((r, ix) => {
+              r.cells.splice(
+                0,
+                0,
+                ...rows[ri].cells.slice(0, ci).map((c) => ({
+                  ...c,
+                  replacedText: ix === 0 ? c.replacedText : "",
+                  spaceAfterRepeat: c.spaceAfterRepeat && ix === midRows.length - 1,
+                })),
               );
-            }
+            });
+
           // Add returned rows
           newRows.push(...midRows);
-          // Update number of rows for further lookups
-          addedRows = addedRows + midAddedRows;
         }
       }
     // Add the row if it was not found on this pass

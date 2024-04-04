@@ -1,9 +1,10 @@
-import { AioExternalReplacements, AioExternalSingle, AioReplacement } from '../aio';
-import { AitColumnRepeat, AitRowData } from '../ait';
-import { removeRowRepeatInfo } from './removeRowRepeatInfo';
-import { replaceHeaders } from './replaceHeaders';
-import { singleReplacements } from './singleReplacements';
-import { updateExternals } from './updateExternals';
+import { AitHeaderRowData } from "components/ait/aitInterface";
+import { AioExternalReplacements, AioExternalSingle, AioReplacement } from "../aio";
+import { AitColumnRepeat, AitRowData } from "../ait";
+import { removeHeaderRowRepeatInfo } from "./removeRowRepeatInfo";
+import { replaceHeaders } from "./replaceHeaders";
+import { singleReplacements } from "./singleReplacements";
+import { updateExternals } from "./updateExternals";
 
 /**
  * Entry function to process headers with replacements
@@ -15,7 +16,7 @@ import { updateExternals } from './updateExternals';
  * @returns
  */
 export const repeatHeaders = (
-  rows: AitRowData[],
+  rows: AitHeaderRowData[],
   replacements: AioReplacement[],
   defaultCellWidth: number,
   noProcessing?: boolean,
@@ -24,7 +25,7 @@ export const repeatHeaders = (
   externalSingles?: AioExternalSingle[],
 ): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[] } => {
   // Start with blank slate, need to strip repeat inforation everytime!
-  let newHeaderRows: AitRowData[] = removeRowRepeatInfo(rows);
+  let newHeaderRows: AitHeaderRowData[] = removeHeaderRowRepeatInfo(rows);
   let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(
     (n) => {
       return { columnIndex: n } as AitColumnRepeat;

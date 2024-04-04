@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
-import { AioIconButton } from '../aio';
-import { TableSettingsContext } from './aitContext';
+import React, { useContext } from "react";
+import { AioIconButton } from "../aio";
+import { TableSettingsContext } from "./aitContext";
 
 interface AitBorderRowProps {
   id: string;
@@ -23,15 +23,15 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
     <>
       {props.changeColumns && (
         <tr id={`${props.id}`}>
-          <td className='ait-cell'>
+          <td className="ait-cell">
             <div
-              className='ait-aie-holder'
-              style={{ display: 'flex', justifyContent: 'flex-end' }}
+              className="ait-aie-holder"
+              style={{ display: "flex", justifyContent: "flex-end" }}
             >
               <AioIconButton
                 id={`${props.id}-addcol-m1`}
-                tipText='Add column'
-                iconName='aiox-plus'
+                tipText="Add column"
+                iconName="aiox-plus"
                 onClick={() => {
                   if (props.changeColumns) props.changeColumns.addColumn(-1);
                 }}
@@ -50,12 +50,12 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
               : 1;
             return (
               <td
-                className='ait-cell'
+                className="ait-cell"
                 key={ci}
               >
                 <div
-                  className='ait-aie-holder'
-                  style={{ display: 'flex' }}
+                  className="ait-aie-holder"
+                  style={{ display: "flex" }}
                 >
                   {!(props.rowHeaderColumns === 1 && ci === 0) &&
                     !(
@@ -63,22 +63,22 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                     ) && (
                       <AioIconButton
                         id={`${props.id}-remcol-${ci}`}
-                        tipText='Remove column'
-                        iconName='aiox-minus'
+                        tipText="Remove column"
+                        iconName="aiox-minus"
                         onClick={() => {
                           if (!props.changeColumns || !tableSettings.columnRepeats) return;
                           props.changeColumns.removeColumn(
                             tableSettings.columnRepeats[ci].columnIndex,
                           );
                         }}
-                        style={{ justifySelf: 'start' }}
+                        style={{ justifySelf: "start" }}
                       />
                     )}
                   <div style={{ flexGrow: 1 }} />
                   <AioIconButton
                     id={`${props.id}-addcol-${ci}`}
-                    tipText='Add column'
-                    iconName='aiox-plus'
+                    tipText="Add column"
+                    iconName="aiox-plus"
                     onClick={() => {
                       if (!props.changeColumns || !tableSettings.columnRepeats) return;
                       props.changeColumns.addColumn(tableSettings.columnRepeats[ci].columnIndex);
@@ -97,7 +97,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
           {cis.map(
             (ci: number): JSX.Element => (
               <td
-                className='ait-space-cell'
+                className="ait-space-cell"
                 key={ci}
               />
             ),
@@ -111,7 +111,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
           {cis.map(
             (ci: number): JSX.Element => (
               <td
-                className='ait-border-cell'
+                className="ait-border-cell"
                 key={ci}
                 style={{ minWidth: `${props.minWidth}px` }}
               />
@@ -126,7 +126,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
           {cis.map(
             (ci: number): JSX.Element => (
               <td
-                className='ait-space-cell'
+                className="ait-space-cell"
                 key={ci}
               />
             ),

@@ -59,7 +59,7 @@
 }
 
 .aio-tip-right::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   right: 100%;
@@ -82,7 +82,7 @@
 }
 
 .aio-tip-bottom::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -105,7 +105,7 @@
 }
 
 .aio-tip-top::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -128,7 +128,7 @@
 }
 
 .aio-tip-left::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 100%;
@@ -154,7 +154,7 @@
 }
 
 .aio-tip .aio-tiptext-bottomarrow::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 100%;
   left: 50%;
@@ -184,7 +184,7 @@
 }
 
 .aio-tip .aio-tiptext-toparrow::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 100%;
   left: 50%;
@@ -213,7 +213,7 @@
 }
 
 .aio-tip .aio-tiptext-leftarrow::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   right: 100%;
@@ -242,7 +242,7 @@
 }
 
 .aio-tip .aio-tiptext-rightarrow::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 100%;
