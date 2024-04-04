@@ -15,6 +15,7 @@ deploy.ps1
 # production
 /build
 /dist
+/demo/dist
 
 # misc
 .DS_Store

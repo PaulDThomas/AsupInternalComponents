@@ -1,29 +1,46 @@
-const config = {
+import type { Config } from "jest";
+
+const config: Config = {
   // The root of your source code, typically /src
   // `<rootDir>` is a token Jest substitutes
   roots: ["<rootDir>/src"],
-  moduleDirectories: ["node_modules", "src"],
+  modulePaths: ["node_modules", "<rootDir>/src"],
+  testEnvironment: "jsdom",
+  verbose: true,
 
   // Jest transformations -- this adds support for TypeScript
   // using ts-jest
   transform: {
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.tsx?$": [
+      "ts-jest",
+      {
+        diagnostics: {
+          ignoreCodes: [1343],
+        },
+        astTransformers: {
+          before: [
+            {
+              path: "ts-jest-mock-import-meta",
+              options: { metaObjectReplacement: { url: "https://localhost" } },
+            },
+          ],
+        },
+      },
+    ],
   },
+  // Module file extensions for importing
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
 
   // Runs special logic, such as cleaning up components
   // when using React Testing Library and adds special
   // extended assertions to Jest
   setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
-  resetMocks: true,
   // Test spec file resolution pattern
   // Matches parent folder `__tests__` and filename
   // should contain `test` or `spec`.
   testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
-  // Module file extensions for importing
-  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  // };
 
-  // Added by Paul
+  // Code coverage
   collectCoverage: true,
   coverageProvider: "v8",
   collectCoverageFrom: [
@@ -32,12 +49,11 @@ const config = {
     "!**/index.ts",
     "!**/interface.ts",
     "!**/main.ts",
+    "!**/__dummy__/**",
   ],
-  testEnvironment: "jsdom",
   moduleNameMapper: {
-    "\\.(css|less|scss)$": "<rootDir>/src/__mocks__/styleMock.ts",
+    "\\.(css|less|scss)$": "<rootDir>/__dummy__/styleMock.ts",
   },
-
   // Plugin for watch patterns
   watchPlugins: ["jest-watch-typeahead/filename", "jest-watch-typeahead/testname"],
 };
