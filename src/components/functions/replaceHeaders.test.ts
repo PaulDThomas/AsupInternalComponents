@@ -1,11 +1,11 @@
 import { AioReplacement } from "../aio/aioInterface";
-import { AitColumnRepeat, AitRowData } from "../ait/aitInterface";
-import { newRow } from "./newRow";
+import { AitColumnRepeat, AitHeaderRowData } from "../ait/aitInterface";
+import { newHeaderRow } from "./newRow";
 import { removeUndefined } from "./removeUndefined";
 import { replaceHeaders } from "./replaceHeaders";
 
 describe("Check replace headers", () => {
-  const rows: AitRowData[] = [newRow(60, 3)];
+  const rows: AitHeaderRowData[] = [newHeaderRow(60, 3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }
@@ -21,7 +21,7 @@ describe("Check replace headers", () => {
     expect(postProcess.newColumnRepeats).toEqual(columnRepeats);
   });
 
-  const rowsC1: AitRowData[] = [
+  const rowsC1: AitHeaderRowData[] = [
     {
       cells: [
         { text: "r1c1", rowSpan: 3 },

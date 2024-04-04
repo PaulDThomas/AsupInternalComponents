@@ -1,6 +1,5 @@
 import { AioReplacement } from "components/aio";
 import { AitRowData } from "components/ait";
-import { removeUndefined } from "./removeUndefined";
 import { repeatRows } from "./repeatRows";
 
 describe("Check repeat rows", () => {
@@ -47,7 +46,7 @@ describe("Check repeat rows", () => {
       oldText: "t",
       newTexts: [
         {
-          spaceAfter: false,
+          spaceAfter: true,
           texts: ["t1", "t2"],
           subLists: [],
         },
@@ -76,7 +75,7 @@ describe("Check repeat rows", () => {
               oldText: "v",
               newTexts: [
                 {
-                  spaceAfter: true,
+                  spaceAfter: false,
                   texts: ["0.xxx"],
                   subLists: [],
                 },
@@ -134,303 +133,52 @@ describe("Check repeat rows", () => {
     const repeated = repeatRows(rows, 60, replacements, true, false, undefined, [
       { oldText: "p1", newText: "p1!" },
     ]);
-    expect(removeUndefined(repeated)).toEqual([
-      // Row 0
-      {
-        cells: [
-          { text: "p", replacedText: "p1!" },
-          { text: "s", replacedText: "s1" },
-          { text: "t", replacedText: "t1" },
-          { text: "h", replacedText: "h1" },
-          { text: "r", replacedText: "r1" },
-          { text: "v", replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,0][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 3
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h2", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,1][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,0][0,0][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 6
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 3, replacedText: "" },
-          { text: "t", rowSpan: 2, repeatRowSpan: 6, replacedText: "t2", spaceAfterSpan: 6 },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h1", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,0][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 9
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h2", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,1][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,0][0,1][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 12
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 5, replacedText: "" },
-          { text: "s", rowSpan: 2, repeatRowSpan: 12, replacedText: "s2", spaceAfterSpan: 12 },
-          { text: "t", rowSpan: 2, repeatRowSpan: 6, replacedText: "t1", spaceAfterSpan: 6 },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h1", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,0][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 15
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h2", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,1][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,1][0,0][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 18
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, replacedText: "" },
-          { text: "t", rowSpan: 2, repeatRowSpan: 6, replacedText: "t2", spaceAfterSpan: 6 },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h1", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,0][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,0][0,0][0,0]",
-        spaceAfter: true,
-      },
-      // Row 21
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 1, replacedText: "" },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3, replacedText: "h2", spaceAfterSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,1][1,0][0,0]",
-        spaceAfter: true,
-      },
-      {
-        cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", rowSpan: 0, repeatRowSpan: 0 },
-          { text: "c", rowSpan: 1, repeatRowSpan: 1, replacedText: "c!", spaceAfterRepeat: true },
-          { text: "v", rowSpan: 1, replacedText: "!!" },
-        ],
-        rowRepeat: "[0,0][0,1][0,1][0,1][0,0][0,0]",
-        spaceAfter: true,
-      },
+    const repeatedTexts = repeated.map((r) =>
+      r.cells.map((c) => c.replacedText ?? c.text).join(","),
+    );
+    const spaceAfter = repeated.map((r) =>
+      r.cells
+        .map((c, ix) => (c.spaceAfterRepeat ? ix : undefined))
+        .filter((x) => x !== undefined)
+        .join(","),
+    );
+    expect(repeatedTexts).toEqual([
+      "p1!,s1,t1,h1,r1,0.xxx",
+      ",,,,r2, ",
+      ",,,h2,r1,0.xxx",
+      ",,,,r2, ",
+      ",,t2,h1,r1,0.xxx",
+      ",,,,r2, ",
+      ",,,h2,r1,0.xxx",
+      ",,,,r2, ",
+      ",s2,t1,h1,r1,0.xxx",
+      ",,,,r2, ",
+      ",,,h2,r1,0.xxx",
+      ",,,,r2, ",
+      ",,t2,h1,r1,0.xxx",
+      ",,,,r2, ",
+      ",,,h2,r1,0.xxx",
+      ",,,,r2, ",
+      ",,,,c!,!!",
+    ]);
+    expect(spaceAfter).toEqual([
+      "",
+      "5",
+      "",
+      "2,5",
+      "",
+      "5",
+      "",
+      "2,5",
+      "",
+      "5",
+      "",
+      "2,5",
+      "",
+      "5",
+      "",
+      "2,5",
+      "4",
     ]);
   });
 });

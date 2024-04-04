@@ -19,9 +19,7 @@ export const cellPreProcess = (defaultCellWidth: number, cs?: AitCellData[]): Ai
       colWidth: c.colWidth ?? defaultCellWidth,
       textIndents: c.textIndents,
       replacedText: c.replacedText,
-      repeatRowSpan: c.repeatRowSpan,
       spaceAfterRepeat: c.spaceAfterRepeat,
-      spaceAfterSpan: c.spaceAfterSpan,
     };
   });
 };

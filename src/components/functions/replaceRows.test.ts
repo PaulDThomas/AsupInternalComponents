@@ -7,23 +7,16 @@ describe("Check complex replace rows", () => {
   const rows: AitRowData[] = [
     {
       cells: [
-        { text: "p", rowSpan: 2 },
-        { text: "s", rowSpan: 2 },
-        { text: "t", rowSpan: 2 },
-        { text: "h", rowSpan: 2 },
+        { text: "p" },
+        { text: "s" },
+        { text: "t" },
+        { text: "h" },
         { text: "r" },
         { text: "v" },
       ],
     },
     {
-      cells: [
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "", rowSpan: 0 },
-        { text: "c" },
-        { text: "v" },
-      ],
+      cells: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "c" }, { text: "v" }],
     },
   ];
 
@@ -74,32 +67,32 @@ describe("Check complex replace rows", () => {
       // Row 0
       {
         cells: [
-          { text: "p", rowSpan: 2, repeatRowSpan: 3 },
-          { text: "s", rowSpan: 2, repeatRowSpan: 3 },
-          { text: "t", rowSpan: 2, repeatRowSpan: 3 },
-          { text: "h", rowSpan: 2, repeatRowSpan: 3 },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r1" },
-          { text: "v", rowSpan: 1, replacedText: "0.xxx", spaceAfterRepeat: true },
+          { text: "p" },
+          { text: "s" },
+          { text: "t" },
+          { text: "h" },
+          { text: "r", replacedText: "r1" },
+          { text: "v", replacedText: "0.xxx", spaceAfterRepeat: true },
         ],
         rowRepeat: "[0,0][0,0]",
       },
       {
         cells: [
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "", colWidth: 60, colSpan: 1, rowSpan: 0, repeatRowSpan: 0, replacedText: "" },
-          { text: "r", rowSpan: 1, repeatRowSpan: 1, replacedText: "r2" },
-          { text: "v", rowSpan: 1, replacedText: " ", spaceAfterRepeat: true },
+          { text: "p", replacedText: "" },
+          { text: "s", replacedText: "" },
+          { text: "t", replacedText: "" },
+          { text: "h", replacedText: "" },
+          { text: "r", replacedText: "r2" },
+          { text: "v", replacedText: " ", spaceAfterRepeat: true },
         ],
         rowRepeat: "[1,0][0,0]",
       },
       {
         cells: [
-          { text: "", rowSpan: 0 },
-          { text: "", rowSpan: 0 },
-          { text: "", rowSpan: 0 },
-          { text: "", rowSpan: 0 },
+          { text: "" },
+          { text: "" },
+          { text: "" },
+          { text: "" },
           { text: "c" },
           { text: "v" },
         ],

@@ -1,8 +1,8 @@
-import { AitRowData } from "components/ait";
-import { removeRowRepeatInfo } from "./removeRowRepeatInfo";
+import { AitHeaderRowData } from "components/ait/aitInterface";
+import { removeHeaderRowRepeatInfo } from "./removeRowRepeatInfo";
 
 describe("Check remove row repeat info", () => {
-  const a: AitRowData = {
+  const a: AitHeaderRowData = {
     aitid: "Row",
     rowRepeat: "[Some repeat]",
     cells: [
@@ -14,7 +14,7 @@ describe("Check remove row repeat info", () => {
   };
 
   test("Check remove row repeat info", async () => {
-    const b = removeRowRepeatInfo([a]);
+    const b = removeHeaderRowRepeatInfo([a]);
     expect(b).toEqual([
       {
         aitid: "Row",
