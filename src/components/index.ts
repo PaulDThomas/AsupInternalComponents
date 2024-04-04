@@ -1,4 +1,4 @@
-import { AifBlockLine, AifLineType, AsupInternalBlock, updateLineDisplayVersion } from "./aib";
+import { AifBlockLine, AifLineType, AsupInternalBlock, updateLineDisplayVersion } from "./block";
 import { AieStyleMap, AsupInternalEditor } from "./aie";
 import {
   AioDropSelect,

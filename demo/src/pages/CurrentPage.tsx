@@ -1,9 +1,9 @@
-import React from "react";
-import { AsupInternalBlock } from "../../../src/components/aib/AsupInternalBlock";
+import { AsupInternalBlock } from "../../../src/main";
+import { useMemo, useState } from "react";
 
 export const CurrentPage = () => {
-  const [left, setLeft] = React.useState<string>("");
-  const pageBy = React.useMemo(
+  const [left, setLeft] = useState<string>("");
+  const pageBy = useMemo(
     () => ({
       aifid: "page-by",
       left: left,

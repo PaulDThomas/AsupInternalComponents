@@ -6,7 +6,7 @@ import {
   AioSingleReplacements,
   AsupInternalBlock,
   updateLineDisplayVersion,
-} from "../../../src/components";
+} from "../../../src/main";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

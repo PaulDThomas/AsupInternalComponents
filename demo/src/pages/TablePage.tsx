@@ -1,14 +1,14 @@
-import { AioSingleReplacements } from "components/aio/AioSingleReplacements";
-import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   AieStyleMap,
   AioExternalReplacements,
   AioExternalSingle,
+  AioSingleReplacements,
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
   updateTableDataVersion,
-} from "../../../src/components";
+} from "../../../src/main";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

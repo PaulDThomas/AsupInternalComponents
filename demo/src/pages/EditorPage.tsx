@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { AsupInternalEditor } from "../../../src/components";
+import { AsupInternalEditor } from "../../../src/main";
 
 export const EditorPage = () => {
   const [textarea, setTextarea] = useState<string>("");

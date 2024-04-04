@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { AioDropSelect, AioExpander } from "../../../src/components";
+import { AioDropSelect, AioExpander } from "../../../src/main";
+import { useEffect, useRef, useState } from "react";
 
 export const ExpanderPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

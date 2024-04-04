@@ -5,7 +5,7 @@ import {
   AitTableData,
   AsupInternalTable,
   newRowGroup,
-} from "../../../src/components";
+} from "../../../src/main";
 
 export const RowGroupPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
