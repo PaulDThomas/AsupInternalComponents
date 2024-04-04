@@ -1,4 +1,4 @@
-import { AifBlockLine } from "../aif/aifInterface";
+import { AifBlockLine } from "./aibInterface";
 
 interface OldBlockLine {
   aifid?: string; // Unique ID

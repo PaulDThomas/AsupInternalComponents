@@ -1,4 +1,3 @@
-import React from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 
 export const OriginalText = ({

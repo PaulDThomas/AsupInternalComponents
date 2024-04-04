@@ -1,8 +1,7 @@
-import React from "react";
+import { ContextWindow } from "@asup/context-menu";
 import { AieStyleMap } from "../aie";
 import { AioSelect } from "../aio/aioSelect";
-import { OriginalText } from "./OriginalText";
-import { ContextWindow } from "@asup/context-menu";
+import { OriginalText } from "./AibOriginalText";
 
 interface AifOptionsWindowProps {
   id: string;

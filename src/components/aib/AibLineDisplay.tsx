@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioExternalSingle, AioIconButton } from "../aio";
-import "./aif.css";
-import { AifBlockLine } from "./aifInterface";
-import { AifOptionsWindow } from "./aifOptionsWindow";
+import { AifOptionsWindow } from "./AibOptionsWindow";
+import { AifBlockLine } from "./aibInterface";
+import styles from "./aib.module.css";
 import { replaceBlockText } from "./replaceBlockText";
 
 interface AifLineDisplayProps {
@@ -88,9 +88,12 @@ export const AifLineDisplay = ({
 
   return (
     <div
-      className={`aif-line ${
-        canEdit === false || typeof setLine !== "function" ? "aif-readonly" : ""
-      }`}
+      className={[
+        styles.aibLine,
+        canEdit === false || typeof setLine !== "function" ? styles.aibReadOnly : "",
+      ]
+        .filter((c) => c !== "")
+        .join(" ")}
     >
       {showOptions && (
         <AifOptionsWindow
@@ -105,21 +108,23 @@ export const AifLineDisplay = ({
         />
       )}
 
-      <div className="aif-line-buttons" />
+      <div className={styles.aibLineButtons} />
       <div
-        className="aif-line-item-holder"
+        className={styles.aibLineItemHolder}
         style={{ ...style }}
       >
         {typeof displayLeft === "string" && (
           <div
-            className={`aif-line-item ${displayLeft !== left ? "aif-readonly" : ""}`}
+            className={[styles.aibLineItem, displayLeft !== left ? styles.aibReadOnly : ""]
+              .filter((c) => c !== "")
+              .join(" ")}
             style={{
               width:
                 typeof center !== "string" && typeof right !== "string"
                   ? "100%"
                   : typeof center !== "string"
-                  ? "50%"
-                  : "33%",
+                    ? "50%"
+                    : "33%",
             }}
           >
             <AsupInternalEditor
@@ -137,7 +142,9 @@ export const AifLineDisplay = ({
         )}
         {typeof displayCenter === "string" && (
           <div
-            className={`aif-line-item ${displayCenter !== center ? "aif-readonly" : ""}`}
+            className={[styles.aibLineItem, displayCenter !== center ? styles.aibReadOnly : ""]
+              .filter((c) => c !== "")
+              .join(" ")}
             style={{ flexGrow: 1 }}
           >
             <AsupInternalEditor
@@ -156,14 +163,16 @@ export const AifLineDisplay = ({
         )}
         {typeof displayRight === "string" && (
           <div
-            className={`aif-line-item ${displayRight !== right ? "aif-readonly" : ""}`}
+            className={[styles.aibLineItem, displayRight !== right ? styles.aibReadOnly : ""]
+              .filter((c) => c !== "")
+              .join(" ")}
             style={{
               width:
                 typeof center !== "string" && typeof left !== "string"
                   ? "100%"
                   : typeof center !== "string"
-                  ? "50%"
-                  : "33%",
+                    ? "50%"
+                    : "33%",
             }}
           >
             <AsupInternalEditor
@@ -182,7 +191,7 @@ export const AifLineDisplay = ({
         )}
       </div>
 
-      <div className="aif-line-buttons">
+      <div className={styles.aibLineButtons}>
         <AioIconButton
           id={`${id}-show-options`}
           onClick={() => setShowOptions(!showOptions)}

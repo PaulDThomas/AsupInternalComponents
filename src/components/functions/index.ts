@@ -13,7 +13,6 @@ import { repeatRows } from "./repeatRows";
 import { fromHtml, toHtml } from "./tofromHtml";
 import { updateReplacementVersion, updateReplToExtl } from "./updateReplacementVersion";
 import { updateTableDataVersion } from "./updateTableDataVersion";
-import { updateLineDisplayVersion } from "./UpdateLineDisplayVersion";
 
 export {
   fromHtml,
@@ -32,5 +31,4 @@ export {
   updateReplacementVersion,
   updateReplToExtl,
   updateTableDataVersion,
-  updateLineDisplayVersion,
 };

@@ -1,5 +1,5 @@
+import { AifBlockLine, AifLineType, AsupInternalBlock, updateLineDisplayVersion } from "./aib";
 import { AieStyleMap, AsupInternalEditor } from "./aie";
-import { AifBlockLine, AifLineType, AsupInternalBlock } from "./aif";
 import {
   AioDropSelect,
   AioExpander,
@@ -11,6 +11,7 @@ import {
   AioReplacementDisplay,
   AioReplacementValues,
   AioReplacementValuesDisplay,
+  AioSingleReplacements,
   AioString,
 } from "./aio";
 import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
@@ -21,43 +22,44 @@ import {
   newReplacementValues,
   newRowGroup,
   toHtml,
-  updateLineDisplayVersion,
-  updateReplacementVersion,
   updateReplToExtl,
+  updateReplacementVersion,
   updateTableDataVersion,
 } from "./functions";
 
-export { AsupInternalEditor, AsupInternalTable, AsupInternalBlock };
 export {
   AifLineType,
+  AioDropSelect,
   AioExpander,
+  AioIconButton,
   AioReplacementDisplay,
   AioReplacementValuesDisplay,
-  AioDropSelect,
-  AioIconButton,
+  AioSingleReplacements,
   AioString,
-};
-export {
+  AsupInternalBlock,
+  AsupInternalEditor,
+  AsupInternalTable,
+  fromHtml,
   newExternalReplacements,
   newExternalSingle,
   newReplacementValues,
   newRowGroup,
   toHtml,
-  fromHtml,
+  updateLineDisplayVersion,
+  updateReplToExtl,
+  updateReplacementVersion,
+  updateTableDataVersion,
 };
-export type { AieStyleMap };
-export type { AifBlockLine };
 export type {
+  AieStyleMap,
+  AifBlockLine,
   AioExternalReplacements,
   AioExternalSingle,
   AioOption,
   AioReplacement,
   AioReplacementValues,
-};
-export type { AitCellData, AitRowData, AitRowGroupData, AitTableData };
-export {
-  updateReplacementVersion,
-  updateReplToExtl,
-  updateTableDataVersion,
-  updateLineDisplayVersion,
+  AitCellData,
+  AitRowData,
+  AitRowGroupData,
+  AitTableData,
 };

@@ -1,20 +1,20 @@
-.aif-block {
+.aibBlock {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.aif-line {
+.aibLine {
   display: inline-flex;
 }
 
-.aif-line-item-holder {
+.aibLineItemHolder {
   display: flex;
   flex-direction: row;
   flex-grow: 1;
 }
 
-.aif-line-buttons {
+.aibLineButtons {
   right: 0;
   margin-left: 0.25rem;
   width: 52px;
@@ -22,9 +22,8 @@
   flex-direction: row;
 }
 
-.aif-line.aif-readonly .aif-line-item,
-.aif-line-item.aif-readonly {
-  /* background-color: rgb(240, 221, 168); */
+.aibLine.aibReadOnly .aibLineItem,
+.aibLineItem.aibReadOnly {
   background-color: #d3d3d329;
   color: #0d0d0dc7;
   font-style: italic;
