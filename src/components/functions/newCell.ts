@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { AitCellData, AitHeaderCellData } from "../ait/aitInterface";
+import { AitCellData, AitHeaderCellData } from "../table/interface";
 
 /**
  * Create a blank new cell

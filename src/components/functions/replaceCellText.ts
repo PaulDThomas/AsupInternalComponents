@@ -1,6 +1,5 @@
-import { AitHeaderCellData } from "components/ait/aitInterface";
 import { newReplacedText } from "../aie/functions/newReplacedText";
-import { AitCellData } from "../ait";
+import { AitCellData, AitHeaderCellData } from "../table/interface";
 
 export const replaceCellText = <T extends AitCellData | AitHeaderCellData>(
   cell: T,

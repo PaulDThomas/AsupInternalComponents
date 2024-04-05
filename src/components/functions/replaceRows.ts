@@ -1,6 +1,6 @@
 import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
-import { AitRowData } from "../ait/aitInterface";
+import { AitRowData } from "../table/interface";
 import { replaceCellText } from "./replaceCellText";
 import { fromHtml } from "./tofromHtml";
 import { updateExternals } from "./updateExternals";

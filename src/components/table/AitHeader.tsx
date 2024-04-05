@@ -2,16 +2,16 @@ import { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
 import { newRow } from "../functions";
 import { newHeaderCell } from "../functions/newCell";
-import { AitBorderRow } from "./aitBorderRow";
-import { TableSettingsContext } from "./aitContext";
-import { AitHeaderRow } from "./aitHeaderRow";
+import { AitBorderRow } from "./AitBorderRow";
+import { TableSettingsContext } from "./TableSettingsContext";
+import { AitHeaderRow } from "./AitHeaderRow";
 import {
   AitHeaderRowData,
   AitLocation,
   AitRowData,
   AitRowGroupData,
   AitRowType,
-} from "./aitInterface";
+} from "./interface";
 
 interface AitHeaderProps {
   id: string;

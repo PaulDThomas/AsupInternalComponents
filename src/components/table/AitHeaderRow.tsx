@@ -1,8 +1,8 @@
 import { useCallback, useContext, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from "../aio";
-import { AitBorderRow } from "./aitBorderRow";
-import { TableSettingsContext } from "./aitContext";
-import { AitHeaderCell } from "./aitHeaderCell";
+import { AitBorderRow } from "./AitBorderRow";
+import { TableSettingsContext } from "./TableSettingsContext";
+import { AitHeaderCell } from "./AitHeaderCell";
 import {
   AitColumnRepeat,
   AitHeaderCellData,
@@ -10,7 +10,7 @@ import {
   AitLocation,
   AitRowData,
   AitRowType,
-} from "./aitInterface";
+} from "./interface";
 import { ContextWindow } from "@asup/context-menu";
 
 interface AitHeaderRowProps {

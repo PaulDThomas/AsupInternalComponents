@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { AitHeaderRowData, AitRowData } from "../ait/aitInterface";
+import { AitHeaderRowData, AitRowData } from "../table/interface";
 import { newCell, newHeaderCell } from "./newCell";
 
 export const newRow = (defaultCellWidth: number, l?: number): AitRowData => {

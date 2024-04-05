@@ -1,4 +1,4 @@
-import { AitCellData } from "components/ait";
+import { AitCellData } from "../table/interface";
 import { cellPreProcess } from "./cellPreProcess";
 
 describe("Check cell pre-process", () => {

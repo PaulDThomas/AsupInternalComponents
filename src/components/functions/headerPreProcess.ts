@@ -1,6 +1,6 @@
-import { AitHeaderGroupData } from "components/ait/aitInterface";
 import { v4 as uuidv4 } from "uuid";
 import { headerRowPreProcess } from "./headerRowPreProcess";
+import { AitHeaderGroupData } from "../table/interface";
 
 /**
  * Preprocess headerData row group

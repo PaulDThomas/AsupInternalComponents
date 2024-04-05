@@ -1,7 +1,11 @@
 import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio";
-import { AitColumnRepeat, AitRowData } from "../ait";
-import { AitHeaderCellData, AitHeaderRowData } from "../ait/aitInterface";
+import {
+  AitColumnRepeat,
+  AitHeaderCellData,
+  AitHeaderRowData,
+  AitRowData,
+} from "../table/interface";
 import { appendCells } from "./appendCells";
 import { flattenReplacements } from "./flattenReplacements";
 import { newHeaderCell } from "./newCell";

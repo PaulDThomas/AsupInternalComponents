@@ -1,5 +1,6 @@
-import { AitColumnRepeat, AitRowGroupData } from "../ait";
-import { AitHeaderGroupData } from "../ait/aitInterface";
+import { AitColumnRepeat } from "components/table";
+import { AitHeaderGroupData } from "components/table/interface";
+import { AitRowGroupData } from "main";
 
 export const unProcessRowGroup = <T extends AitRowGroupData | AitHeaderGroupData>(
   processedGroup: T,

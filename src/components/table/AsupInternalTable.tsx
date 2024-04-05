@@ -21,10 +21,11 @@ import {
 } from "../functions";
 import { newHeaderCell } from "../functions/newCell";
 import { unProcessRowGroup } from "../functions/unProcessRowGroup";
+import { AitBorderRow } from "./AitBorderRow";
+import { AitHeader } from "./AitHeader";
+import { AitRowGroup } from "./AitRowGroup";
+import { TableSettingsContext } from "./TableSettingsContext";
 import "./ait.css";
-import { AitBorderRow } from "./aitBorderRow";
-import { TableSettingsContext } from "./aitContext";
-import { AitHeader } from "./aitHeader";
 import {
   AitColumnRepeat,
   AitHeaderGroupData,
@@ -32,8 +33,7 @@ import {
   AitRowGroupData,
   AitRowType,
   AitTableData,
-} from "./aitInterface";
-import { AitRowGroup } from "./aitRowGroup";
+} from "./interface";
 
 interface AsupInternalTableProps {
   id: string;
@@ -358,7 +358,7 @@ export const AsupInternalTable = ({
         defaultCellWidth,
         bodyData[0].rows[0].cells.length,
         newRowGroupTemplate,
-      );
+      ) as AitRowGroupData;
       // Set column widths
       newrg.rows.forEach((r) =>
         r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),

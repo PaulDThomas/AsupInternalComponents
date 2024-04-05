@@ -1,4 +1,4 @@
-import { AitHeaderRowData, AitRowData } from "../ait/aitInterface";
+import { AitHeaderRowData, AitRowData } from "../table/interface";
 
 /**
  * Add rows to the right of more rows

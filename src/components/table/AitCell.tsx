@@ -2,8 +2,8 @@ import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
-import { TableSettingsContext } from "./aitContext";
-import { AitCellData, AitCellType, AitLocation, AitRowType } from "./aitInterface";
+import { TableSettingsContext } from "./TableSettingsContext";
+import { AitCellData, AitCellType, AitLocation, AitRowType } from "./interface";
 import { ContextWindow } from "@asup/context-menu";
 
 interface AitCellProps {

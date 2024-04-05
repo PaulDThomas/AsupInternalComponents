@@ -1,7 +1,7 @@
-import { AitRowData } from "../ait";
 import { v4 as uuidv4 } from "uuid";
 import { cellPreProcess } from "./cellPreProcess";
 import { newRow } from "./newRow";
+import { AitRowData } from "../table/interface";
 
 /**
  * Preprocess row data

@@ -1,6 +1,5 @@
-import { AitHeaderRowData } from "components/ait/aitInterface";
 import { AioExternalReplacements, AioExternalSingle, AioReplacement } from "../aio";
-import { AitColumnRepeat, AitRowData } from "../ait";
+import { AitColumnRepeat, AitHeaderRowData, AitRowData } from "../table/interface";
 import { removeHeaderRowRepeatInfo } from "./removeRowRepeatInfo";
 import { replaceHeaders } from "./replaceHeaders";
 import { singleReplacements } from "./singleReplacements";

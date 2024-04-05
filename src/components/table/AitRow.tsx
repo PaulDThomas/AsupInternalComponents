@@ -1,10 +1,10 @@
 import { ContextWindow } from "@asup/context-menu";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from "../aio";
-import { AitBorderRow } from "./aitBorderRow";
-import { AitCell } from "./aitCell";
-import { TableSettingsContext } from "./aitContext";
-import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./aitInterface";
+import { AitBorderRow } from "./AitBorderRow";
+import { AitCell } from "./AitCell";
+import { TableSettingsContext } from "./TableSettingsContext";
+import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./interface";
 
 interface AitRowProps {
   id: string;

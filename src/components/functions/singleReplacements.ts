@@ -1,6 +1,5 @@
-import { AitHeaderRowData } from "components/ait/aitInterface";
+import { AitHeaderRowData, AitRowData } from "components/table/interface";
 import { AioExternalSingle } from "../aio";
-import { AitRowData } from "../ait";
 import { replaceCellText } from "./replaceCellText";
 
 export function singleReplacements<T extends AitRowData | AitHeaderRowData>(

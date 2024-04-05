@@ -1,6 +1,6 @@
-import { AitHeaderCellData } from "components/ait/aitInterface";
+import { AitHeaderCellData } from "components/table/interface";
+import { AitRowData, AitTableData, AitRowGroupData, AitCellData } from "main";
 import { AioReplacement } from "../aio";
-import { AitCellData, AitRowData, AitRowGroupData, AitTableData } from "../ait";
 import { UpdateCellTextVersion } from "./updateCellTextVersion";
 import { oldReplacement, updateReplacementVersion } from "./updateReplacementVersion";
 

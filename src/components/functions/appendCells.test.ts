@@ -1,4 +1,4 @@
-import { AitRowData } from "../ait/aitInterface";
+import { AitRowData } from "../table/interface";
 import { appendCells } from "./appendCells";
 
 describe("Check appendCells", () => {

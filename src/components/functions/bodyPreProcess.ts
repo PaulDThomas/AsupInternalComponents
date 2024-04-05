@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
-import { AitRowGroupData } from "../ait";
 import { rowPreProcess } from "./rowPreProcess";
+import { AitRowGroupData } from "../table/interface";
 
 /**
  * Preprocessing for bodyData row groups

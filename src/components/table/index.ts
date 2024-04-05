@@ -4,7 +4,7 @@ import {
   AitRowData,
   AitRowGroupData,
   AitTableData,
-} from "./aitInterface";
+} from "./interface";
 import { AsupInternalTable } from "./AsupInternalTable";
 
 export type { AitCellData, AitColumnRepeat, AitRowData, AitRowGroupData, AitTableData };

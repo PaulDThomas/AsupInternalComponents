@@ -1,6 +1,6 @@
-import { AitHeaderCellData } from "components/ait/aitInterface";
 import { v4 as uuidv4 } from "uuid";
 import { newCell } from "./newCell";
+import { AitHeaderCellData } from "../table/interface";
 
 /**
  * Preprocessing for cells

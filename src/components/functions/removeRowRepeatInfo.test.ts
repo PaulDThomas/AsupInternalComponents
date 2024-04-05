@@ -1,4 +1,4 @@
-import { AitHeaderRowData } from "components/ait/aitInterface";
+import { AitHeaderRowData } from "../table/interface";
 import { removeHeaderRowRepeatInfo } from "./removeRowRepeatInfo";
 
 describe("Check remove row repeat info", () => {

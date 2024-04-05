@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { AioIconButton } from "../aio";
-import { TableSettingsContext } from "./aitContext";
+import { TableSettingsContext } from "./TableSettingsContext";
 
 interface AitBorderRowProps {
   id: string;

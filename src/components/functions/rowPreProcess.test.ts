@@ -1,4 +1,4 @@
-import { AitRowData } from "components/ait";
+import { AitRowData } from "../table/interface";
 import { rowPreProcess } from "./rowPreProcess";
 
 describe("Check row pre process", () => {

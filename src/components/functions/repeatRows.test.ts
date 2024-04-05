@@ -1,6 +1,6 @@
 import { AioReplacement } from "components/aio";
-import { AitRowData } from "components/ait";
 import { repeatRows } from "./repeatRows";
+import { AitRowData } from "../table/interface";
 
 describe("Check repeat rows", () => {
   const rows: AitRowData[] = [

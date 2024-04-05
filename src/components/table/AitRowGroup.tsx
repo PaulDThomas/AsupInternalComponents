@@ -1,9 +1,9 @@
 import { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
 import { newCell, newRow } from "../functions";
-import { TableSettingsContext } from "./aitContext";
-import { AitLocation, AitRowData, AitRowGroupData } from "./aitInterface";
-import { AitRow } from "./aitRow";
+import { TableSettingsContext } from "./TableSettingsContext";
+import { AitLocation, AitRowData, AitRowGroupData } from "./interface";
+import { AitRow } from "./AitRow";
 
 interface AitRowGroupProps {
   id: string;

@@ -1,7 +1,7 @@
 import { AioReplacement } from "components/aio";
-import { AitRowData } from "components/ait";
 import { removeUndefined } from "./removeUndefined";
 import { replaceRows } from "./replaceRows";
+import { AitRowData } from "../table/interface";
 
 describe("Check complex replace rows", () => {
   const rows: AitRowData[] = [

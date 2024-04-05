@@ -14,7 +14,7 @@ import {
   AioSingleReplacements,
   AioString,
 } from "./aio";
-import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./ait";
+import { AitCellData, AitRowData, AitRowGroupData, AitTableData, AsupInternalTable } from "./table";
 import {
   fromHtml,
   newExternalReplacements,

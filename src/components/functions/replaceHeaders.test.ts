@@ -1,5 +1,5 @@
 import { AioReplacement } from "../aio/aioInterface";
-import { AitColumnRepeat, AitHeaderRowData } from "../ait/aitInterface";
+import { AitColumnRepeat, AitHeaderRowData } from "../table/interface";
 import { newHeaderRow } from "./newRow";
 import { removeUndefined } from "./removeUndefined";
 import { replaceHeaders } from "./replaceHeaders";

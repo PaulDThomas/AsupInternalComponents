@@ -1,4 +1,4 @@
-import { AitRowGroupData } from "components/ait";
+import { AitRowGroupData } from "../table/interface";
 import { bodyPreProcess } from "./bodyPreProcess";
 import { newRow } from "./newRow";
 

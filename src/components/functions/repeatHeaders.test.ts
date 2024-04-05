@@ -1,5 +1,5 @@
 import { AioExternalSingle, AioReplacement } from "components/aio";
-import { AitHeaderRowData } from "components/ait/aitInterface";
+import { AitHeaderRowData } from "components/table/interface";
 import { newHeaderRow } from "./newRow";
 import { removeUndefined } from "./removeUndefined";
 import { repeatHeaders } from "./repeatHeaders";
