@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { AieStyleMap } from "../aie";
+import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioExternalSingle } from "../aio";
 import styles from "./aib.module.css";
 import { AifBlockLine, AifLineType } from "./aibInterface";
 import { AifLineDisplay } from "./AibLineDisplay";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 
-interface AsupInternalBlockProps {
+interface AsupInternalBlockProps<T extends string | object> {
   id: string;
-  lines: AifBlockLine[];
-  setLines?: (ret: AifBlockLine[]) => void;
+  lines: AifBlockLine<T>[];
+  setLines?: (ret: AifBlockLine<T>[]) => void;
   minLines?: number;
   maxLines?: number;
   externalSingles?: AioExternalSingle[];
@@ -17,8 +18,9 @@ interface AsupInternalBlockProps {
   defaultType?: AifLineType;
   canChangeType?: boolean;
   style?: React.CSSProperties;
+  Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }
-export const AsupInternalBlock = ({
+export const AsupInternalBlock = <T extends string | object>({
   id,
   lines,
   setLines,
@@ -29,12 +31,13 @@ export const AsupInternalBlock = ({
   defaultType,
   canChangeType = false,
   style,
-}: AsupInternalBlockProps): JSX.Element => {
+  Editor = AsupInternalEditor,
+}: AsupInternalBlockProps<T>): JSX.Element => {
   // General function to return complied object
   const returnData = useCallback(
-    (linesUpdate: { lines: AifBlockLine[] }) => {
+    (linesUpdate: { lines: AifBlockLine<T>[] }) => {
       if (typeof setLines !== "function") return;
-      const r: AifBlockLine[] = [...linesUpdate.lines];
+      const r: AifBlockLine<T>[] = [...linesUpdate.lines];
       setLines(r);
     },
     [setLines],
@@ -46,11 +49,11 @@ export const AsupInternalBlock = ({
     if (newLines.length < Math.min(minLines ?? 1, maxLines ?? 1)) {
       const reqlines = (minLines ?? 1) - lines.length;
       for (let i = 0; i < reqlines; i++) {
-        const newLine: AifBlockLine = {
+        const newLine: AifBlockLine<T> = {
           aifid: uuidv4(),
-          left: "",
-          center: "",
-          right: "",
+          left: "" as T,
+          center: "" as T,
+          right: "" as T,
           canEdit: true,
           canMove: true,
           canRemove: true,
@@ -66,7 +69,7 @@ export const AsupInternalBlock = ({
 
   // Update row
   const updateLine = useCallback(
-    (ret: AifBlockLine, li: number) => {
+    (ret: AifBlockLine<T>, li: number) => {
       // Do nothing if readonly
       if (typeof setLines !== "function") return;
 
@@ -81,11 +84,11 @@ export const AsupInternalBlock = ({
   const addLine = useCallback(
     (li: number) => {
       const newLines = [...lines];
-      const newLine: AifBlockLine = {
+      const newLine: AifBlockLine<T> = {
         aifid: uuidv4(),
-        left: "",
-        center: "",
-        right: "",
+        left: "" as T,
+        center: "" as T,
+        right: "" as T,
         canEdit: true,
         canMove: true,
         canRemove: true,
@@ -129,7 +132,7 @@ export const AsupInternalBlock = ({
       id={id}
       className={styles.aibBlock}
     >
-      {lines.map((l: AifBlockLine, li: number) => {
+      {lines.map((l: AifBlockLine<T>, li: number) => {
         return (
           <AifLineDisplay
             id={`${id}-line-${li}`}
@@ -157,6 +160,7 @@ export const AsupInternalBlock = ({
             }
             styleMap={styleMap}
             style={style}
+            Editor={Editor}
           />
         );
       })}

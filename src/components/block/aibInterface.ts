@@ -1,8 +1,8 @@
-export interface AifBlockLine {
+export interface AifBlockLine<T extends string | object> {
   aifid?: string; // Unique ID
-  left?: string | null; // Left aligned text in the row
-  center?: string | null; // Center aligned text in the row
-  right?: string | null; // Right aligned text in the row
+  left: T | null; // Left aligned text in the row
+  center: T | null; // Center aligned text in the row
+  right: T | null; // Right aligned text in the row
   addBelow?: boolean; // If the user can add a line below
   canEdit?: boolean; // If the user can edit the line
   canRemove?: boolean; // If the user can remove the line

@@ -18,10 +18,10 @@ import { styleMapToDraft } from "./functions/styleMapToDraft";
 import { styleMapToExclude } from "./functions/styleMapToExclude";
 
 /** Interface for the AsupInternalEditor component */
-interface AsupInternalEditorProps {
+export interface AsupInternalEditorProps<T extends string | object> {
   id: string;
-  value: string;
-  setValue?: (ret: string) => void;
+  value: T;
+  setValue?: (ret: T) => void;
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
   textAlignment?: Draft.DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
@@ -30,7 +30,7 @@ interface AsupInternalEditorProps {
   editable?: boolean;
 }
 
-export const AsupInternalEditor = ({
+export const AsupInternalEditor = <T extends string | object>({
   id,
   value,
   setValue,
@@ -40,11 +40,13 @@ export const AsupInternalEditor = ({
   showStyleButtons,
   editable,
   decimalAlignPercent,
-}: AsupInternalEditorProps) => {
+}: AsupInternalEditorProps<T>) => {
   /** Current editor state */
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [editorV2Text, setEditorV2Text] = useState("");
-  useEffect(() => setEditorV2Text(value), [value]);
+  useEffect(() => {
+    if (typeof value === "string") setEditorV2Text(value);
+  }, [value]);
   /** Current button state */
   const [buttonState, setButtonState] = useState("hidden");
 
@@ -62,21 +64,25 @@ export const AsupInternalEditor = ({
   // Only send data base onBlur of editor
   const onBlur = useCallback(() => {
     setButtonState("hidden");
-    if (typeof setValue === "function") {
+    if (typeof setValue === "function" && typeof value === "string") {
       if (textAlignment !== "decimal") {
         setValue(
-          saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current),
+          saveToHTML(convertToRaw(editorState.getCurrentContent()), currentStyleMap.current) as T,
         );
       } else {
-        setValue(editorV2Text);
+        setValue(editorV2Text as T);
       }
     }
-  }, [editorState, editorV2Text, setValue, textAlignment]);
+  }, [editorState, editorV2Text, setValue, textAlignment, value]);
 
   // Initial Text loading/update
   useEffect(() => {
     // Update the content
-    setEditorState(EditorState.createWithContent(loadFromHTML(value, editable)));
+    setEditorState(
+      EditorState.createWithContent(
+        loadFromHTML(typeof value === "string" ? value : JSON.stringify(value), editable),
+      ),
+    );
   }, [editable, value]);
 
   /**

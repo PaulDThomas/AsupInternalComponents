@@ -1,31 +1,33 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { AieStyleMap, AsupInternalEditor } from "../aie";
+import { AieStyleMap } from "../aie";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle, AioIconButton } from "../aio";
 import { AifOptionsWindow } from "./AibOptionsWindow";
-import { AifBlockLine } from "./aibInterface";
 import styles from "./aib.module.css";
+import { AifBlockLine } from "./aibInterface";
 import { replaceBlockText } from "./replaceBlockText";
 
-interface AifLineDisplayProps {
+interface AifLineDisplayProps<T extends string | object> {
   id: string;
   aifid?: string;
-  left?: string | null;
-  center?: string | null;
-  right?: string | null;
+  left?: T | null;
+  center?: T | null;
+  right?: T | null;
   externalSingles?: AioExternalSingle[];
   addBelow?: boolean;
   canEdit?: boolean;
   canRemove?: boolean;
   canMove?: boolean;
   canChangeType?: boolean;
-  setLine?: (ret: AifBlockLine) => void;
+  setLine?: (ret: AifBlockLine<T>) => void;
   addLine?: () => void;
   removeLine?: () => void;
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
+  Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }
 
-export const AifLineDisplay = ({
+export const AifLineDisplay = <T extends string | object>({
   id,
   aifid,
   left,
@@ -42,16 +44,17 @@ export const AifLineDisplay = ({
   removeLine,
   style,
   styleMap,
-}: AifLineDisplayProps): JSX.Element => {
+  Editor,
+}: AifLineDisplayProps<T>): JSX.Element => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback(
-    (lineUpdate: { left?: string | null; center?: string | null; right?: string | null }) => {
+    (lineUpdate: { left?: T | null; center?: T | null; right?: T | null }) => {
       if (typeof setLine !== "function") return;
-      const newLine = {
+      const newLine: AifBlockLine<T> = {
         aifid: aifid,
-        left: lineUpdate.left !== undefined ? lineUpdate.left : left,
-        center: lineUpdate.center !== undefined ? lineUpdate.center : center,
-        right: lineUpdate.right !== undefined ? lineUpdate.right : right,
+        left: lineUpdate.left ? lineUpdate.left : left ?? null,
+        center: lineUpdate.center ? lineUpdate.center : center ?? null,
+        right: lineUpdate.right ? lineUpdate.right : right ?? null,
         addBelow: addBelow,
         canEdit: canEdit,
         canRemove: canRemove,
@@ -65,8 +68,7 @@ export const AifLineDisplay = ({
 
   // Update for replacements
   const processReplacement = useCallback(
-    (text: string | null | undefined): string | null => {
-      if (typeof text !== "string") return null;
+    (text: string): string => {
       // Process external replacements
       if (externalSingles !== undefined && externalSingles.length > 0) {
         externalSingles.forEach((repl) => {
@@ -82,9 +84,18 @@ export const AifLineDisplay = ({
   );
 
   // Set up post replacement view
-  const displayLeft = useMemo(() => processReplacement(left), [left, processReplacement]);
-  const displayCenter = useMemo(() => processReplacement(center), [center, processReplacement]);
-  const displayRight = useMemo(() => processReplacement(right), [right, processReplacement]);
+  const displayLeft = useMemo(
+    () => (typeof left === "string" ? (processReplacement(left) as T) : left),
+    [left, processReplacement],
+  );
+  const displayCenter = useMemo(
+    () => (typeof center === "string" ? (processReplacement(center) as T) : center),
+    [center, processReplacement],
+  );
+  const displayRight = useMemo(
+    () => (typeof right === "string" ? (processReplacement(right) as T) : right),
+    [right, processReplacement],
+  );
 
   return (
     <div
@@ -105,6 +116,7 @@ export const AifLineDisplay = ({
           returnData={typeof setLine === "function" ? returnData : undefined}
           canChangeType={canChangeType}
           styleMap={styleMap}
+          Editor={Editor}
         />
       )}
 
@@ -113,7 +125,7 @@ export const AifLineDisplay = ({
         className={styles.aibLineItemHolder}
         style={{ ...style }}
       >
-        {typeof displayLeft === "string" && (
+        {displayLeft && (
           <div
             className={[styles.aibLineItem, displayLeft !== left ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
@@ -127,7 +139,7 @@ export const AifLineDisplay = ({
                     : "33%",
             }}
           >
-            <AsupInternalEditor
+            <Editor
               id={`${id}-left-text`}
               value={displayLeft}
               setValue={
@@ -140,14 +152,14 @@ export const AifLineDisplay = ({
             />
           </div>
         )}
-        {typeof displayCenter === "string" && (
+        {displayCenter && (
           <div
             className={[styles.aibLineItem, displayCenter !== center ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
               .join(" ")}
             style={{ flexGrow: 1 }}
           >
-            <AsupInternalEditor
+            <Editor
               id={`${id}-center-text`}
               value={displayCenter}
               setValue={
@@ -161,7 +173,7 @@ export const AifLineDisplay = ({
             />
           </div>
         )}
-        {typeof displayRight === "string" && (
+        {displayRight && (
           <div
             className={[styles.aibLineItem, displayRight !== right ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
@@ -175,7 +187,7 @@ export const AifLineDisplay = ({
                     : "33%",
             }}
           >
-            <AsupInternalEditor
+            <Editor
               id={`${id}-right-text`}
               value={displayRight}
               setValue={

@@ -1,24 +1,22 @@
 import { ContextWindow } from "@asup/context-menu";
 import { AieStyleMap } from "../aie";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioSelect } from "../aio/aioSelect";
 import { OriginalText } from "./AibOriginalText";
 
-interface AifOptionsWindowProps {
+interface AifOptionsWindowProps<T extends string | object> {
   id: string;
   onClose: () => void;
-  left?: string | null;
-  center?: string | null;
-  right?: string | null;
-  returnData?: (ret: {
-    left?: string | null;
-    center?: string | null;
-    right?: string | null;
-  }) => void;
+  left?: T | null;
+  center?: T | null;
+  right?: T | null;
+  returnData?: (ret: { left?: T | null; center?: T | null; right?: T | null }) => void;
   canChangeType: boolean;
   styleMap?: AieStyleMap;
+  Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }
 
-export const AifOptionsWindow = ({
+export const AifOptionsWindow = <T extends string | object>({
   id,
   onClose,
   left,
@@ -27,7 +25,8 @@ export const AifOptionsWindow = ({
   canChangeType = false,
   returnData,
   styleMap,
-}: AifOptionsWindowProps): JSX.Element => {
+  Editor,
+}: AifOptionsWindowProps<T>): JSX.Element => {
   return (
     <ContextWindow
       id={id}
@@ -52,25 +51,25 @@ export const AifOptionsWindow = ({
           setValue={
             returnData && canChangeType
               ? (ret) => {
-                  let newLeft = null;
-                  let newCenter = null;
-                  let newRight = null;
+                  let newLeft: T | null = null;
+                  let newCenter: T | null = null;
+                  let newRight: T | null = null;
                   switch (ret) {
                     case "Left only":
-                      newLeft = left || "";
+                      newLeft = left ?? null;
                       break;
                     case "Center only":
-                      newCenter = center || "";
+                      newCenter = center ?? null;
                       break;
                     case "Left and Right":
-                      newLeft = left || "";
-                      newRight = right || "";
+                      newLeft = left ?? null;
+                      newRight = right ?? null;
                       break;
                     case "Left, Center and Right":
                     default:
-                      newLeft = left || "";
-                      newCenter = center || "";
-                      newRight = right || "";
+                      newLeft = left ?? null;
+                      newCenter = center ?? null;
+                      newRight = right ?? null;
                       break;
                   }
                   returnData({ left: newLeft, center: newCenter, right: newRight });
@@ -79,27 +78,36 @@ export const AifOptionsWindow = ({
           }
         />
       </div>
-      <OriginalText
-        id={`${id}-unprocessed-left-text`}
-        label="Left text"
-        text={left}
-        setText={returnData ? (ret) => returnData({ left: ret }) : undefined}
-        styleMap={styleMap}
-      />
-      <OriginalText
-        id={`${id}-unprocessed-center-text`}
-        label="Center text"
-        text={center}
-        setText={returnData ? (ret) => returnData({ center: ret }) : undefined}
-        styleMap={styleMap}
-      />
-      <OriginalText
-        id={`${id}-unprocessed-right-text`}
-        label="Right text"
-        text={right}
-        setText={returnData ? (ret) => returnData({ right: ret }) : undefined}
-        styleMap={styleMap}
-      />
+      {left && (
+        <OriginalText
+          id={`${id}-unprocessed-left-text`}
+          label="Left text"
+          text={left}
+          setText={returnData ? (ret) => returnData({ left: ret }) : undefined}
+          styleMap={styleMap}
+          Editor={Editor}
+        />
+      )}
+      {center && (
+        <OriginalText
+          id={`${id}-unprocessed-center-text`}
+          label="Center text"
+          text={center}
+          setText={returnData ? (ret) => returnData({ center: ret }) : undefined}
+          styleMap={styleMap}
+          Editor={Editor}
+        />
+      )}
+      {right && (
+        <OriginalText
+          id={`${id}-unprocessed-right-text`}
+          label="Right text"
+          text={right}
+          setText={returnData ? (ret) => returnData({ right: ret }) : undefined}
+          styleMap={styleMap}
+          Editor={Editor}
+        />
+      )}
     </ContextWindow>
   );
 };
