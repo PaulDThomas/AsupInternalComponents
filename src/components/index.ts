@@ -1,5 +1,5 @@
 import { AifBlockLine, AifLineType, AsupInternalBlock, updateLineDisplayVersion } from "./block";
-import { AieStyleMap, AsupInternalEditor } from "./aie";
+import { AieStyleMap, AsupInternalEditor, AsupInternalEditorProps } from "./aie";
 import {
   AioDropSelect,
   AioExpander,
@@ -62,4 +62,5 @@ export type {
   AitRowData,
   AitRowGroupData,
   AitTableData,
+  AsupInternalEditorProps,
 };

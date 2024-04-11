@@ -4,12 +4,13 @@ import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle, AioIconButton } from "../aio";
 import { AifOptionsWindow } from "./AibOptionsWindow";
 import styles from "./aib.module.css";
-import { AifBlockLine } from "./aibInterface";
+import { AifBlockLine, AifLineType } from "./aibInterface";
 import { replaceBlockText } from "./replaceBlockText";
 
 interface AifLineDisplayProps<T extends string | object> {
   id: string;
   aifid?: string;
+  displayType: AifLineType;
   left?: T | null;
   center?: T | null;
   right?: T | null;
@@ -30,6 +31,7 @@ interface AifLineDisplayProps<T extends string | object> {
 export const AifLineDisplay = <T extends string | object>({
   id,
   aifid,
+  displayType,
   left,
   center,
   right,
@@ -49,21 +51,35 @@ export const AifLineDisplay = <T extends string | object>({
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback(
     (lineUpdate: { left?: T | null; center?: T | null; right?: T | null }) => {
-      if (typeof setLine !== "function") return;
-      const newLine: AifBlockLine<T> = {
-        aifid: aifid,
-        left: lineUpdate.left ? lineUpdate.left : left ?? null,
-        center: lineUpdate.center ? lineUpdate.center : center ?? null,
-        right: lineUpdate.right ? lineUpdate.right : right ?? null,
-        addBelow: addBelow,
-        canEdit: canEdit,
-        canRemove: canRemove,
-        canMove: canMove,
-        canChangeType: canChangeType,
-      };
-      setLine(newLine);
+      if (setLine) {
+        const newLine: AifBlockLine<T> = {
+          aifid: aifid,
+          lineType: displayType,
+          left: lineUpdate.left ? lineUpdate.left : left ?? null,
+          center: lineUpdate.center ? lineUpdate.center : center ?? null,
+          right: lineUpdate.right ? lineUpdate.right : right ?? null,
+          addBelow: addBelow,
+          canEdit: canEdit,
+          canRemove: canRemove,
+          canMove: canMove,
+          canChangeType: canChangeType,
+        };
+        setLine(newLine);
+      }
     },
-    [addBelow, aifid, canChangeType, canEdit, canMove, canRemove, center, left, right, setLine],
+    [
+      addBelow,
+      aifid,
+      canChangeType,
+      canEdit,
+      canMove,
+      canRemove,
+      center,
+      displayType,
+      left,
+      right,
+      setLine,
+    ],
   );
 
   // Update for replacements
@@ -125,23 +141,25 @@ export const AifLineDisplay = <T extends string | object>({
         className={styles.aibLineItemHolder}
         style={{ ...style }}
       >
-        {displayLeft && (
+        {[AifLineType.leftOnly, AifLineType.leftAndRight, AifLineType.leftCenterAndRight].includes(
+          displayType,
+        ) && (
           <div
             className={[styles.aibLineItem, displayLeft !== left ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
               .join(" ")}
             style={{
               width:
-                typeof center !== "string" && typeof right !== "string"
+                displayType === AifLineType.leftOnly
                   ? "100%"
-                  : typeof center !== "string"
+                  : displayType === AifLineType.leftAndRight
                     ? "50%"
                     : "33%",
             }}
           >
             <Editor
               id={`${id}-left-text`}
-              value={displayLeft}
+              value={displayLeft ?? ("" as T)}
               setValue={
                 typeof setLine === "function" && displayLeft === left
                   ? (ret) => returnData({ left: ret })
@@ -152,7 +170,7 @@ export const AifLineDisplay = <T extends string | object>({
             />
           </div>
         )}
-        {displayCenter && (
+        {[AifLineType.centerOnly, AifLineType.leftCenterAndRight].includes(displayType) && (
           <div
             className={[styles.aibLineItem, displayCenter !== center ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
@@ -161,7 +179,7 @@ export const AifLineDisplay = <T extends string | object>({
           >
             <Editor
               id={`${id}-center-text`}
-              value={displayCenter}
+              value={displayCenter ?? ("" as T)}
               setValue={
                 typeof setLine === "function" && displayCenter === center
                   ? (ret) => returnData({ center: ret })
@@ -173,23 +191,18 @@ export const AifLineDisplay = <T extends string | object>({
             />
           </div>
         )}
-        {displayRight && (
+        {[AifLineType.leftAndRight, AifLineType.leftCenterAndRight].includes(displayType) && (
           <div
             className={[styles.aibLineItem, displayRight !== right ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
               .join(" ")}
             style={{
-              width:
-                typeof center !== "string" && typeof left !== "string"
-                  ? "100%"
-                  : typeof center !== "string"
-                    ? "50%"
-                    : "33%",
+              width: displayType === AifLineType.leftAndRight ? "50%" : "33%",
             }}
           >
             <Editor
               id={`${id}-right-text`}
-              value={displayRight}
+              value={displayRight ?? ("" as T)}
               setValue={
                 typeof setLine === "function" && displayRight === right
                   ? (ret) => returnData({ right: ret })

@@ -1,3 +1,4 @@
+import { IEditorV3 } from "@asup/editor-v3";
 import { useRef, useState } from "react";
 import {
   AifBlockLine,
@@ -7,11 +8,37 @@ import {
   AsupInternalBlock,
   updateLineDisplayVersion,
 } from "../../../src/main";
+import { EditorV3Wrapper } from "../components/EditorV3Wrapper";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lines, setLines] = useState<AifBlockLine[]>([{ left: "One line", canEdit: true }]);
+  const [lines, setLines] = useState<AifBlockLine<string>[]>([
+    { lineType: AifLineType.leftAndRight, left: "One line", canEdit: true },
+  ]);
   const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
+
+  const [lines2, setLines2] = useState<AifBlockLine<IEditorV3>[]>([
+    {
+      lineType: AifLineType.leftOnly,
+      left: { lines: [{ textBlocks: [{ text: "1st line", style: "Blue" }] }] },
+      canEdit: true,
+    },
+    {
+      lineType: AifLineType.leftOnly,
+      left: {
+        lines: [
+          {
+            textBlocks: [
+              { text: "2nd locked line", style: "Green" },
+              { text: "2nd locked line", style: "Green" },
+              { text: "lots of locks", style: "Red" },
+            ],
+          },
+        ],
+      },
+      canEdit: true,
+    },
+  ]);
 
   return (
     <>
@@ -26,7 +53,46 @@ export const BlockPage = () => {
           margin: "1rem",
         }}
       >
-        <h5>Titles</h5>
+        <h5 style={{ width: "5rem" }}>Editor v3</h5>
+        <AsupInternalBlock
+          id="test-block-v3"
+          lines={lines2}
+          setLines={setLines2}
+          minLines={3}
+          maxLines={10}
+          externalSingles={externalSingles}
+          style={{ fontFamily: "Courier New", fontWeight: 800 }}
+          styleMap={{
+            Green: { css: { color: "green" }, aieExclude: ["Blue", "Red"] },
+            Blue: { css: { color: "blue" }, aieExclude: ["Green", "Red"] },
+            Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
+          }}
+          defaultType={AifLineType.leftOnly}
+          Editor={(props) =>
+            EditorV3Wrapper({
+              ...props,
+              customSytleMap: {
+                Green: { backgroundColor: "green", isLocked: true },
+                Blue: { color: "blue" },
+                Red: { color: "red", isLocked: true },
+              },
+            })
+          }
+        />
+      </div>
+
+      <div
+        style={{
+          width: "calc(vw - 4rem - 2px)",
+          display: "flex",
+          justifyContent: "center",
+          padding: "1rem",
+          backgroundColor: "white",
+          border: "1px solid black",
+          margin: "1rem",
+        }}
+      >
+        <h5 style={{ width: "5rem" }}>Titles</h5>
         <AsupInternalBlock
           id="test-block"
           lines={lines}
@@ -55,7 +121,7 @@ export const BlockPage = () => {
           margin: "1rem",
         }}
       >
-        <h5>Footnotes</h5>
+        <h5 style={{ width: "5rem" }}>Footnotes</h5>
         <AsupInternalBlock
           id="test-block"
           lines={lines}
@@ -84,7 +150,7 @@ export const BlockPage = () => {
           margin: "1rem",
         }}
       >
-        <h5>Freeform</h5>
+        <h5 style={{ width: "5rem" }}>Freeform</h5>
         <AsupInternalBlock
           id="test-block"
           lines={lines}

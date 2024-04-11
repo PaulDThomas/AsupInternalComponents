@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle } from "../aio";
+import { AifLineDisplay } from "./AibLineDisplay";
 import styles from "./aib.module.css";
 import { AifBlockLine, AifLineType } from "./aibInterface";
-import { AifLineDisplay } from "./AibLineDisplay";
-import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 
 interface AsupInternalBlockProps<T extends string | object> {
   id: string;
@@ -50,7 +49,8 @@ export const AsupInternalBlock = <T extends string | object>({
       const reqlines = (minLines ?? 1) - lines.length;
       for (let i = 0; i < reqlines; i++) {
         const newLine: AifBlockLine<T> = {
-          aifid: uuidv4(),
+          aifid: crypto.randomUUID(),
+          lineType: defaultType ?? AifLineType.leftOnly,
           left: "" as T,
           center: "" as T,
           right: "" as T,
@@ -65,7 +65,7 @@ export const AsupInternalBlock = <T extends string | object>({
       newLines = newLines.slice(0, maxLines ?? 10);
       returnData({ lines: newLines });
     }
-  }, [lines, maxLines, minLines, returnData]);
+  }, [defaultType, lines, maxLines, minLines, returnData]);
 
   // Update row
   const updateLine = useCallback(
@@ -85,7 +85,8 @@ export const AsupInternalBlock = <T extends string | object>({
     (li: number) => {
       const newLines = [...lines];
       const newLine: AifBlockLine<T> = {
-        aifid: uuidv4(),
+        aifid: crypto.randomUUID(),
+        lineType: defaultType ?? AifLineType.leftOnly,
         left: "" as T,
         center: "" as T,
         right: "" as T,
@@ -138,6 +139,7 @@ export const AsupInternalBlock = <T extends string | object>({
             id={`${id}-line-${li}`}
             key={`${li}-${l.aifid}`}
             aifid={l.aifid}
+            displayType={l.lineType}
             left={l.left}
             center={l.center}
             right={l.right}
