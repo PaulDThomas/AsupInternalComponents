@@ -1,5 +1,5 @@
-import { AitHeaderCellData } from "components/table/interface";
-import { AitCellData } from "main";
+import { AitCellData, AitHeaderCellData } from "components/table/interface";
+import { toHtml } from "./tofromHtml";
 
 export const UpdateCellTextVersion = <
   T extends string | object,
@@ -11,7 +11,7 @@ export const UpdateCellTextVersion = <
     ...cell,
     text:
       typeof cell.text === "string" && !cell.text.startsWith("<div") && cell.text !== ""
-        ? `<div classname="aie-text"><span>${cell.text}</span></div>`
+        ? `<div classname="aie-text"><span>${toHtml(cell.text)}</span></div>`
         : cell.text,
   };
 };

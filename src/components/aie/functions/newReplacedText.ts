@@ -1,5 +1,4 @@
 import { cloneDeep } from "lodash";
-import { fromHtml } from "../../functions/tofromHtml";
 
 /**
  * Replace text in HTML string, updating inline-style-ranges
@@ -34,7 +33,7 @@ export const newReplacedText = <T extends string | object>(
   }
 
   // Do standard replace if not aie-text or no inline styles
-  else if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
+  else if (!s.match(/^<div classname=["']aie-text/i)) {
     ret = s.replaceAll(oldPhrase, newPhrase) as T;
   }
 
@@ -53,7 +52,7 @@ export const newReplacedText = <T extends string | object>(
       // Get new style lengths
       for (let j = 0; j < child.childNodes.length; j++) {
         child.childNodes[j].textContent =
-          child.childNodes[j].textContent?.replaceAll(oldPhrase, fromHtml(newPhrase)) ?? "";
+          child.childNodes[j].textContent?.replaceAll(oldPhrase, newPhrase) ?? "";
         // Should only be possible to have span and #text
         if (child.childNodes[j].nodeName === "SPAN") {
           const subchild = child.childNodes[j] as HTMLSpanElement;

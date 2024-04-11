@@ -84,12 +84,7 @@
         "oldText": "!!trt!!",
         "newTexts": [
           {
-            "texts": [
-              "&lt;&lt;low&nbsp;dose&gt;&gt;",
-              "&lt;&lt;high&nbsp;dose&gt;&gt;",
-              "Total",
-              "Control"
-            ],
+            "texts": ["<<low\u00a0dose>>", "<<high\u00a0dose>>", "Total", "Control"],
             "spaceAfter": false,
             "subLists": []
           }
@@ -152,12 +147,12 @@
           "cells": [
             {
               "aitid": "dee590d6-3311-41ba-9456-d94a2ddf0d1b",
-              "text": "!!label!! (&lt;&lt;unit&gt;&gt;)",
+              "text": "!!label!! (<<unit>>)",
               "comments": "",
               "colSpan": 1,
               "rowSpan": 1,
               "textIndents": 0,
-              "replacedText": "Age (&lt;&lt;unit&gt;&gt;)",
+              "replacedText": "Age (<<unit>>)",
               "spaceAfterRepeat": true
             },
             {
@@ -193,7 +188,7 @@
               "texts": ["Age"],
               "subLists": [
                 {
-                  "oldText": "&lt;&lt;unit&gt;&gt;",
+                  "oldText": "<<unit>>",
                   "newTexts": [
                     {
                       "texts": ["years"],
@@ -210,7 +205,7 @@
               "texts": ["Weight"],
               "subLists": [
                 {
-                  "oldText": "&lt;&lt;unit&gt;&gt;",
+                  "oldText": "<<unit>>",
                   "newTexts": [
                     {
                       "texts": ["kg"],
@@ -348,7 +343,7 @@
               "colSpan": 1,
               "rowSpan": 1,
               "textIndents": 0,
-              "replacedText": "Age group 1 (&lt;&lt;unit&gt;&gt;)"
+              "replacedText": "Age group 1 (<<unit>>)"
             },
             {
               "aitid": "3d829bf1-820b-406b-8250-0c20b2be5c84",
@@ -421,7 +416,7 @@
           "newTexts": [
             {
               "spaceAfter": true,
-              "texts": ["Age group 1 (&lt;&lt;unit&gt;&gt;)", "Age group 2 (&lt;&lt;unit&gt;&gt;)"],
+              "texts": ["Age group 1 (<<unit>>)", "Age group 2 (<<unit>>)"],
               "subLists": [
                 {
                   "oldText": "!!category!!",
