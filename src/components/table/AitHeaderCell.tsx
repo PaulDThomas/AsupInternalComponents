@@ -3,8 +3,8 @@ import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
-import { TableSettingsContext } from "./TableSettingsContext";
 import { AitCellData, AitHeaderCellData, AitLocation } from "./interface";
+import { TableSettingsContext } from "./TableSettingsContext";
 
 interface AitHeaderCellProps<T extends string | object> {
   id: string;

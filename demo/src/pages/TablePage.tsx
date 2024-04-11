@@ -1,3 +1,5 @@
+import { IEditorV3 } from "@asup/editor-v3";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AieStyleMap,
   AioExternalReplacements,
@@ -6,16 +8,15 @@ import {
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
-  updateTableDataVersion,
 } from "../../../src/main";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { EditorV3Wrapper } from "../components/EditorV3Wrapper";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [tableData, setTableData] = useState<AitTableData<string> | undefined>();
-  const processedTableData = useRef<AitTableData<string>>();
+  const [tableData, setTableData] = useState<AitTableData<IEditorV3> | undefined>();
+  const processedTableData = useRef<AitTableData<IEditorV3>>();
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<
-    AitRowGroupData<string>[] | undefined
+    AitRowGroupData<IEditorV3>[] | undefined
   >();
   const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
@@ -40,7 +41,7 @@ export const TablePage = () => {
       .then(function (response) {
         return response.json();
       })
-      .then(function (MyJson: AitRowGroupData<string>[]) {
+      .then(function (MyJson: AitRowGroupData<IEditorV3>[]) {
         setSampleGroupTempaltes(MyJson);
       });
     /** Load table data */
@@ -50,8 +51,8 @@ export const TablePage = () => {
       .then(function (response) {
         return response.json();
       })
-      .then(function (MyJson: AitTableData<string>) {
-        setTableData(updateTableDataVersion(MyJson, 40));
+      .then(function (MyJson: AitTableData<IEditorV3>) {
+        setTableData(MyJson);
       });
   }, []);
 
@@ -61,8 +62,8 @@ export const TablePage = () => {
         ta.current.value = window.localStorage.getItem("tableContent") ?? "";
       }
       if (ta.current) {
-        const j = updateTableDataVersion(JSON.parse(ta.current.value?.toString() ?? "{}"), 40);
-        setTableData(updateTableDataVersion(j, 40));
+        const j = JSON.parse(ta.current.value?.toString() ?? "{}");
+        setTableData(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
@@ -77,7 +78,7 @@ export const TablePage = () => {
         window.localStorage.getItem("listContent") ?? "[]",
       );
       setExternalReplacements(j);
-      const g: AitRowGroupData<string>[] = JSON.parse(
+      const g: AitRowGroupData<IEditorV3>[] = JSON.parse(
         window.localStorage.getItem("rowGroupContent") ?? "[]",
       );
       setSampleGroupTempaltes(g);
@@ -126,6 +127,7 @@ export const TablePage = () => {
               cellStyles={cellStyles}
               colWidthMod={3}
               defaultCellWidth={40}
+              Editor={EditorV3Wrapper}
             />
           )}
         </div>

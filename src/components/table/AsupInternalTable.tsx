@@ -52,8 +52,8 @@ interface AsupInternalTableProps<T extends string | object> {
   initialDecimalAlignPercent?: number;
   defaultCellWidth?: number;
   noTableOptions?: boolean;
-  Editor?: (props: AsupInternalEditorProps<string | object>) => JSX.Element;
-  getTextFromT?: (text: string | object) => string[];
+  Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  getTextFromT?: (text: T) => string[];
 }
 
 /**
@@ -593,8 +593,10 @@ export const AsupInternalTable = <T extends string | object>({
         colWidthMod,
         decimalAlignPercent,
         defaultCellWidth,
-        Editor,
-        getTextFromT,
+        Editor: Editor as unknown as (
+          props: AsupInternalEditorProps<string | object>,
+        ) => JSX.Element,
+        getTextFromT: getTextFromT as unknown as (text: string | object) => string[],
       }}
     >
       <div
