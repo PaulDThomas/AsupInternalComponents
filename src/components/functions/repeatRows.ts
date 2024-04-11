@@ -15,17 +15,17 @@ import { updateExternals } from "./updateExternals";
  * @param externalSingles
  * @returns
  */
-export const repeatRows = (
-  rows: AitRowData[],
+export const repeatRows = <T extends string | object>(
+  rows: AitRowData<T>[],
   defaultCellWidth: number,
   replacements?: AioReplacement[],
   spaceAfter?: boolean,
   noProcessing?: boolean,
   externalLists?: AioExternalReplacements[],
   externalSingles?: AioExternalSingle[],
-): AitRowData[] => {
+): AitRowData<T>[] => {
   // Create initial return
-  let newRows = removeRowRepeatInfo(rows);
+  let newRows: AitRowData<T>[] = removeRowRepeatInfo<T>(rows);
 
   // Strip repeat data if flagged
   if (noProcessing) {

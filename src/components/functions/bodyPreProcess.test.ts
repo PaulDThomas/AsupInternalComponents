@@ -3,7 +3,7 @@ import { bodyPreProcess } from "./bodyPreProcess";
 import { newRow } from "./newRow";
 
 describe("Check body pre-process", () => {
-  const a: AitRowGroupData = {
+  const a: AitRowGroupData<string> = {
     rows: [newRow(60)],
   };
 

@@ -8,10 +8,10 @@ import { AitHeaderRowData } from "../table/interface";
  * @param rs
  * @returns Compliant row
  */
-export const headerRowPreProcess = (
+export const headerRowPreProcess = <T extends string | object>(
   defaultCellWidth: number,
-  rs?: AitHeaderRowData[],
-): AitHeaderRowData[] => {
+  rs?: AitHeaderRowData<T>[],
+): AitHeaderRowData<T>[] => {
   // Return an empty row if there is nothing
   if (rs === undefined) return [newRow(0, defaultCellWidth)];
   // Check aitid

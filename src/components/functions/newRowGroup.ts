@@ -9,16 +9,16 @@ import { AitCellData, AitRowGroupData } from "../table/interface";
  * @param newRowGroupTemplate
  * @returns New row group
  */
-export const newRowGroup = (
+export const newRowGroup = <T extends string | object>(
   defaultCellWidth: number,
   l?: number,
-  newRowGroupTemplate?: AitRowGroupData,
-): AitRowGroupData => {
+  newRowGroupTemplate?: AitRowGroupData<T>,
+): AitRowGroupData<T> => {
   return {
     aitid: uuidv4(),
     replacements: newRowGroupTemplate?.replacements ?? [],
     rows: newRowGroupTemplate?.rows.map((row) => {
-      const newCells: AitCellData[] = [];
+      const newCells: AitCellData<T>[] = [];
       for (let ci = 0; ci < (l ?? 1); ci++) {
         newCells.push(
           row.cells[ci] !== undefined

@@ -2,7 +2,7 @@ import { AitRowData } from "../table/interface";
 import { rowPreProcess } from "./rowPreProcess";
 
 describe("Check row pre process", () => {
-  const a: AitRowData = {
+  const a: AitRowData<string> = {
     cells: [
       { aitid: "cell-1", text: "cell-1" },
       { aitid: "cell-2", text: "cell-2" },

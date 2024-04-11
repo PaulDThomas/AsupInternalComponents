@@ -2,10 +2,13 @@ import { AitColumnRepeat } from "components/table";
 import { AitHeaderGroupData } from "components/table/interface";
 import { AitRowGroupData } from "main";
 
-export const unProcessRowGroup = <T extends AitRowGroupData | AitHeaderGroupData>(
-  processedGroup: T,
+export const unProcessRowGroup = <
+  T extends string | object,
+  R extends AitRowGroupData<T> | AitHeaderGroupData<T>,
+>(
+  processedGroup: R,
   columnRepeats: AitColumnRepeat[] | null,
-): T => {
+): R => {
   const ret = {
     ...processedGroup,
     rows: processedGroup.rows

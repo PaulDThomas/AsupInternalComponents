@@ -3,8 +3,8 @@ import { AioReplacement } from "../aio";
 import { newRow } from "../functions";
 import { newHeaderCell } from "../functions/newCell";
 import { AitBorderRow } from "./AitBorderRow";
-import { TableSettingsContext } from "./TableSettingsContext";
 import { AitHeaderRow } from "./AitHeaderRow";
+import { TableSettingsContext } from "./TableSettingsContext";
 import {
   AitHeaderRowData,
   AitLocation,
@@ -13,19 +13,19 @@ import {
   AitRowType,
 } from "./interface";
 
-interface AitHeaderProps {
+interface AitHeaderProps<T extends string | object> {
   id: string;
   aitid: string;
-  rows: AitHeaderRowData[];
+  rows: AitHeaderRowData<T>[];
   comments?: string;
   replacements?: AioReplacement[];
-  setHeaderData?: (ret: AitRowGroupData) => void;
+  setHeaderData?: (ret: AitRowGroupData<T>) => void;
   setColWidth: (colNo: number, colWidth: number) => void;
   addHeaderColSpan: (ret: AitLocation) => void;
   removeHeaderColSpan: (ret: AitLocation) => void;
 }
 
-export const AitHeader = ({
+export const AitHeader = <T extends string | object>({
   id,
   aitid,
   rows,
@@ -35,14 +35,18 @@ export const AitHeader = ({
   setColWidth,
   addHeaderColSpan,
   removeHeaderColSpan,
-}: AitHeaderProps): JSX.Element => {
+}: AitHeaderProps<T>): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
 
   // General function to return complied object
   const returnData = useCallback(
-    (headerUpdate: { rows?: AitRowData[]; comments?: string; replacements?: AioReplacement[] }) => {
+    (headerUpdate: {
+      rows?: AitRowData<T>[];
+      comments?: string;
+      replacements?: AioReplacement[];
+    }) => {
       if (setHeaderData) {
-        const r: AitRowGroupData = {
+        const r: AitRowGroupData<T> = {
           aitid: aitid,
           rows: headerUpdate.rows ?? rows,
           comments: headerUpdate.comments ?? comments,
@@ -57,11 +61,11 @@ export const AitHeader = ({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr: AitHeaderRowData = newRow(tableSettings.defaultCellWidth, 0);
+      const newr: AitHeaderRowData<T> = newRow(tableSettings.defaultCellWidth, 0);
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
-        const c = newHeaderCell(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
+        const c = newHeaderCell<T>(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
         // Check rowSpans on previous row
         if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
           let riUp = 0;
@@ -184,7 +188,7 @@ export const AitHeader = ({
 
   return (
     <>
-      {rows.map((row: AitRowData, ri: number): JSX.Element => {
+      {rows.map((row: AitRowData<T>, ri: number): JSX.Element => {
         return (
           <AitHeaderRow
             id={`${id}-header-row-${ri}`}

@@ -7,10 +7,10 @@ import { AitHeaderCellData } from "../table/interface";
  * @param cs
  * @returns compliant cell
  */
-export const headerCellPreProcess = (
+export const headerCellPreProcess = <T extends string | object>(
   defaultCellWidth: number,
-  cs?: AitHeaderCellData[],
-): AitHeaderCellData[] => {
+  cs?: AitHeaderCellData<T>[],
+): AitHeaderCellData<T>[] => {
   if (cs === undefined) return [newCell(defaultCellWidth)];
   // Check aitid
   return cs.map((c) => {

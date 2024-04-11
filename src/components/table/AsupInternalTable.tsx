@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { ContextWindow } from "@asup/context-menu";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { AieStyleMap } from "../aie";
+import { AieStyleMap, AsupInternalEditor, AsupInternalEditorProps, getRawTextParts } from "../aie";
 import {
   AioBoolean,
   AioComment,
@@ -35,23 +35,25 @@ import {
   AitTableData,
 } from "./interface";
 
-interface AsupInternalTableProps {
+interface AsupInternalTableProps<T extends string | object> {
   id: string;
-  tableData: AitTableData;
+  tableData: AitTableData<T>;
   isEditable?: boolean;
-  setTableData?: (ret: AitTableData) => void;
-  processedDataRef?: React.MutableRefObject<AitTableData | undefined>;
+  setTableData?: (ret: AitTableData<T>) => void;
+  processedDataRef?: React.MutableRefObject<AitTableData<T> | undefined>;
   externalLists?: AioExternalReplacements[];
   externalSingles?: AioExternalSingle[];
   style?: React.CSSProperties;
   showCellBorders?: boolean;
-  groupTemplates?: AitRowGroupData[] | false;
+  groupTemplates?: AitRowGroupData<T>[] | false;
   commentStyles?: AieStyleMap;
   cellStyles?: AieStyleMap;
   colWidthMod?: number;
   initialDecimalAlignPercent?: number;
   defaultCellWidth?: number;
   noTableOptions?: boolean;
+  Editor?: (props: AsupInternalEditorProps<string | object>) => JSX.Element;
+  getTextFromT?: (text: string | object) => string[];
 }
 
 /**
@@ -59,7 +61,7 @@ interface AsupInternalTableProps {
  * @param props
  * @returns
  */
-export const AsupInternalTable = ({
+export const AsupInternalTable = <T extends string | object>({
   id,
   tableData,
   isEditable = true,
@@ -76,14 +78,16 @@ export const AsupInternalTable = ({
   initialDecimalAlignPercent = 60,
   defaultCellWidth = 60,
   noTableOptions = false,
-}: AsupInternalTableProps) => {
+  Editor = AsupInternalEditor,
+  getTextFromT = getRawTextParts,
+}: AsupInternalTableProps<T>) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
   const [columnRepeats, setColumnRepeats] = useState<AitColumnRepeat[] | null>(null);
 
   // Explode tableData
-  const [headerData, setHeaderData] = useState<AitHeaderGroupData | false>();
-  const [bodyData, setBodyData] = useState<AitRowGroupData[]>();
+  const [headerData, setHeaderData] = useState<AitHeaderGroupData<T> | false>();
+  const [bodyData, setBodyData] = useState<AitRowGroupData<T>[]>();
   const [comments, setComments] = useState<string>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
   const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
@@ -135,7 +139,7 @@ export const AsupInternalTable = ({
 
     // Create processed body
     const bodyData = bodyPreProcess(defaultCellWidth, tableData.bodyData);
-    const processedBodyData: AitRowGroupData[] = bodyData.map((rg) => {
+    const processedBodyData: AitRowGroupData<T>[] = bodyData.map((rg) => {
       return {
         ...rg,
         rows: repeatRows(
@@ -178,9 +182,9 @@ export const AsupInternalTable = ({
   // Unprocess data on the way back up
   const returnData = useCallback(
     (tableUpdate: {
-      headerData?: AitRowGroupData | false;
+      headerData?: AitRowGroupData<T> | false;
       headerDataUnprocessed?: boolean;
-      bodyData?: AitRowGroupData[];
+      bodyData?: AitRowGroupData<T>[];
       bodyDataUnprocessed?: boolean;
       comments?: string;
       rowHeaderColumns?: number;
@@ -210,7 +214,7 @@ export const AsupInternalTable = ({
           rowHeaderColumns: tableUpdate.rowHeaderColumns ?? rowHeaderColumns,
           noRepeatProcessing: tableUpdate.noRepeatProcessing ?? noRepeatProcessing,
           decimalAlignPercent: tableUpdate.decimalAlignPercent ?? decimalAlignPercent,
-        } as AitTableData;
+        };
         setTableData(r);
       }
     },
@@ -233,8 +237,8 @@ export const AsupInternalTable = ({
       if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined)
         return;
       // Update body data
-      let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData,
+      let newBody: AitRowGroupData<T>[] = bodyData.map((rg) =>
+        unProcessRowGroup(rg, columnRepeats),
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
@@ -256,7 +260,7 @@ export const AsupInternalTable = ({
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            const n = newHeaderCell(defaultCellWidth);
+            const n = newHeaderCell<T>(defaultCellWidth);
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
@@ -283,8 +287,8 @@ export const AsupInternalTable = ({
       if (rowHeaderColumns === undefined || headerData === undefined || bodyData === undefined)
         return;
       // Update body data
-      let newBody: AitRowGroupData[] = bodyData.map(
-        (rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData,
+      let newBody: AitRowGroupData<T>[] = bodyData.map((rg) =>
+        unProcessRowGroup(rg, columnRepeats),
       );
       newBody = newBody.map((rg) => {
         // let newRg = unProcessRowGroup(rg) as AitRowGroupData;
@@ -333,8 +337,8 @@ export const AsupInternalTable = ({
 
   // Update to a rowGroup data
   const updateRowGroup = useCallback(
-    (ret: AitRowGroupData, rgi: number) => {
-      const newBody: AitRowGroupData[] = [...(bodyData ?? [])];
+    (ret: AitRowGroupData<T>, rgi: number) => {
+      const newBody: AitRowGroupData<T>[] = [...(bodyData ?? [])];
       newBody[rgi] = ret;
       returnData({ bodyData: newBody });
     },
@@ -351,21 +355,20 @@ export const AsupInternalTable = ({
         !templateName || !groupTemplates
           ? -1
           : groupTemplates.findIndex((g) => g.name === templateName);
-      const newRowGroupTemplate: AitRowGroupData =
+      const newRowGroupTemplate: AitRowGroupData<T> =
         ix > -1 && groupTemplates ? groupTemplates[ix] : { rows: [{ cells: [] }] };
       // Ensure new template meets requirements
-      const newrg = newRowGroup(
+      const newrg: AitRowGroupData<T> = newRowGroup(
         defaultCellWidth,
         bodyData[0].rows[0].cells.length,
         newRowGroupTemplate,
-      ) as AitRowGroupData;
+      );
       // Set column widths
       newrg.rows.forEach((r) =>
         r.cells.forEach((c, ci) => (c.colWidth = bodyData[0].rows[0].cells[ci].colWidth)),
       );
       // Copy existing body and splice in new data
-      const newBody =
-        bodyData?.map((rg) => unProcessRowGroup(rg, columnRepeats) as AitRowGroupData) ?? [];
+      const newBody = bodyData?.map((rg) => unProcessRowGroup(rg, columnRepeats)) ?? [];
       newBody.splice(rgi + 1, 0, newrg);
       // Update table body
       returnData({ bodyData: newBody, bodyDataUnprocessed: true });
@@ -379,7 +382,7 @@ export const AsupInternalTable = ({
       // Check ok to proceed
       if (bodyData === undefined) return;
       // Update bodyData
-      const newRowGroups: AitRowGroupData[] = [...bodyData];
+      const newRowGroups: AitRowGroupData<T>[] = [...bodyData];
       newRowGroups.splice(rgi, 1);
       returnData({ bodyData: newRowGroups });
     },
@@ -425,7 +428,7 @@ export const AsupInternalTable = ({
     if (headerData === false) return;
     if ((headerData?.rows.length ?? 0) > 0 || bodyData === undefined) return;
     // Create new row
-    const newHeader: AitRowGroupData = {
+    const newHeader: AitRowGroupData<T> = {
       ...headerData,
       rows: [newRow(bodyData[0].rows[0].cells.length, defaultCellWidth)],
     };
@@ -590,6 +593,8 @@ export const AsupInternalTable = ({
         colWidthMod,
         decimalAlignPercent,
         defaultCellWidth,
+        Editor,
+        getTextFromT,
       }}
     >
       <div
@@ -749,7 +754,7 @@ export const AsupInternalTable = ({
           </thead>
 
           <tbody>
-            {bodyData.map((rowGroup: AitRowGroupData, rgi: number) => {
+            {bodyData.map((rowGroup: AitRowGroupData<T>, rgi: number) => {
               return (
                 <AitRowGroup
                   id={`${id}-row-group-${rgi}`}

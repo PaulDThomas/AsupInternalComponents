@@ -2,7 +2,7 @@ import { AitHeaderRowData } from "../table/interface";
 import { removeHeaderRowRepeatInfo } from "./removeRowRepeatInfo";
 
 describe("Check remove row repeat info", () => {
-  const a: AitHeaderRowData = {
+  const a: AitHeaderRowData<string> = {
     aitid: "Row",
     rowRepeat: "[Some repeat]",
     cells: [

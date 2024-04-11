@@ -18,19 +18,19 @@ import { replaceCellText } from "./replaceCellText";
  * @param columnRepeats Column repeat string
  * @returns Updated rows
  */
-export const replaceHeaders = (
+export const replaceHeaders = <T extends string | object>(
   rowHeaderColumns: number,
-  rows: AitHeaderRowData[],
+  rows: AitHeaderRowData<T>[],
   columnRepeats: AitColumnRepeat[],
   defaultCellWidth: number,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
-): { newHeaderRows: AitHeaderRowData[]; newColumnRepeats: AitColumnRepeat[] } => {
+): { newHeaderRows: AitHeaderRowData<T>[]; newColumnRepeats: AitColumnRepeat[] } => {
   // Check there are rows
   if (rows.length === 0) return { newHeaderRows: [], newColumnRepeats: [] };
 
   // Set up holders
-  let newHeaderRows: AitHeaderRowData[] = rows.map((r) => {
+  let newHeaderRows: AitHeaderRowData<T>[] = rows.map((r) => {
     return { aitid: r.aitid, cells: [] };
   });
   let newColumnRepeats: AitColumnRepeat[] = [];
@@ -55,7 +55,7 @@ export const replaceHeaders = (
           return {
             aitid: r.aitid,
             cells: [r.cells[ci]],
-          } as AitHeaderRowData;
+          };
         }),
       );
       newColumnRepeats = [...newColumnRepeats, columnRepeats[ci]];
@@ -74,7 +74,7 @@ export const replaceHeaders = (
           if (targetCell.colSpan === undefined) targetCell.colSpan = 1;
           const repeatSpan: number = Math.max(...rows.map((r) => r.cells[ci].colSpan ?? 1));
 
-          let midRows: AitRowData[] = rows.slice(ri).map((r) => {
+          let midRows: AitRowData<T>[] = rows.slice(ri).map((r) => {
             return { aitid: r.aitid, cells: [] };
           });
           let midRepeats: AitColumnRepeat[] = [];
@@ -84,7 +84,7 @@ export const replaceHeaders = (
             const rv = replacement.newTexts[rvi];
 
             // Process sublist
-            const lowerQuad: AitRowData[] = rows.slice(ri + 1).map((r) => {
+            const lowerQuad: AitRowData<T>[] = rows.slice(ri + 1).map((r) => {
               return {
                 aitid: r.aitid,
                 cells: r.cells.slice(ci, ci + repeatSpan),
@@ -106,7 +106,7 @@ export const replaceHeaders = (
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              const thisRepeat: AitHeaderCellData = replaceCellText(
+              const thisRepeat: AitHeaderCellData<T> = replaceCellText(
                 targetCell,
                 replacement.oldText,
                 rv.texts[ti],
@@ -118,7 +118,7 @@ export const replaceHeaders = (
               }
 
               // Add into mid cells
-              const targetRow: AitRowData = { aitid: rows[ri].aitid, cells: [thisRepeat] };
+              const targetRow: AitRowData<T> = { aitid: rows[ri].aitid, cells: [thisRepeat] };
               // Add usual trailing cells
               if ((thisRepeat.colSpan ?? 1) > 1) {
                 targetRow.cells.push(...rows[ri].cells.slice(ci + 1, ci + targetCell.colSpan));
@@ -131,10 +131,9 @@ export const replaceHeaders = (
               ) {
                 const nIns = thisRepeat.repeatColSpan - thisRepeat.colSpan;
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newHeaderCell(defaultCellWidth);
+                  const n = newHeaderCell<T>(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = "";
                   targetRow.cells.push(n);
                 }
               }
@@ -184,13 +183,13 @@ export const replaceHeaders = (
                 return {
                   aitid: r.aitid,
                   cells: [...r.cells.slice(ci, ci + repeatSpan)],
-                } as AitRowData;
+                };
               // Return from midRow
               else
                 return {
                   aitid: r.aitid,
                   cells: midRows[rj - ri].cells,
-                } as AitRowData;
+                };
             }),
           );
           newColumnRepeats = [...newColumnRepeats, ...midRepeats];
@@ -214,12 +213,11 @@ export const replaceHeaders = (
                 // Calculated new colSpan and add in fillers
                 targetCellAbove.repeatColSpan =
                   (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
-                const newCells2: AitHeaderCellData[] = [];
+                const newCells2: AitHeaderCellData<T>[] = [];
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newHeaderCell(defaultCellWidth);
+                  const n = newHeaderCell<T>(defaultCellWidth);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
-                  n.replacedText = "";
                   newCells2.push(n);
                 }
                 newHeaderRows[rj].cells.splice(ci + addedCols - lookup + 1, 0, ...newCells2);
@@ -247,7 +245,7 @@ export const replaceHeaders = (
             return {
               aitid: r.aitid,
               cells: [r.cells[ci]],
-            } as AitRowData;
+            };
           }),
         );
         newColumnRepeats = [...newColumnRepeats, columnRepeats[ci]];

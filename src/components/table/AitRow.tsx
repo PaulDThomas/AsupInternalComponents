@@ -6,11 +6,11 @@ import { AitCell } from "./AitCell";
 import { TableSettingsContext } from "./TableSettingsContext";
 import { AitCellData, AitColumnRepeat, AitLocation, AitRowData, AitRowType } from "./interface";
 
-interface AitRowProps {
+interface AitRowProps<T extends string | object> {
   id: string;
   aitid: string;
-  cells: AitCellData[];
-  setRowData?: (ret: AitRowData) => void;
+  cells: AitCellData<T>[];
+  setRowData?: (ret: AitRowData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   location: AitLocation;
   replacements?: AioReplacement[];
@@ -27,7 +27,7 @@ interface AitRowProps {
   setRowGroupSpace?: (ret: boolean) => void;
 }
 
-export const AitRow = ({
+export const AitRow = <T extends string | object>({
   id,
   aitid,
   cells,
@@ -46,7 +46,7 @@ export const AitRow = ({
   spaceAfter,
   rowGroupSpace,
   setRowGroupSpace,
-}: AitRowProps): JSX.Element => {
+}: AitRowProps<T>): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const editable = useMemo(() => {
@@ -55,9 +55,9 @@ export const AitRow = ({
 
   // General function to return complied object
   const returnData = useCallback(
-    (rowUpdate: { cells?: AitCellData[] }) => {
+    (rowUpdate: { cells?: AitCellData<T>[] }) => {
       if (editable && setRowData) {
-        const r: AitRowData = {
+        const r: AitRowData<T> = {
           aitid: aitid,
           cells: rowUpdate.cells ?? cells,
         };
@@ -68,7 +68,7 @@ export const AitRow = ({
   );
 
   const updateCell = useCallback(
-    (ret: AitCellData, ci: number) => {
+    (ret: AitCellData<T>, ci: number) => {
       // Create new object to send back
       const newCells = [...cells];
       newCells[ci] = ret;
@@ -178,7 +178,7 @@ export const AitRow = ({
         </td>
 
         {/* All cells from row */}
-        {cells.map((cell: AitCellData, ci: number): JSX.Element => {
+        {cells.map((cell: AitCellData<T>, ci: number): JSX.Element => {
           // Get cell from column repeat
           const cr: AitColumnRepeat | undefined =
             Array.isArray(tableSettings.columnRepeats) && tableSettings.columnRepeats.length > ci

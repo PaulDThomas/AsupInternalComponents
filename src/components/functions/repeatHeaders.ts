@@ -14,17 +14,17 @@ import { updateExternals } from "./updateExternals";
  * @param externalLists
  * @returns
  */
-export const repeatHeaders = (
-  rows: AitHeaderRowData[],
+export const repeatHeaders = <T extends string | object>(
+  rows: AitHeaderRowData<T>[],
   replacements: AioReplacement[],
   defaultCellWidth: number,
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
   externalSingles?: AioExternalSingle[],
-): { rows: AitRowData[]; columnRepeats: AitColumnRepeat[] } => {
+): { rows: AitRowData<T>[]; columnRepeats: AitColumnRepeat[] } => {
   // Start with blank slate, need to strip repeat inforation everytime!
-  let newHeaderRows: AitHeaderRowData[] = removeHeaderRowRepeatInfo(rows);
+  let newHeaderRows: AitHeaderRowData<T>[] = removeHeaderRowRepeatInfo(rows);
   let newColumnRepeats: AitColumnRepeat[] = Array.from(rows[rows.length - 1].cells.keys()).map(
     (n) => {
       return { columnIndex: n } as AitColumnRepeat;

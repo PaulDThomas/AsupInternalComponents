@@ -7,10 +7,10 @@ import { AitHeaderGroupData } from "../table/interface";
  * @param rg
  * @returns compliant row group
  */
-export const headerPreProcess = (
+export const headerPreProcess = <T extends string | object>(
   defaultCellWidth: number,
-  rg?: AitHeaderGroupData | false,
-): AitHeaderGroupData | false => {
+  rg?: AitHeaderGroupData<T> | false,
+): AitHeaderGroupData<T> | false => {
   if (rg === undefined) return { aitid: uuidv4(), rows: [] };
   if (rg === false) return false;
   return {

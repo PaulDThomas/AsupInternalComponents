@@ -1,15 +1,15 @@
+import { ContextWindow } from "@asup/context-menu";
 import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
 import { TableSettingsContext } from "./TableSettingsContext";
 import { AitCellData, AitHeaderCellData, AitLocation } from "./interface";
-import { ContextWindow } from "@asup/context-menu";
 
-interface AitHeaderCellProps {
+interface AitHeaderCellProps<T extends string | object> {
   id: string;
   aitid: string;
-  text: string;
+  text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments: string;
   rowSpan: number;
@@ -17,10 +17,10 @@ interface AitHeaderCellProps {
   colWidth?: number;
   displayColWidth?: number;
   textIndents?: number;
-  replacedText?: string;
+  replacedText?: T;
   repeatColSpan?: number;
   repeatRowSpan?: number;
-  setCellData?: (ret: AitCellData) => void;
+  setCellData?: (ret: AitCellData<T>) => void;
   setColWidth?: (ret: number) => void;
   readOnly: boolean;
   location: AitLocation;
@@ -35,7 +35,7 @@ interface AitHeaderCellProps {
 /*
  * Table cell in AsupInternalTable
  */
-export const AitHeaderCell = ({
+export const AitHeaderCell = <T extends string | object>({
   id,
   aitid,
   text,
@@ -59,9 +59,10 @@ export const AitHeaderCell = ({
   removeRowSpan,
   spaceAfterRepeat,
   spaceAfterSpan,
-}: AitHeaderCellProps) => {
+}: AitHeaderCellProps<T>) => {
   // Context
   const tableSettings = useContext(TableSettingsContext);
+  const Editor = tableSettings.Editor ?? AsupInternalEditor;
   // Data holder
   const [displayText, setDisplayText] = useState(replacedText !== undefined ? replacedText : text);
   /* Need to update if these change */
@@ -125,14 +126,14 @@ export const AitHeaderCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback(
     (cellUpdate: {
-      text?: string;
+      text?: T;
       justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null;
       comments?: string;
       colWidth?: number;
       textIndents?: number;
     }) => {
       if (typeof setCellData !== "function") return;
-      const r: AitHeaderCellData = {
+      const r: AitHeaderCellData<T> = {
         aitid: aitid,
         text: cellUpdate.text ?? text,
         justifyText:
@@ -216,7 +217,7 @@ export const AitHeaderCell = ({
         </>
 
         {/* Cell text editor */}
-        <AsupInternalEditor
+        <Editor
           id={`${id}-editor`}
           style={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={
@@ -228,8 +229,8 @@ export const AitHeaderCell = ({
           }
           value={displayText}
           setValue={(ret) => {
-            setDisplayText(ret);
-            returnData({ text: ret.trimStart() });
+            setDisplayText(ret as T);
+            returnData({ text: ret as T });
           }}
           editable={!currentReadOnly}
           showStyleButtons={tableSettings.cellStyles !== undefined}

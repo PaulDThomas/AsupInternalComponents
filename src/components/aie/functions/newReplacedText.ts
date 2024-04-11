@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import { fromHtml } from "../../functions/tofromHtml";
 
 /**
@@ -7,12 +8,36 @@ import { fromHtml } from "../../functions/tofromHtml";
  * @param newPhrase
  * @returns
  */
-export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string): string => {
-  let ret: string;
-  // Do standard replace if not aie-text or no inline styles
-  if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
-    ret = s.replaceAll(oldPhrase, newPhrase);
+export const newReplacedText = <T extends string | object>(
+  s: T,
+  oldPhrase: string,
+  newPhrase: string,
+): T => {
+  let ret: T;
+
+  // Generic object replacement
+  if (typeof s === "object") {
+    const replaceText = (obj: object) => {
+      for (const key in Object.keys(obj)) {
+        if (typeof obj[key as keyof typeof obj] === "object") {
+          replaceText(obj[key as keyof typeof obj]);
+        } else if (key === "text" && typeof obj[key as keyof typeof obj] === "string") {
+          obj[key as keyof typeof obj] = (obj[key as keyof typeof obj] as string).replaceAll(
+            oldPhrase,
+            newPhrase,
+          ) as (typeof obj)[keyof typeof obj];
+        }
+      }
+    };
+    ret = cloneDeep(s);
+    replaceText(ret);
   }
+
+  // Do standard replace if not aie-text or no inline styles
+  else if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
+    ret = s.replaceAll(oldPhrase, newPhrase) as T;
+  }
+
   // Otherwise work out new style points
   else {
     // Create element to manipulate
@@ -48,7 +73,7 @@ export const newReplacedText = (s: string, oldPhrase: string, newPhrase: string)
       child.dataset.inlineStyleRanges = JSON.stringify(inlineStyleRanges);
     }
     // Return processed element
-    ret = htmlIn.innerHTML;
+    ret = htmlIn.innerHTML as T;
   }
-  return ret;
+  return ret as T;
 };

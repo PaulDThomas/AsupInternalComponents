@@ -1,11 +1,10 @@
 import { AioReplacement } from "../aio/aioInterface";
 import { AitColumnRepeat, AitHeaderRowData } from "../table/interface";
 import { newHeaderRow } from "./newRow";
-import { removeUndefined } from "./removeUndefined";
 import { replaceHeaders } from "./replaceHeaders";
 
 describe("Check replace headers", () => {
-  const rows: AitHeaderRowData[] = [newHeaderRow(60, 3)];
+  const rows: AitHeaderRowData<string>[] = [newHeaderRow(60, 3)];
   for (let i = 0; i++; i < 3) {
     rows[0].cells[i].text = `Cell ${i}`;
   }
@@ -21,7 +20,7 @@ describe("Check replace headers", () => {
     expect(postProcess.newColumnRepeats).toEqual(columnRepeats);
   });
 
-  const rowsC1: AitHeaderRowData[] = [
+  const rowsC1: AitHeaderRowData<string>[] = [
     {
       cells: [
         { text: "r1c1", rowSpan: 3 },
@@ -99,7 +98,6 @@ describe("Check replace headers", () => {
     colSpan: 0,
     colWidth: 60,
     repeatColSpan: 0,
-    replacedText: "",
     rowSpan: 1,
     text: "",
   };
@@ -123,7 +121,16 @@ describe("Check replace headers", () => {
       { columnIndex: 7 },
       { columnIndex: 8 },
     ]);
-    expect(removeUndefined(postProcess.newHeaderRows)).toEqual([
+    expect(
+      postProcess.newHeaderRows.map((r) => ({
+        ...r,
+        cells: r.cells.map((c) => {
+          const cx = { ...c };
+          delete cx.aitid;
+          return cx;
+        }),
+      })),
+    ).toEqual([
       {
         cells: [
           { text: "r1c1", rowSpan: 3 },

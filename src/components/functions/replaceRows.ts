@@ -11,12 +11,12 @@ import { updateExternals } from "./updateExternals";
  * @param rows Header rows
  * @returns Updated rows
  */
-export const replaceRows = (
-  rows: AitRowData[],
+export const replaceRows = <T extends string | object>(
+  rows: AitRowData<T>[],
   defaultCellWidth: number,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
-): AitRowData[] => {
+): AitRowData<T>[] => {
   // Look for match, is there is one to find
   if (
     replacement === undefined ||
@@ -28,7 +28,7 @@ export const replaceRows = (
   }
 
   // Set up holders
-  const newRows: AitRowData[] = [];
+  const newRows: AitRowData<T>[] = [];
   let found = false;
 
   // Look through each cell
@@ -55,7 +55,7 @@ export const replaceRows = (
           found = true;
           const targetCell = rows[ri].cells[ci];
 
-          const midRows: AitRowData[] = [];
+          const midRows: AitRowData<T>[] = [];
 
           // Cycle through newTexts
           for (let rvi = 0; rvi < replacement.newTexts.length; rvi++) {
@@ -66,7 +66,7 @@ export const replaceRows = (
               const thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
 
               // Process remaining cells, including target after replacement
-              let lowerQuad: AitRowData[] =
+              let lowerQuad: AitRowData<T>[] =
                 replacement.includeTrailing ?? false
                   ? rows.slice(ri).map((r, rj) => {
                       const cells =
@@ -98,7 +98,7 @@ export const replaceRows = (
                             .slice(ci + 1)
                             .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
                         ],
-                      } as AitRowData,
+                      },
                     ];
               // Find amount to move row cursor
               processedRows = lowerQuad.length;
@@ -127,7 +127,7 @@ export const replaceRows = (
                 0,
                 ...rows[ri].cells.slice(0, ci).map((c) => ({
                   ...c,
-                  replacedText: ix === 0 ? c.replacedText : "",
+                  replacedText: ix === 0 ? c.replacedText : ("" as T),
                   spaceAfterRepeat: c.spaceAfterRepeat && ix === midRows.length - 1,
                 })),
               );

@@ -6,10 +6,10 @@ import { AitCellData, AitHeaderCellData } from "../table/interface";
  * @param type Type of cell to create
  * @returns data for a new blank cell
  */
-export const newCell = (cellWidth: number): AitCellData => {
-  const cell: AitCellData = {
+export const newCell = <T extends string | object>(cellWidth: number): AitCellData<T> => {
+  const cell: AitCellData<T> = {
     aitid: uuidv4(),
-    text: "",
+    text: "" as T,
     colWidth: cellWidth,
   };
   return cell;
@@ -20,10 +20,12 @@ export const newCell = (cellWidth: number): AitCellData => {
  * @param type Type of cell to create
  * @returns data for a new blank cell
  */
-export const newHeaderCell = (cellWidth: number): AitHeaderCellData => {
-  const cell: AitHeaderCellData = {
+export const newHeaderCell = <T extends string | object>(
+  cellWidth: number,
+): AitHeaderCellData<T> => {
+  const cell: AitHeaderCellData<T> = {
     aitid: uuidv4(),
-    text: "",
+    text: "" as T,
     rowSpan: 1,
     colSpan: 1,
     colWidth: cellWidth,

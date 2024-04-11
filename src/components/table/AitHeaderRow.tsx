@@ -1,8 +1,9 @@
+import { ContextWindow } from "@asup/context-menu";
 import { useCallback, useContext, useMemo, useState } from "react";
 import { AioBoolean, AioComment, AioIconButton, AioReplacement, AioReplacementList } from "../aio";
 import { AitBorderRow } from "./AitBorderRow";
-import { TableSettingsContext } from "./TableSettingsContext";
 import { AitHeaderCell } from "./AitHeaderCell";
+import { TableSettingsContext } from "./TableSettingsContext";
 import {
   AitColumnRepeat,
   AitHeaderCellData,
@@ -11,13 +12,12 @@ import {
   AitRowData,
   AitRowType,
 } from "./interface";
-import { ContextWindow } from "@asup/context-menu";
 
-interface AitHeaderRowProps {
+interface AitHeaderRowProps<T extends string | object> {
   id: string;
   aitid: string;
-  cells: AitHeaderCellData[];
-  setRowData?: (ret: AitHeaderRowData) => void;
+  cells: AitHeaderCellData<T>[];
+  setRowData?: (ret: AitHeaderRowData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   location: AitLocation;
   replacements?: AioReplacement[];
@@ -38,7 +38,7 @@ interface AitHeaderRowProps {
   setRowGroupSpace?: (ret: boolean) => void;
 }
 
-export const AitHeaderRow = ({
+export const AitHeaderRow = <T extends string | object>({
   id,
   aitid,
   cells,
@@ -61,7 +61,7 @@ export const AitHeaderRow = ({
   removeRowSpan,
   rowGroupSpace,
   setRowGroupSpace,
-}: AitHeaderRowProps): JSX.Element => {
+}: AitHeaderRowProps<T>): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
   const [showRowGroupOptions, setShowRowGroupOptions] = useState(false);
   const editable = useMemo(() => {
@@ -70,9 +70,9 @@ export const AitHeaderRow = ({
 
   // General function to return complied object
   const returnData = useCallback(
-    (rowUpdate: { cells?: AitHeaderCellData[] }) => {
+    (rowUpdate: { cells?: AitHeaderCellData<T>[] }) => {
       if (editable && setRowData) {
-        const r: AitRowData = {
+        const r: AitRowData<T> = {
           aitid: aitid,
           cells: rowUpdate.cells ?? cells,
         };
@@ -83,7 +83,7 @@ export const AitHeaderRow = ({
   );
 
   const updateCell = useCallback(
-    (ret: AitHeaderCellData, ci: number) => {
+    (ret: AitHeaderCellData<T>, ci: number) => {
       // Create new object to send back
       const newCells = [...cells];
       newCells[ci] = ret;
@@ -193,7 +193,7 @@ export const AitHeaderRow = ({
         </td>
 
         {/* All cells from row */}
-        {cells.map((cell: AitHeaderCellData, ci: number): JSX.Element => {
+        {cells.map((cell: AitHeaderCellData<T>, ci: number): JSX.Element => {
           // Get cell from column repeat
           const cr: AitColumnRepeat | undefined =
             Array.isArray(tableSettings.columnRepeats) && tableSettings.columnRepeats.length > ci
@@ -212,7 +212,7 @@ export const AitHeaderRow = ({
                 isColumnRepeat && cr ? `${cell.aitid}-${JSON.stringify(cr.colRepeat)}` : cell.aitid
               }
               aitid={cell.aitid ?? `cell-${ci}`}
-              text={cell.text ?? `cell-${ci}`}
+              text={cell.text}
               justifyText={cell.justifyText}
               comments={cell.comments ?? ""}
               colSpan={cell.colSpan ?? 1}

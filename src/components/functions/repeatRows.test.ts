@@ -3,7 +3,7 @@ import { repeatRows } from "./repeatRows";
 import { AitRowData } from "../table/interface";
 
 describe("Check repeat rows", () => {
-  const rows: AitRowData[] = [
+  const rows: AitRowData<string>[] = [
     {
       cells: [
         { text: "p" },

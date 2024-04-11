@@ -1,19 +1,19 @@
 import { DraftComponent } from "draft-js";
-import { AieStyleMap } from "../aie";
+import { AieStyleMap, AsupInternalEditorProps } from "../aie";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 
-export interface AitCellData {
+export interface AitCellData<T extends string | object> {
   aitid?: string; // Unique ID
-  text: string;
+  text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments?: string;
   colWidth?: number;
   textIndents?: number; // Spaces/tabs at the start of the cell
-  replacedText?: string; // Visible text after any list replacements
+  replacedText?: T; // Visible text after any list replacements
   spaceAfterRepeat?: boolean; // If a blank row is required after this repeat
 }
 
-export interface AitHeaderCellData extends AitCellData {
+export interface AitHeaderCellData<T extends string | object> extends AitCellData<T> {
   colSpan?: number;
   rowSpan?: number;
   repeatColSpan?: number; // ColSpan after any list replacements
@@ -21,33 +21,33 @@ export interface AitHeaderCellData extends AitCellData {
   spaceAfterSpan?: number; // Number of rowSpaceAfters being crossed
 }
 
-export interface AitRowData {
+export interface AitRowData<T extends string | object> {
   aitid?: string; // Unique ID
   rowRepeat?: string; // Repeat ID
-  cells: AitCellData[];
+  cells: AitCellData<T>[];
   spaceAfter?: boolean; // Indicator if there is space after a row
 }
 
-export interface AitHeaderRowData extends AitRowData {
-  cells: AitHeaderCellData[];
+export interface AitHeaderRowData<T extends string | object> extends AitRowData<T> {
+  cells: AitHeaderCellData<T>[];
 }
 
-export interface AitRowGroupData {
+export interface AitRowGroupData<T extends string | object> {
   aitid?: string; // Unique ID
   name?: string; // Optional name for a row group type
-  rows: AitRowData[];
+  rows: AitRowData<T>[];
   comments?: string;
   spaceAfter?: boolean; // Indicator if there is space after the last row in the group
   replacements?: AioReplacement[]; // Replacement lists to use for repeats
 }
 
-export interface AitHeaderGroupData extends AitRowGroupData {
-  rows: AitHeaderRowData[];
+export interface AitHeaderGroupData<T extends string | object> extends AitRowGroupData<T> {
+  rows: AitHeaderRowData<T>[];
 }
 
-export interface AitTableData {
-  headerData?: AitHeaderGroupData | false;
-  bodyData?: AitRowGroupData[];
+export interface AitTableData<T extends string | object> {
+  headerData?: AitHeaderGroupData<T> | false;
+  bodyData?: AitRowGroupData<T>[];
   comments?: string;
   rowHeaderColumns?: number; // Number of label type columns before data is presented
   noRepeatProcessing?: boolean; // Indicator is repeat lists should be processed
@@ -82,7 +82,7 @@ export enum AitRowType {
   body = "body",
 }
 
-export interface AitOptionList {
+export interface AitOptionList<T extends string | object> {
   /* Table options and setters */
   noRepeatProcessing?: boolean;
   externalLists?: AioExternalReplacements[];
@@ -104,4 +104,8 @@ export interface AitOptionList {
   windowZIndex: number;
   setWindowZIndex?: (ret: number) => void;
   setDecimalAlignPercent?: (ret: number) => void;
+
+  /* Editor options */
+  Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  getTextFromT?: (text: T) => string[];
 }

@@ -8,7 +8,10 @@ import { AitRowData } from "../table/interface";
  * @param rs
  * @returns Compliant row
  */
-export const rowPreProcess = (defaultCellWidth: number, rs?: AitRowData[]): AitRowData[] => {
+export const rowPreProcess = <T extends string | object>(
+  defaultCellWidth: number,
+  rs?: AitRowData<T>[],
+): AitRowData<T>[] => {
   // Return an empty row if there is nothing
   if (rs === undefined) return [newRow(0, defaultCellWidth)];
   // Check aitid

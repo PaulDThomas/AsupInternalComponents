@@ -1,5 +1,5 @@
 import { AitHeaderCellData } from "components/table/interface";
-import { AitRowData, AitTableData, AitRowGroupData, AitCellData } from "main";
+import { AitCellData, AitRowData, AitTableData } from "main";
 import { AioReplacement } from "../aio";
 import { UpdateCellTextVersion } from "./updateCellTextVersion";
 import { oldReplacement, updateReplacementVersion } from "./updateReplacementVersion";
@@ -15,29 +15,29 @@ interface OldTableData {
 interface OldRowGroupData {
   aitid?: string;
   name?: string;
-  rows: AitRowData[];
+  rows: AitRowData<string>[];
   comments?: string;
   spaceAfter?: boolean;
   replacements?: AioReplacement[] | oldReplacement[];
 }
 
 export const updateTableDataVersion = (
-  inData: OldTableData | AitTableData,
+  inData: OldTableData | AitTableData<string>,
   defaultCellWidth: number,
-): AitTableData => {
+): AitTableData<string> => {
   const headerData =
     inData.headerData === false
       ? false
       : inData.headerData !== undefined
-        ? ({
+        ? {
             ...inData.headerData,
             replacements:
               inData.headerData?.replacements !== undefined
                 ? updateReplacementVersion(inData.headerData?.replacements)
                 : undefined,
-          } as AitRowGroupData)
+          }
         : undefined;
-  const outData: AitTableData = {
+  const outData: AitTableData<string> = {
     ...inData,
     headerData: headerData,
     bodyData: inData.bodyData?.map((rg) => {
@@ -45,7 +45,7 @@ export const updateTableDataVersion = (
         ...rg,
         replacements:
           rg.replacements !== undefined ? updateReplacementVersion(rg.replacements) : undefined,
-      } as AitRowGroupData;
+      };
       if (rg.replacements === undefined) delete org.replacements;
       return org;
     }),
@@ -86,7 +86,7 @@ export const updateTableDataVersion = (
     outData.headerData.rows.forEach(
       (r, ri) =>
         (r.cells = r.cells.map((c, ci, cells) => {
-          const newCell: AitHeaderCellData = {
+          const newCell: AitHeaderCellData<string> = {
             ...UpdateCellTextVersion(c),
           };
           // Work out which direction the span is in
@@ -105,7 +105,7 @@ export const updateTableDataVersion = (
     rg.rows.forEach(
       (r) =>
         (r.cells = r.cells.map((c) => {
-          const newCell: AitCellData = { ...UpdateCellTextVersion(c) };
+          const newCell: AitCellData<string> = { ...UpdateCellTextVersion(c) };
           return newCell;
         })),
     ),

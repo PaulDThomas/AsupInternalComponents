@@ -12,9 +12,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [tableData, setTableData] = useState<AitTableData | undefined>();
-  const processedTableData = useRef<AitTableData>();
-  const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<AitRowGroupData[] | undefined>();
+  const [tableData, setTableData] = useState<AitTableData<string> | undefined>();
+  const processedTableData = useRef<AitTableData<string>>();
+  const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<
+    AitRowGroupData<string>[] | undefined
+  >();
   const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
   const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
@@ -38,7 +40,7 @@ export const TablePage = () => {
       .then(function (response) {
         return response.json();
       })
-      .then(function (MyJson: AitRowGroupData[]) {
+      .then(function (MyJson: AitRowGroupData<string>[]) {
         setSampleGroupTempaltes(MyJson);
       });
     /** Load table data */
@@ -48,7 +50,7 @@ export const TablePage = () => {
       .then(function (response) {
         return response.json();
       })
-      .then(function (MyJson: AitTableData) {
+      .then(function (MyJson: AitTableData<string>) {
         setTableData(updateTableDataVersion(MyJson, 40));
       });
   }, []);
@@ -75,7 +77,7 @@ export const TablePage = () => {
         window.localStorage.getItem("listContent") ?? "[]",
       );
       setExternalReplacements(j);
-      const g: AitRowGroupData[] = JSON.parse(
+      const g: AitRowGroupData<string>[] = JSON.parse(
         window.localStorage.getItem("rowGroupContent") ?? "[]",
       );
       setSampleGroupTempaltes(g);
@@ -98,8 +100,6 @@ export const TablePage = () => {
           marginLeft: "1rem",
           marginRight: "1rem",
           width: "100%",
-          // display: "flex",
-          // justifyContent: "center",
           overflow: "auto",
           position: "relative",
         }}

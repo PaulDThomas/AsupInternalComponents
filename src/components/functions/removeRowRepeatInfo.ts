@@ -1,8 +1,10 @@
 import { AitCellData, AitHeaderRowData, AitRowData } from "../table/interface";
 
-export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
+export const removeRowRepeatInfo = <T extends string | object>(
+  rows: AitRowData<T>[],
+): AitRowData<T>[] => {
   return rows.map((r) => {
-    const ret: AitRowData = {
+    const ret: AitRowData<T> = {
       aitid: r.aitid,
       cells: r.cells
         // .filter(c => !c.replacedText?.includes("__filler"))
@@ -19,7 +21,7 @@ export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
             // replacedText: undefined,
             // repeatColSpan: undefined,
             // repeatRowSpan: undefined,
-          } as AitCellData;
+          } as AitCellData<T>;
         }),
       // spaceAfter: false,
       // rowRepeat: undefined,
@@ -28,9 +30,11 @@ export const removeRowRepeatInfo = (rows: AitRowData[]): AitRowData[] => {
   });
 };
 
-export const removeHeaderRowRepeatInfo = (rows: AitHeaderRowData[]): AitHeaderRowData[] => {
+export const removeHeaderRowRepeatInfo = <T extends string | object>(
+  rows: AitHeaderRowData<T>[],
+): AitHeaderRowData<T>[] => {
   return rows.map((r) => {
-    const ret: AitRowData = {
+    const ret: AitRowData<T> = {
       aitid: r.aitid,
       cells: r.cells
         // .filter(c => !c.replacedText?.includes("__filler"))
@@ -47,7 +51,7 @@ export const removeHeaderRowRepeatInfo = (rows: AitHeaderRowData[]): AitHeaderRo
             // replacedText: undefined,
             // repeatColSpan: undefined,
             // repeatRowSpan: undefined,
-          } as AitCellData;
+          } as AitCellData<T>;
         }),
       // spaceAfter: false,
       // rowRepeat: undefined,

@@ -7,10 +7,10 @@ import { AitRowGroupData } from "../table/interface";
  * @param rgs
  * @returns compliant row groups
  */
-export const bodyPreProcess = (
+export const bodyPreProcess = <T extends string | object>(
   defaultCellWidth: number,
-  rgs?: AitRowGroupData[],
-): AitRowGroupData[] => {
+  rgs?: AitRowGroupData<T>[],
+): AitRowGroupData<T>[] => {
   if (rgs === undefined) return [];
   return rgs.map((rg) => {
     return {

@@ -1,26 +1,26 @@
 import { useCallback, useContext } from "react";
 import { AioReplacement } from "../aio";
 import { newCell, newRow } from "../functions";
+import { AitRow } from "./AitRow";
 import { TableSettingsContext } from "./TableSettingsContext";
 import { AitLocation, AitRowData, AitRowGroupData } from "./interface";
-import { AitRow } from "./AitRow";
 
-interface AitRowGroupProps {
+interface AitRowGroupProps<T extends string | object> {
   id: string;
   aitid: string;
   name?: string;
   location: AitLocation;
-  rows: AitRowData[];
+  rows: AitRowData<T>[];
   comments?: string;
   replacements: AioReplacement[];
-  setRowGroupData?: (ret: AitRowGroupData) => void;
+  setRowGroupData?: (ret: AitRowGroupData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
   spaceAfter?: boolean;
 }
 
-export const AitRowGroup = ({
+export const AitRowGroup = <T extends string | object>({
   id,
   aitid,
   location,
@@ -32,19 +32,19 @@ export const AitRowGroup = ({
   setColWidth,
   addRowGroup,
   removeRowGroup,
-}: AitRowGroupProps): JSX.Element => {
+}: AitRowGroupProps<T>): JSX.Element => {
   const tableSettings = useContext(TableSettingsContext);
 
   // General function to return complied object
   const returnData = useCallback(
     (rowGroupUpdate: {
-      rows?: AitRowData[];
+      rows?: AitRowData<T>[];
       replacements?: AioReplacement[];
       spaceAfter?: boolean;
       comments?: string;
     }) => {
       if (tableSettings.editable && setRowGroupData) {
-        const r: AitRowGroupData = {
+        const r: AitRowGroupData<T> = {
           aitid: aitid,
           rows: rowGroupUpdate.rows ?? rows,
           comments: rowGroupUpdate.comments ?? comments,
@@ -59,11 +59,11 @@ export const AitRowGroup = ({
 
   // Update row
   const updateRow = useCallback(
-    (ret: AitRowData, ri: number) => {
+    (ret: AitRowData<T>, ri: number) => {
       // Do nothing if readonly
       if (tableSettings.editable && setRowGroupData) {
         // Filter out repeat cells
-        const newRows: AitRowData[] = [...rows];
+        const newRows: AitRowData<T>[] = [...rows];
         // Create new object to send back
         newRows[ri] = ret;
         returnData({ rows: newRows });
@@ -75,11 +75,11 @@ export const AitRowGroup = ({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr = newRow(tableSettings.defaultCellWidth, 0);
+      const newr = newRow<T>(tableSettings.defaultCellWidth, 0);
       const cols = rows[0].cells.length;
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
-        const c = newCell(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
+        const c = newCell<T>(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
         newr.cells.push(c);
       }
       newrs.splice(ri + 1, 0, newr);
@@ -100,7 +100,7 @@ export const AitRowGroup = ({
   // Output the rows
   return (
     <>
-      {rows.map((row: AitRowData, ri: number): JSX.Element => {
+      {rows.map((row: AitRowData<T>, ri: number): JSX.Element => {
         return (
           <AitRow
             id={`${id}-row-${ri}`}

@@ -1,10 +1,9 @@
 import { AioReplacement } from "components/aio";
-import { removeUndefined } from "./removeUndefined";
 import { replaceRows } from "./replaceRows";
 import { AitRowData } from "../table/interface";
 
 describe("Check complex replace rows", () => {
-  const rows: AitRowData[] = [
+  const rows: AitRowData<string>[] = [
     {
       cells: [
         { text: "p" },
@@ -63,7 +62,7 @@ describe("Check complex replace rows", () => {
 
   test("Complex rows", async () => {
     const repeated = replaceRows(rows, 60, replacement);
-    expect(removeUndefined(repeated)).toEqual([
+    expect(repeated).toEqual([
       // Row 0
       {
         cells: [

@@ -2,7 +2,7 @@ import { AitCellData } from "../table/interface";
 import { cellPreProcess } from "./cellPreProcess";
 
 describe("Check cell pre-process", () => {
-  const a: AitCellData = {
+  const a: AitCellData<string> = {
     text: "Hello world!",
   };
 

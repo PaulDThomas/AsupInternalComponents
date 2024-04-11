@@ -1,22 +1,22 @@
+import { ContextWindow } from "@asup/context-menu";
 import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
 import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
 import { TableSettingsContext } from "./TableSettingsContext";
 import { AitCellData, AitCellType, AitLocation, AitRowType } from "./interface";
-import { ContextWindow } from "@asup/context-menu";
 
-interface AitCellProps {
+interface AitCellProps<T extends string | object> {
   id: string;
   aitid: string;
-  text: string;
+  text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
   comments: string;
   colWidth?: number;
   displayColWidth?: number;
   textIndents?: number;
-  replacedText?: string;
-  setCellData?: (ret: AitCellData) => void;
+  replacedText?: T;
+  setCellData?: (ret: AitCellData<T>) => void;
   setColWidth?: (ret: number) => void;
   readOnly: boolean;
   location: AitLocation;
@@ -26,7 +26,7 @@ interface AitCellProps {
 /*
  * Table cell in AsupInternalTable
  */
-export const AitCell = ({
+export const AitCell = <T extends string | object>({
   id,
   aitid,
   text,
@@ -36,22 +36,19 @@ export const AitCell = ({
   displayColWidth,
   textIndents,
   replacedText,
-
   setCellData,
   setColWidth,
   readOnly,
   location,
   spaceAfterRepeat,
-}: AitCellProps) => {
+}: AitCellProps<T>) => {
   // Context
   const tableSettings = useContext(TableSettingsContext);
+  const Editor = tableSettings.Editor ?? AsupInternalEditor;
   // Data holder
-  const [displayText, setDisplayText] = useState(replacedText !== undefined ? replacedText : text);
+  const [displayText, setDisplayText] = useState<T>(replacedText ?? text);
   /* Need to update if these change */
-  useEffect(
-    () => setDisplayText(replacedText !== undefined ? replacedText : text),
-    [replacedText, text],
-  );
+  useEffect(() => setDisplayText(replacedText ?? text), [replacedText, text]);
 
   const [buttonState, setButtonState] = useState("hidden");
   const [showCellOptions, setShowCellOptions] = useState(false);
@@ -122,14 +119,14 @@ export const AitCell = ({
   /** Callback for update to any cell data */
   const returnData = useCallback(
     (cellUpdate: {
-      text?: string;
+      text?: T;
       justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null;
       comments?: string;
       colWidth?: number;
       textIndents?: number;
     }) => {
       if (setCellData) {
-        const r: AitCellData = {
+        const r: AitCellData<T> = {
           aitid: aitid,
           text: cellUpdate.text ?? text,
           justifyText:
@@ -203,7 +200,7 @@ export const AitCell = ({
         </>
 
         {/* Cell text editor */}
-        <AsupInternalEditor
+        <Editor
           id={`${id}-editor`}
           style={{ width: "100%", height: "100%", border: "none" }}
           textAlignment={
@@ -215,8 +212,8 @@ export const AitCell = ({
           }
           value={displayText}
           setValue={(ret) => {
-            setDisplayText(ret);
-            returnData({ text: ret.trimStart() });
+            setDisplayText(ret as T);
+            returnData({ text: ret as T });
           }}
           editable={!currentReadOnly}
           showStyleButtons={tableSettings.cellStyles !== undefined}
@@ -261,12 +258,12 @@ export const AitCell = ({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <AsupInternalEditor
+              <Editor
                 id={`${id}-unprocessed`}
                 value={text}
                 setValue={
                   !readOnly && setCellData && isNotRepeat && tableSettings.editable
-                    ? (ret) => returnData({ text: ret })
+                    ? (ret) => returnData({ text: ret as T })
                     : undefined
                 }
                 style={
