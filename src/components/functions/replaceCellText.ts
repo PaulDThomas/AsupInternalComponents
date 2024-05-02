@@ -1,6 +1,5 @@
-import { newReplacedText } from "../aie/functions/newReplacedText";
-import { AitCellData, AitHeaderCellData } from "../table/interface";
 import { isEqual } from "lodash";
+import { AitCellData, AitHeaderCellData } from "../table/interface";
 
 export const replaceCellText = <
   T extends string | object,
@@ -9,8 +8,9 @@ export const replaceCellText = <
   cell: R,
   oldText: string,
   newText: string,
+  replaceText: (s: T, oldPhrase: string, newPhrase: string) => T,
 ): R => {
-  const replacedText = newReplacedText(cell.replacedText ?? cell.text, oldText, newText);
+  const replacedText = replaceText(cell.replacedText ?? cell.text, oldText, newText);
   return {
     ...cell,
     replacedText: !isEqual(cell.text, replacedText) ? replacedText : undefined,

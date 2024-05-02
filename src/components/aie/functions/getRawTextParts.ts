@@ -5,13 +5,13 @@ export const getRawTextParts = (s: string | object): string[] => {
   if (typeof s === "object") {
     const ret: string[] = [];
     const extractText = (obj: object) => {
-      for (const key in Object.keys(obj)) {
+      Object.keys(obj).forEach((key) => {
         if (typeof obj[key as keyof typeof obj] === "object") {
           extractText(obj[key as keyof typeof obj]);
         } else if (key === "text") {
           ret.push(obj[key as keyof typeof obj]);
         }
-      }
+      });
     };
     extractText(s);
     return ret;

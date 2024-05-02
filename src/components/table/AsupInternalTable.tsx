@@ -2,6 +2,7 @@
 import { ContextWindow } from "@asup/context-menu";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AieStyleMap, AsupInternalEditor, AsupInternalEditorProps, getRawTextParts } from "../aie";
+import { newReplacedText } from "../aie/functions/newReplacedText";
 import {
   AioBoolean,
   AioComment,
@@ -54,6 +55,7 @@ interface AsupInternalTableProps<T extends string | object> {
   noTableOptions?: boolean;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
   getTextFromT?: (text: T) => string[];
+  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
 }
 
 /**
@@ -80,6 +82,7 @@ export const AsupInternalTable = <T extends string | object>({
   noTableOptions = false,
   Editor = AsupInternalEditor,
   getTextFromT = getRawTextParts,
+  replaceTextInT = newReplacedText,
 }: AsupInternalTableProps<T>) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -119,6 +122,7 @@ export const AsupInternalTable = <T extends string | object>({
         processedHeaderData.rows,
         processedHeaderData.replacements ?? [],
         defaultCellWidth,
+        replaceTextInT,
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
         externalLists,
@@ -145,6 +149,7 @@ export const AsupInternalTable = <T extends string | object>({
         rows: repeatRows(
           rg.rows,
           defaultCellWidth,
+          replaceTextInT,
           rg.replacements,
           rg.spaceAfter,
           noRepeatProcessing,
@@ -597,6 +602,11 @@ export const AsupInternalTable = <T extends string | object>({
           props: AsupInternalEditorProps<string | object>,
         ) => JSX.Element,
         getTextFromT: getTextFromT as unknown as (text: string | object) => string[],
+        replaceTextInT: replaceTextInT as unknown as (
+          s: string | object,
+          oldPhrase: string,
+          newPhrase: string,
+        ) => string | object,
       }}
     >
       <div

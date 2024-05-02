@@ -14,6 +14,7 @@ import { updateExternals } from "./updateExternals";
 export const replaceRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
 ): AitRowData<T>[] => {
@@ -63,7 +64,12 @@ export const replaceRows = <T extends string | object>(
 
             // Perform replacements for each text entry
             for (let ti = 0; ti < rv.texts.length; ti++) {
-              const thisRepeat = replaceCellText(targetCell, replacement.oldText, rv.texts[ti]);
+              const thisRepeat = replaceCellText(
+                targetCell,
+                replacement.oldText,
+                rv.texts[ti],
+                replaceTextInT,
+              );
 
               // Process remaining cells, including target after replacement
               let lowerQuad: AitRowData<T>[] =
@@ -75,12 +81,26 @@ export const replaceRows = <T extends string | object>(
                               thisRepeat,
                               ...r.cells
                                 .slice(ci + 1)
-                                .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
+                                .map((c) =>
+                                  replaceCellText(
+                                    c,
+                                    replacement.oldText,
+                                    rv.texts[ti],
+                                    replaceTextInT,
+                                  ),
+                                ),
                             ]
                           : [
                               ...r.cells
                                 .slice(ci)
-                                .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
+                                .map((c) =>
+                                  replaceCellText(
+                                    c,
+                                    replacement.oldText,
+                                    rv.texts[ti],
+                                    replaceTextInT,
+                                  ),
+                                ),
                             ];
                       return {
                         aitid: r.aitid,
@@ -96,7 +116,9 @@ export const replaceRows = <T extends string | object>(
                           thisRepeat,
                           ...rows[ri].cells
                             .slice(ci + 1)
-                            .map((c) => replaceCellText(c, replacement.oldText, rv.texts[ti])),
+                            .map((c) =>
+                              replaceCellText(c, replacement.oldText, rv.texts[ti], replaceTextInT),
+                            ),
                         ],
                       },
                     ];
@@ -106,7 +128,12 @@ export const replaceRows = <T extends string | object>(
               const subLists = updateExternals(rv.subLists, externalLists);
               if (subLists && subLists.length > 0)
                 for (let si = 0; si < subLists.length; si++) {
-                  lowerQuad = replaceRows(lowerQuad, defaultCellWidth, subLists[si]);
+                  lowerQuad = replaceRows(
+                    lowerQuad,
+                    defaultCellWidth,
+                    replaceTextInT,
+                    subLists[si],
+                  );
                 }
 
               // Expand to cover rest of the row

@@ -18,6 +18,7 @@ export const repeatHeaders = <T extends string | object>(
   rows: AitHeaderRowData<T>[],
   replacements: AioReplacement[],
   defaultCellWidth: number,
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
@@ -45,6 +46,7 @@ export const repeatHeaders = <T extends string | object>(
       newHeaderRows,
       newColumnRepeats,
       defaultCellWidth,
+      replaceTextInT,
       rep,
       undefined,
     );
@@ -53,7 +55,7 @@ export const repeatHeaders = <T extends string | object>(
   });
 
   // Single post processing rep
-  newHeaderRows = singleReplacements(externalSingles, newHeaderRows);
+  newHeaderRows = singleReplacements(externalSingles, newHeaderRows, replaceTextInT);
 
   return { rows: newHeaderRows, columnRepeats: newColumnRepeats };
 };

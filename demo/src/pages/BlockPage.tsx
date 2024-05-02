@@ -8,7 +8,7 @@ import {
   AsupInternalBlock,
   updateLineDisplayVersion,
 } from "../../../src/main";
-import { EditorV3Wrapper } from "../components/EditorV3Wrapper";
+import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

@@ -1,4 +1,4 @@
-import { AsupInternalBlock } from "../../../src/main";
+import { AifLineType, AsupInternalBlock } from "../../../src/main";
 import { useMemo, useState } from "react";
 
 export const CurrentPage = () => {
@@ -6,6 +6,7 @@ export const CurrentPage = () => {
   const pageBy = useMemo(
     () => ({
       aifid: "page-by",
+      lineType: AifLineType.leftOnly,
       left: left,
       addBelow: false,
       canRemove: false,

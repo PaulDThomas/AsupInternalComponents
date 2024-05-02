@@ -9,7 +9,11 @@ import {
   AitTableData,
   AsupInternalTable,
 } from "../../../src/main";
-import { EditorV3Wrapper } from "../components/EditorV3Wrapper";
+import {
+  EditorV3Wrapper,
+  getTextFromEditorV3,
+  replaceTextInEditorV3,
+} from "../../../src/v3editor/EditorV3Wrapper";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -128,6 +132,8 @@ export const TablePage = () => {
               colWidthMod={3}
               defaultCellWidth={40}
               Editor={EditorV3Wrapper}
+              getTextFromT={getTextFromEditorV3}
+              replaceTextInT={replaceTextInEditorV3}
             />
           )}
         </div>

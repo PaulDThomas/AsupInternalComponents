@@ -17,7 +17,7 @@ export const newReplacedText = <T extends string | object>(
   // Generic object replacement
   if (typeof s === "object") {
     const replaceText = (obj: object) => {
-      for (const key in Object.keys(obj)) {
+      Object.keys(obj).forEach((key) => {
         if (typeof obj[key as keyof typeof obj] === "object") {
           replaceText(obj[key as keyof typeof obj]);
         } else if (key === "text" && typeof obj[key as keyof typeof obj] === "string") {
@@ -26,7 +26,7 @@ export const newReplacedText = <T extends string | object>(
             newPhrase,
           ) as (typeof obj)[keyof typeof obj];
         }
-      }
+      });
     };
     ret = cloneDeep(s);
     replaceText(ret);

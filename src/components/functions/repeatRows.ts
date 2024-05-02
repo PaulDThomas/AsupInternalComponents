@@ -18,6 +18,7 @@ import { updateExternals } from "./updateExternals";
 export const repeatRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   replacements?: AioReplacement[],
   spaceAfter?: boolean,
   noProcessing?: boolean,
@@ -44,7 +45,7 @@ export const repeatRows = <T extends string | object>(
         extReplacements[si].includeTrailing = false;
       }
       // Run current replacement
-      newRows = replaceRows(newRows, defaultCellWidth, extReplacements[si]);
+      newRows = replaceRows(newRows, defaultCellWidth, replaceTextInT, extReplacements[si]);
     }
   }
 
@@ -60,7 +61,7 @@ export const repeatRows = <T extends string | object>(
   });
 
   // Single post processing replacements
-  newRows = singleReplacements(externalSingles, newRows);
+  newRows = singleReplacements(externalSingles, newRows, replaceTextInT);
 
   return newRows;
 };
