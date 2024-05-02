@@ -1,3 +1,4 @@
+import { cloneDeep } from "lodash";
 import React, { useCallback, useMemo, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
@@ -5,9 +6,8 @@ import { AioExternalSingle, AioIconButton } from "../aio";
 import { AifOptionsWindow } from "./AibOptionsWindow";
 import styles from "./aib.module.css";
 import { AifBlockLine, AifLineType } from "./aibInterface";
-import { replaceBlockText } from "./replaceBlockText";
 
-interface AifLineDisplayProps<T extends string | object> {
+interface AibLineDisplayProps<T extends string | object> {
   id: string;
   aifid?: string;
   displayType: AifLineType;
@@ -26,9 +26,10 @@ interface AifLineDisplayProps<T extends string | object> {
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T;
 }
 
-export const AifLineDisplay = <T extends string | object>({
+export const AibLineDisplay = <T extends string | object>({
   id,
   aifid,
   displayType,
@@ -47,7 +48,8 @@ export const AifLineDisplay = <T extends string | object>({
   style,
   styleMap,
   Editor,
-}: AifLineDisplayProps<T>): JSX.Element => {
+  replaceTextInT,
+}: AibLineDisplayProps<T>): JSX.Element => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback(
     (lineUpdate: { left?: T | null; center?: T | null; right?: T | null }) => {
@@ -84,26 +86,21 @@ export const AifLineDisplay = <T extends string | object>({
 
   // Update for replacements
   const processReplacement = useCallback(
-    (text: string): string => {
+    (input?: T | null): T | null | undefined => {
+      if (input === undefined || input === null) return input;
       // Process external replacements
-      if (externalSingles !== undefined && externalSingles.length > 0) {
-        externalSingles.forEach((repl) => {
-          if (repl.oldText !== undefined && repl.oldText !== "" && repl.newText !== undefined) {
-            const { newText, updated } = replaceBlockText(text, repl);
-            if (updated) text = newText;
-          }
-        });
-      }
-      return text;
+      let ret = cloneDeep(input);
+      externalSingles?.forEach((repl) => {
+        if (repl.oldText !== undefined && repl.oldText !== "" && repl.newText !== undefined)
+          ret = replaceTextInT(ret, repl.oldText, repl.newText);
+      });
+      return ret;
     },
-    [externalSingles],
+    [externalSingles, replaceTextInT],
   );
 
   // Set up post replacement view
-  const displayLeft = useMemo(
-    () => (typeof left === "string" ? (processReplacement(left) as T) : left),
-    [left, processReplacement],
-  );
+  const displayLeft = useMemo(() => processReplacement(left), [left, processReplacement]);
   const displayCenter = useMemo(
     () => (typeof center === "string" ? (processReplacement(center) as T) : center),
     [center, processReplacement],

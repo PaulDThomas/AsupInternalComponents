@@ -2,9 +2,10 @@ import React, { useCallback, useEffect } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle } from "../aio";
-import { AifLineDisplay } from "./AibLineDisplay";
+import { AibLineDisplay } from "./AibLineDisplay";
 import styles from "./aib.module.css";
 import { AifBlockLine, AifLineType } from "./aibInterface";
+import { newReplacedText } from "../aie/functions/newReplacedText";
 
 interface AsupInternalBlockProps<T extends string | object> {
   id: string;
@@ -18,6 +19,7 @@ interface AsupInternalBlockProps<T extends string | object> {
   canChangeType?: boolean;
   style?: React.CSSProperties;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
 }
 export const AsupInternalBlock = <T extends string | object>({
   id,
@@ -31,6 +33,7 @@ export const AsupInternalBlock = <T extends string | object>({
   canChangeType = false,
   style,
   Editor = AsupInternalEditor,
+  replaceTextInT = newReplacedText,
 }: AsupInternalBlockProps<T>): JSX.Element => {
   // General function to return complied object
   const returnData = useCallback(
@@ -135,7 +138,7 @@ export const AsupInternalBlock = <T extends string | object>({
     >
       {lines.map((l: AifBlockLine<T>, li: number) => {
         return (
-          <AifLineDisplay
+          <AibLineDisplay
             id={`${id}-line-${li}`}
             key={`${li}-${l.aifid}`}
             aifid={l.aifid}
@@ -163,6 +166,7 @@ export const AsupInternalBlock = <T extends string | object>({
             styleMap={styleMap}
             style={style}
             Editor={Editor}
+            replaceTextInT={replaceTextInT}
           />
         );
       })}

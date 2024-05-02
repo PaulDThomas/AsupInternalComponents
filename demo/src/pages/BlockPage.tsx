@@ -8,7 +8,7 @@ import {
   AsupInternalBlock,
   updateLineDisplayVersion,
 } from "../../../src/main";
-import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
+import { EditorV3Wrapper, replaceTextInEditorV3 } from "../../../src/v3editor/EditorV3Wrapper";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -78,6 +78,7 @@ export const BlockPage = () => {
               },
             })
           }
+          replaceTextInT={replaceTextInEditorV3}
         />
       </div>
 
