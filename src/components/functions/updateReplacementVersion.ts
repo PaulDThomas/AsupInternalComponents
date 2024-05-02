@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 
 interface oldReplacementText {
@@ -32,13 +31,13 @@ export function updateReplacementVersion(
     const oldRep = oldReps[i];
     if (!oldRep.replacementValues.some((rv) => (rv.subList?.length ?? 0) > 0)) {
       const newRV: AioReplacementValues = {
-        airid: uuidv4(),
+        airid: crypto.randomUUID(),
         texts: oldRep.replacementValues.map((rv) => rv.newText),
         spaceAfter: oldRep.replacementTexts[0]?.spaceAfter ?? false,
         subLists: [],
       };
       const newRep: AioReplacement = {
-        airid: uuidv4(),
+        airid: crypto.randomUUID(),
         oldText: oldRep.replacementTexts[0].text ?? "",
         newTexts: [newRV],
         includeTrailing: false,
@@ -47,7 +46,7 @@ export function updateReplacementVersion(
       newReps.push(newRep);
     } else {
       const newRep: AioReplacement = {
-        airid: uuidv4(),
+        airid: crypto.randomUUID(),
         oldText: oldRep.replacementTexts[0].text,
         newTexts: [],
         includeTrailing: false,
@@ -59,7 +58,7 @@ export function updateReplacementVersion(
           replacementValues: oldRep.replacementValues[j].subList ?? [],
         };
         const newRV: AioReplacementValues = {
-          airid: uuidv4(),
+          airid: crypto.randomUUID(),
           texts: [oldRep.replacementValues[j].newText],
           spaceAfter: oldRep.replacementTexts[0].spaceAfter,
           subLists:

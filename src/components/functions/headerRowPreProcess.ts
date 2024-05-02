@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { headerCellPreProcess } from "./headerCellPreProcess";
 import { newRow } from "./newRow";
 import { AitHeaderRowData } from "../table/interface";
@@ -19,7 +18,7 @@ export const headerRowPreProcess = <T extends string | object>(
     return {
       ...r,
       cells: headerCellPreProcess(defaultCellWidth, r.cells),
-      aitid: r.aitid ?? uuidv4(),
+      aitid: r.aitid ?? crypto.randomUUID(),
     };
   });
 };

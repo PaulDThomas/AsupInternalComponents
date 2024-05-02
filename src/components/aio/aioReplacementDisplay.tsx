@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { fromHtml, newReplacementValues, toHtml } from "../functions";
 import { AioDropSelect } from "./aioDropSelect";
 import { AioIconButton } from "./aioIconButton";
@@ -68,7 +67,7 @@ export const AioReplacementDisplay = ({
       if (typeof setReplacement !== "function") return;
       // Create new object
       const r: AioReplacement = {
-        airid: newReplacement.airid ?? airid ?? uuidv4(),
+        airid: newReplacement.airid ?? airid ?? crypto.randomUUID(),
         oldText: newReplacement.oldText ?? oldText ?? "",
         newTexts: newReplacement.newTexts ?? newTexts,
         includeTrailing: newReplacement.includeTrailing ?? includeTrailing,

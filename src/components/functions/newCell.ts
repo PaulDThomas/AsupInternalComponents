@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { AitCellData, AitHeaderCellData } from "../table/interface";
 
 /**
@@ -8,7 +7,7 @@ import { AitCellData, AitHeaderCellData } from "../table/interface";
  */
 export const newCell = <T extends string | object>(cellWidth: number): AitCellData<T> => {
   const cell: AitCellData<T> = {
-    aitid: uuidv4(),
+    aitid: crypto.randomUUID(),
     text: "" as T,
     colWidth: cellWidth,
   };
@@ -24,7 +23,7 @@ export const newHeaderCell = <T extends string | object>(
   cellWidth: number,
 ): AitHeaderCellData<T> => {
   const cell: AitHeaderCellData<T> = {
-    aitid: uuidv4(),
+    aitid: crypto.randomUUID(),
     text: "" as T,
     rowSpan: 1,
     colSpan: 1,

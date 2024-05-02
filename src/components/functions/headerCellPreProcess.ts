@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { newCell } from "./newCell";
 import { AitHeaderCellData } from "../table/interface";
 
@@ -15,7 +14,7 @@ export const headerCellPreProcess = <T extends string | object>(
   // Check aitid
   return cs.map((c) => {
     return {
-      aitid: c.aitid && c.aitid.length > 4 ? c.aitid : uuidv4(),
+      aitid: c.aitid && c.aitid.length > 4 ? c.aitid : crypto.randomUUID(),
       text: c.text,
       justifyText: c.justifyText,
       comments: c.comments,

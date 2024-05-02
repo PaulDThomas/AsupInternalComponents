@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { rowPreProcess } from "./rowPreProcess";
 import { AitRowGroupData } from "../table/interface";
 
@@ -16,7 +15,7 @@ export const bodyPreProcess = <T extends string | object>(
     return {
       ...rg,
       rows: rowPreProcess(defaultCellWidth, rg.rows),
-      aitid: rg.aitid ?? uuidv4(),
+      aitid: rg.aitid ?? crypto.randomUUID(),
     };
   });
 };
