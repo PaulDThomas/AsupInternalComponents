@@ -1,4 +1,4 @@
-import { AifBlockLine, AifLineType, AsupInternalBlock, updateLineDisplayVersion } from "./block";
+import { AibBlockLine, AibLineType, AsupInternalBlock, updateLineDisplayVersion } from "./block";
 import { AieStyleMap, AsupInternalEditor, AsupInternalEditorProps } from "./aie";
 import {
   AioDropSelect,
@@ -28,7 +28,7 @@ import {
 } from "./functions";
 
 export {
-  AifLineType,
+  AibLineType,
   AioDropSelect,
   AioExpander,
   AioIconButton,
@@ -52,7 +52,7 @@ export {
 };
 export type {
   AieStyleMap,
-  AifBlockLine,
+  AibBlockLine,
   AioExternalReplacements,
   AioExternalSingle,
   AioOption,

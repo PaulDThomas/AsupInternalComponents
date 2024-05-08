@@ -2,9 +2,9 @@ import { ContextWindow } from "@asup/context-menu";
 import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioSelect } from "../aio/aioSelect";
-import { OriginalText } from "./AibOriginalText";
+import { AibOriginalText } from "./AibOriginalText";
 
-interface AifOptionsWindowProps<T extends string | object> {
+interface AibOptionsWindowProps<T extends string | object> {
   id: string;
   onClose: () => void;
   left?: T | null;
@@ -16,7 +16,7 @@ interface AifOptionsWindowProps<T extends string | object> {
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }
 
-export const AifOptionsWindow = <T extends string | object>({
+export const AibOptionsWindow = <T extends string | object>({
   id,
   onClose,
   left,
@@ -26,7 +26,7 @@ export const AifOptionsWindow = <T extends string | object>({
   returnData,
   styleMap,
   Editor,
-}: AifOptionsWindowProps<T>): JSX.Element => {
+}: AibOptionsWindowProps<T>): JSX.Element => {
   return (
     <ContextWindow
       id={id}
@@ -79,7 +79,7 @@ export const AifOptionsWindow = <T extends string | object>({
         />
       </div>
       {left && (
-        <OriginalText
+        <AibOriginalText
           id={`${id}-unprocessed-left-text`}
           label="Left text"
           text={left}
@@ -89,7 +89,7 @@ export const AifOptionsWindow = <T extends string | object>({
         />
       )}
       {center && (
-        <OriginalText
+        <AibOriginalText
           id={`${id}-unprocessed-center-text`}
           label="Center text"
           text={center}
@@ -99,7 +99,7 @@ export const AifOptionsWindow = <T extends string | object>({
         />
       )}
       {right && (
-        <OriginalText
+        <AibOriginalText
           id={`${id}-unprocessed-right-text`}
           label="Right text"
           text={right}
@@ -111,3 +111,5 @@ export const AifOptionsWindow = <T extends string | object>({
     </ContextWindow>
   );
 };
+
+AibOptionsWindow.DisplayName = "AibOptionsWindow";

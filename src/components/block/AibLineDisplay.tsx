@@ -3,14 +3,14 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle, AioIconButton } from "../aio";
-import { AifOptionsWindow } from "./AibOptionsWindow";
+import { AibOptionsWindow } from "./AibOptionsWindow";
 import styles from "./aib.module.css";
-import { AifBlockLine, AifLineType } from "./aibInterface";
+import { AibBlockLine, AibLineType } from "./aibInterface";
 
 interface AibLineDisplayProps<T extends string | object> {
   id: string;
   aifid?: string;
-  displayType: AifLineType;
+  displayType: AibLineType;
   left?: T | null;
   center?: T | null;
   right?: T | null;
@@ -20,7 +20,7 @@ interface AibLineDisplayProps<T extends string | object> {
   canRemove?: boolean;
   canMove?: boolean;
   canChangeType?: boolean;
-  setLine?: (ret: AifBlockLine<T>) => void;
+  setLine?: (ret: AibBlockLine<T>) => void;
   addLine?: () => void;
   removeLine?: () => void;
   style?: React.CSSProperties;
@@ -54,7 +54,7 @@ export const AibLineDisplay = <T extends string | object>({
   const returnData = useCallback(
     (lineUpdate: { left?: T | null; center?: T | null; right?: T | null }) => {
       if (setLine) {
-        const newLine: AifBlockLine<T> = {
+        const newLine: AibBlockLine<T> = {
           aifid: aifid,
           lineType: displayType,
           left: lineUpdate.left ? lineUpdate.left : left ?? null,
@@ -120,7 +120,7 @@ export const AibLineDisplay = <T extends string | object>({
         .join(" ")}
     >
       {showOptions && (
-        <AifOptionsWindow
+        <AibOptionsWindow
           id={`${id}-options-window`}
           onClose={() => setShowOptions(false)}
           left={left}
@@ -138,7 +138,7 @@ export const AibLineDisplay = <T extends string | object>({
         className={styles.aibLineItemHolder}
         style={{ ...style }}
       >
-        {[AifLineType.leftOnly, AifLineType.leftAndRight, AifLineType.leftCenterAndRight].includes(
+        {[AibLineType.leftOnly, AibLineType.leftAndRight, AibLineType.leftCenterAndRight].includes(
           displayType,
         ) && (
           <div
@@ -147,9 +147,9 @@ export const AibLineDisplay = <T extends string | object>({
               .join(" ")}
             style={{
               width:
-                displayType === AifLineType.leftOnly
+                displayType === AibLineType.leftOnly
                   ? "100%"
-                  : displayType === AifLineType.leftAndRight
+                  : displayType === AibLineType.leftAndRight
                     ? "50%"
                     : "33%",
             }}
@@ -167,7 +167,7 @@ export const AibLineDisplay = <T extends string | object>({
             />
           </div>
         )}
-        {[AifLineType.centerOnly, AifLineType.leftCenterAndRight].includes(displayType) && (
+        {[AibLineType.centerOnly, AibLineType.leftCenterAndRight].includes(displayType) && (
           <div
             className={[styles.aibLineItem, displayCenter !== center ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
@@ -188,13 +188,13 @@ export const AibLineDisplay = <T extends string | object>({
             />
           </div>
         )}
-        {[AifLineType.leftAndRight, AifLineType.leftCenterAndRight].includes(displayType) && (
+        {[AibLineType.leftAndRight, AibLineType.leftCenterAndRight].includes(displayType) && (
           <div
             className={[styles.aibLineItem, displayRight !== right ? styles.aibReadOnly : ""]
               .filter((c) => c !== "")
               .join(" ")}
             style={{
-              width: displayType === AifLineType.leftAndRight ? "50%" : "33%",
+              width: displayType === AibLineType.leftAndRight ? "50%" : "33%",
             }}
           >
             <Editor
@@ -242,3 +242,5 @@ export const AibLineDisplay = <T extends string | object>({
     </div>
   );
 };
+
+AibLineDisplay.DisplayName = "AibLineDisplay";

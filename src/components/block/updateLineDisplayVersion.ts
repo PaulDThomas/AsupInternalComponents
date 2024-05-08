@@ -1,4 +1,4 @@
-import { AifBlockLine, AifLineType } from "./aibInterface";
+import { AibBlockLine, AibLineType } from "./aibInterface";
 
 interface OldBlockLine {
   aifid?: string; // Unique ID
@@ -12,15 +12,15 @@ interface OldBlockLine {
 }
 
 export const updateLineDisplayVersion = (
-  inArray: OldBlockLine[] | AifBlockLine<string>[],
-): AifBlockLine<string>[] => {
+  inArray: OldBlockLine[] | AibBlockLine<string>[],
+): AibBlockLine<string>[] => {
   return inArray.map((inData) => {
     // Check options for new center
     let newCenter: string | null = null;
     if (typeof (inData as OldBlockLine).centre === "string") {
       newCenter = (inData as OldBlockLine).centre as string;
-    } else if (typeof (inData as AifBlockLine<string>).center === "string") {
-      newCenter = (inData as AifBlockLine<string>).center as string;
+    } else if (typeof (inData as AibBlockLine<string>).center === "string") {
+      newCenter = (inData as AibBlockLine<string>).center as string;
     }
     // Ensure at least one is present
     if (!inData.left && inData.left !== "" && !newCenter && !inData.right && inData.right !== "") {
@@ -31,12 +31,12 @@ export const updateLineDisplayVersion = (
       aifid: inData.aifid,
       lineType:
         inData.right && newCenter
-          ? AifLineType.leftCenterAndRight
+          ? AibLineType.leftCenterAndRight
           : inData.right
-            ? AifLineType.leftAndRight
+            ? AibLineType.leftAndRight
             : newCenter
-              ? AifLineType.centerOnly
-              : AifLineType.leftOnly,
+              ? AibLineType.centerOnly
+              : AibLineType.leftOnly,
       left: inData.left === false ? null : inData.left ?? null,
       center: newCenter,
       right: inData.right === false ? null : inData.right ?? null,

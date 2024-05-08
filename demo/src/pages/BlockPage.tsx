@@ -1,30 +1,31 @@
 import { IEditorV3 } from "@asup/editor-v3";
 import { useRef, useState } from "react";
 import {
-  AifBlockLine,
-  AifLineType,
+  AibBlockLine,
+  AibLineType,
   AioExternalSingle,
   AioSingleReplacements,
   AsupInternalBlock,
   updateLineDisplayVersion,
 } from "../../../src/main";
-import { EditorV3Wrapper, replaceTextInEditorV3 } from "../../../src/v3editor/EditorV3Wrapper";
+import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
+import { replaceTextInEditorV3 } from "v3editor/replaceTextInEditorV3";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lines, setLines] = useState<AifBlockLine<string>[]>([
-    { lineType: AifLineType.leftAndRight, left: "One line", canEdit: true },
+  const [lines, setLines] = useState<AibBlockLine<string>[]>([
+    { lineType: AibLineType.leftAndRight, left: "One line", canEdit: true },
   ]);
   const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
 
-  const [lines2, setLines2] = useState<AifBlockLine<IEditorV3>[]>([
+  const [lines2, setLines2] = useState<AibBlockLine<IEditorV3>[]>([
     {
-      lineType: AifLineType.leftOnly,
+      lineType: AibLineType.leftOnly,
       left: { lines: [{ textBlocks: [{ text: "1st line", style: "Blue" }] }] },
       canEdit: true,
     },
     {
-      lineType: AifLineType.leftOnly,
+      lineType: AibLineType.leftOnly,
       left: {
         lines: [
           {
@@ -67,11 +68,11 @@ export const BlockPage = () => {
             Blue: { css: { color: "blue" }, aieExclude: ["Green", "Red"] },
             Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
           }}
-          defaultType={AifLineType.leftOnly}
+          defaultType={AibLineType.leftOnly}
           Editor={(props) =>
             EditorV3Wrapper({
               ...props,
-              customSytleMap: {
+              customStyleMap: {
                 Green: { backgroundColor: "green", isLocked: true },
                 Blue: { color: "blue" },
                 Red: { color: "red", isLocked: true },
@@ -107,7 +108,7 @@ export const BlockPage = () => {
             Blue: { css: { color: "blue" }, aieExclude: ["Green", "Red"] },
             Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
           }}
-          defaultType={AifLineType.centerOnly}
+          defaultType={AibLineType.centerOnly}
         />
       </div>
 
@@ -136,7 +137,7 @@ export const BlockPage = () => {
             Blue: { css: { color: "blue" }, aieExclude: ["Green", "Red"] },
             Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
           }}
-          defaultType={AifLineType.leftOnly}
+          defaultType={AibLineType.leftOnly}
         />
       </div>
 
@@ -165,7 +166,7 @@ export const BlockPage = () => {
             Blue: { css: { color: "blue" }, aieExclude: ["Green", "Red"] },
             Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
           }}
-          defaultType={AifLineType.leftOnly}
+          defaultType={AibLineType.leftOnly}
           canChangeType={true}
         />
       </div>

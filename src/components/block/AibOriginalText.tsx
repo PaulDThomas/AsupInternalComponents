@@ -1,7 +1,7 @@
 import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 
-export const OriginalText = <T extends string | object>({
+export const AibOriginalText = <T extends string | object>({
   id,
   text,
   setText,
@@ -30,3 +30,5 @@ export const OriginalText = <T extends string | object>({
       </div>
     );
 };
+
+AibOriginalText.DisplayName = "AibOriginalText";

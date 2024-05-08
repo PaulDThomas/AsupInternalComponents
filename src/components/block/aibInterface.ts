@@ -1,6 +1,6 @@
-export interface AifBlockLine<T extends string | object> {
+export interface AibBlockLine<T extends string | object> {
   aifid?: string; // Unique ID
-  lineType: AifLineType; // Type of line
+  lineType: AibLineType; // Type of line
   left?: T | null; // Left aligned text in the row
   center?: T | null; // Center aligned text in the row
   right?: T | null; // Right aligned text in the row
@@ -11,7 +11,7 @@ export interface AifBlockLine<T extends string | object> {
   canChangeType?: boolean; // Can update the type of line
 }
 
-export const enum AifLineType {
+export const enum AibLineType {
   leftOnly = "Left only",
   centerOnly = "Center only",
   leftAndRight = "Left and Right",
