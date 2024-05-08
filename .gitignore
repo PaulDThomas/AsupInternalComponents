@@ -5,15 +5,14 @@
 /.pnp
 .pnp.js
 
-# utility
-/.vscode
-
 # testing
 /coverage
 
 # production
 /build
 /dist
+.parcel-cache
+deploy.ps1
 
 # misc
 .DS_Store
@@ -25,19 +24,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.parcel-cache/7f973df67467291d-AssetGraph-0
-.parcel-cache/013e0e1eae1d4f74-AssetGraph-0
-.parcel-cache/15c60de4cb00e476
-.parcel-cache/66a8b549ac7800e1-BundleGraph-0
-.parcel-cache/70f1f7555dda250d-AssetGraph-0
-.parcel-cache/a6a9046dd9796ab3-AssetGraph-0
-.parcel-cache/data.mdb
-.parcel-cache/f07a2cd5527985b8-BundleGraph-0
-.parcel-cache/lock.mdb
-.parcel-cache/requestGraph-2fa6e5088244f835-0
-.parcel-cache/requestGraph-d882c708c188d4bb-0
-.parcel-cache/requestGraph-nodes-0-2fa6e5088244f835-0
-.parcel-cache/requestGraph-nodes-0-d882c708c188d4bb-0
-.parcel-cache/snapshot-2fa6e5088244f835.txt
-.parcel-cache/snapshot-d882c708c188d4bb.txt
 deploy.ps1
