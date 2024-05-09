@@ -11,7 +11,7 @@ interface AitCellProps<T extends string | object> {
   aitid: string;
   text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
-  comments: string;
+  comments: T;
   colWidth?: number;
   displayColWidth?: number;
   textIndents?: number;
@@ -121,7 +121,7 @@ export const AitCell = <T extends string | object>({
     (cellUpdate: {
       text?: T;
       justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null;
-      comments?: string;
+      comments?: T;
       colWidth?: number;
       textIndents?: number;
     }) => {

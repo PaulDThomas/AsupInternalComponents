@@ -17,7 +17,7 @@ interface AitHeaderProps<T extends string | object> {
   id: string;
   aitid: string;
   rows: AitHeaderRowData<T>[];
-  comments?: string;
+  comments?: T;
   replacements?: AioReplacement[];
   setHeaderData?: (ret: AitRowGroupData<T>) => void;
   setColWidth: (colNo: number, colWidth: number) => void;
@@ -40,11 +40,7 @@ export const AitHeader = <T extends string | object>({
 
   // General function to return complied object
   const returnData = useCallback(
-    (headerUpdate: {
-      rows?: AitRowData<T>[];
-      comments?: string;
-      replacements?: AioReplacement[];
-    }) => {
+    (headerUpdate: { rows?: AitRowData<T>[]; comments?: T; replacements?: AioReplacement[] }) => {
       if (setHeaderData) {
         const r: AitRowGroupData<T> = {
           aitid: aitid,
@@ -199,7 +195,7 @@ export const AitHeader = <T extends string | object>({
               tableSettings.editable && typeof setHeaderData === "function"
                 ? (ret) => {
                     const newRows = [...rows];
-                    newRows.splice(ri, 1, ret);
+                    newRows.splice(ri, 1, ret as AitHeaderRowData<T>);
                     returnData({ rows: newRows });
                   }
                 : undefined
@@ -218,11 +214,11 @@ export const AitHeader = <T extends string | object>({
               tableSettings.editable ? (ret) => returnData({ replacements: ret }) : undefined
             }
             rowGroupWindowTitle={"Header options"}
-            rowGroupComments={comments ?? ""}
+            rowGroupComments={comments}
             updateRowGroupComments={
               tableSettings.editable
                 ? (ret) => {
-                    returnData({ comments: ret });
+                    returnData({ comments: ret as T });
                   }
                 : undefined
             }

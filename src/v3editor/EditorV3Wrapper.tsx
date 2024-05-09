@@ -6,7 +6,6 @@ interface EditorV3WrapperProps extends AsupInternalEditorProps<IEditorV3> {
   customStyleMap?: EditorV3Styles;
   debounceMilliseconds?: number;
   spellCheck?: boolean;
-  allowNewLine?: boolean;
 }
 
 export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
@@ -37,7 +36,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       style={{ ...props.style }}
       spellCheck={props.spellCheck ?? false}
       debounceMilliseconds={props.debounceMilliseconds ?? null}
-      allowNewLine={props.allowNewLine ?? false}
+      allowNewLine
     />
   );
 };

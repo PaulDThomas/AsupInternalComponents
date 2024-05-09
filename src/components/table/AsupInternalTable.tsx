@@ -91,7 +91,7 @@ export const AsupInternalTable = <T extends string | object>({
   // Explode tableData
   const [headerData, setHeaderData] = useState<AitHeaderGroupData<T> | false>();
   const [bodyData, setBodyData] = useState<AitRowGroupData<T>[]>();
-  const [comments, setComments] = useState<string>();
+  const [comments, setComments] = useState<T>();
   const [rowHeaderColumns, setRowHeaderColumns] = useState<number>();
   const [noRepeatProcessing, setNoRepeatProcessing] = useState<boolean>();
   const [windowZIndex, setWindowZIndex] = useState<number>(10000);
@@ -169,7 +169,7 @@ export const AsupInternalTable = <T extends string | object>({
       processedDataRef.current = { bodyData: processedBodyData, headerData: processedHeaderData };
 
     // Info that is not processed
-    setComments(tableData.comments ?? "");
+    setComments(tableData.comments);
     setRowHeaderColumns(tableData.rowHeaderColumns ?? 1);
     setNoRepeatProcessing(tableData.noRepeatProcessing ?? false);
     setDecimalAlignPercent(tableData.decimalAlignPercent ?? initialDecimalAlignPercent);
@@ -191,7 +191,7 @@ export const AsupInternalTable = <T extends string | object>({
       headerDataUnprocessed?: boolean;
       bodyData?: AitRowGroupData<T>[];
       bodyDataUnprocessed?: boolean;
-      comments?: string;
+      comments?: T;
       rowHeaderColumns?: number;
       noRepeatProcessing?: boolean;
       decimalAlignPercent?: number;
@@ -637,7 +637,7 @@ export const AsupInternalTable = <T extends string | object>({
                 <AioComment
                   id={`${id}-table-comment`}
                   label={"Notes"}
-                  value={comments ?? ""}
+                  value={comments}
                   setValue={
                     editable
                       ? (ret) => {

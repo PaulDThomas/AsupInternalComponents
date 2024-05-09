@@ -20,7 +20,7 @@ import { styleMapToExclude } from "./functions/styleMapToExclude";
 /** Interface for the AsupInternalEditor component */
 export interface AsupInternalEditorProps<T extends string | object> {
   id: string;
-  value: T;
+  value?: T;
   setValue?: (ret: T) => void;
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;

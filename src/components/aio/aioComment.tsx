@@ -1,22 +1,26 @@
 import * as React from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AioLabel } from "./aioLabel";
+import { TableSettingsContext } from "../table/TableSettingsContext";
 
-interface AioCommentProps {
+interface AioCommentProps<T extends string | object> {
   id: string;
   label?: string;
-  value: string;
-  setValue?: (value: string) => void;
+  value?: T;
+  setValue?: (value: T) => void;
   commentStyles?: AieStyleMap;
 }
 
-export const AioComment = ({
+export const AioComment = <T extends string | object>({
   id,
   label,
   value,
   setValue,
   commentStyles,
-}: AioCommentProps): JSX.Element => {
+}: AioCommentProps<T>): JSX.Element => {
+  // Context
+  const tableSettings = React.useContext(TableSettingsContext);
+  const Editor = tableSettings.Editor ?? AsupInternalEditor;
   return (
     <>
       <AioLabel
@@ -24,12 +28,12 @@ export const AioComment = ({
         label={label}
       />
       <div className={"aio-input-holder"}>
-        <AsupInternalEditor
+        <Editor
           id={`${id}-editor`}
           showStyleButtons={typeof commentStyles === "object"}
           value={value}
           editable={typeof setValue === "function"}
-          setValue={typeof setValue === "function" ? (ret) => setValue(ret) : undefined}
+          setValue={typeof setValue === "function" ? (ret) => setValue(ret as T) : undefined}
           styleMap={commentStyles}
         />
       </div>

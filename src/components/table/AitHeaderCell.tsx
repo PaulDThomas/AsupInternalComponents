@@ -11,7 +11,7 @@ interface AitHeaderCellProps<T extends string | object> {
   aitid: string;
   text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
-  comments: string;
+  comments?: T;
   rowSpan: number;
   colSpan: number;
   colWidth?: number;
@@ -128,7 +128,7 @@ export const AitHeaderCell = <T extends string | object>({
     (cellUpdate: {
       text?: T;
       justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | null;
-      comments?: string;
+      comments?: T;
       colWidth?: number;
       textIndents?: number;
     }) => {
@@ -258,7 +258,7 @@ export const AitHeaderCell = <T extends string | object>({
                 value={comments}
                 setValue={
                   !currentReadOnly && isNotRepeat
-                    ? (ret) => returnData({ comments: ret })
+                    ? (ret) => returnData({ comments: ret as T })
                     : undefined
                 }
                 commentStyles={tableSettings.commentStyles}
@@ -275,12 +275,12 @@ export const AitHeaderCell = <T extends string | object>({
             </div>
             <div className="aiw-body-row">
               <div className={"aio-label"}>Unprocessed text: </div>
-              <AsupInternalEditor
+              <Editor
                 id={`${id}-unprocessed`}
                 value={text}
                 setValue={
                   !readOnly && setCellData && isNotRepeat && tableSettings.editable
-                    ? (ret) => returnData({ text: ret })
+                    ? (ret) => returnData({ text: ret as T })
                     : undefined
                 }
                 style={

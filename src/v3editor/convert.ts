@@ -17,6 +17,7 @@ const convertHeaderCell = (cell: AitCellData<string | IEditorV3>): AitCellData<I
   text: typeof cell.text === "string" ? stringToV3(cell.text) : cell.text,
   replacedText:
     typeof cell.replacedText === "string" ? stringToV3(cell.replacedText) : cell.replacedText,
+  comments: typeof cell.comments === "string" ? stringToV3(cell.comments) : cell.comments,
 });
 
 const convertHeaderRow = (
@@ -31,6 +32,7 @@ const convertHeaderGroup = (
 ): AitHeaderGroupData<IEditorV3> => ({
   ...rg,
   rows: rg.rows.map((r) => convertHeaderRow(r)),
+  comments: typeof rg.comments === "string" ? stringToV3(rg.comments) : rg.comments,
 });
 
 const convertCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditorV3> => ({
@@ -38,6 +40,7 @@ const convertCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditor
   text: typeof cell.text === "string" ? stringToV3(cell.text) : cell.text,
   replacedText:
     typeof cell.replacedText === "string" ? stringToV3(cell.replacedText) : cell.replacedText,
+  comments: typeof cell.comments === "string" ? stringToV3(cell.comments) : cell.comments,
 });
 
 const convertRow = (row: AitRowData<string | IEditorV3>): AitRowData<IEditorV3> => ({
@@ -51,12 +54,14 @@ export const convertRowGroup = (
   ...rg,
   rows: rg.rows.map((r) => convertRow(r)),
   replacements: rg.replacements?.map((rep) => convertReplacements(rep)),
+  comments: typeof rg.comments === "string" ? stringToV3(rg.comments) : rg.comments,
 });
 
 export const convertTable = (table: AitTableData<string | IEditorV3>): AitTableData<IEditorV3> => ({
   ...table,
   headerData: table.headerData ? convertHeaderGroup(table.headerData) : table.headerData,
   bodyData: table.bodyData ? table.bodyData.map((rg) => convertRowGroup(rg)) : table.bodyData,
+  comments: typeof table.comments === "string" ? stringToV3(table.comments) : table.comments,
 });
 
 export const convertBlockLine = (

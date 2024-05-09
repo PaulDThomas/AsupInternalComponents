@@ -4,11 +4,13 @@ import { readV2DivElement } from "./readV2DivElement";
 export const stringToV3 = (value: string): IEditorV3 => {
   if (value.match(/^<div.*class/)) {
     const div = document.createElement("div");
-    div.innerHTML = value;
-    const blocks = readV2DivElement(div.childNodes[0] as HTMLDivElement);
-    return {
-      lines: [{ textBlocks: blocks.textBlocks.map((block) => block.data) }],
-    };
+    div.innerHTML = value.replace(/~/g, "</div><div>");
+    const ret: IEditorV3 = { lines: [] };
+    div.childNodes.forEach((node) => {
+      const blocks = readV2DivElement(node as HTMLDivElement);
+      ret.lines.push({ textBlocks: blocks.textBlocks.map((block) => block.data) });
+    });
+    return ret;
   } else {
     return {
       lines: [{ textBlocks: [{ text: value }] }],

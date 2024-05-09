@@ -25,8 +25,8 @@ interface AitHeaderRowProps<T extends string | object> {
   rowGroupWindowTitle?: string;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
-  rowGroupComments: string;
-  updateRowGroupComments?: (ret: string) => void;
+  rowGroupComments?: T;
+  updateRowGroupComments?: (ret: T) => void;
   addRow?: (ri: number) => void;
   removeRow?: (ri: number) => void;
   spaceAfter?: boolean;
@@ -214,7 +214,7 @@ export const AitHeaderRow = <T extends string | object>({
               aitid={cell.aitid ?? `cell-${ci}`}
               text={cell.text}
               justifyText={cell.justifyText}
-              comments={cell.comments ?? ""}
+              comments={cell.comments}
               colSpan={cell.colSpan ?? 1}
               rowSpan={cell.rowSpan ?? 1}
               colWidth={cell.colWidth}

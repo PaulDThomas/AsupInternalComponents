@@ -6,7 +6,7 @@ export interface AitCellData<T extends string | object> {
   aitid?: string; // Unique ID
   text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
-  comments?: string;
+  comments?: T;
   colWidth?: number;
   textIndents?: number; // Spaces/tabs at the start of the cell
   replacedText?: T; // Visible text after any list replacements
@@ -36,7 +36,7 @@ export interface AitRowGroupData<T extends string | object> {
   aitid?: string; // Unique ID
   name?: string; // Optional name for a row group type
   rows: AitRowData<T>[];
-  comments?: string;
+  comments?: T;
   spaceAfter?: boolean; // Indicator if there is space after the last row in the group
   replacements?: AioReplacement[]; // Replacement lists to use for repeats
 }
@@ -48,7 +48,7 @@ export interface AitHeaderGroupData<T extends string | object> extends AitRowGro
 export interface AitTableData<T extends string | object> {
   headerData?: AitHeaderGroupData<T> | false;
   bodyData?: AitRowGroupData<T>[];
-  comments?: string;
+  comments?: T;
   rowHeaderColumns?: number; // Number of label type columns before data is presented
   noRepeatProcessing?: boolean; // Indicator is repeat lists should be processed
   decimalAlignPercent?: number; // Decimal alignment percent

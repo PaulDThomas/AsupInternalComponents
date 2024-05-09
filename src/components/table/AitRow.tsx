@@ -18,8 +18,8 @@ interface AitRowProps<T extends string | object> {
   rowGroupWindowTitle?: string;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
-  rowGroupComments: string;
-  updateRowGroupComments?: (ret: string) => void;
+  rowGroupComments?: T;
+  updateRowGroupComments?: (ret: T) => void;
   addRow?: (ri: number) => void;
   removeRow?: (ri: number) => void;
   spaceAfter?: boolean;
@@ -207,7 +207,7 @@ export const AitRow = <T extends string | object>({
               location={{ ...location, column: cr?.columnIndex ?? -1, colRepeat: cr?.colRepeat }}
               setCellData={
                 editable && !isColumnRepeat && typeof addRow === "function"
-                  ? (ret) => updateCell(ret, ci)
+                  ? (ret) => updateCell(ret as AitCellData<T>, ci)
                   : undefined
               }
               setColWidth={editable && setColWidth ? (ret) => setColWidth(ci, ret) : undefined}

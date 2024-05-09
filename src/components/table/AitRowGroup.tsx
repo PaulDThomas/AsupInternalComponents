@@ -11,7 +11,7 @@ interface AitRowGroupProps<T extends string | object> {
   name?: string;
   location: AitLocation;
   rows: AitRowData<T>[];
-  comments?: string;
+  comments?: T;
   replacements: AioReplacement[];
   setRowGroupData?: (ret: AitRowGroupData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
@@ -41,7 +41,7 @@ export const AitRowGroup = <T extends string | object>({
       rows?: AitRowData<T>[];
       replacements?: AioReplacement[];
       spaceAfter?: boolean;
-      comments?: string;
+      comments?: T;
     }) => {
       if (tableSettings.editable && setRowGroupData) {
         const r: AitRowGroupData<T> = {
@@ -115,7 +115,7 @@ export const AitRowGroup = <T extends string | object>({
               tableSettings.editable
                 ? (ret) =>
                     updateRow(
-                      ret,
+                      ret as AitRowData<T>,
                       rows.findIndex((r) => r.aitid === row.aitid),
                     )
                 : undefined
@@ -132,7 +132,7 @@ export const AitRowGroup = <T extends string | object>({
             }
             addRowGroup={tableSettings.editable ? addRowGroup : undefined}
             removeRowGroup={tableSettings.editable ? removeRowGroup : undefined}
-            rowGroupComments={comments ?? ""}
+            rowGroupComments={comments}
             updateRowGroupComments={
               tableSettings.editable
                 ? (ret) => {
