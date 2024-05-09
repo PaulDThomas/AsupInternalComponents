@@ -1,5 +1,5 @@
-import { fromHtml } from "components/functions/tofromHtml";
 import { cloneDeep } from "lodash";
+import { fromHtml } from "../../functions/tofromHtml";
 
 /**
  * Replace text in HTML string, updating inline-style-ranges

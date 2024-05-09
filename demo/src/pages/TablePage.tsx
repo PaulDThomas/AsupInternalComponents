@@ -1,5 +1,7 @@
 import { IEditorV3 } from "@asup/editor-v3";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { getTextFromEditorV3 } from "v3editor/getTextFromEditorV3";
+import { replaceTextInEditorV3 } from "v3editor/replaceTextInEditorV3";
 import {
   AieStyleMap,
   AioExternalReplacements,
@@ -8,12 +10,9 @@ import {
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
+  convertTable,
 } from "../../../src/main";
-import {
-  EditorV3Wrapper,
-  getTextFromEditorV3,
-  replaceTextInEditorV3,
-} from "../../../src/v3editor/EditorV3Wrapper";
+import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -66,7 +65,7 @@ export const TablePage = () => {
         ta.current.value = window.localStorage.getItem("tableContent") ?? "";
       }
       if (ta.current) {
-        const j = JSON.parse(ta.current.value?.toString() ?? "{}");
+        const j = convertTable(JSON.parse(ta.current.value?.toString() ?? "{}"));
         setTableData(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
