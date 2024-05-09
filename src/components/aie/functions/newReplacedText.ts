@@ -1,3 +1,4 @@
+import { fromHtml } from "components/functions/tofromHtml";
 import { cloneDeep } from "lodash";
 
 /**
@@ -52,7 +53,7 @@ export const newReplacedText = <T extends string | object>(
       // Get new style lengths
       for (let j = 0; j < child.childNodes.length; j++) {
         child.childNodes[j].textContent =
-          child.childNodes[j].textContent?.replaceAll(oldPhrase, newPhrase) ?? "";
+          child.childNodes[j].textContent?.replaceAll(oldPhrase, fromHtml(newPhrase)) ?? "";
         // Should only be possible to have span and #text
         if (child.childNodes[j].nodeName === "SPAN") {
           const subchild = child.childNodes[j] as HTMLSpanElement;
