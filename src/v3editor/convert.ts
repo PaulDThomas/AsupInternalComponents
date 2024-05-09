@@ -72,11 +72,11 @@ export const convertBlockLine = (
   center: typeof bl.center === "string" ? stringToV3(bl.center) : bl.center ?? null,
   right: typeof bl.right === "string" ? stringToV3(bl.right) : bl.right ?? null,
   lineType:
-    bl.left === undefined && bl.right === undefined
+    !bl.left && !bl.right
       ? AibLineType.centerOnly
-      : bl.center === undefined && bl.right === undefined
+      : !bl.center && !bl.right
         ? AibLineType.leftOnly
-        : bl.center === undefined
+        : !bl.center
           ? AibLineType.leftAndRight
           : AibLineType.leftCenterAndRight,
 });
