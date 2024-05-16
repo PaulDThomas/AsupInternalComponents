@@ -1,5 +1,6 @@
 import { IEditorV3 } from "@asup/editor-v3";
 import { readV2DivElement } from "./readV2DivElement";
+import { fromHtml } from "../components/functions/tofromHtml";
 
 export const stringToV3 = (value: string): IEditorV3 => {
   if (value.match(/^<div.*class/)) {
@@ -13,7 +14,7 @@ export const stringToV3 = (value: string): IEditorV3 => {
     return ret;
   } else {
     return {
-      lines: [{ textBlocks: [{ text: value }] }],
+      lines: [{ textBlocks: [{ text: fromHtml(value), type: "text" }] }],
     };
   }
 };
