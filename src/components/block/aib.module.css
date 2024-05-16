@@ -18,8 +18,17 @@
   right: 0;
   margin-left: 0.25rem;
   width: 52px;
+  min-width: 52px;
+  max-width: 52px;
   display: flex;
   flex-direction: row;
+  opacity: 0.2;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.aibLine:hover .aibLineButtons {
+  visibility: visible;
+  opacity: 1;
 }
 
 .aibLine.aibReadOnly .aibLineItem,

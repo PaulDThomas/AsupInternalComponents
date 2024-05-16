@@ -157,6 +157,7 @@ export const AibLineDisplay = <T extends string | object>({
             <Editor
               id={`${id}-left-text`}
               value={displayLeft ?? ("" as T)}
+              editable={canEdit}
               setValue={
                 typeof setLine === "function" && displayLeft === left
                   ? (ret) => returnData({ left: ret })
@@ -177,6 +178,7 @@ export const AibLineDisplay = <T extends string | object>({
             <Editor
               id={`${id}-center-text`}
               value={displayCenter ?? ("" as T)}
+              editable={canEdit}
               setValue={
                 typeof setLine === "function" && displayCenter === center
                   ? (ret) => returnData({ center: ret })
@@ -200,6 +202,7 @@ export const AibLineDisplay = <T extends string | object>({
             <Editor
               id={`${id}-right-text`}
               value={displayRight ?? ("" as T)}
+              editable={canEdit}
               setValue={
                 typeof setLine === "function" && displayRight === right
                   ? (ret) => returnData({ right: ret })
@@ -243,4 +246,4 @@ export const AibLineDisplay = <T extends string | object>({
   );
 };
 
-AibLineDisplay.DisplayName = "AibLineDisplay";
+AibLineDisplay.displayName = "AibLineDisplay";

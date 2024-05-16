@@ -6,6 +6,7 @@ import {
   AioExternalSingle,
   AioSingleReplacements,
   AsupInternalBlock,
+  convertBlockLine,
   updateLineDisplayVersion,
 } from "../../../src/main";
 import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
@@ -59,7 +60,7 @@ export const BlockPage = () => {
           id="test-block-v3"
           lines={lines2}
           setLines={setLines2}
-          minLines={3}
+          minLines={1}
           maxLines={10}
           externalSingles={externalSingles}
           style={{ fontFamily: "Courier New", fontWeight: 800 }}
@@ -83,7 +84,7 @@ export const BlockPage = () => {
         />
       </div>
 
-      <div
+      {/* <div
         style={{
           width: "calc(vw - 4rem - 2px)",
           display: "flex",
@@ -110,9 +111,9 @@ export const BlockPage = () => {
           }}
           defaultType={AibLineType.centerOnly}
         />
-      </div>
+      </div> */}
 
-      <div
+      {/* <div
         style={{
           width: "calc(vw - 4rem - 2px)",
           display: "flex",
@@ -139,7 +140,7 @@ export const BlockPage = () => {
           }}
           defaultType={AibLineType.leftOnly}
         />
-      </div>
+      </div> */}
 
       <div
         style={{
@@ -196,6 +197,8 @@ export const BlockPage = () => {
               }
               const j = updateLineDisplayVersion(JSON.parse(ta.current.value ?? "[]"));
               setLines(j);
+              const convert = j.map((l) => convertBlockLine(l));
+              setLines2(convert);
             } catch (e) {
               console.warn("JSON parse failed");
               console.dir(e);
