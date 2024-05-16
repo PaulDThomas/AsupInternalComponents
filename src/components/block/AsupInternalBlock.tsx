@@ -174,4 +174,4 @@ export const AsupInternalBlock = <T extends string | object>({
   );
 };
 
-AsupInternalBlock.DisplayName = "AsupInternalBlock";
+AsupInternalBlock.displayName = "AsupInternalBlock";

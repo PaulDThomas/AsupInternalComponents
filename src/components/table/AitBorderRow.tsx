@@ -137,3 +137,5 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
     </>
   );
 };
+
+AitBorderRow.displayName = "AitBorderRow";

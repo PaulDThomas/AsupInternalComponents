@@ -306,3 +306,5 @@ export const AitHeaderRow = <T extends string | object>({
     </>
   );
 };
+
+AitHeaderRow.displayName = "AitHeaderRow";

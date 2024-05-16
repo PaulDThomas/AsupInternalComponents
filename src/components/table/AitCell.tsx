@@ -372,3 +372,5 @@ export const AitCell = <T extends string | object>({
     </td>
   );
 };
+
+AitCell.displayName = "AitCell";

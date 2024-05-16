@@ -814,3 +814,5 @@ export const AsupInternalTable = <T extends string | object>({
     </TableSettingsContext.Provider>
   );
 };
+
+AsupInternalTable.displayName = "AsupInternalTable";

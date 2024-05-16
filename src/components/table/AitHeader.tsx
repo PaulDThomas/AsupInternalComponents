@@ -240,3 +240,5 @@ export const AitHeader = <T extends string | object>({
     </>
   );
 };
+
+AitHeader.displayName = "AitHeader";

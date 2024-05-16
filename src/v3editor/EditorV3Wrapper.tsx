@@ -26,11 +26,8 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
     <EditorV3
       id={props.id}
       input={adjustedValue}
-      setObject={(ret) => {
-        console.log(ret);
-        props.setValue && props.setValue(ret);
-      }}
-      editable={props.editable}
+      setObject={(ret) => props.setValue && props.setValue(ret)}
+      editable={props.editable === true}
       customStyleMap={customStyleMap}
       textAlignment={props.textAlignment as EditorV3Align}
       style={{ ...props.style }}
@@ -40,3 +37,5 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
     />
   );
 };
+
+EditorV3Wrapper.displayName = "EditorV3Wrapper";

@@ -106,3 +106,5 @@ export const AioIconButton = ({
     </div>
   );
 };
+
+AioIconButton.displayName = "AioIconButton";

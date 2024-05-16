@@ -421,3 +421,5 @@ export const AitHeaderCell = <T extends string | object>({
     </td>
   );
 };
+
+AitHeaderCell.displayName = "AitHeaderCell";

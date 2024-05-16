@@ -258,3 +258,5 @@ export const AitRow = <T extends string | object>({
     </>
   );
 };
+
+AitRow.displayName = "AitRow";

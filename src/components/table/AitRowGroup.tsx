@@ -164,3 +164,5 @@ export const AitRowGroup = <T extends string | object>({
     </>
   );
 };
+
+AitRowGroup.displayName = "AitRowGroup";

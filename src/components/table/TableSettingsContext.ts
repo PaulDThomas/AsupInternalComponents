@@ -18,3 +18,5 @@ const defaultSettings: AitOptionList<string | object> = {
 export const TableSettingsContext = React.createContext<AitOptionList<string | object>>(
   defaultSettings as AitOptionList<string | object>,
 );
+
+TableSettingsContext.displayName = "TableSettingsContext";
