@@ -34,6 +34,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       spellCheck={props.spellCheck ?? false}
       debounceMilliseconds={props.debounceMilliseconds ?? null}
       allowNewLine
+      noBorder
     />
   );
 };

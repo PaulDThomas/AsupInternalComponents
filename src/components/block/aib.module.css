@@ -27,7 +27,6 @@
 }
 
 .aibLine:hover .aibLineButtons {
-  visibility: visible;
   opacity: 1;
 }
 

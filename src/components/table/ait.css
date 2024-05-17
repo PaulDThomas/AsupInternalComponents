@@ -107,6 +107,15 @@ table.ait-table {
 .ait-aie-holder {
   height: 100%;
   display: flex;
-  padding-left: 2px;
-  padding-right: 2px;
+}
+
+.ait-aie-holder .ait-aie-holder-button {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+.ait-aie-holder:hover .ait-aie-holder-button {
+  opacity: 1;
+  visibility: visible;
 }

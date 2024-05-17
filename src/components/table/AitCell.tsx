@@ -50,7 +50,6 @@ export const AitCell = <T extends string | object>({
   /* Need to update if these change */
   useEffect(() => setDisplayText(replacedText ?? text), [replacedText, text]);
 
-  const [buttonState, setButtonState] = useState("hidden");
   const [showCellOptions, setShowCellOptions] = useState(false);
 
   // Static options/variables
@@ -153,14 +152,6 @@ export const AitCell = <T extends string | object>({
     ],
   );
 
-  // Show hide/buttons that trigger windows
-  const aitShowButtons = () => {
-    setButtonState("");
-  };
-  const aitHideButtons = () => {
-    setButtonState("hidden");
-  };
-
   // Render element
   return (
     <td
@@ -176,28 +167,22 @@ export const AitCell = <T extends string | object>({
       data-location-row={location.row}
       data-location-cell={location.column}
     >
-      <div
-        className="ait-aie-holder"
-        onMouseOver={aitShowButtons}
-        onMouseLeave={aitHideButtons}
-      >
-        <>
-          <div
-            style={{
-              position: "absolute",
-              right: "-8px",
-              visibility: buttonState === "hidden" ? "hidden" : "visible",
-            }}
-          >
-            {/* Option buttons  */}
-            <AioIconButton
-              id={`${id}-options`}
-              tipText="Cell Options"
-              onClick={() => setShowCellOptions(!showCellOptions)}
-              iconName="aio-button-cell"
-            />
-          </div>
-        </>
+      <div className="ait-aie-holder">
+        <div
+          className="ait-aie-holder-button"
+          style={{
+            position: "absolute",
+            right: "-8px",
+          }}
+        >
+          {/* Option buttons  */}
+          <AioIconButton
+            id={`${id}-options`}
+            tipText="Cell Options"
+            onClick={() => setShowCellOptions(!showCellOptions)}
+            iconName="aio-button-cell"
+          />
+        </div>
 
         {/* Cell text editor */}
         <Editor
