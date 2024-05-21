@@ -35,6 +35,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       debounceMilliseconds={props.debounceMilliseconds ?? null}
       allowNewLine
       noBorder
+      allowWindowView
     />
   );
 };

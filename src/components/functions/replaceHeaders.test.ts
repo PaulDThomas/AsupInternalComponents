@@ -3,6 +3,8 @@ import { AitColumnRepeat, AitHeaderRowData } from "../table/interface";
 import { newHeaderRow } from "./newRow";
 import { replaceHeaders } from "./replaceHeaders";
 
+jest.mock("./newRow");
+
 describe("Check replace headers", () => {
   const rows: AitHeaderRowData<string>[] = [newHeaderRow(60, 3)];
   for (let i = 0; i++; i < 3) {
@@ -15,7 +17,13 @@ describe("Check replace headers", () => {
   ];
 
   test("Basic checks", () => {
-    const postProcess = replaceHeaders(2, rows, columnRepeats, 60);
+    const postProcess = replaceHeaders(
+      2,
+      rows,
+      columnRepeats,
+      60,
+      (s: string, o: string, n: string) => s.replace(o, n),
+    );
     expect(postProcess.newHeaderRows).toEqual(rows);
     expect(postProcess.newColumnRepeats).toEqual(columnRepeats);
   });
@@ -103,7 +111,14 @@ describe("Check replace headers", () => {
   };
 
   test("Complex header 1", () => {
-    const postProcess = replaceHeaders(1, rowsC1, columnRepeatsC1, 60, replacement);
+    const postProcess = replaceHeaders(
+      1,
+      rowsC1,
+      columnRepeatsC1,
+      60,
+      (s: string, o: string, n: string) => s.replace(o, n),
+      replacement,
+    );
     expect(postProcess.newColumnRepeats).toEqual([
       { columnIndex: 0 },
       { columnIndex: 1, colRepeat: "[0,0]" },

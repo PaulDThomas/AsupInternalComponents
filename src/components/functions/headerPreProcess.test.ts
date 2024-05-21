@@ -2,6 +2,8 @@ import { AitRowGroupData } from "../table/interface";
 import { headerPreProcess } from "./headerPreProcess";
 import { newRow } from "./newRow";
 
+jest.mock("./newRow");
+
 describe("Check body pre-process", () => {
   const a: AitRowGroupData<string> = {
     rows: [newRow(60)],

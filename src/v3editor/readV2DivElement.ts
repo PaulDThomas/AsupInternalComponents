@@ -34,7 +34,7 @@ export const readV2DivElement = (
         // If span has no style
         else {
           // Add text block without style
-          const newBlock = new EditorV3TextBlock({ text: child.textContent });
+          const newBlock = new EditorV3TextBlock({ text: child.textContent, type: "text" });
           ret.textBlocks.push(newBlock);
         }
       }
@@ -44,7 +44,7 @@ export const readV2DivElement = (
       // If text node has text
       if (child.textContent) {
         // Add text block without style
-        ret.textBlocks.push(new EditorV3TextBlock({ text: child.textContent }));
+        ret.textBlocks.push(new EditorV3TextBlock({ text: child.textContent, type: "text" }));
       }
     }
   });

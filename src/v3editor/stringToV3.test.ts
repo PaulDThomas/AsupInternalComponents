@@ -4,7 +4,7 @@ describe("stringToV3", () => {
   test("Should return editor object from normal string", async () => {
     const result = stringToV3("Hello");
     expect(result).toEqual({
-      lines: [{ textBlocks: [{ text: "Hello" }] }],
+      lines: [{ textBlocks: [{ text: "Hello", type: "text" }] }],
     });
   });
 

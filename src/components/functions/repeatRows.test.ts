@@ -130,9 +130,17 @@ describe("Check repeat rows", () => {
   ];
 
   test("Complex rows", async () => {
-    const repeated = repeatRows(rows, 60, replacements, true, false, undefined, [
-      { oldText: "p1", newText: "p1!" },
-    ]);
+    const repeated = repeatRows(
+      rows,
+      60,
+
+      (s: string, o: string, n: string) => s.replace(o, n),
+      replacements,
+      true,
+      false,
+      undefined,
+      [{ oldText: "p1", newText: "p1!" }],
+    );
     const repeatedTexts = repeated.map((r) =>
       r.cells.map((c) => c.replacedText ?? c.text).join(","),
     );
