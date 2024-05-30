@@ -18,6 +18,7 @@ import { updateExternals } from "./updateExternals";
 export const repeatRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
+  getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   replacements?: AioReplacement[],
   spaceAfter?: boolean,
@@ -45,7 +46,13 @@ export const repeatRows = <T extends string | object>(
         extReplacements[si].includeTrailing = false;
       }
       // Run current replacement
-      newRows = replaceRows(newRows, defaultCellWidth, replaceTextInT, extReplacements[si]);
+      newRows = replaceRows(
+        newRows,
+        defaultCellWidth,
+        getTextFromT,
+        replaceTextInT,
+        extReplacements[si],
+      );
     }
   }
 

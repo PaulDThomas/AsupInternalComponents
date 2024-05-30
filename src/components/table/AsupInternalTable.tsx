@@ -122,6 +122,7 @@ export const AsupInternalTable = <T extends string | object>({
         processedHeaderData.rows,
         processedHeaderData.replacements ?? [],
         defaultCellWidth,
+        getTextFromT,
         replaceTextInT,
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
@@ -149,6 +150,7 @@ export const AsupInternalTable = <T extends string | object>({
         rows: repeatRows(
           rg.rows,
           defaultCellWidth,
+          getTextFromT,
           replaceTextInT,
           rg.replacements,
           rg.spaceAfter,

@@ -2,11 +2,14 @@ import { fromHtml } from "../../functions/tofromHtml";
 
 export const getRawTextParts = (s: string | object): string[] => {
   // Generic object search
-  if (typeof s === "object") {
+  if (typeof s === "object" && s !== null) {
     const ret: string[] = [];
     const extractText = (obj: object) => {
       Object.keys(obj).forEach((key) => {
-        if (typeof obj[key as keyof typeof obj] === "object") {
+        if (
+          typeof obj[key as keyof typeof obj] === "object" &&
+          obj[key as keyof typeof obj] !== null
+        ) {
           extractText(obj[key as keyof typeof obj]);
         } else if (key === "text") {
           ret.push(obj[key as keyof typeof obj]);

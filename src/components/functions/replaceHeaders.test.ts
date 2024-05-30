@@ -22,6 +22,7 @@ describe("Check replace headers", () => {
       rows,
       columnRepeats,
       60,
+      (s: string) => [s],
       (s: string, o: string, n: string) => s.replace(o, n),
     );
     expect(postProcess.newHeaderRows).toEqual(rows);
@@ -116,6 +117,7 @@ describe("Check replace headers", () => {
       rowsC1,
       columnRepeatsC1,
       60,
+      (s: string) => [s],
       (s: string, o: string, n: string) => s.replace(o, n),
       replacement,
     );

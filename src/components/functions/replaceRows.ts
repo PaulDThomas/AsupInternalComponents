@@ -1,4 +1,3 @@
-import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
 import { AitRowData } from "../table/interface";
 import { replaceCellText } from "./replaceCellText";
@@ -14,6 +13,7 @@ import { updateExternals } from "./updateExternals";
 export const replaceRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
+  getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
@@ -44,7 +44,7 @@ export const replaceRows = <T extends string | object>(
       console.groupEnd();
     } else
       for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
-        const cellTextParts: string[] = getRawTextParts(
+        const cellTextParts: string[] = getTextFromT(
           rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
         );
         if (
@@ -131,6 +131,7 @@ export const replaceRows = <T extends string | object>(
                   lowerQuad = replaceRows(
                     lowerQuad,
                     defaultCellWidth,
+                    getTextFromT,
                     replaceTextInT,
                     subLists[si],
                   );

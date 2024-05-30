@@ -1,4 +1,3 @@
-import { getRawTextParts } from "../aie/functions/getRawTextParts";
 import { AioExternalReplacements, AioReplacement } from "../aio";
 import {
   AitColumnRepeat,
@@ -23,6 +22,7 @@ export const replaceHeaders = <T extends string | object>(
   rows: AitHeaderRowData<T>[],
   columnRepeats: AitColumnRepeat[],
   defaultCellWidth: number,
+  getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
@@ -65,7 +65,7 @@ export const replaceHeaders = <T extends string | object>(
     // Go through each row if we are still looking
     else {
       for (let ri = 0; ri < rows.length; ri++) {
-        const cellTextParts: string[] = getRawTextParts(
+        const cellTextParts: string[] = getTextFromT(
           rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
         );
         // React if found
@@ -102,6 +102,7 @@ export const replaceHeaders = <T extends string | object>(
                     })
                   : [],
                 defaultCellWidth,
+                getTextFromT,
                 replaceTextInT,
                 nextReplacement,
               );

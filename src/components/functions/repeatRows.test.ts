@@ -133,7 +133,7 @@ describe("Check repeat rows", () => {
     const repeated = repeatRows(
       rows,
       60,
-
+      (s: string) => [s],
       (s: string, o: string, n: string) => s.replace(o, n),
       replacements,
       true,
