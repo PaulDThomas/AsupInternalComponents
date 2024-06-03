@@ -75,17 +75,20 @@ export const AitRowGroup = <T extends string | object>({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr = newRow<T>(tableSettings.defaultCellWidth, 0);
+      const newr = newRow<T>(tableSettings.defaultCellWidth, tableSettings.blank as T, 0);
       const cols = rows[0].cells.length;
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
-        const c = newCell<T>(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
+        const c = newCell<T>(
+          rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth,
+          tableSettings.blank as T,
+        );
         newr.cells.push(c);
       }
       newrs.splice(ri + 1, 0, newr);
       returnData({ rows: newrs });
     },
-    [returnData, rows, tableSettings.defaultCellWidth],
+    [returnData, rows, tableSettings.blank, tableSettings.defaultCellWidth],
   );
 
   const removeRow = useCallback(

@@ -24,6 +24,7 @@ export const replaceHeaders = <T extends string | object>(
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
+  blankT: T,
   replacement?: AioReplacement,
   externalLists?: AioExternalReplacements[],
 ): { newHeaderRows: AitHeaderRowData<T>[]; newColumnRepeats: AitColumnRepeat[] } => {
@@ -104,6 +105,7 @@ export const replaceHeaders = <T extends string | object>(
                 defaultCellWidth,
                 getTextFromT,
                 replaceTextInT,
+                blankT,
                 nextReplacement,
               );
 
@@ -135,7 +137,7 @@ export const replaceHeaders = <T extends string | object>(
               ) {
                 const nIns = thisRepeat.repeatColSpan - thisRepeat.colSpan;
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newHeaderCell<T>(defaultCellWidth);
+                  const n = newHeaderCell<T>(defaultCellWidth, blankT);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   targetRow.cells.push(n);
@@ -219,7 +221,7 @@ export const replaceHeaders = <T extends string | object>(
                   (targetCellAbove.repeatColSpan ?? targetCellAbove.colSpan ?? 1) + nIns;
                 const newCells2: AitHeaderCellData<T>[] = [];
                 for (let nci = 0; nci < nIns; nci++) {
-                  const n = newHeaderCell<T>(defaultCellWidth);
+                  const n = newHeaderCell<T>(defaultCellWidth, blankT);
                   n.colSpan = 0;
                   n.repeatColSpan = 0;
                   newCells2.push(n);

@@ -57,11 +57,18 @@ export const AitHeader = <T extends string | object>({
   const addRow = useCallback(
     (ri: number) => {
       const newrs = [...rows];
-      const newr: AitHeaderRowData<T> = newRow(tableSettings.defaultCellWidth, 0);
+      const newr: AitHeaderRowData<T> = newRow(
+        tableSettings.defaultCellWidth,
+        tableSettings.blank as T,
+        0,
+      );
       const cols = rows[0].cells.map((c) => c.colSpan ?? 1).reduce((sum, a) => sum + a, 0);
       for (let ci = 0; ci < cols; ci++) {
         // Create new cell, use column width from row 0
-        const c = newHeaderCell<T>(rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth);
+        const c = newHeaderCell<T>(
+          rows[0].cells[ci].colWidth ?? tableSettings.defaultCellWidth,
+          tableSettings.blank as T,
+        );
         // Check rowSpans on previous row
         if ((newrs[ri].cells[ci].rowSpan ?? 1) !== 1) {
           let riUp = 0;
@@ -75,7 +82,7 @@ export const AitHeader = <T extends string | object>({
       newrs.splice(ri + 1, 0, newr);
       returnData({ rows: newrs });
     },
-    [returnData, rows, tableSettings.defaultCellWidth],
+    [returnData, rows, tableSettings.blank, tableSettings.defaultCellWidth],
   );
 
   const removeRow = useCallback(

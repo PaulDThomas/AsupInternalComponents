@@ -5,10 +5,11 @@ import { AitCellData, AitHeaderCellData } from "../table/interface";
  * @param type Type of cell to create
  * @returns data for a new blank cell
  */
-export const newCell = <T extends string | object>(cellWidth: number): AitCellData<T> => {
+export const newCell = <T extends string | object>(cellWidth: number, blank: T): AitCellData<T> => {
   const cell: AitCellData<T> = {
     aitid: crypto.randomUUID(),
-    text: "" as T,
+    text: blank as T,
+    comments: blank as T,
     colWidth: cellWidth,
   };
   return cell;
@@ -21,10 +22,12 @@ export const newCell = <T extends string | object>(cellWidth: number): AitCellDa
  */
 export const newHeaderCell = <T extends string | object>(
   cellWidth: number,
+  blank: T,
 ): AitHeaderCellData<T> => {
   const cell: AitHeaderCellData<T> = {
     aitid: crypto.randomUUID(),
-    text: "" as T,
+    text: blank as T,
+    comments: blank as T,
     rowSpan: 1,
     colSpan: 1,
     colWidth: cellWidth,

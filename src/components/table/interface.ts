@@ -6,7 +6,7 @@ export interface AitCellData<T extends string | object> {
   aitid?: string; // Unique ID
   text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
-  comments?: T;
+  comments: T;
   colWidth?: number;
   textIndents?: number; // Spaces/tabs at the start of the cell
   replacedText?: T; // Visible text after any list replacements
@@ -94,6 +94,7 @@ export interface AitOptionList<T extends string | object> {
   colWidthMod: number;
   decimalAlignPercent: number;
   defaultCellWidth: number;
+  blank: T;
 
   /* Table options with setters */
   editable: boolean;

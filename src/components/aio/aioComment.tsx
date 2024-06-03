@@ -27,7 +27,7 @@ export const AioComment = <T extends string | object>({
         id={`${id}-label`}
         label={label}
       />
-      <div className={"aio-input-holder"}>
+      <div className={"aio-comment-holder"}>
         <Editor
           id={`${id}-editor`}
           showStyleButtons={typeof commentStyles === "object"}

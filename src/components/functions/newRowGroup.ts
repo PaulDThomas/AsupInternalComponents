@@ -10,6 +10,7 @@ import { AitCellData, AitRowGroupData } from "../table/interface";
  */
 export const newRowGroup = <T extends string | object>(
   defaultCellWidth: number,
+  blank: T,
   l?: number,
   newRowGroupTemplate?: AitRowGroupData<T>,
 ): AitRowGroupData<T> => {
@@ -22,14 +23,14 @@ export const newRowGroup = <T extends string | object>(
         newCells.push(
           row.cells[ci] !== undefined
             ? { ...row.cells[ci], aitid: crypto.randomUUID() }
-            : newCell(defaultCellWidth),
+            : newCell(defaultCellWidth, blank),
         );
       }
       return {
         aitid: crypto.randomUUID(),
         cells: newCells,
       };
-    }) ?? [newRow(defaultCellWidth, l)],
+    }) ?? [newRow(defaultCellWidth, blank, l)],
     spaceAfter: true,
   };
 };

@@ -1,17 +1,17 @@
-import { ContextWindow } from "@asup/context-menu";
 import { DraftComponent } from "draft-js";
 import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AsupInternalEditor } from "../aie";
-import { AioComment, AioExpander, AioIconButton, AioNumber, AioSelect } from "../aio";
-import { AitCellData, AitHeaderCellData, AitLocation } from "./interface";
+import { AioIconButton } from "../aio";
+import { AitCellWindow } from "./AitCellWindow";
 import { TableSettingsContext } from "./TableSettingsContext";
+import { AitCellData, AitCellType, AitHeaderCellData, AitLocation } from "./interface";
 
 interface AitHeaderCellProps<T extends string | object> {
   id: string;
   aitid: string;
   text: T;
   justifyText?: DraftComponent.Base.DraftTextAlignment | "decimal" | "default";
-  comments?: T;
+  comments: T;
   rowSpan: number;
   colSpan: number;
   colWidth?: number;
@@ -83,12 +83,6 @@ export const AitHeaderCell = <T extends string | object>({
       replacedText !== undefined
     );
   }, [readOnly, replacedText, setCellData, tableSettings.editable]);
-  const isNotRepeat = useMemo<boolean>(
-    () =>
-      (location.colRepeat === undefined || location.colRepeat.match(/^[[\]0,]+$/) !== null) &&
-      (location.rowRepeat === undefined || location.rowRepeat.match(/^[[\]0,]+$/) !== null),
-    [location],
-  );
 
   // Update cell style when options change
   const cellStyle = useMemo<React.CSSProperties>(() => {
@@ -242,180 +236,30 @@ export const AitHeaderCell = <T extends string | object>({
       <div>
         {/* Cell options window */}
         {showCellOptions && (
-          <ContextWindow
-            id={`${id}-window`}
-            key="Cell"
-            title={"Cell options"}
-            visible={showCellOptions}
-            onClose={() => {
-              setShowCellOptions(false);
-            }}
-          >
-            <div className="aiw-body-row">
-              <AioComment
-                id={`${id}-notes`}
-                label={"Notes"}
-                value={comments}
-                setValue={
-                  !currentReadOnly && isNotRepeat
-                    ? (ret) => returnData({ comments: ret as T })
-                    : undefined
-                }
-                commentStyles={tableSettings.commentStyles}
-              />
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Cell location: </div>
-              <div className={"aio-value"}>
-                <AioExpander
-                  id={`${id}-location`}
-                  inputObject={location}
-                />
-              </div>
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Unprocessed text: </div>
-              <Editor
-                id={`${id}-unprocessed`}
-                value={text}
-                setValue={
-                  !readOnly && setCellData && isNotRepeat && tableSettings.editable
-                    ? (ret) => returnData({ text: ret as T })
-                    : undefined
-                }
-                style={
-                  !readOnly && setCellData && isNotRepeat && tableSettings.editable
-                    ? {
-                        border: "1px solid black",
-                        backgroundColor: "white",
-                        borderRadius: "2px",
-                        marginRight: "0.5rem",
-                        paddingBottom: "4px",
-                      }
-                    : { border: 0 }
-                }
-                showStyleButtons={tableSettings.cellStyles !== undefined}
-                styleMap={tableSettings.cellStyles}
-                textAlignment={justifyText}
-                decimalAlignPercent={tableSettings.decimalAlignPercent}
-              />
-            </div>
-            <div className="aiw-body-row">
-              <AioSelect
-                id={`${id}-justify`}
-                label="Justify text"
-                value={
-                  justifyText === undefined
-                    ? "Default"
-                    : justifyText.charAt(0).toUpperCase() + justifyText.substring(1)
-                }
-                availableValues={["Default", "Left", "Center", "Right", "Decimal"]}
-                setValue={
-                  !currentReadOnly && isNotRepeat
-                    ? (ret) => {
-                        let newJ:
-                          | DraftComponent.Base.DraftTextAlignment
-                          | "decimal"
-                          | null
-                          | undefined = undefined;
-                        switch (ret) {
-                          case "Left":
-                            newJ = "left";
-                            break;
-                          case "Right":
-                            newJ = "right";
-                            break;
-                          case "Center":
-                            newJ = "center";
-                            break;
-                          case "Decimal":
-                            newJ = "decimal";
-                            break;
-                          case "Default":
-                            newJ = null;
-                            break;
-                          default:
-                            break;
-                        }
-                        returnData({ justifyText: newJ });
-                      }
-                    : undefined
-                }
-              />
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Row span: </div>
-              <div className={"aio-ro-value"}>{repeatRowSpan ?? rowSpan ?? 1}</div>
-              <div
-                className={"aiox-button-holder"}
-                style={{ padding: "2px" }}
-              >
-                {repeatRowSpan === undefined &&
-                !currentReadOnly &&
-                isNotRepeat &&
-                typeof addRowSpan === "function" &&
-                colSpan === 1 ? (
-                  <div
-                    id={`${id}-add-rowspan`}
-                    className="aiox-button aiox-plus"
-                    onClick={() => addRowSpan(location)}
-                  />
-                ) : (
-                  <div className="aiox-button" />
-                )}
-                {repeatRowSpan === undefined &&
-                  !currentReadOnly &&
-                  isNotRepeat &&
-                  typeof removeRowSpan === "function" && (
-                    <div
-                      id={`${id}-remove-rowspan`}
-                      className="aiox-button aiox-minus"
-                      onClick={() => removeRowSpan(location)}
-                    />
-                  )}
-              </div>
-            </div>
-            <div className="aiw-body-row">
-              <div className={"aio-label"}>Column span: </div>
-              <div className={"aio-ro-value"}>{repeatColSpan ?? colSpan ?? 1}</div>
-              <div
-                className={"aiox-button-holder"}
-                style={{ padding: "2px" }}
-              >
-                {repeatColSpan === undefined &&
-                !currentReadOnly &&
-                isNotRepeat &&
-                typeof addColSpan === "function" &&
-                rowSpan === 1 ? (
-                  <div
-                    id={`${id}-add-colspan`}
-                    className="aiox-button aiox-plus"
-                    onClick={() => addColSpan(location)}
-                  />
-                ) : (
-                  <div className="aiox-button" />
-                )}
-                {repeatColSpan === undefined &&
-                  !currentReadOnly &&
-                  isNotRepeat &&
-                  typeof removeColSpan === "function" && (
-                    <div
-                      id={`${id}-remove-colspan`}
-                      className="aiox-button aiox-minus"
-                      onClick={() => removeColSpan(location)}
-                    />
-                  )}
-              </div>
-            </div>
-            <div className="aiw-body-row">
-              <AioNumber
-                id={`${id}-width`}
-                label="Width (mm)"
-                value={displayColWidth ?? tableSettings.defaultCellWidth}
-                setValue={!currentReadOnly && setColWidth ? (ret) => setColWidth(ret) : undefined}
-              />
-            </div>
-          </ContextWindow>
+          <AitCellWindow
+            id={id}
+            text={text}
+            justifyText={justifyText}
+            comments={comments}
+            displayColWidth={displayColWidth}
+            textIndents={textIndents}
+            setCellData={setCellData}
+            setColWidth={setColWidth}
+            readOnly={readOnly}
+            location={location}
+            showCellOptions={showCellOptions}
+            setShowCellOptions={setShowCellOptions}
+            returnData={returnData}
+            cellType={AitCellType.header}
+            rowSpan={rowSpan}
+            repeatRowSpan={repeatRowSpan}
+            addRowSpan={addRowSpan}
+            removeRowSpan={removeRowSpan}
+            colSpan={colSpan}
+            repeatColSpan={repeatColSpan}
+            addColSpan={addColSpan}
+            removeColSpan={removeColSpan}
+          />
         )}
       </div>
     </td>

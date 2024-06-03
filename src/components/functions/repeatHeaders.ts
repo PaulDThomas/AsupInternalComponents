@@ -20,6 +20,7 @@ export const repeatHeaders = <T extends string | object>(
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
+  blankT: T,
   noProcessing?: boolean,
   rowHeaderColumns?: number,
   externalLists?: AioExternalReplacements[],
@@ -49,6 +50,7 @@ export const repeatHeaders = <T extends string | object>(
       defaultCellWidth,
       getTextFromT,
       replaceTextInT,
+      blankT,
       rep,
       undefined,
     );

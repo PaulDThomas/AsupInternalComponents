@@ -10,6 +10,7 @@ const defaultSettings: AitOptionList<string | object> = {
   colWidthMod: 1.5,
   decimalAlignPercent: 60,
   defaultCellWidth: 60,
+  blank: "",
   editable: true,
   Editor: AsupInternalEditor,
   getTextFromT: getRawTextParts,

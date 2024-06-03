@@ -56,6 +56,7 @@ interface AsupInternalTableProps<T extends string | object> {
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
   getTextFromT?: (text: T) => string[];
   replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
+  blankT?: T;
 }
 
 /**
@@ -83,6 +84,7 @@ export const AsupInternalTable = <T extends string | object>({
   Editor = AsupInternalEditor,
   getTextFromT = getRawTextParts,
   replaceTextInT = newReplacedText,
+  blankT = "" as T,
 }: AsupInternalTableProps<T>) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -107,7 +109,7 @@ export const AsupInternalTable = <T extends string | object>({
   // Pushdown data when it it updated externally
   useEffect(() => {
     // Set defaults for no processing
-    const headerData = headerPreProcess(defaultCellWidth, tableData.headerData);
+    const headerData = headerPreProcess(defaultCellWidth, blankT, tableData.headerData);
     let columnRepeats =
       tableData.bodyData === undefined
         ? null
@@ -124,6 +126,7 @@ export const AsupInternalTable = <T extends string | object>({
         defaultCellWidth,
         getTextFromT,
         replaceTextInT,
+        blankT,
         tableData.noRepeatProcessing ?? false,
         tableData.rowHeaderColumns ?? 0,
         externalLists,
@@ -143,7 +146,7 @@ export const AsupInternalTable = <T extends string | object>({
     setColumnRepeats(columnRepeats);
 
     // Create processed body
-    const bodyData = bodyPreProcess(defaultCellWidth, tableData.bodyData);
+    const bodyData = bodyPreProcess(defaultCellWidth, blankT, tableData.bodyData);
     const processedBodyData: AitRowGroupData<T>[] = bodyData.map((rg) => {
       return {
         ...rg,
@@ -249,7 +252,7 @@ export const AsupInternalTable = <T extends string | object>({
       );
       newBody = newBody.map((rg) => {
         rg.rows = rg.rows.map((r) => {
-          r.cells.splice(ci + 1, 0, newCell(defaultCellWidth));
+          r.cells.splice(ci + 1, 0, newCell(defaultCellWidth, blankT));
           return r;
         });
         return rg;
@@ -267,11 +270,11 @@ export const AsupInternalTable = <T extends string | object>({
             if (targetCellBefore.colSpan === undefined) targetCellBefore.colSpan = 1;
             targetCellBefore.colSpan = targetCellBefore.colSpan + 1;
             // Add in blank cell
-            const n = newHeaderCell<T>(defaultCellWidth);
+            const n = newHeaderCell<T>(defaultCellWidth, blankT);
             n.colSpan = 0;
             r.cells.splice(ci + 1, 0, n);
           } else {
-            r.cells.splice(ci + 1, 0, newHeaderCell(defaultCellWidth));
+            r.cells.splice(ci + 1, 0, newHeaderCell(defaultCellWidth, blankT));
           }
           return r;
         });
@@ -367,6 +370,7 @@ export const AsupInternalTable = <T extends string | object>({
       // Ensure new template meets requirements
       const newrg: AitRowGroupData<T> = newRowGroup(
         defaultCellWidth,
+        blankT,
         bodyData[0].rows[0].cells.length,
         newRowGroupTemplate,
       );
@@ -437,7 +441,7 @@ export const AsupInternalTable = <T extends string | object>({
     // Create new row
     const newHeader: AitRowGroupData<T> = {
       ...headerData,
-      rows: [newRow(bodyData[0].rows[0].cells.length, defaultCellWidth)],
+      rows: [newRow(defaultCellWidth, blankT, bodyData[0].rows[0].cells.length)],
     };
     returnData({ headerData: newHeader });
   }, [bodyData, defaultCellWidth, headerData, returnData]);
@@ -600,6 +604,7 @@ export const AsupInternalTable = <T extends string | object>({
         colWidthMod,
         decimalAlignPercent,
         defaultCellWidth,
+        blank: blankT,
         Editor: Editor as unknown as (
           props: AsupInternalEditorProps<string | object>,
         ) => JSX.Element,

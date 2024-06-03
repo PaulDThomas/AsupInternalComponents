@@ -8,13 +8,14 @@ import { AitHeaderGroupData } from "../table/interface";
  */
 export const headerPreProcess = <T extends string | object>(
   defaultCellWidth: number,
+  blank: T,
   rg?: AitHeaderGroupData<T> | false,
 ): AitHeaderGroupData<T> | false => {
   if (rg === undefined) return { aitid: crypto.randomUUID(), rows: [] };
   if (rg === false) return false;
   return {
     ...rg,
-    rows: headerRowPreProcess(defaultCellWidth, rg.rows),
+    rows: headerRowPreProcess(defaultCellWidth, blank, rg.rows),
     aitid: rg.aitid ?? crypto.randomUUID(),
   };
 };

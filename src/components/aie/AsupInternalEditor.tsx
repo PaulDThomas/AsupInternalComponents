@@ -28,6 +28,7 @@ export interface AsupInternalEditorProps<T extends string | object> {
   decimalAlignPercent?: number;
   showStyleButtons?: boolean;
   editable?: boolean;
+  className?: string;
 }
 
 export const AsupInternalEditor = <T extends string | object>({

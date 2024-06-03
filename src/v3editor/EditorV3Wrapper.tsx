@@ -25,6 +25,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
   return (
     <EditorV3
       id={props.id}
+      className={props.className}
       input={adjustedValue}
       setObject={(ret) => props.setValue && props.setValue(ret)}
       editable={props.editable === true}
@@ -32,7 +33,6 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       textAlignment={props.textAlignment as EditorV3Align}
       style={{ ...props.style }}
       spellCheck={props.spellCheck ?? false}
-      debounceMilliseconds={props.debounceMilliseconds ?? null}
       allowNewLine
       noBorder
       allowWindowView

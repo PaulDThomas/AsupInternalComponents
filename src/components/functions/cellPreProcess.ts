@@ -8,9 +8,10 @@ import { AitCellData } from "../table/interface";
  */
 export const cellPreProcess = <T extends string | object>(
   defaultCellWidth: number,
+  blank: T,
   cs?: AitCellData<T>[],
 ): AitCellData<T>[] => {
-  if (cs === undefined) return [newCell(defaultCellWidth)];
+  if (cs === undefined) return [newCell(defaultCellWidth, blank)];
   // Check aitid
   return cs.map((c) => {
     return {

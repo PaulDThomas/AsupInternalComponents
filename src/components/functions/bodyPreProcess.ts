@@ -8,13 +8,14 @@ import { AitRowGroupData } from "../table/interface";
  */
 export const bodyPreProcess = <T extends string | object>(
   defaultCellWidth: number,
+  blank: T,
   rgs?: AitRowGroupData<T>[],
 ): AitRowGroupData<T>[] => {
   if (rgs === undefined) return [];
   return rgs.map((rg) => {
     return {
       ...rg,
-      rows: rowPreProcess(defaultCellWidth, rg.rows),
+      rows: rowPreProcess(defaultCellWidth, blank, rg.rows),
       aitid: rg.aitid ?? crypto.randomUUID(),
     };
   });

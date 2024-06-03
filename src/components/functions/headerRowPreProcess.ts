@@ -9,15 +9,16 @@ import { AitHeaderRowData } from "../table/interface";
  */
 export const headerRowPreProcess = <T extends string | object>(
   defaultCellWidth: number,
+  blank: T,
   rs?: AitHeaderRowData<T>[],
 ): AitHeaderRowData<T>[] => {
   // Return an empty row if there is nothing
-  if (rs === undefined) return [newRow(0, defaultCellWidth)];
+  if (rs === undefined) return [newRow(defaultCellWidth, blank, 0)];
   // Check aitid
   return rs.map((r) => {
     return {
       ...r,
-      cells: headerCellPreProcess(defaultCellWidth, r.cells),
+      cells: headerCellPreProcess(defaultCellWidth, blank, r.cells),
       aitid: r.aitid ?? crypto.randomUUID(),
     };
   });

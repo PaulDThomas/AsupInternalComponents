@@ -11,6 +11,7 @@ import {
   AitTableData,
   AsupInternalTable,
   convertTable,
+  stringToV3,
 } from "../../../src/main";
 import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
 
@@ -133,6 +134,7 @@ export const TablePage = () => {
               Editor={EditorV3Wrapper}
               getTextFromT={getTextFromEditorV3}
               replaceTextInT={replaceTextInEditorV3}
+              blankT={stringToV3("")}
             />
           )}
         </div>
