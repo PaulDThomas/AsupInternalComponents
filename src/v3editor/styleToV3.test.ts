@@ -1,5 +1,5 @@
 import { AieStyleMap } from "../components/aie/functions/aieInterface";
-import { styleToV3 } from "./sytleToV3";
+import { styleToV3 } from "./styleToV3";
 
 describe("styleToV3", () => {
   test("Should convert AieStyleMap to EditorV3Styles", () => {
