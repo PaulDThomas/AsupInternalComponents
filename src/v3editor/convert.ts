@@ -33,6 +33,7 @@ const convertHeaderGroup = (
   ...rg,
   rows: rg.rows.map((r) => convertHeaderRow(r)),
   comments: typeof rg.comments === "string" ? stringToV3(rg.comments) : rg.comments,
+  replacements: rg.replacements?.map((rep) => convertReplacement(rep)),
 });
 
 const convertCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditorV3> => ({
@@ -53,7 +54,7 @@ export const convertRowGroup = (
 ): AitRowGroupData<IEditorV3> => ({
   ...rg,
   rows: rg.rows.map((r) => convertRow(r)),
-  replacements: rg.replacements?.map((rep) => convertReplacements(rep)),
+  replacements: rg.replacements?.map((rep) => convertReplacement(rep)),
   comments: typeof rg.comments === "string" ? stringToV3(rg.comments) : rg.comments,
 });
 
@@ -81,16 +82,20 @@ export const convertBlockLine = (
           : AibLineType.leftCenterAndRight,
 });
 
-export const convertReplacements = (groupReplacement: AioReplacement): AioReplacement => ({
+export const convertReplacement = <T extends string | IEditorV3>(
+  groupReplacement: AioReplacement<T>,
+): AioReplacement<IEditorV3> => ({
   ...groupReplacement,
   oldText: fromHtml(groupReplacement.oldText),
   newTexts: groupReplacement.newTexts.map((rv) => convertReplacementValues(rv)),
 });
 
-const convertReplacementValues = (
-  replacementValue: AioReplacementValues,
-): AioReplacementValues => ({
+const convertReplacementValues = <T extends string | IEditorV3>(
+  replacementValue: AioReplacementValues<T>,
+): AioReplacementValues<IEditorV3> => ({
   ...replacementValue,
-  texts: replacementValue.texts.map((text) => fromHtml(text)),
-  subLists: replacementValue.subLists?.map((l) => convertReplacements(l)),
+  texts: replacementValue.texts.map(
+    (text) => (typeof text === "string" ? stringToV3(text) : text) as IEditorV3,
+  ),
+  subLists: replacementValue.subLists?.map((l) => convertReplacement(l)),
 });

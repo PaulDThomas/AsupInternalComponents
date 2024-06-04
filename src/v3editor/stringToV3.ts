@@ -14,7 +14,9 @@ export const stringToV3 = (value: string): IEditorV3 => {
     return ret;
   } else {
     return {
-      lines: [{ textBlocks: [{ text: fromHtml(value), type: "text" }] }],
+      lines: value
+        .split("\n")
+        .map((line) => ({ textBlocks: [{ text: fromHtml(line), type: "text" }] })),
     };
   }
 };
