@@ -7,6 +7,7 @@ import {
   AioSingleReplacements,
   AsupInternalBlock,
   convertBlockLine,
+  stringToV3,
   updateLineDisplayVersion,
 } from "../../../src/main";
 import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
@@ -17,13 +18,14 @@ export const BlockPage = () => {
   const [lines, setLines] = useState<AibBlockLine<string>[]>([
     { lineType: AibLineType.leftAndRight, left: "One line", canEdit: true },
   ]);
-  const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
+  const [externalSingles, setExternalSingles] = useState<AioExternalSingle<string>[]>([]);
 
   const [lines2, setLines2] = useState<AibBlockLine<IEditorV3>[]>([
     {
       lineType: AibLineType.leftOnly,
       left: { lines: [{ textBlocks: [{ text: "1st line", style: "Blue" }] }] },
       canEdit: true,
+      canChangeType: true,
     },
     {
       lineType: AibLineType.leftOnly,
@@ -62,7 +64,6 @@ export const BlockPage = () => {
           setLines={setLines2}
           minLines={1}
           maxLines={10}
-          externalSingles={externalSingles}
           style={{ fontFamily: "Courier New", fontWeight: 800 }}
           styleMap={{
             Green: { css: { color: "green" }, aieExclude: ["Blue", "Red"] },
@@ -80,6 +81,7 @@ export const BlockPage = () => {
               },
             })
           }
+          blankT={stringToV3("")}
           replaceTextInT={replaceTextInEditorV3}
         />
       </div>

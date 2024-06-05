@@ -5,9 +5,9 @@ import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioExternalSingle, AioIconButton } from "../aio";
 import { AibOptionsWindow } from "./AibOptionsWindow";
 import styles from "./aib.module.css";
-import { AibBlockLine, AibLineType } from "./aibInterface";
+import { AibBlockLine, AibLineType } from "./interface";
 
-interface AibLineDisplayProps<T extends string | object> {
+export interface AibLineDisplayProps<T extends string | object> {
   id: string;
   aifid?: string;
   displayType: AibLineType;
@@ -26,6 +26,7 @@ interface AibLineDisplayProps<T extends string | object> {
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT: T;
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T;
 }
 
@@ -48,15 +49,21 @@ export const AibLineDisplay = <T extends string | object>({
   style,
   styleMap,
   Editor,
+  blankT,
   replaceTextInT,
 }: AibLineDisplayProps<T>): JSX.Element => {
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const returnData = useCallback(
-    (lineUpdate: { left?: T | null; center?: T | null; right?: T | null }) => {
+    (lineUpdate: {
+      left?: T | null;
+      center?: T | null;
+      right?: T | null;
+      displayType?: AibLineType;
+    }) => {
       if (setLine) {
         const newLine: AibBlockLine<T> = {
           aifid: aifid,
-          lineType: displayType,
+          lineType: lineUpdate.displayType ?? displayType,
           left: lineUpdate.left ? lineUpdate.left : left ?? null,
           center: lineUpdate.center ? lineUpdate.center : center ?? null,
           right: lineUpdate.right ? lineUpdate.right : right ?? null,
@@ -66,12 +73,30 @@ export const AibLineDisplay = <T extends string | object>({
           canMove: canMove,
           canChangeType: canChangeType,
         };
+        if (
+          [AibLineType.leftAndRight, AibLineType.leftCenterAndRight, AibLineType.leftOnly].includes(
+            newLine.lineType,
+          ) &&
+          !newLine.left
+        )
+          newLine.left = blankT;
+        if (
+          [AibLineType.centerOnly, AibLineType.leftCenterAndRight].includes(newLine.lineType) &&
+          !newLine.center
+        )
+          newLine.center = blankT;
+        if (
+          [AibLineType.leftAndRight, AibLineType.leftCenterAndRight].includes(newLine.lineType) &&
+          !newLine.right
+        )
+          newLine.right = blankT;
         setLine(newLine);
       }
     },
     [
       addBelow,
       aifid,
+      blankT,
       canChangeType,
       canEdit,
       canMove,
@@ -101,17 +126,12 @@ export const AibLineDisplay = <T extends string | object>({
 
   // Set up post replacement view
   const displayLeft = useMemo(() => processReplacement(left), [left, processReplacement]);
-  const displayCenter = useMemo(
-    () => (typeof center === "string" ? (processReplacement(center) as T) : center),
-    [center, processReplacement],
-  );
-  const displayRight = useMemo(
-    () => (typeof right === "string" ? (processReplacement(right) as T) : right),
-    [right, processReplacement],
-  );
+  const displayCenter = useMemo(() => processReplacement(center), [center, processReplacement]);
+  const displayRight = useMemo(() => processReplacement(right), [right, processReplacement]);
 
   return (
     <div
+      id={id}
       className={[
         styles.aibLine,
         canEdit === false || typeof setLine !== "function" ? styles.aibReadOnly : "",
@@ -122,6 +142,7 @@ export const AibLineDisplay = <T extends string | object>({
       {showOptions && (
         <AibOptionsWindow
           id={`${id}-options-window`}
+          displayType={displayType}
           onClose={() => setShowOptions(false)}
           left={left}
           center={center}
@@ -129,6 +150,7 @@ export const AibLineDisplay = <T extends string | object>({
           returnData={typeof setLine === "function" ? returnData : undefined}
           canChangeType={canChangeType}
           styleMap={styleMap}
+          canEdit={canEdit}
           Editor={Editor}
         />
       )}
@@ -163,6 +185,9 @@ export const AibLineDisplay = <T extends string | object>({
                   ? (ret) => returnData({ left: ret })
                   : undefined
               }
+              style={{
+                border: "1px dashed grey",
+              }}
               showStyleButtons={true}
               styleMap={styleMap}
             />
@@ -184,6 +209,9 @@ export const AibLineDisplay = <T extends string | object>({
                   ? (ret) => returnData({ center: ret })
                   : undefined
               }
+              style={{
+                border: "1px dashed grey",
+              }}
               textAlignment={"center"}
               showStyleButtons={true}
               styleMap={styleMap}
@@ -208,6 +236,9 @@ export const AibLineDisplay = <T extends string | object>({
                   ? (ret) => returnData({ right: ret })
                   : undefined
               }
+              style={{
+                border: "1px dashed grey",
+              }}
               textAlignment={"right"}
               showStyleButtons={styleMap !== undefined}
               styleMap={styleMap}

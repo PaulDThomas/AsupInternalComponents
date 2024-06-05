@@ -3,28 +3,38 @@ import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AioSelect } from "../aio/aioSelect";
 import { AibOriginalText } from "./AibOriginalText";
+import { AibLineType } from "./interface";
 
 interface AibOptionsWindowProps<T extends string | object> {
   id: string;
   onClose: () => void;
+  displayType: string;
   left?: T | null;
   center?: T | null;
   right?: T | null;
-  returnData?: (ret: { left?: T | null; center?: T | null; right?: T | null }) => void;
+  returnData?: (ret: {
+    left?: T | null;
+    center?: T | null;
+    right?: T | null;
+    displayType?: AibLineType;
+  }) => void;
   canChangeType: boolean;
   styleMap?: AieStyleMap;
+  canEdit?: boolean;
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }
 
 export const AibOptionsWindow = <T extends string | object>({
   id,
   onClose,
+  displayType,
   left,
   center,
   right,
   canChangeType = false,
   returnData,
   styleMap,
+  canEdit = false,
   Editor,
 }: AibOptionsWindowProps<T>): JSX.Element => {
   return (
@@ -39,72 +49,44 @@ export const AibOptionsWindow = <T extends string | object>({
           id={`${id}-linetype`}
           label="Line type"
           availableValues={["Left only", "Center only", "Left, Center and Right", "Left and Right"]}
-          value={
-            typeof left === "string" && typeof center === "string" && typeof right === "string"
-              ? "Left, Center and Right"
-              : typeof left === "string" && typeof right === "string"
-                ? "Left and Right"
-                : typeof left === "string"
-                  ? "Left only"
-                  : "Center only"
-          }
+          value={displayType}
           setValue={
             returnData && canChangeType
-              ? (ret) => {
-                  let newLeft: T | null = null;
-                  let newCenter: T | null = null;
-                  let newRight: T | null = null;
-                  switch (ret) {
-                    case "Left only":
-                      newLeft = left ?? null;
-                      break;
-                    case "Center only":
-                      newCenter = center ?? null;
-                      break;
-                    case "Left and Right":
-                      newLeft = left ?? null;
-                      newRight = right ?? null;
-                      break;
-                    case "Left, Center and Right":
-                    default:
-                      newLeft = left ?? null;
-                      newCenter = center ?? null;
-                      newRight = right ?? null;
-                      break;
-                  }
-                  returnData({ left: newLeft, center: newCenter, right: newRight });
-                }
+              ? (ret) => returnData({ displayType: ret as AibLineType })
               : undefined
           }
         />
       </div>
-      {left && (
+      {left !== undefined && left !== null && (
         <AibOriginalText
           id={`${id}-unprocessed-left-text`}
           label="Left text"
           text={left}
           setText={returnData ? (ret) => returnData({ left: ret }) : undefined}
           styleMap={styleMap}
+          canEdit={canEdit}
           Editor={Editor}
         />
       )}
-      {center && (
+      {center !== undefined && center !== null && (
         <AibOriginalText
           id={`${id}-unprocessed-center-text`}
           label="Center text"
           text={center}
           setText={returnData ? (ret) => returnData({ center: ret }) : undefined}
           styleMap={styleMap}
+          canEdit={canEdit}
           Editor={Editor}
         />
       )}
-      {right && (
+      {right !== undefined && right !== null && (
         <AibOriginalText
           id={`${id}-unprocessed-right-text`}
           label="Right text"
           text={right}
           setText={returnData ? (ret) => returnData({ right: ret }) : undefined}
           styleMap={styleMap}
+          canEdit={canEdit}
           Editor={Editor}
         />
       )}

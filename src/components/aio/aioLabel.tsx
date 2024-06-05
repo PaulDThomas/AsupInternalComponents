@@ -4,15 +4,17 @@ interface AioLabelProps {
   id: string;
   label?: string;
   noColon?: boolean;
+  htmlFor?: string;
 }
 
 export const AioLabel = (props: AioLabelProps): JSX.Element => {
   if (props.label === undefined) return <></>;
 
   return (
-    <div
+    <label
       id={props.id}
       className={"aio-label"}
-    >{`${props.label}${!props.noColon && props.label ? ":" : ""}`}</div>
+      htmlFor={props.htmlFor}
+    >{`${props.label}${!props.noColon && props.label ? ":" : ""}`}</label>
   );
 };

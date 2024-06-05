@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { AieStyleMap, AsupInternalEditor } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
+import { newReplacedText } from "../aie/functions/newReplacedText";
 import { AioExternalSingle } from "../aio";
 import { AibLineDisplay } from "./AibLineDisplay";
 import styles from "./aib.module.css";
-import { AibBlockLine, AibLineType } from "./aibInterface";
-import { newReplacedText } from "../aie/functions/newReplacedText";
+import { AibBlockLine, AibLineType } from "./interface";
 
 interface AsupInternalBlockProps<T extends string | object> {
   id: string;
@@ -19,6 +19,7 @@ interface AsupInternalBlockProps<T extends string | object> {
   canChangeType?: boolean;
   style?: React.CSSProperties;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT?: T;
   replaceTextInT?: (s: T, oldPhrase: string, newPhrase: T) => T;
 }
 export const AsupInternalBlock = <T extends string | object>({
@@ -29,10 +30,11 @@ export const AsupInternalBlock = <T extends string | object>({
   maxLines,
   externalSingles,
   styleMap,
-  defaultType,
+  defaultType = AibLineType.centerOnly,
   canChangeType = false,
   style,
   Editor = AsupInternalEditor,
+  blankT = "" as T,
   replaceTextInT = newReplacedText,
 }: AsupInternalBlockProps<T>): JSX.Element => {
   // General function to return complied object
@@ -44,31 +46,6 @@ export const AsupInternalBlock = <T extends string | object>({
     },
     [setLines],
   );
-
-  /** Check lines object min/max rule */
-  useEffect(() => {
-    let newLines = [...lines];
-    if (newLines.length < Math.min(minLines ?? 1, maxLines ?? 1)) {
-      const reqlines = (minLines ?? 1) - lines.length;
-      for (let i = 0; i < reqlines; i++) {
-        const newLine: AibBlockLine<T> = {
-          aifid: crypto.randomUUID(),
-          lineType: defaultType ?? AibLineType.leftOnly,
-          left: "" as T,
-          center: "" as T,
-          right: "" as T,
-          canEdit: true,
-          canMove: true,
-          canRemove: true,
-        };
-        newLines.push(newLine);
-        returnData({ lines: newLines });
-      }
-    } else if (newLines.length > Math.max(minLines ?? 10, maxLines ?? 10)) {
-      newLines = newLines.slice(0, maxLines ?? 10);
-      returnData({ lines: newLines });
-    }
-  }, [defaultType, lines, maxLines, minLines, returnData]);
 
   // Update row
   const updateLine = useCallback(
@@ -89,37 +66,29 @@ export const AsupInternalBlock = <T extends string | object>({
       const newLines = [...lines];
       const newLine: AibBlockLine<T> = {
         aifid: crypto.randomUUID(),
-        lineType: defaultType ?? AibLineType.leftOnly,
-        left: "" as T,
-        center: "" as T,
-        right: "" as T,
+        lineType: defaultType,
+        left: [
+          AibLineType.leftOnly,
+          AibLineType.leftAndRight,
+          AibLineType.leftCenterAndRight,
+        ].includes(defaultType)
+          ? blankT
+          : null,
+        center: [AibLineType.centerOnly, AibLineType.leftCenterAndRight].includes(defaultType)
+          ? blankT
+          : null,
+        right: [AibLineType.leftAndRight, AibLineType.leftCenterAndRight].includes(defaultType)
+          ? blankT
+          : null,
         canEdit: true,
         canMove: true,
         canRemove: true,
         canChangeType: canChangeType,
       };
-      if (defaultType !== undefined) {
-        switch (defaultType) {
-          case AibLineType.leftOnly:
-            newLine.right = null;
-            newLine.center = null;
-            break;
-          case AibLineType.leftAndRight:
-            newLine.center = null;
-            break;
-          case AibLineType.centerOnly:
-            newLine.left = null;
-            newLine.right = null;
-            break;
-          case AibLineType.leftCenterAndRight:
-          default:
-            break;
-        }
-      }
       newLines.splice(li + 1, 0, newLine);
       returnData({ lines: newLines });
     },
-    [canChangeType, defaultType, lines, returnData],
+    [blankT, canChangeType, defaultType, lines, returnData],
   );
 
   const removeLine = useCallback(
@@ -166,6 +135,7 @@ export const AsupInternalBlock = <T extends string | object>({
             styleMap={styleMap}
             style={style}
             Editor={Editor}
+            blankT={blankT}
             replaceTextInT={replaceTextInT}
           />
         );

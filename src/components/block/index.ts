@@ -1,4 +1,4 @@
-import { AibBlockLine, AibLineType } from "./aibInterface";
+import { AibBlockLine, AibLineType } from "./interface";
 import { AsupInternalBlock } from "./AsupInternalBlock";
 import { updateLineDisplayVersion } from "./updateLineDisplayVersion";
 

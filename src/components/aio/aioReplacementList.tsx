@@ -54,7 +54,7 @@ export const AioReplacementList = <T extends string | object>({
       throw new Error("If newText is not a string, a custom function is required");
     return (
       <textarea
-        id={id}
+        id={props.id}
         className={"aio-input"}
         disabled={!props.setValue}
         rows={4}

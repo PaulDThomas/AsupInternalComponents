@@ -8,7 +8,7 @@ import {
   AitRowGroupData,
   AitTableData,
 } from "../components/table/interface";
-import { AibBlockLine, AibLineType } from "../components/block/aibInterface";
+import { AibBlockLine, AibLineType } from "../components/block/interface";
 import { AioReplacement, AioReplacementValues } from "../components/aio/aioInterface";
 import { fromHtml } from "../components/functions/tofromHtml";
 

@@ -1,6 +1,6 @@
-import { AibBlockLine, AibLineType } from "./aibInterface";
+import { AibBlockLine, AibLineType } from "./interface";
 
-interface OldBlockLine {
+export interface OldBlockLine {
   aifid?: string; // Unique ID
   left?: string | false; // Left aligned text in the row
   centre?: string | false; // Centre aligned text in the row
@@ -30,11 +30,11 @@ export const updateLineDisplayVersion = (
     return {
       aifid: inData.aifid,
       lineType:
-        inData.right && newCenter
+        typeof inData.right === "string" && newCenter !== null
           ? AibLineType.leftCenterAndRight
-          : inData.right
+          : typeof inData.right === "string"
             ? AibLineType.leftAndRight
-            : newCenter
+            : newCenter !== null
               ? AibLineType.centerOnly
               : AibLineType.leftOnly,
       left: inData.left === false ? null : inData.left ?? null,

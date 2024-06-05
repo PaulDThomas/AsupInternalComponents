@@ -15,6 +15,7 @@ export const AioSelect = (props: AioSelectProps): JSX.Element => {
       <AioLabel
         id={`${props.id}-label`}
         label={props.label}
+        htmlFor={props.id}
       />
       <div className={"aio-input-holder"}>
         {typeof props.setValue !== "function" ? (

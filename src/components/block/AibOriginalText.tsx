@@ -3,9 +3,11 @@ import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 
 export const AibOriginalText = <T extends string | object>({
   id,
+  label,
   text,
   setText,
   styleMap,
+  canEdit = false,
   Editor,
 }: {
   id: string;
@@ -13,22 +15,33 @@ export const AibOriginalText = <T extends string | object>({
   text: T;
   setText?: (ret: T) => void;
   styleMap?: AieStyleMap;
+  canEdit?: boolean;
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
 }): JSX.Element => {
-  if (typeof text !== "string") return <></>;
-  else
-    return (
-      <div className="aiw-body-row">
-        <div className={"aio-label"}>Unprocessed text:</div>
+  return (
+    <div className="aiw-body-row">
+      <label
+        className={"aio-label"}
+        htmlFor={id}
+      >
+        {label}
+      </label>
+      <div className={"aio-input-holder"}>
         <Editor
           id={id}
           value={text}
           setValue={setText}
           showStyleButtons={styleMap !== undefined}
           styleMap={styleMap}
+          style={{
+            border: "1px solid black",
+            borderRadius: "4px",
+          }}
+          editable={canEdit}
         />
       </div>
-    );
+    </div>
+  );
 };
 
 AibOriginalText.DisplayName = "AibOriginalText";
