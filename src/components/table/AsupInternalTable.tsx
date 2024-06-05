@@ -3,6 +3,7 @@ import { ContextWindow } from "@asup/context-menu";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { AieStyleMap, AsupInternalEditor, AsupInternalEditorProps, getRawTextParts } from "../aie";
 import { newReplacedText } from "../aie/functions/newReplacedText";
+import { joinIntoBlock, splitIntoLines } from "../aie/functions/splitIntoLines";
 import {
   AioBoolean,
   AioComment,
@@ -42,8 +43,8 @@ interface AsupInternalTableProps<T extends string | object> {
   isEditable?: boolean;
   setTableData?: (ret: AitTableData<T>) => void;
   processedDataRef?: React.MutableRefObject<AitTableData<T> | undefined>;
-  externalLists?: AioExternalReplacements[];
-  externalSingles?: AioExternalSingle[];
+  externalLists?: AioExternalReplacements<T>[];
+  externalSingles?: AioExternalSingle<T>[];
   style?: React.CSSProperties;
   showCellBorders?: boolean;
   groupTemplates?: AitRowGroupData<T>[] | false;
@@ -55,8 +56,10 @@ interface AsupInternalTableProps<T extends string | object> {
   noTableOptions?: boolean;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
   getTextFromT?: (text: T) => string[];
-  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
+  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: T) => T;
   blankT?: T;
+  joinTintoBlock?: (lines: T[]) => T;
+  splitTintoLines?: (text: T) => T[];
 }
 
 /**
@@ -85,6 +88,8 @@ export const AsupInternalTable = <T extends string | object>({
   getTextFromT = getRawTextParts,
   replaceTextInT = newReplacedText,
   blankT = "" as T,
+  joinTintoBlock = joinIntoBlock,
+  splitTintoLines = splitIntoLines,
 }: AsupInternalTableProps<T>) => {
   // Internal state
   const [showOptions, setShowOptions] = useState(false);
@@ -155,6 +160,7 @@ export const AsupInternalTable = <T extends string | object>({
           defaultCellWidth,
           getTextFromT,
           replaceTextInT,
+          blankT,
           rg.replacements,
           rg.spaceAfter,
           noRepeatProcessing,
@@ -614,6 +620,12 @@ export const AsupInternalTable = <T extends string | object>({
           oldPhrase: string,
           newPhrase: string,
         ) => string | object,
+        joinTintoBlock: joinTintoBlock as unknown as (
+          lines: (string | object)[],
+        ) => string | object,
+        splitTintoLines: splitTintoLines as unknown as (
+          text: string | object,
+        ) => (string | object)[],
       }}
     >
       <div

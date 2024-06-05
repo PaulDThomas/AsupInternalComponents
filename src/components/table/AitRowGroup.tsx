@@ -12,7 +12,7 @@ interface AitRowGroupProps<T extends string | object> {
   location: AitLocation;
   rows: AitRowData<T>[];
   comments?: T;
-  replacements: AioReplacement[];
+  replacements: AioReplacement<T>[];
   setRowGroupData?: (ret: AitRowGroupData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   addRowGroup?: (rgi: number, templateName?: string) => void;
@@ -39,7 +39,7 @@ export const AitRowGroup = <T extends string | object>({
   const returnData = useCallback(
     (rowGroupUpdate: {
       rows?: AitRowData<T>[];
-      replacements?: AioReplacement[];
+      replacements?: AioReplacement<T>[];
       spaceAfter?: boolean;
       comments?: T;
     }) => {

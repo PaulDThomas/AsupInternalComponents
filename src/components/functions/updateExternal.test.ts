@@ -2,12 +2,12 @@ import { AioExternalReplacements, AioReplacement } from "../aio";
 import { updateExternal } from "./updateExternal";
 
 describe("Check updateExternals", () => {
-  const a: AioReplacement = {
+  const a: AioReplacement<string> = {
     oldText: "a",
     externalName: "ListE",
     newTexts: [{ texts: ["a1", "a2"] }],
   };
-  const e: AioExternalReplacements = {
+  const e: AioExternalReplacements<string> = {
     givenName: "ListE",
     newTexts: [
       { texts: ["Mean"], subLists: [{ oldText: "!!xvals!!", newTexts: [{ texts: ["xx.x"] }] }] },

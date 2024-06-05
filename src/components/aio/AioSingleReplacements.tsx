@@ -1,4 +1,6 @@
-import React, { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AieStyleMap } from "../aie";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { fromHtml, newExternalSingle, toHtml } from "../functions";
 import { AioIconButton } from "./aioIconButton";
 import { AioExternalSingle } from "./aioInterface";
@@ -10,11 +12,14 @@ import { AioString } from "./aioString";
  * @param value AioReplacement list
  * @param setValue update function
  */
-interface AioSingleReplacementProps {
+interface AioSingleReplacementProps<T extends string | object> {
   id: string;
   label?: string;
-  replacements?: AioExternalSingle[];
-  setReplacements?: (ret: AioExternalSingle[]) => void;
+  replacements?: AioExternalSingle<T>[];
+  setReplacements?: (ret: AioExternalSingle<T>[]) => void;
+  Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT?: T;
+  styleMap?: AieStyleMap;
 }
 
 /**
@@ -22,15 +27,47 @@ interface AioSingleReplacementProps {
  * @param props replacement object
  * @returns JSX
  */
-export const AioSingleReplacements = ({
+export const AioSingleReplacements = <T extends string | object>({
   id,
   label,
   replacements,
   setReplacements,
-}: AioSingleReplacementProps): JSX.Element => {
+  blankT = "" as T,
+  styleMap,
+  Editor = (props: AsupInternalEditorProps<T>) => {
+    const [value, setValue] = useState<string>();
+    useEffect(() => {
+      if (typeof props.value === "string") setValue(props.value);
+    }, [props.value]);
+    if (typeof props.value !== "string")
+      throw new Error("If newText is not a string, a custom function is required");
+    return (
+      <>
+        {typeof props.setValue !== "function" ? (
+          <span id={props.id}>{props.value}</span>
+        ) : (
+          <input
+            id={props.id}
+            className={"aio-input"}
+            value={value ?? ""}
+            type="text"
+            onChange={(e) => {
+              setValue(e.currentTarget.value);
+            }}
+            onBlur={() => {
+              if (props.setValue !== undefined) {
+                props.setValue(props.value as T);
+              }
+            }}
+          />
+        )}
+      </>
+    );
+  },
+}: AioSingleReplacementProps<T>): JSX.Element => {
   /* Send everything back */
   const returnData = useCallback(
-    (ret: AioExternalSingle, i: number) => {
+    (ret: AioExternalSingle<T>, i: number) => {
       if (typeof setReplacements !== "function") return;
       const newReplacements = [...(replacements ?? [])];
       newReplacements[i] = ret;
@@ -41,14 +78,14 @@ export const AioSingleReplacements = ({
 
   /** Update individual replacement */
   const updateReplacement = useCallback(
-    (ret: { oldText?: string; newText?: string }, i: number) => {
+    (ret: { oldText?: string; newText?: T }, i: number) => {
       if (
         typeof setReplacements !== "function" ||
         replacements === undefined ||
         replacements.length < i - 1
       )
         return;
-      const newReplacement: AioExternalSingle = {
+      const newReplacement: AioExternalSingle<T> = {
         airid: replacements[i].airid,
         oldText: ret.oldText ?? replacements[i].oldText,
         newText: ret.newText ?? replacements[i].newText,
@@ -62,10 +99,10 @@ export const AioSingleReplacements = ({
     (i: number) => {
       if (typeof setReplacements !== "function") return;
       const newReplacements = [...(replacements ?? [])];
-      newReplacements.splice(i, 0, newExternalSingle());
+      newReplacements.splice(i, 0, newExternalSingle(blankT));
       setReplacements(newReplacements);
     },
-    [replacements, setReplacements],
+    [blankT, replacements, setReplacements],
   );
 
   const removeReplacement = useCallback(
@@ -100,14 +137,31 @@ export const AioSingleReplacements = ({
                 id={`${id}-from`}
                 label="From"
                 value={fromHtml(repl.oldText ?? "")}
-                setValue={(ret) => updateReplacement({ oldText: toHtml(ret) }, i)}
+                setValue={(ret) => updateReplacement({ oldText: toHtml(ret) as string }, i)}
               />
-              <AioString
-                id={`${id}-to`}
+              <AioLabel
+                id={`${id}-to-label`}
                 label="to"
-                value={fromHtml(repl.newText ?? "")}
-                setValue={(ret) => updateReplacement({ newText: toHtml(ret) }, i)}
               />
+              <div
+                className={"aio-input-holder"}
+                style={{
+                  minWidth: "150px",
+                  backgroundColor: "white",
+                  maxHeight: "19px",
+                  border: "1px solid black",
+                  borderRadius: "4px",
+                  padding: "2px 4px",
+                }}
+              >
+                <Editor
+                  id={`${id}-to`}
+                  editable={typeof setReplacements === "function"}
+                  value={fromHtml(repl.newText ?? blankT)}
+                  setValue={(ret) => updateReplacement({ newText: toHtml(ret) as T }, i)}
+                  styleMap={styleMap}
+                />
+              </div>
 
               {typeof setReplacements === "function" && (
                 <div

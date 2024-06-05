@@ -13,8 +13,8 @@ interface AitRowProps<T extends string | object> {
   setRowData?: (ret: AitRowData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   location: AitLocation;
-  replacements?: AioReplacement[];
-  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void;
+  replacements?: AioReplacement<T>[];
+  setReplacements?: (ret: AioReplacement<T>[], location: AitLocation) => void;
   rowGroupWindowTitle?: string;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
@@ -161,13 +161,18 @@ export const AitRow = <T extends string | object>({
                         setReplacements={
                           editable && typeof setReplacements === "function"
                             ? (ret) => {
-                                setReplacements(ret, location);
+                                setReplacements(ret as AioReplacement<T>[], location);
                               }
                             : undefined
                         }
                         externalLists={tableSettings.externalLists}
                         dontAskSpace={location.tableSection === AitRowType.header}
                         dontAskTrail={location.tableSection === AitRowType.header}
+                        Editor={tableSettings.Editor}
+                        blankT={tableSettings.blank}
+                        styleMap={tableSettings.cellStyles}
+                        joinTintoBlock={tableSettings.joinTintoBlock}
+                        splitTintoLines={tableSettings.splitTintoLines}
                       />
                     </div>
                   </ContextWindow>

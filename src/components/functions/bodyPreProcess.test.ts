@@ -6,11 +6,11 @@ jest.mock("./newRow");
 
 describe("Check body pre-process", () => {
   const a: AitRowGroupData<string> = {
-    rows: [newRow(60)],
+    rows: [newRow(60, "")],
   };
 
   test("Check aitid assigned", async () => {
-    const b = bodyPreProcess(60, [a]);
+    const b = bodyPreProcess(60, "", [a]);
     expect(b[0].aitid).toBeTruthy();
   });
 });

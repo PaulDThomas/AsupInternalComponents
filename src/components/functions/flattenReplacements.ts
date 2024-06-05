@@ -9,15 +9,16 @@ import { updateExternals } from "./updateExternals";
  * @param exts External replacements array
  * @returns single replacement
  */
-export const flattenReplacements = (
-  reps?: AioReplacement[],
-  exts?: AioExternalReplacements[],
-): AioReplacement | undefined => {
+export const flattenReplacements = <T extends string | object>(
+  reps?: AioReplacement<T>[],
+  exts?: AioExternalReplacements<T>[],
+  blankT: T = "" as T,
+): AioReplacement<T> | undefined => {
   // Do nothing if there is nothing to do
   if (reps === undefined || reps.length === 0) return undefined;
 
   // Create holder
-  let newRep: AioReplacement = newReplacement();
+  let newRep: AioReplacement<T> = newReplacement(blankT);
 
   // Check append is ok
   reps.map((rep, repi) => {

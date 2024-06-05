@@ -18,25 +18,26 @@ export interface oldReplacement {
   externalName?: string;
 }
 
-export function updateReplacementVersion(
-  reps?: AioReplacement[] | oldReplacement[],
-): AioReplacement[] {
+export const updateReplacementVersion = (
+  reps?: AioReplacement<string>[] | oldReplacement[],
+): AioReplacement<string>[] => {
   // Check processing required
   if (reps === undefined || reps.length === 0) return [];
-  if ((reps[0] as AioReplacement).oldText !== undefined) return reps as AioReplacement[];
+  if ((reps[0] as AioReplacement<string>).oldText !== undefined)
+    return reps as AioReplacement<string>[];
   // Create the new object
   const oldReps = reps as oldReplacement[];
-  const newReps: AioReplacement[] = [];
+  const newReps: AioReplacement<string>[] = [];
   for (let i = 0; i < oldReps.length; i++) {
     const oldRep = oldReps[i];
     if (!oldRep.replacementValues.some((rv) => (rv.subList?.length ?? 0) > 0)) {
-      const newRV: AioReplacementValues = {
+      const newRV: AioReplacementValues<string> = {
         airid: crypto.randomUUID(),
         texts: oldRep.replacementValues.map((rv) => rv.newText),
         spaceAfter: oldRep.replacementTexts[0]?.spaceAfter ?? false,
         subLists: [],
       };
-      const newRep: AioReplacement = {
+      const newRep: AioReplacement<string> = {
         airid: crypto.randomUUID(),
         oldText: oldRep.replacementTexts[0].text ?? "",
         newTexts: [newRV],
@@ -45,7 +46,7 @@ export function updateReplacementVersion(
       };
       newReps.push(newRep);
     } else {
-      const newRep: AioReplacement = {
+      const newRep: AioReplacement<string> = {
         airid: crypto.randomUUID(),
         oldText: oldRep.replacementTexts[0].text,
         newTexts: [],
@@ -57,7 +58,7 @@ export function updateReplacementVersion(
           replacementTexts: oldRep.replacementTexts.slice(1),
           replacementValues: oldRep.replacementValues[j].subList ?? [],
         };
-        const newRV: AioReplacementValues = {
+        const newRV: AioReplacementValues<string> = {
           airid: crypto.randomUUID(),
           texts: [oldRep.replacementValues[j].newText],
           spaceAfter: oldRep.replacementTexts[0].spaceAfter,
@@ -72,15 +73,18 @@ export function updateReplacementVersion(
     }
   }
   return newReps;
-}
+};
 
 export function updateReplToExtl(
-  reps: AioExternalReplacements[] | oldReplacement[] | { name: string; list: oldReplacement[] }[],
-): AioExternalReplacements[] {
+  reps:
+    | AioExternalReplacements<string>[]
+    | oldReplacement[]
+    | { name: string; list: oldReplacement[] }[],
+): AioExternalReplacements<string>[] {
   // Check processing required
   if (reps === undefined || reps.length === 0) return [];
-  if ((reps[0] as AioExternalReplacements).givenName !== undefined)
-    return reps as AioExternalReplacements[];
+  if ((reps[0] as AioExternalReplacements<string>).givenName !== undefined)
+    return reps as AioExternalReplacements<string>[];
   // Change from old to new
   let oldReps: oldReplacement[];
   if ((reps[0] as { name: string; list: oldReplacement[] }).name !== undefined) {
@@ -89,13 +93,13 @@ export function updateReplToExtl(
     oldReps = reps as oldReplacement[];
   }
   // Extract
-  const newExl: AioExternalReplacements[] = [];
+  const newExl: AioExternalReplacements<string>[] = [];
   newExl.push(
     ...oldReps
       .filter((o) => o.givenName !== undefined)
       .map((oRep) => {
-        const nReps: AioReplacement[] = updateReplacementVersion([oRep]);
-        const nRvs: AioReplacementValues[] = nReps
+        const nReps: AioReplacement<string>[] = updateReplacementVersion([oRep]);
+        const nRvs: AioReplacementValues<string>[] = nReps
           .map((nRep) => {
             return nRep.newTexts;
           })
@@ -103,7 +107,7 @@ export function updateReplToExtl(
         return {
           givenName: oRep.givenName,
           newTexts: nRvs,
-        } as AioExternalReplacements;
+        } as AioExternalReplacements<string>;
       }),
   );
   return newExl;

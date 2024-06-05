@@ -18,7 +18,7 @@ interface AitHeaderProps<T extends string | object> {
   aitid: string;
   rows: AitHeaderRowData<T>[];
   comments?: T;
-  replacements?: AioReplacement[];
+  replacements?: AioReplacement<T>[];
   setHeaderData?: (ret: AitRowGroupData<T>) => void;
   setColWidth: (colNo: number, colWidth: number) => void;
   addHeaderColSpan: (ret: AitLocation) => void;
@@ -40,7 +40,11 @@ export const AitHeader = <T extends string | object>({
 
   // General function to return complied object
   const returnData = useCallback(
-    (headerUpdate: { rows?: AitRowData<T>[]; comments?: T; replacements?: AioReplacement[] }) => {
+    (headerUpdate: {
+      rows?: AitRowData<T>[];
+      comments?: T;
+      replacements?: AioReplacement<T>[];
+    }) => {
       if (setHeaderData) {
         const r: AitRowGroupData<T> = {
           aitid: aitid,

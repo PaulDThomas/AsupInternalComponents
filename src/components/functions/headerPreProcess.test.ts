@@ -6,7 +6,8 @@ jest.mock("./newRow");
 
 describe("Check body pre-process", () => {
   const a: AitRowGroupData<string> = {
-    rows: [newRow(60)],
+    rows: [newRow(60, "")],
+    comments: "",
   };
   const n = false;
 
@@ -16,7 +17,7 @@ describe("Check body pre-process", () => {
   });
 
   test("Check false unchanged", async () => {
-    const b = headerPreProcess(60, n);
+    const b = headerPreProcess(60, "", n);
     expect(b).toEqual(false);
   });
 });

@@ -14,9 +14,9 @@ export const replaceRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
-  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
-  replacement?: AioReplacement,
-  externalLists?: AioExternalReplacements[],
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T,
+  replacement?: AioReplacement<T>,
+  externalLists?: AioExternalReplacements<T>[],
 ): AitRowData<T>[] => {
   // Look for match, is there is one to find
   if (

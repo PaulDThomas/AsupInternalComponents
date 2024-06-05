@@ -16,15 +16,15 @@ import { updateExternals } from "./updateExternals";
  */
 export const repeatHeaders = <T extends string | object>(
   rows: AitHeaderRowData<T>[],
-  replacements: AioReplacement[],
+  replacements: AioReplacement<T>[],
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
-  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T,
   blankT: T,
   noProcessing?: boolean,
   rowHeaderColumns?: number,
-  externalLists?: AioExternalReplacements[],
-  externalSingles?: AioExternalSingle[],
+  externalLists?: AioExternalReplacements<T>[],
+  externalSingles?: AioExternalSingle<T>[],
 ): { rows: AitRowData<T>[]; columnRepeats: AitColumnRepeat[] } => {
   // Start with blank slate, need to strip repeat inforation everytime!
   let newHeaderRows: AitHeaderRowData<T>[] = removeHeaderRowRepeatInfo(rows);
@@ -59,7 +59,7 @@ export const repeatHeaders = <T extends string | object>(
   });
 
   // Single post processing rep
-  newHeaderRows = singleReplacements(externalSingles, newHeaderRows, replaceTextInT);
+  newHeaderRows = singleReplacements(externalSingles, newHeaderRows, replaceTextInT, blankT);
 
   return { rows: newHeaderRows, columnRepeats: newColumnRepeats };
 };

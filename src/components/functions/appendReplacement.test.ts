@@ -2,8 +2,8 @@ import { AioReplacement } from "../aio";
 import { appendReplacement } from "./appendReplacement";
 
 describe("Check appendReplacement", () => {
-  const a: AioReplacement = { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] };
-  const b: AioReplacement = {
+  const a: AioReplacement<string> = { oldText: "a", newTexts: [{ texts: ["a1", "a2"] }] };
+  const b: AioReplacement<string> = {
     oldText: "b",
     newTexts: [
       {

@@ -11,6 +11,8 @@ import {
   AitTableData,
   AsupInternalTable,
   convertTable,
+  joinV3intoBlock,
+  splitV3intoLines,
   stringToV3,
 } from "../../../src/main";
 import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
@@ -22,7 +24,9 @@ export const TablePage = () => {
   const [sampleGroupTemplates, setSampleGroupTempaltes] = useState<
     AitRowGroupData<IEditorV3>[] | undefined
   >();
-  const [externalReplacements, setExternalReplacements] = useState<AioExternalReplacements[]>([]);
+  const [externalReplacements, setExternalReplacements] = useState<
+    AioExternalReplacements<IEditorV3>[]
+  >([]);
   const [listStatus, setListStatus] = useState<string>("");
   const commentStyles: AieStyleMap = {
     Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
@@ -32,9 +36,47 @@ export const TablePage = () => {
     Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
     Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] },
   };
-  const [externalSingles, setExternalSingles] = useState<AioExternalSingle[]>([]);
+  const [externalSingles, setExternalSingles] = useState<AioExternalSingle<IEditorV3>[]>([]);
   const [showTableOptions, setShowTableOptions] = useState<boolean>(true);
   const [isEditable, setIsEditable] = useState<boolean>(true);
+
+  const loadData = useCallback(() => {
+    try {
+      if (ta.current && ta.current.value === "") {
+        ta.current.value = window.localStorage.getItem("tableContent") ?? "";
+      }
+      if (ta.current) {
+        const j = convertTable(JSON.parse(ta.current.value?.toString() ?? "{}"));
+        setTableData(j);
+        ta.current.value = JSON.stringify(j, null, 2);
+      }
+    } catch (e) {
+      console.warn("JSON parse failed");
+      console.dir(e);
+    }
+  }, []);
+
+  const loadReplacements = useCallback(() => {
+    try {
+      const j: AioExternalReplacements<IEditorV3>[] = JSON.parse(
+        window.localStorage.getItem("listContent") ?? "[]",
+      );
+      setExternalReplacements(j);
+      const g: AitRowGroupData<IEditorV3>[] = JSON.parse(
+        window.localStorage.getItem("rowGroupContent") ?? "[]",
+      );
+      setSampleGroupTempaltes(g);
+      setListStatus(
+        `Loaded ${j.length} lists: ${j.map((rv) => rv.givenName).join(", ")}, RG templates: ${g
+          .map((rg) => rg.name)
+          .join(", ")}`,
+      );
+    } catch (e) {
+      console.warn("JSON parse from listContent failed");
+      console.dir(e);
+      setListStatus("Error loading external list data");
+    }
+  }, []);
 
   /** Load defaults */
   useEffect(() => {
@@ -56,46 +98,9 @@ export const TablePage = () => {
         return response.json();
       })
       .then(function (MyJson: AitTableData<IEditorV3>) {
-        setTableData(MyJson);
-      });
-  }, []);
-
-  const loadData = useCallback(() => {
-    try {
-      if (ta.current && ta.current.value === "") {
-        ta.current.value = window.localStorage.getItem("tableContent") ?? "";
-      }
-      if (ta.current) {
-        const j = convertTable(JSON.parse(ta.current.value?.toString() ?? "{}"));
+        const j = convertTable(MyJson);
         setTableData(j);
-        ta.current.value = JSON.stringify(j, null, 2);
-      }
-    } catch (e) {
-      console.warn("JSON parse failed");
-      console.dir(e);
-    }
-  }, []);
-
-  const loadReplacements = useCallback(() => {
-    try {
-      const j: AioExternalReplacements[] = JSON.parse(
-        window.localStorage.getItem("listContent") ?? "[]",
-      );
-      setExternalReplacements(j);
-      const g: AitRowGroupData<IEditorV3>[] = JSON.parse(
-        window.localStorage.getItem("rowGroupContent") ?? "[]",
-      );
-      setSampleGroupTempaltes(g);
-      setListStatus(
-        `Loaded ${j.length} lists: ${j.map((rv) => rv.givenName).join(", ")}, RG templates: ${g
-          .map((rg) => rg.name)
-          .join(", ")}`,
-      );
-    } catch (e) {
-      console.warn("JSON parse from listContent failed");
-      console.dir(e);
-      setListStatus("Error loading external list data");
-    }
+      });
   }, []);
 
   return (
@@ -135,6 +140,8 @@ export const TablePage = () => {
               getTextFromT={getTextFromEditorV3}
               replaceTextInT={replaceTextInEditorV3}
               blankT={stringToV3("")}
+              splitTintoLines={splitV3intoLines}
+              joinTintoBlock={joinV3intoBlock}
             />
           )}
         </div>
@@ -169,6 +176,9 @@ export const TablePage = () => {
             id="test-singles"
             replacements={externalSingles}
             setReplacements={(ret) => setExternalSingles(ret)}
+            Editor={EditorV3Wrapper}
+            blankT={stringToV3("")}
+            styleMap={cellStyles}
           />
         </div>
         <button onClick={loadData}>Load</button>

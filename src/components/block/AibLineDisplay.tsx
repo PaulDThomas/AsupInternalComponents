@@ -14,7 +14,7 @@ interface AibLineDisplayProps<T extends string | object> {
   left?: T | null;
   center?: T | null;
   right?: T | null;
-  externalSingles?: AioExternalSingle[];
+  externalSingles?: AioExternalSingle<T>[];
   addBelow?: boolean;
   canEdit?: boolean;
   canRemove?: boolean;
@@ -26,7 +26,7 @@ interface AibLineDisplayProps<T extends string | object> {
   style?: React.CSSProperties;
   styleMap?: AieStyleMap;
   Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
-  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T;
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T;
 }
 
 export const AibLineDisplay = <T extends string | object>({

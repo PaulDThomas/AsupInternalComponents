@@ -1,29 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
+import { AieStyleMap } from "../aie/functions/aieInterface";
 import { fromHtml, newReplacementValues, toHtml } from "../functions";
 import { AioDropSelect } from "./aioDropSelect";
 import { AioIconButton } from "./aioIconButton";
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./aioInterface";
 import { AioReplacementValuesDisplay } from "./aioReplacementValuesDisplay";
 
-interface AioReplacmentDisplayProps {
+interface AioReplacmentDisplayProps<T extends string | object> {
   id: string;
   airid?: string;
   oldText?: string;
-  newTexts: AioReplacementValues[];
+  newTexts: AioReplacementValues<T>[];
   includeTrailing?: boolean;
   externalName?: string;
-  setReplacement?: (ret: AioReplacement) => void;
-  externalLists?: AioExternalReplacements[];
+  setReplacement?: (ret: AioReplacement<T>) => void;
+  externalLists?: AioExternalReplacements<T>[];
   dontAskSpace?: boolean;
   dontAskTrail?: boolean;
   noText?: boolean;
+  Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT: T;
+  styleMap?: AieStyleMap;
+  joinTintoBlock: (lines: T[]) => T;
+  splitTintoLines: (text: T) => T[];
 }
 
 /**
  * Render an individuial AioReplacement
  * @param props value/setValue pair
  */
-export const AioReplacementDisplay = ({
+export const AioReplacementDisplay = <T extends string | object>({
   id,
   airid,
   oldText,
@@ -35,7 +42,12 @@ export const AioReplacementDisplay = ({
   dontAskSpace,
   dontAskTrail,
   noText: noOldText,
-}: AioReplacmentDisplayProps): JSX.Element => {
+  styleMap,
+  joinTintoBlock,
+  splitTintoLines,
+  blankT,
+  Editor,
+}: AioReplacmentDisplayProps<T>): JSX.Element => {
   const [displayText, setDisplayText] = useState<string>(fromHtml(oldText ?? ""));
   useEffect(() => {
     setDisplayText(fromHtml(oldText ?? ""));
@@ -59,14 +71,14 @@ export const AioReplacementDisplay = ({
     (newReplacement: {
       airid?: string;
       oldText?: string;
-      newTexts?: AioReplacementValues[];
+      newTexts?: AioReplacementValues<T>[];
       spaceAfter?: boolean;
       includeTrailing?: boolean;
       externalName?: string;
     }) => {
       if (typeof setReplacement !== "function") return;
       // Create new object
-      const r: AioReplacement = {
+      const r: AioReplacement<T> = {
         airid: newReplacement.airid ?? airid ?? crypto.randomUUID(),
         oldText: newReplacement.oldText ?? oldText ?? "",
         newTexts: newReplacement.newTexts ?? newTexts,
@@ -86,10 +98,10 @@ export const AioReplacementDisplay = ({
     (i: number) => {
       if (typeof setReplacement !== "function") return;
       const nts = [...newTexts];
-      nts.splice(i, 0, newReplacementValues());
+      nts.splice(i, 0, newReplacementValues(blankT));
       returnData({ newTexts: nts });
     },
-    [newTexts, returnData, setReplacement],
+    [blankT, newTexts, returnData, setReplacement],
   );
 
   const removeNewText = useCallback(
@@ -181,6 +193,11 @@ export const AioReplacementDisplay = ({
                   key={i}
                   texts={e.texts}
                   subLists={e.subLists}
+                  Editor={Editor}
+                  blankT={blankT}
+                  styleMap={styleMap}
+                  joinTintoBlock={joinTintoBlock}
+                  splitTintoLines={splitTintoLines}
                 />
               ))}
           </>
@@ -207,6 +224,11 @@ export const AioReplacementDisplay = ({
                         }
                       : undefined
                   }
+                  Editor={Editor}
+                  styleMap={styleMap}
+                  blankT={blankT}
+                  joinTintoBlock={joinTintoBlock}
+                  splitTintoLines={splitTintoLines}
                 />
                 {typeof setReplacement === "function" && (
                   <div

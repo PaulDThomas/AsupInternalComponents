@@ -1,11 +1,11 @@
 import { cloneDeep } from "lodash";
 import { AioReplacement } from "../aio";
 
-export const appendReplacement = (
-  incoming: AioReplacement,
-  subLists?: AioReplacement[],
-): AioReplacement[] | undefined => {
-  let newSubLists: AioReplacement[] = [];
+export const appendReplacement = <T extends string | object>(
+  incoming: AioReplacement<T>,
+  subLists?: AioReplacement<T>[],
+): AioReplacement<T>[] | undefined => {
+  let newSubLists: AioReplacement<T>[] = [];
 
   if (subLists === undefined || subLists.length === 0) {
     newSubLists.push(cloneDeep(incoming));

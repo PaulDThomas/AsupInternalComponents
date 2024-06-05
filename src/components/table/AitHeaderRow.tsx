@@ -20,8 +20,8 @@ interface AitHeaderRowProps<T extends string | object> {
   setRowData?: (ret: AitHeaderRowData<T>) => void;
   setColWidth?: (colNo: number, colWidth: number) => void;
   location: AitLocation;
-  replacements?: AioReplacement[];
-  setReplacements?: (ret: AioReplacement[], location: AitLocation) => void;
+  replacements?: AioReplacement<T>[];
+  setReplacements?: (ret: AioReplacement<T>[], location: AitLocation) => void;
   rowGroupWindowTitle?: string;
   addRowGroup?: (rgi: number, templateName?: string) => void;
   removeRowGroup?: (rgi: number) => void;
@@ -176,7 +176,7 @@ export const AitHeaderRow = <T extends string | object>({
                         setReplacements={
                           editable && typeof setReplacements === "function"
                             ? (ret) => {
-                                setReplacements(ret, location);
+                                setReplacements(ret as AioReplacement<T>[], location);
                               }
                             : undefined
                         }

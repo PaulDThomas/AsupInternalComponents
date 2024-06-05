@@ -1,11 +1,11 @@
 import { AioReplacement } from "../aio";
 import { newReplacementValues } from "./newReplacementValues";
 
-export const newReplacement = (): AioReplacement => {
+export const newReplacement = <T extends string | object>(blankT: T): AioReplacement<T> => {
   return {
     airid: crypto.randomUUID(),
     oldText: "",
-    newTexts: [newReplacementValues()],
+    newTexts: [newReplacementValues(blankT)],
     includeTrailing: false,
   };
 };

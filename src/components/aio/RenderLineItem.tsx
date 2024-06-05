@@ -1,10 +1,8 @@
-import * as React from "react";
 import { AioBoolean } from "./aioBoolean";
 import { AioExpander } from "./aioExpander";
-import { AioOptionType, AioReplacement } from "./aioInterface";
+import { AioOptionType } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioNumber } from "./aioNumber";
-import { AioReplacementList } from "./aioReplacementList";
 import { AioSelect } from "./aioSelect";
 import { AioString } from "./aioString";
 
@@ -57,21 +55,21 @@ export const RenderLineItem = ({
       );
 
     // Replacements
-    case AioOptionType.replacements:
-      return (
-        <AioReplacementList
-          id={id}
-          label="Replacement text"
-          replacements={value as AioReplacement[] | undefined}
-          setReplacements={
-            setValue
-              ? (ret: AioReplacement[]) => {
-                  if (typeof setValue === "function") setValue(ret);
-                }
-              : undefined
-          }
-        />
-      );
+    // case AioOptionType.replacements:
+    //   return (
+    //     <AioReplacementList
+    //       id={id}
+    //       label="Replacement text"
+    //       replacements={value as AioReplacement[] | undefined}
+    //       setReplacements={
+    //         setValue
+    //           ? (ret: AioReplacement[]) => {
+    //               if (typeof setValue === "function") setValue(ret);
+    //             }
+    //           : undefined
+    //       }
+    //     />
+    //   );
 
     // Select
     case AioOptionType.select:

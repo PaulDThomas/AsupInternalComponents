@@ -13,13 +13,13 @@ interface AsupInternalBlockProps<T extends string | object> {
   setLines?: (ret: AibBlockLine<T>[]) => void;
   minLines?: number;
   maxLines?: number;
-  externalSingles?: AioExternalSingle[];
+  externalSingles?: AioExternalSingle<T>[];
   styleMap?: AieStyleMap;
   defaultType?: AibLineType;
   canChangeType?: boolean;
   style?: React.CSSProperties;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
-  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
+  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: T) => T;
 }
 export const AsupInternalBlock = <T extends string | object>({
   id,

@@ -1,21 +1,27 @@
-import { fromHtml, toHtml } from "../functions";
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
+import { AieStyleMap } from "../aie/functions/aieInterface";
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./aioInterface";
 import { AioReplacementList } from "./aioReplacementList";
 
-interface AioReplacementValuesDisplayProps {
+interface AioReplacementValuesDisplayProps<T extends string | object> {
   id: string;
   airid?: string;
-  texts?: string[];
+  texts?: T[];
   spaceAfter?: boolean;
-  subLists?: AioReplacement[];
-  setReplacementValue?: (ret: AioReplacementValues) => void;
+  subLists?: AioReplacement<T>[];
+  setReplacementValue?: (ret: AioReplacementValues<T>) => void;
   dontAskSpace?: boolean;
   dontAskTrail?: boolean;
-  externalLists?: AioExternalReplacements[];
+  externalLists?: AioExternalReplacements<T>[];
+  Editor: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT: T;
+  styleMap?: AieStyleMap;
+  joinTintoBlock: (lines: T[]) => T;
+  splitTintoLines: (text: T) => T[];
 }
 
-export const AioReplacementValuesDisplay = ({
+export const AioReplacementValuesDisplay = <T extends string | object>({
   id,
   airid,
   texts,
@@ -25,16 +31,21 @@ export const AioReplacementValuesDisplay = ({
   dontAskSpace,
   dontAskTrail,
   externalLists,
-}: AioReplacementValuesDisplayProps): JSX.Element => {
+  styleMap,
+  joinTintoBlock,
+  blankT,
+  Editor,
+  splitTintoLines,
+}: AioReplacementValuesDisplayProps<T>): JSX.Element => {
   const returnData = useCallback(
     (newRV: {
       externalName?: string;
-      texts?: string[];
+      texts?: T[];
       spaceAfter?: boolean;
-      subLists?: AioReplacement[];
+      subLists?: AioReplacement<T>[];
     }) => {
       if (typeof setReplacementValue !== "function") return;
-      const r: AioReplacementValues = {
+      const r: AioReplacementValues<T> = {
         airid: airid,
         spaceAfter: newRV.spaceAfter ?? spaceAfter,
         texts: newRV.texts ?? texts ?? [],
@@ -44,11 +55,6 @@ export const AioReplacementValuesDisplay = ({
     },
     [airid, setReplacementValue, spaceAfter, subLists, texts],
   );
-
-  const [text, setText] = useState<string>(texts?.map((t) => fromHtml(t)).join("\n") ?? "");
-  useEffect(() => {
-    setText(texts?.map((t) => fromHtml(t)).join("\n") ?? "");
-  }, [texts]);
 
   return (
     <div
@@ -67,62 +73,38 @@ export const AioReplacementValuesDisplay = ({
           gap: "2px",
         }}
       >
-        {typeof setReplacementValue === "function" ? (
-          <>
-            <textarea
-              id={id}
-              className={"aio-input"}
-              rows={4}
-              value={text}
-              onChange={(e) => setText(e.currentTarget.value)}
-              onBlur={() => returnData({ texts: text.split("\n").map((t) => toHtml(t)) })}
-              style={{ width: "170px", minWidth: "170px" }}
+        <Editor
+          id={id}
+          editable={setReplacementValue !== undefined}
+          value={joinTintoBlock(texts ?? [blankT])}
+          setValue={(ret) => returnData({ texts: splitTintoLines(ret) })}
+          style={{
+            width: "170px",
+            minWidth: "170px",
+            minHeight: "64x",
+            marginTop: "4px",
+            height: "Calc(100% - 16px)",
+            padding: "4px",
+            border: "1px solid black",
+            borderRadius: "4px",
+          }}
+          styleMap={styleMap}
+          resize
+        />
+        {!dontAskSpace && (
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <label>
+              <small>Space after repeat</small>
+            </label>
+            <input
+              id={`${id}-spaceafter`}
+              style={{ margin: "6px" }}
+              type="checkbox"
+              checked={spaceAfter}
+              disabled={!setReplacementValue}
+              onChange={(e) => returnData({ spaceAfter: e.currentTarget.checked })}
             />
-            {!dontAskSpace && (
-              <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <label>
-                  <small>Space after repeat</small>
-                </label>
-                <input
-                  id={`${id}-spaceafter`}
-                  style={{ margin: "6px" }}
-                  type="checkbox"
-                  checked={spaceAfter}
-                  onChange={(e) => returnData({ spaceAfter: e.currentTarget.checked })}
-                />
-              </div>
-            )}
-          </>
-        ) : (
-          <>
-            <div
-              id={id}
-              className="aio-input"
-              style={{ border: "1px black solid", borderRadius: "2px", padding: "2px" }}
-            >
-              {texts !== undefined &&
-                texts.map((t, i) => (
-                  <div
-                    key={i}
-                    style={{ lineHeight: "1.1", fontSize: "75%", fontStyle: "italic" }}
-                  >
-                    {fromHtml(t)}
-                  </div>
-                ))}
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <label>
-                <small>Space after repeat</small>
-              </label>
-              <input
-                id={`${id}-spaceafter`}
-                disabled
-                style={{ margin: "6px" }}
-                type="checkbox"
-                checked={spaceAfter}
-              />
-            </div>
-          </>
+          </div>
         )}
       </div>
       {typeof setReplacementValue === "function" || (subLists?.length ?? 0) > 0 ? (
@@ -171,6 +153,10 @@ export const AioReplacementValuesDisplay = ({
             dontAskSpace={typeof setReplacementValue === "function" ? dontAskSpace : true}
             dontAskTrail={dontAskTrail}
             externalLists={externalLists}
+            Editor={Editor}
+            blankT={blankT}
+            styleMap={styleMap}
+            joinTintoBlock={joinTintoBlock}
           />
         </>
       ) : (

@@ -1,23 +1,31 @@
-import React, { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
+import { AieStyleMap } from "../aie/functions/aieInterface";
 import { newReplacement } from "../functions";
 import { AioIconButton } from "./aioIconButton";
 import { AioExternalReplacements, AioReplacement } from "./aioInterface";
 import { AioLabel } from "./aioLabel";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
+import { joinIntoBlock, splitIntoLines } from "../aie/functions/splitIntoLines";
 
 /**
  * Properties for AioReplacements
  * @param value AioReplacement list
  * @param setValue update function
  */
-interface AioReplacementListProps {
+interface AioReplacementListProps<T extends string | object> {
   id: string;
   label?: string;
-  replacements?: AioReplacement[];
-  setReplacements?: (ret: AioReplacement[]) => void;
+  replacements?: AioReplacement<T>[];
+  setReplacements?: (ret: AioReplacement<T>[]) => void;
   dontAskSpace?: boolean;
   dontAskTrail?: boolean;
-  externalLists?: AioExternalReplacements[];
+  externalLists?: AioExternalReplacements<T>[];
+  Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
+  blankT?: T;
+  styleMap?: AieStyleMap;
+  joinTintoBlock?: (lines: T[]) => T;
+  splitTintoLines?: (text: T) => T[];
 }
 
 /**
@@ -25,7 +33,7 @@ interface AioReplacementListProps {
  * @param props replacement object
  * @returns JSX
  */
-export const AioReplacementList = ({
+export const AioReplacementList = <T extends string | object>({
   id,
   label,
   replacements,
@@ -33,10 +41,34 @@ export const AioReplacementList = ({
   dontAskSpace,
   dontAskTrail,
   externalLists,
-}: AioReplacementListProps): JSX.Element => {
+  styleMap,
+  joinTintoBlock = joinIntoBlock,
+  splitTintoLines = splitIntoLines,
+  blankT = "" as T,
+  Editor = (props: AsupInternalEditorProps<T>) => {
+    const [text, setText] = useState<string>();
+    useEffect(() => {
+      if (typeof props.value === "string") setText(props.value);
+    }, [props.value]);
+    if (typeof props.value !== "string")
+      throw new Error("If newText is not a string, a custom function is required");
+    return (
+      <textarea
+        id={id}
+        className={"aio-input"}
+        disabled={!props.setValue}
+        rows={4}
+        value={text}
+        onChange={(e) => setText(e.currentTarget.value)}
+        onBlur={() => props.setValue && props.setValue(text as T)}
+        style={{ width: "170px", minWidth: "170px" }}
+      />
+    );
+  },
+}: AioReplacementListProps<T>): JSX.Element => {
   /** Update individual replacement and send it back */
   const updateReplacement = useCallback(
-    (ret: AioReplacement, i: number) => {
+    (ret: AioReplacement<T>, i: number) => {
       if (typeof setReplacements !== "function") return;
       const newValue = [...(replacements ?? [])];
       newValue[i] = ret;
@@ -49,10 +81,10 @@ export const AioReplacementList = ({
     (i: number) => {
       if (typeof setReplacements !== "function") return;
       const newReplacements = [...(replacements ?? [])];
-      newReplacements.splice(i, 0, newReplacement());
+      newReplacements.splice(i, 0, newReplacement(blankT));
       setReplacements(newReplacements);
     },
-    [replacements, setReplacements],
+    [blankT, replacements, setReplacements],
   );
 
   const removeReplacement = useCallback(
@@ -103,6 +135,11 @@ export const AioReplacementList = ({
                 dontAskSpace={dontAskSpace}
                 dontAskTrail={dontAskTrail}
                 externalLists={externalLists}
+                Editor={Editor}
+                styleMap={styleMap}
+                blankT={blankT}
+                joinTintoBlock={joinTintoBlock}
+                splitTintoLines={splitTintoLines}
               />
               {typeof setReplacements === "function" && (
                 <div

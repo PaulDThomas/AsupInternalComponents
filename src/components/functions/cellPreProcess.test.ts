@@ -4,6 +4,7 @@ import { cellPreProcess } from "./cellPreProcess";
 describe("Check cell pre-process", () => {
   const a: AitCellData<string> = {
     text: "Hello world!",
+    comments: "",
   };
 
   test("Check aitid assigned", async () => {

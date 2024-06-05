@@ -5,11 +5,11 @@ import { stringToV3 } from "./stringToV3";
 describe("getTextFromEditorV3", () => {
   test("IEditorV3 input", () => {
     const testContent: IEditorV3 = stringToV3("Hello world, this is a\ntest");
-    expect(getTextFromEditorV3(testContent)).toEqual(["Hello World, this is a", "test"]);
+    expect(getTextFromEditorV3(testContent)).toEqual(["Hello world, this is a", "test"]);
   });
 
   test("String input", async () => {
     const testContent = "Hello world, this is a\ntest";
-    expect(getTextFromEditorV3(testContent)).toEqual(["Hello World, this is a", "test"]);
+    expect(getTextFromEditorV3(testContent)).toEqual(["Hello world, this is a", "test"]);
   });
 });

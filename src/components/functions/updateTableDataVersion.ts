@@ -18,7 +18,7 @@ interface OldRowGroupData {
   rows: AitRowData<string>[];
   comments?: string;
   spaceAfter?: boolean;
-  replacements?: AioReplacement[] | oldReplacement[];
+  replacements?: AioReplacement<string>[] | oldReplacement[];
 }
 
 export const updateTableDataVersion = (

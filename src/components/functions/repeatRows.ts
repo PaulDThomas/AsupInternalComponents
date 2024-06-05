@@ -19,12 +19,13 @@ export const repeatRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
-  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
-  replacements?: AioReplacement[],
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T,
+  blankT: T,
+  replacements?: AioReplacement<T>[],
   spaceAfter?: boolean,
   noProcessing?: boolean,
-  externalLists?: AioExternalReplacements[],
-  externalSingles?: AioExternalSingle[],
+  externalLists?: AioExternalReplacements<T>[],
+  externalSingles?: AioExternalSingle<T>[],
 ): AitRowData<T>[] => {
   // Create initial return
   let newRows: AitRowData<T>[] = removeRowRepeatInfo<T>(rows);
@@ -68,7 +69,7 @@ export const repeatRows = <T extends string | object>(
   });
 
   // Single post processing replacements
-  newRows = singleReplacements(externalSingles, newRows, replaceTextInT);
+  newRows = singleReplacements(externalSingles, newRows, replaceTextInT, blankT);
 
   return newRows;
 };

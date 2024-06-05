@@ -2,22 +2,22 @@ import { cloneDeep } from "lodash";
 import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 import { updateExternals } from "./updateExternals";
 
-export const updateExternal = (
-  rep: AioReplacement,
-  exts?: AioExternalReplacements[],
-): AioReplacement => {
+export const updateExternal = <T extends string | object>(
+  rep: AioReplacement<T>,
+  exts?: AioExternalReplacements<T>[],
+): AioReplacement<T> => {
   const ix =
     rep.externalName !== undefined && exts !== undefined
       ? exts.findIndex((e) => e.givenName === rep.externalName)
       : -1;
-  let found: AioReplacementValues[] | undefined =
+  let found: AioReplacementValues<T>[] | undefined =
     ix > -1 && exts !== undefined && exts.length > ix ? cloneDeep(exts[ix].newTexts) : undefined;
   if (!found) {
     found = rep.newTexts.some((nt) => nt.subLists !== undefined)
       ? rep.newTexts.map((nts) => {
-          const s1: AioReplacement[] | undefined =
+          const s1: AioReplacement<T>[] | undefined =
             nts.subLists === undefined ? undefined : updateExternals(nts.subLists, exts);
-          const nt: AioReplacementValues = {
+          const nt: AioReplacementValues<T> = {
             ...nts,
             subLists: s1,
           };
@@ -25,7 +25,7 @@ export const updateExternal = (
         })
       : rep.newTexts;
   }
-  const newR: AioReplacement = {
+  const newR: AioReplacement<T> = {
     ...rep,
     newTexts: found,
   };

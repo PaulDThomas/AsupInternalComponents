@@ -1,16 +1,23 @@
-import React, { useCallback, useRef, useState } from "react";
+import { IEditorV3 } from "@asup/editor-v3";
+import { useCallback, useRef, useState } from "react";
 import {
+  AieStyleMap,
   AioExternalReplacements,
   AioReplacementDisplay,
   AioString,
+  EditorV3Wrapper,
   newExternalReplacements,
   updateReplToExtl,
 } from "../../../src/main";
 
 export const ListPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [extRepls, setExtRepls] = useState<AioExternalReplacements[]>([]);
+  const [extRepls, setExtRepls] = useState<AioExternalReplacements<IEditorV3>[]>([]);
   const [currentL, setCurrentL] = useState<number>(-1);
+  const cellStyles: AieStyleMap = {
+    Optional: { css: { color: "mediumseagreen" }, aieExclude: ["Notes"] },
+    Notes: { css: { color: "royalblue" }, aieExclude: ["Optional"] },
+  };
 
   const loadData = useCallback(() => {
     try {
@@ -52,7 +59,10 @@ export const ListPage = (): JSX.Element => {
                     id="test-string"
                     value={extRepls[i].givenName}
                     setValue={(ret) => {
-                      const newEx: AioExternalReplacements = { ...extRepls[i], givenName: ret };
+                      const newEx: AioExternalReplacements<IEditorV3> = {
+                        ...extRepls[i],
+                        givenName: ret,
+                      };
                       const newL = [...extRepls];
                       newL.splice(i, 1, newEx);
                       setExtRepls(newL);
@@ -109,8 +119,10 @@ export const ListPage = (): JSX.Element => {
                   noText={true}
                   oldText={""}
                   newTexts={extRepls[currentL].newTexts}
+                  Editor={EditorV3Wrapper}
+                  styleMap={cellStyles}
                   setReplacement={(ret) => {
-                    const e: AioExternalReplacements = {
+                    const e: AioExternalReplacements<IEditorV3> = {
                       givenName: extRepls[currentL].givenName,
                       newTexts: ret.newTexts,
                     };

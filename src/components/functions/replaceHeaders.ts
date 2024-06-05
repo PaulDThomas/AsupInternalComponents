@@ -1,4 +1,4 @@
-import { AioExternalReplacements, AioReplacement } from "../aio";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
 import {
   AitColumnRepeat,
   AitHeaderCellData,
@@ -23,10 +23,10 @@ export const replaceHeaders = <T extends string | object>(
   columnRepeats: AitColumnRepeat[],
   defaultCellWidth: number,
   getTextFromT: (s: T) => string[],
-  replaceTextInT: (s: T, oldPhrase: string, newPhrase: string) => T,
+  replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T,
   blankT: T,
-  replacement?: AioReplacement,
-  externalLists?: AioExternalReplacements[],
+  replacement?: AioReplacement<T>,
+  externalLists?: AioExternalReplacements<T>[],
 ): { newHeaderRows: AitHeaderRowData<T>[]; newColumnRepeats: AitColumnRepeat[] } => {
   // Check there are rows
   if (rows.length === 0) return { newHeaderRows: [], newColumnRepeats: [] };
@@ -83,7 +83,7 @@ export const replaceHeaders = <T extends string | object>(
 
           // Cycle through reach replacement value
           for (let rvi = 0; rvi < replacement.newTexts.length; rvi++) {
-            const rv = replacement.newTexts[rvi];
+            const rv: AioReplacementValues<T> = replacement.newTexts[rvi];
 
             // Process sublist
             const lowerQuad: AitRowData<T>[] = rows.slice(ri + 1).map((r) => {
@@ -92,7 +92,7 @@ export const replaceHeaders = <T extends string | object>(
                 cells: r.cells.slice(ci, ci + repeatSpan),
               };
             });
-            const nextReplacement = flattenReplacements(rv.subLists, externalLists);
+            const nextReplacement = flattenReplacements(rv.subLists, externalLists, blankT);
             const { newHeaderRows: lowerProcessed, newColumnRepeats: lowerColumnRepeats } =
               replaceHeaders(
                 0,

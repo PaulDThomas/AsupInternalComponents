@@ -9,30 +9,30 @@ export interface AioOption {
 }
 
 /** Text replacements, and their replacement matrix */
-export interface AioReplacement {
+export interface AioReplacement<T extends string | object> {
   airid?: string;
   oldText: string;
-  newTexts: AioReplacementValues[];
+  newTexts: AioReplacementValues<T>[];
   includeTrailing?: boolean;
   externalName?: string;
 }
 
-export interface AioReplacementValues {
+export interface AioReplacementValues<T extends string | object> {
   airid?: string;
-  texts: string[];
+  texts: T[];
   spaceAfter?: boolean;
-  subLists?: AioReplacement[];
+  subLists?: AioReplacement<T>[];
 }
 
-export interface AioExternalReplacements {
+export interface AioExternalReplacements<T extends string | object> {
   givenName: string;
-  newTexts: AioReplacementValues[];
+  newTexts: AioReplacementValues<T>[];
 }
 
-export interface AioExternalSingle {
+export interface AioExternalSingle<T extends string | object> {
   airid?: string;
   oldText?: string;
-  newText?: string;
+  newText?: T;
 }
 
 export enum AioOptionType {

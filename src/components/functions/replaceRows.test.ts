@@ -6,20 +6,27 @@ describe("Check complex replace rows", () => {
   const rows: AitRowData<string>[] = [
     {
       cells: [
-        { text: "p" },
-        { text: "s" },
-        { text: "t" },
-        { text: "h" },
-        { text: "r" },
-        { text: "v" },
+        { text: "p", comments: "" },
+        { text: "s", comments: "" },
+        { text: "t", comments: "" },
+        { text: "h", comments: "" },
+        { text: "r", comments: "" },
+        { text: "v", comments: "" },
       ],
     },
     {
-      cells: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "c" }, { text: "v" }],
+      cells: [
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "c", comments: "" },
+        { text: "v", comments: "" },
+      ],
     },
   ];
 
-  const replacement: AioReplacement = {
+  const replacement: AioReplacement<string> = {
     oldText: "r",
     newTexts: [
       {
@@ -72,34 +79,34 @@ describe("Check complex replace rows", () => {
       // Row 0
       {
         cells: [
-          { text: "p" },
-          { text: "s" },
-          { text: "t" },
-          { text: "h" },
-          { text: "r", replacedText: "r1" },
-          { text: "v", replacedText: "0.xxx", spaceAfterRepeat: true },
+          { text: "p", comments: "" },
+          { text: "s", comments: "" },
+          { text: "t", comments: "" },
+          { text: "h", comments: "" },
+          { text: "r", comments: "", replacedText: "r1" },
+          { text: "v", comments: "", replacedText: "0.xxx", spaceAfterRepeat: true },
         ],
         rowRepeat: "[0,0][0,0]",
       },
       {
         cells: [
-          { text: "p", replacedText: "" },
-          { text: "s", replacedText: "" },
-          { text: "t", replacedText: "" },
-          { text: "h", replacedText: "" },
-          { text: "r", replacedText: "r2" },
-          { text: "v", replacedText: " ", spaceAfterRepeat: true },
+          { text: "p", comments: "", replacedText: "" },
+          { text: "s", comments: "", replacedText: "" },
+          { text: "t", comments: "", replacedText: "" },
+          { text: "h", comments: "", replacedText: "" },
+          { text: "r", comments: "", replacedText: "r2" },
+          { text: "v", comments: "", replacedText: " ", spaceAfterRepeat: true },
         ],
         rowRepeat: "[1,0][0,0]",
       },
       {
         cells: [
-          { text: "" },
-          { text: "" },
-          { text: "" },
-          { text: "" },
-          { text: "c" },
-          { text: "v" },
+          { text: "", comments: "" },
+          { text: "", comments: "" },
+          { text: "", comments: "" },
+          { text: "", comments: "" },
+          { text: "c", comments: "" },
+          { text: "v", comments: "" },
         ],
       },
     ]);

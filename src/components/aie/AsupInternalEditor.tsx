@@ -29,6 +29,7 @@ export interface AsupInternalEditorProps<T extends string | object> {
   showStyleButtons?: boolean;
   editable?: boolean;
   className?: string;
+  resize?: boolean;
 }
 
 export const AsupInternalEditor = <T extends string | object>({

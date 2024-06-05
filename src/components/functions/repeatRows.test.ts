@@ -6,20 +6,27 @@ describe("Check repeat rows", () => {
   const rows: AitRowData<string>[] = [
     {
       cells: [
-        { text: "p" },
-        { text: "s" },
-        { text: "t" },
-        { text: "h" },
-        { text: "r" },
-        { text: "v" },
+        { text: "p", comments: "" },
+        { text: "s", comments: "" },
+        { text: "t", comments: "" },
+        { text: "h", comments: "" },
+        { text: "r", comments: "" },
+        { text: "v", comments: "" },
       ],
     },
     {
-      cells: [{ text: "" }, { text: "" }, { text: "" }, { text: "" }, { text: "c" }, { text: "v" }],
+      cells: [
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "", comments: "" },
+        { text: "c", comments: "" },
+        { text: "v", comments: "" },
+      ],
     },
   ];
 
-  const replacements: AioReplacement[] = [
+  const replacements: AioReplacement<string>[] = [
     {
       oldText: "p",
       newTexts: [
@@ -135,6 +142,7 @@ describe("Check repeat rows", () => {
       60,
       (s: string) => [s],
       (s: string, o: string, n: string) => s.replace(o, n),
+      "",
       replacements,
       true,
       false,

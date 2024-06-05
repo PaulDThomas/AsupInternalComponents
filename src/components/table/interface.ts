@@ -38,7 +38,7 @@ export interface AitRowGroupData<T extends string | object> {
   rows: AitRowData<T>[];
   comments?: T;
   spaceAfter?: boolean; // Indicator if there is space after the last row in the group
-  replacements?: AioReplacement[]; // Replacement lists to use for repeats
+  replacements?: AioReplacement<T>[]; // Replacement lists to use for repeats
 }
 
 export interface AitHeaderGroupData<T extends string | object> extends AitRowGroupData<T> {
@@ -85,7 +85,7 @@ export enum AitRowType {
 export interface AitOptionList<T extends string | object> {
   /* Table options and setters */
   noRepeatProcessing?: boolean;
-  externalLists?: AioExternalReplacements[];
+  externalLists?: AioExternalReplacements<T>[];
   showCellBorders?: boolean;
   groupTemplateNames?: string[];
   commentStyles?: AieStyleMap;
@@ -94,7 +94,6 @@ export interface AitOptionList<T extends string | object> {
   colWidthMod: number;
   decimalAlignPercent: number;
   defaultCellWidth: number;
-  blank: T;
 
   /* Table options with setters */
   editable: boolean;
@@ -107,7 +106,10 @@ export interface AitOptionList<T extends string | object> {
   setDecimalAlignPercent?: (ret: number) => void;
 
   /* Editor options */
+  blank: T;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
   getTextFromT?: (text: T) => string[];
   replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
+  joinTintoBlock?: (lines: T[]) => T;
+  splitTintoLines?: (text: T) => T[];
 }

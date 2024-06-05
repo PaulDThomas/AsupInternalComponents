@@ -7,8 +7,8 @@ export const replaceCellText = <
 >(
   cell: R,
   oldText: string,
-  newText: string,
-  replaceText: (s: T, oldPhrase: string, newPhrase: string) => T,
+  newText: T,
+  replaceText: (s: T, oldPhrase: string, newPhrase: T) => T,
 ): R => {
   const replacedText = replaceText(cell.replacedText ?? cell.text, oldText, newText);
   return {

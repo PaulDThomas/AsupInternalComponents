@@ -4,13 +4,16 @@ import {
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
+  EditorV3Wrapper,
   newRowGroup,
+  stringToV3,
 } from "../../../src/main";
+import { IEditorV3 } from "@asup/editor-v3";
 
 export const RowGroupPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [rowGroups, setRowGroups] = useState<AitRowGroupData[]>([]);
-  const [tableData, setTableData] = useState<AitTableData | null>(null);
+  const [rowGroups, setRowGroups] = useState<AitRowGroupData<IEditorV3>[]>([]);
+  const [tableData, setTableData] = useState<AitTableData<IEditorV3> | null>(null);
   const [currentName, setCurrentName] = useState<string>("");
 
   const loadData = useCallback(() => {
@@ -19,7 +22,7 @@ export const RowGroupPage = (): JSX.Element => {
         ta.current.value = window.localStorage.getItem("rowGroupContent") ?? "";
       }
       if (ta.current) {
-        const j: AitRowGroupData[] = JSON.parse(ta.current.value?.toString() ?? "[]");
+        const j: AitRowGroupData<IEditorV3>[] = JSON.parse(ta.current.value?.toString() ?? "[]");
         setRowGroups(j);
         ta.current.value = JSON.stringify(j, null, 2);
       }
@@ -30,7 +33,7 @@ export const RowGroupPage = (): JSX.Element => {
   }, []);
 
   const rg2Table = useCallback(
-    (rg?: AitRowGroupData) => {
+    (rg?: AitRowGroupData<IEditorV3>) => {
       if (rg === undefined) setTableData(null);
       else if (tableData === null) {
         setTableData({ headerData: false, bodyData: [rg] });
@@ -42,10 +45,10 @@ export const RowGroupPage = (): JSX.Element => {
   );
 
   const rgFromTableData = useCallback(
-    (ret: AitTableData): AitRowGroupData => {
+    (ret: AitTableData<IEditorV3>): AitRowGroupData<IEditorV3> => {
       if (ret === null || ret.bodyData === undefined || ret.bodyData.length < 1) {
         return {
-          ...newRowGroup(50),
+          ...newRowGroup(50, stringToV3("")),
           name: currentName,
         };
       }
@@ -86,7 +89,7 @@ export const RowGroupPage = (): JSX.Element => {
                         setCurrentName(ret);
                         const ix = rowGroups.findIndex((rgi) => rgi.name === rg.name);
                         if (ix > -1) {
-                          const newRg: AitRowGroupData = { ...rowGroups[ix] };
+                          const newRg: AitRowGroupData<IEditorV3> = { ...rowGroups[ix] };
                           const newRgs = [...rowGroups];
                           newRgs.splice(ix, 1, newRg);
                           setRowGroups(newRgs);
@@ -125,7 +128,10 @@ export const RowGroupPage = (): JSX.Element => {
             className="aiox-button aiox-plus"
             onClick={() => {
               const newRgs = [...rowGroups];
-              const newRg = { ...newRowGroup(50), name: `Group ${newRgs.length}` };
+              const newRg = {
+                ...newRowGroup<IEditorV3>(50, stringToV3("")),
+                name: `Group ${newRgs.length}`,
+              };
               newRgs.push(newRg);
               setRowGroups(newRgs);
               setCurrentName(newRg.name);
@@ -158,6 +164,7 @@ export const RowGroupPage = (): JSX.Element => {
                     );
                     setRowGroups(newRgs);
                   }}
+                  Editor={EditorV3Wrapper}
                 />
               </div>
             )}
@@ -196,7 +203,7 @@ export const RowGroupPage = (): JSX.Element => {
               .then(function (response) {
                 return response.json();
               })
-              .then(function (MyJson: AitRowGroupData[]) {
+              .then(function (MyJson: AitRowGroupData<IEditorV3>[]) {
                 setRowGroups(MyJson);
               });
           }}

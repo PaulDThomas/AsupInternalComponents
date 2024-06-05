@@ -2,7 +2,7 @@ import { newHeaderRow, newRow } from "./newRow";
 
 describe("Test new row functions", () => {
   test("New row", async () => {
-    const nr = newRow(60);
+    const nr = newRow(60, "");
     expect(nr).toEqual({
       aitid: "1001",
       cells: [
@@ -10,13 +10,14 @@ describe("Test new row functions", () => {
           aitid: "1002",
           colWidth: 60,
           text: "",
+          comments: "",
         },
       ],
     });
   });
 
   test("New header row", async () => {
-    const nr = newHeaderRow(30);
+    const nr = newHeaderRow(30, "");
     expect(nr).toEqual({
       aitid: "1001",
       cells: [
@@ -25,6 +26,7 @@ describe("Test new row functions", () => {
           colWidth: 30,
           colSpan: 1,
           text: "",
+          comments: "",
           rowSpan: 1,
         },
       ],
