@@ -11,12 +11,16 @@ import { fromHtml } from "../../functions/tofromHtml";
 export const newReplacedText = <T extends string | object>(
   s: T,
   oldPhrase: string,
-  newPhrase: string,
+  newPhrase: T,
 ): T => {
   let ret: T;
 
+  if (typeof newPhrase !== "string") {
+    throw new Error("If newPhrase is not a string, a custom function is required");
+  }
+
   // Generic object replacement
-  if (typeof s === "object") {
+  else if (typeof s === "object") {
     const replaceText = (obj: object) => {
       Object.keys(obj).forEach((key) => {
         if (typeof obj[key as keyof typeof obj] === "object") {

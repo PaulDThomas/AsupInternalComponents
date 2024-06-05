@@ -1,6 +1,6 @@
 import { fromHtml } from "../../functions/tofromHtml";
 
-export const getRawTextParts = (s: string | object): string[] => {
+export const getRawTextParts = <T extends string | object>(s: T): string[] => {
   // Generic object search
   if (typeof s === "object" && s !== null) {
     const ret: string[] = [];
@@ -22,7 +22,7 @@ export const getRawTextParts = (s: string | object): string[] => {
 
   // Do standard replace if not aie-text or no inline styles
   else if (!s.match(/^<div classname=["']aie-text/i) || !s.includes("data-inline-style-ranges")) {
-    return [fromHtml(s)];
+    return [fromHtml(s)] as string[];
   }
 
   // Standard HTML text
