@@ -109,7 +109,7 @@ export interface AitOptionList<T extends string | object> {
   blank: T;
   Editor?: (props: AsupInternalEditorProps<T>) => JSX.Element;
   getTextFromT?: (text: T) => string[];
-  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: string) => T;
+  replaceTextInT?: (s: T, oldPhrase: string, newPhrase: T) => T;
   joinTintoBlock?: (lines: T[]) => T;
   splitTintoLines?: (text: T) => T[];
 }
