@@ -1,4 +1,4 @@
-import { IEditorV3 } from "@asup/editor-v3";
+import { IEditorV3, joinV3intoBlock, splitV3intoLines } from "@asup/editor-v3";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getTextFromEditorV3 } from "v3editor/getTextFromEditorV3";
 import { replaceTextInEditorV3 } from "v3editor/replaceTextInEditorV3";
@@ -11,8 +11,6 @@ import {
   AitTableData,
   AsupInternalTable,
   convertTable,
-  joinV3intoBlock,
-  splitV3intoLines,
   stringToV3,
 } from "../../../src/main";
 import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";

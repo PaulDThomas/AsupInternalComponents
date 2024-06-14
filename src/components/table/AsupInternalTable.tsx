@@ -618,7 +618,7 @@ export const AsupInternalTable = <T extends string | object>({
         replaceTextInT: replaceTextInT as unknown as (
           s: string | object,
           oldPhrase: string,
-          newPhrase: string,
+          newPhrase: string | object,
         ) => string | object,
         joinTintoBlock: joinTintoBlock as unknown as (
           lines: (string | object)[],

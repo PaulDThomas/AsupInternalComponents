@@ -9,7 +9,11 @@ import {
   AitTableData,
 } from "../components/table/interface";
 import { AibBlockLine, AibLineType } from "../components/block/interface";
-import { AioReplacement, AioReplacementValues } from "../components/aio/aioInterface";
+import {
+  AioExternalReplacements,
+  AioReplacement,
+  AioReplacementValues,
+} from "../components/aio/aioInterface";
 import { fromHtml } from "../components/functions/tofromHtml";
 
 const convertHeaderCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditorV3> => ({
@@ -82,7 +86,7 @@ export const convertBlockLine = (
           : AibLineType.leftCenterAndRight,
 });
 
-export const convertReplacement = <T extends string | IEditorV3>(
+const convertReplacement = <T extends string | IEditorV3>(
   groupReplacement: AioReplacement<T>,
 ): AioReplacement<IEditorV3> => ({
   ...groupReplacement,
@@ -98,4 +102,11 @@ const convertReplacementValues = <T extends string | IEditorV3>(
     (text) => (typeof text === "string" ? stringToV3(text) : text) as IEditorV3,
   ),
   subLists: replacementValue.subLists?.map((l) => convertReplacement(l)),
+});
+
+export const convertExternalReplacements = <T extends string | IEditorV3>(
+  externalReplacements: AioExternalReplacements<T>,
+): AioExternalReplacements<IEditorV3> => ({
+  givenName: externalReplacements.givenName,
+  newTexts: externalReplacements.newTexts.map((rep) => convertReplacementValues(rep)),
 });

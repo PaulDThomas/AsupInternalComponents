@@ -19,5 +19,5 @@ export const replaceTextInEditorV3 = (
       ret.splice(pos, newLines);
     });
   }
-  return ret;
+  return ret.data;
 };
