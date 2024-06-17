@@ -1,7 +1,7 @@
 {
   "name": "asupinternalcomponents",
   "description": "Components developed by Paul for clinical table generation",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "author": "Paul Thomas",
   "license": "MIT",
   "repository": {
@@ -38,8 +38,8 @@
     "build": "rmdir /q/s .\\.parcel-cache && parcel build src/main.ts"
   },
   "dependencies": {
-    "@asup/context-menu": "^1.3.8",
-    "@asup/editor-v3": "^1.3.0",
+    "@asup/context-menu": "^1.3.5",
+    "@asup/editor-v3": "^1.2.12",
     "draft-js": "^0.11.7",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
@@ -59,7 +59,7 @@
     "@parcel/transformer-typescript-types": "^2.12.0",
     "@parcel/transformer-webmanifest": "^2.12.0",
     "@testing-library/jest-dom": "^6.4.2",
-    "@testing-library/react": "^14.2.2",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/css-modules": "^1.0.5",
     "@types/draft-js": "^0.11.9",
@@ -72,7 +72,7 @@
     "@typescript-eslint/parser": "^7.4.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-jest": "^28.6.0",
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -90,8 +90,7 @@
     "ts-jest": "^29.1.2",
     "ts-jest-mock-import-meta": "^1.2.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.2",
-    "typescript-plugin-css-modules": "^5.1.0"
+    "typescript": "^5.3.2"
   },
   "@parcel/transformer-js": {
     "inlineEnvironment": [
