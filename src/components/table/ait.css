@@ -119,3 +119,16 @@ table.ait-table {
   opacity: 1;
   visibility: visible;
 }
+
+.ait-column-buttons,
+.ait-row-group-buttons,
+.ait-row-buttons {
+  opacity: 0.5;
+  transition: opacity 0.3s ease-in-out;
+}
+
+tr:hover .ait-column-buttons,
+tr:hover .ait-row-group-buttons,
+tr:hover .ait-row-buttons {
+  opacity: 1;
+}

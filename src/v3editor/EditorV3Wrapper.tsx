@@ -36,6 +36,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       allowNewLine
       noBorder
       allowWindowView
+      allowMarkdown
       resize={props.resize}
     />
   );

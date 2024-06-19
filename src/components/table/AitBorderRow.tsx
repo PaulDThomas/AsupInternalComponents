@@ -25,8 +25,8 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
         <tr id={`${props.id}`}>
           <td className="ait-cell">
             <div
-              className="ait-aie-holder"
-              style={{ display: "flex", justifyContent: "flex-end" }}
+              className="ait-aie-holder ait-column-buttons"
+              style={{ position: "relative" }}
             >
               <AioIconButton
                 id={`${props.id}-addcol-m1`}
@@ -35,6 +35,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 onClick={() => {
                   if (props.changeColumns) props.changeColumns.addColumn(-1);
                 }}
+                style={{ position: "absolute", top: "-8px", right: "-8px" }}
               />
             </div>
           </td>
@@ -54,8 +55,13 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 key={ci}
               >
                 <div
-                  className="ait-aie-holder"
-                  style={{ display: "flex" }}
+                  className="ait-aie-holder ait-column-buttons"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    position: "relative",
+                    width: "100%",
+                  }}
                 >
                   {!(props.rowHeaderColumns === 1 && ci === 0) &&
                     !(
@@ -71,10 +77,8 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                             tableSettings.columnRepeats[ci].columnIndex,
                           );
                         }}
-                        style={{ justifySelf: "start" }}
                       />
                     )}
-                  <div style={{ flexGrow: 1 }} />
                   <AioIconButton
                     id={`${props.id}-addcol-${ci}`}
                     tipText="Add column"
@@ -83,6 +87,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                       if (!props.changeColumns || !tableSettings.columnRepeats) return;
                       props.changeColumns.addColumn(tableSettings.columnRepeats[ci].columnIndex);
                     }}
+                    style={{ position: "absolute", top: "0", right: "-8px" }}
                   />
                 </div>
               </td>

@@ -101,7 +101,7 @@ export const AitHeaderRow = <T extends string | object>({
           width="50px"
         >
           <div
-            className="ait-aie-holder"
+            className="ait-aie-holder ait-row-group-buttons"
             style={{ display: "flex", justifyContent: "flex-end", flexDirection: "row" }}
           >
             {location.row === 0 && !location.rowRepeat ? (
@@ -133,63 +133,68 @@ export const AitHeaderRow = <T extends string | object>({
                     setShowRowGroupOptions(!showRowGroupOptions);
                   }}
                 />
-                {/* Row group options window */}
-                {showRowGroupOptions && (
-                  <ContextWindow
-                    id={`${id}-rowgroup-options-window`}
-                    key="RowGroup"
-                    title={rowGroupWindowTitle ?? "Row group options"}
-                    visible={showRowGroupOptions}
-                    onClose={() => {
-                      setShowRowGroupOptions(false);
-                    }}
-                    style={{ maxHeight: "75vh" }}
-                  >
-                    <div className="aiw-body-row">
-                      <AioComment
-                        id={`${id}-rowgroup-comment`}
-                        label={"Notes"}
-                        value={rowGroupComments}
-                        setValue={editable ? updateRowGroupComments : undefined}
-                        commentStyles={tableSettings.commentStyles}
-                      />
-                    </div>
-                    <>
-                      {location.tableSection === AitRowType.body && (
-                        <>
-                          <div className="aiw-body-row">
-                            <AioBoolean
-                              id={`${id}-spaceafter-group`}
-                              label="Space after group"
-                              value={rowGroupSpace ?? false}
-                              setValue={editable ? setRowGroupSpace : undefined}
-                            />
-                          </div>
-                        </>
-                      )}
-                    </>
-                    <div className="aiw-body-row">
-                      <AioReplacementList
-                        id={`${id}-rowgroup-replacements`}
-                        label={"Replacements"}
-                        replacements={replacements}
-                        setReplacements={
-                          editable && typeof setReplacements === "function"
-                            ? (ret) => {
-                                setReplacements(ret as AioReplacement<T>[], location);
-                              }
-                            : undefined
-                        }
-                        externalLists={tableSettings.externalLists}
-                        dontAskSpace={location.tableSection === AitRowType.header}
-                        dontAskTrail={location.tableSection === AitRowType.header}
-                      />
-                    </div>
-                  </ContextWindow>
-                )}
               </>
             ) : null}
           </div>
+          {/* Row group options window */}
+          {showRowGroupOptions && (
+            <ContextWindow
+              id={`${id}-rowgroup-options-window`}
+              key="RowGroup"
+              title={rowGroupWindowTitle ?? "Row group options"}
+              visible={showRowGroupOptions}
+              onClose={() => {
+                setShowRowGroupOptions(false);
+              }}
+              style={{ maxHeight: "75vh" }}
+            >
+              <div className="aiw-body-row">
+                <AioComment
+                  id={`${id}-rowgroup-comment`}
+                  label={"Notes"}
+                  value={rowGroupComments}
+                  setValue={editable ? updateRowGroupComments : undefined}
+                  commentStyles={tableSettings.commentStyles}
+                />
+              </div>
+              <>
+                {location.tableSection === AitRowType.body && (
+                  <>
+                    <div className="aiw-body-row">
+                      <AioBoolean
+                        id={`${id}-spaceafter-group`}
+                        label="Space after group"
+                        value={rowGroupSpace ?? false}
+                        setValue={editable ? setRowGroupSpace : undefined}
+                      />
+                    </div>
+                  </>
+                )}
+              </>
+              <div className="aiw-body-row">
+                <AioReplacementList
+                  id={`${id}-rowgroup-replacements`}
+                  label={"Replacements"}
+                  replacements={replacements}
+                  setReplacements={
+                    editable && typeof setReplacements === "function"
+                      ? (ret) => {
+                          setReplacements(ret as AioReplacement<T>[], location);
+                        }
+                      : undefined
+                  }
+                  externalLists={tableSettings.externalLists}
+                  dontAskSpace={location.tableSection === AitRowType.header}
+                  dontAskTrail={location.tableSection === AitRowType.header}
+                  Editor={tableSettings.Editor}
+                  blankT={tableSettings.blank}
+                  styleMap={tableSettings.cellStyles}
+                  joinTintoBlock={tableSettings.joinTintoBlock}
+                  splitTintoLines={tableSettings.splitTintoLines}
+                />
+              </div>
+            </ContextWindow>
+          )}
         </td>
 
         {/* All cells from row */}
@@ -269,7 +274,7 @@ export const AitHeaderRow = <T extends string | object>({
           width="50px"
         >
           <div
-            className="ait-aie-holder"
+            className="ait-aie-holder ait-row-buttons"
             style={{ display: "flex", justifyContent: "flex-start", flexDirection: "row" }}
           >
             {editable && addRow && (
