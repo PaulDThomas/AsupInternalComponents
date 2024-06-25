@@ -18,3 +18,5 @@ export const AioLabel = (props: AioLabelProps): JSX.Element => {
     >{`${props.label}${!props.noColon && props.label ? ":" : ""}`}</label>
   );
 };
+
+AioLabel.displayName = "AioLabel";

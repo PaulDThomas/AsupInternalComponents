@@ -11,9 +11,10 @@ import {
 import { AibBlockLine, AibLineType } from "../components/block/interface";
 import {
   AioExternalReplacements,
+  AioExternalSingle,
   AioReplacement,
   AioReplacementValues,
-} from "../components/aio/aioInterface";
+} from "../components/aio/interface";
 import { fromHtml } from "../components/functions/tofromHtml";
 
 const convertHeaderCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditorV3> => ({
@@ -110,3 +111,17 @@ export const convertExternalReplacements = <T extends string | IEditorV3>(
   givenName: externalReplacements.givenName,
   newTexts: externalReplacements.newTexts.map((rep) => convertReplacementValues(rep)),
 });
+
+export const convertExternalSingle = <T extends string | IEditorV3>(
+  externalSingle: AioExternalSingle<T>,
+): AioExternalSingle<IEditorV3> => {
+  if (typeof externalSingle.newText === "string") {
+    return {
+      ...externalSingle,
+      oldText: fromHtml(externalSingle.oldText ?? ""),
+      newText: stringToV3(externalSingle.newText),
+    };
+  } else {
+    return externalSingle as AioExternalSingle<IEditorV3>;
+  }
+};

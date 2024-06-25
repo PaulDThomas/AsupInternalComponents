@@ -1,4 +1,4 @@
-import { AioReplacement } from "../aio/aioInterface";
+import { AioReplacement } from "../aio/interface";
 import { AitColumnRepeat, AitHeaderRowData } from "../table/interface";
 import { newHeaderRow } from "./newRow";
 import { replaceHeaders } from "./replaceHeaders";

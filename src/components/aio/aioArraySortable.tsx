@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AioNewItem, AioOptionType } from "./aioInterface";
+import { AioNewItem, AioOptionType } from "./interface";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
 import { ContextWindow } from "@asup/context-menu";
@@ -179,3 +179,5 @@ export function AioArraySortable(props: AioArraySortableProps) {
     </>
   );
 }
+
+AioArraySortable.displayName = "AioArraySortable";

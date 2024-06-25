@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import "./aio.css";
-import { AioOption } from "./aioInterface";
+import { AioOption } from "./interface";
 import { AioLabel } from "./aioLabel";
 import { AioPrintOption } from "./aioPrintOption";
 
@@ -64,3 +64,5 @@ export const AioOptionDisplay = ({
     </>
   );
 };
+
+AioOptionDisplay.displayName = "AioOptionDisplay";

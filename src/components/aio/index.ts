@@ -10,7 +10,7 @@ import {
   AioOption,
   AioReplacement,
   AioReplacementValues,
-} from "./aioInterface";
+} from "./interface";
 import { AioNumber } from "./aioNumber";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { AioReplacementList } from "./aioReplacementList";

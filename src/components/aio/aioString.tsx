@@ -43,3 +43,5 @@ export const AioString = (props: AioStringProps): JSX.Element => {
     </>
   );
 };
+
+AioString.displayName = "AioString";

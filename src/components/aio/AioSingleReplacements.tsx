@@ -3,7 +3,7 @@ import { AieStyleMap } from "../aie";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { fromHtml, newExternalSingle, toHtml } from "../functions";
 import { AioIconButton } from "./aioIconButton";
-import { AioExternalSingle } from "./aioInterface";
+import { AioExternalSingle } from "./interface";
 import { AioLabel } from "./aioLabel";
 import { AioString } from "./aioString";
 
@@ -196,3 +196,5 @@ export const AioSingleReplacements = <T extends string | object>({
     </>
   );
 };
+
+AioSingleReplacements.displayName = "AioSingleReplacements";

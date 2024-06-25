@@ -2,6 +2,7 @@ import { EditorV3Wrapper } from "./EditorV3Wrapper";
 import {
   convertBlockLine,
   convertExternalReplacements,
+  convertExternalSingle,
   convertRowGroup,
   convertTable,
 } from "./convert";
@@ -15,6 +16,7 @@ export {
   EditorV3Wrapper,
   convertBlockLine,
   convertExternalReplacements,
+  convertExternalSingle,
   convertRowGroup,
   convertTable,
   getTextFromEditorV3,

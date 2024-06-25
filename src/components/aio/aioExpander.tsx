@@ -1,7 +1,7 @@
 import { ContextWindow } from "@asup/context-menu";
 import { useState } from "react";
 import { AioArraySortable } from "./aioArraySortable";
-import { AioNewItem, AioOption, AioOptionType } from "./aioInterface";
+import { AioNewItem, AioOption, AioOptionType } from "./interface";
 import { AioLabel } from "./aioLabel";
 import { AioOptionDisplay } from "./aioOptionDisplay";
 import { AioPrintOption } from "./aioPrintOption";
@@ -256,3 +256,5 @@ export const AioExpander = (props: AioExpanderProps): JSX.Element => {
     );
   }
 };
+
+AioExpander.displayName = "AioExpander";

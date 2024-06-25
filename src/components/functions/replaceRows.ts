@@ -1,4 +1,4 @@
-import { AioExternalReplacements, AioReplacement } from "../aio/aioInterface";
+import { AioExternalReplacements, AioReplacement } from "../aio/interface";
 import { AitRowData } from "../table/interface";
 import { replaceCellText } from "./replaceCellText";
 import { fromHtml } from "./tofromHtml";

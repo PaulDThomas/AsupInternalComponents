@@ -4,7 +4,7 @@ import { AieStyleMap } from "../aie/functions/aieInterface";
 import { fromHtml, newReplacementValues, toHtml } from "../functions";
 import { AioDropSelect } from "./aioDropSelect";
 import { AioIconButton } from "./aioIconButton";
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./aioInterface";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./interface";
 import { AioReplacementValuesDisplay } from "./aioReplacementValuesDisplay";
 
 interface AioReplacmentDisplayProps<T extends string | object> {
@@ -265,3 +265,5 @@ export const AioReplacementDisplay = <T extends string | object>({
     </div>
   );
 };
+
+AioReplacementDisplay.displayName = "AioReplacementDisplay";

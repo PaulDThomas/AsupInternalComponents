@@ -3,7 +3,7 @@ import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AieStyleMap } from "../aie/functions/aieInterface";
 import { newReplacement } from "../functions";
 import { AioIconButton } from "./aioIconButton";
-import { AioExternalReplacements, AioReplacement } from "./aioInterface";
+import { AioExternalReplacements, AioReplacement } from "./interface";
 import { AioLabel } from "./aioLabel";
 import { AioReplacementDisplay } from "./aioReplacementDisplay";
 import { joinIntoBlock, splitIntoLines } from "../aie/functions/splitIntoLines";
@@ -174,3 +174,5 @@ export const AioReplacementList = <T extends string | object>({
     </>
   );
 };
+
+AioReplacementList.displayName = "AioReplacementList";

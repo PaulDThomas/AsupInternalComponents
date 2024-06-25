@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AioOptionType } from "./aioInterface";
+import { AioOptionType } from "./interface";
 import { RenderLineItem } from "./RenderLineItem";
 
 interface AioPrintOptionProps {
@@ -82,3 +82,5 @@ export const AioPrintOption = (props: AioPrintOptionProps): JSX.Element => {
     </>
   );
 };
+
+AioPrintOption.displayName = "AioPrintOption";

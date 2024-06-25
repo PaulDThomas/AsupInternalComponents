@@ -40,3 +40,5 @@ export const AioComment = <T extends string | object>({
     </>
   );
 };
+
+AioComment.displayName = "AioComment";

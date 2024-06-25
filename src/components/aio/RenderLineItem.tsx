@@ -1,6 +1,6 @@
 import { AioBoolean } from "./aioBoolean";
 import { AioExpander } from "./aioExpander";
-import { AioOptionType } from "./aioInterface";
+import { AioOptionType } from "./interface";
 import { AioLabel } from "./aioLabel";
 import { AioNumber } from "./aioNumber";
 import { AioSelect } from "./aioSelect";
@@ -163,3 +163,5 @@ export const RenderLineItem = ({
       );
   }
 };
+
+RenderLineItem.displayName = "RenderLineItem";

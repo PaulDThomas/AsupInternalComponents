@@ -49,3 +49,5 @@ export const AioNumber = (props: AioNumberProps): JSX.Element => {
     </>
   );
 };
+
+AioNumber.displayName = "AioNumber";

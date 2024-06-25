@@ -63,16 +63,17 @@ export const AioIconButton = ({
           aria-label={tipText}
           title={tipText}
           onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            if (typeof onClick !== "function") return;
-            // Just click if there is no drop down
-            if (!menuItems || menuItems.length <= 1) {
-              onClick(menuItems?.length === 1 ? menuItems[0] : "");
-            }
-            // Or show/hide the dropdown
-            else {
-              setShowDrop(!showDrop);
+            if (onClick) {
+              e.stopPropagation();
+              e.preventDefault();
+              // Just click if there is no drop down
+              if (!menuItems || menuItems.length <= 1) {
+                onClick(menuItems?.length === 1 ? menuItems[0] : "");
+              }
+              // Or show/hide the dropdown
+              else {
+                setShowDrop(!showDrop);
+              }
             }
           }}
         />
@@ -92,9 +93,10 @@ export const AioIconButton = ({
                 key={i}
                 className={"aio-drop-item"}
                 onClick={() => {
-                  if (typeof onClick !== "function") return;
-                  onClick(a);
-                  setShowDrop(false);
+                  if (onClick) {
+                    onClick(a);
+                    setShowDrop(false);
+                  }
                 }}
               >
                 {a.replace(/ /g, "\u00A0")}

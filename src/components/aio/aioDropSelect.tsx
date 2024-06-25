@@ -44,3 +44,5 @@ export const AioDropSelect = ({
     </>
   );
 };
+
+AioDropSelect.displayName = "AioDropSelect";

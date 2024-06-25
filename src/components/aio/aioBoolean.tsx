@@ -37,3 +37,5 @@ export const AioBoolean = (props: AioBooleanProps): JSX.Element => {
     </>
   );
 };
+
+AioBoolean.displayName = "AioBoolean";

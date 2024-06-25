@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { AsupInternalEditorProps } from "../aie/AsupInternalEditor";
 import { AieStyleMap } from "../aie/functions/aieInterface";
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./aioInterface";
+import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "./interface";
 import { AioReplacementList } from "./aioReplacementList";
 
 interface AioReplacementValuesDisplayProps<T extends string | object> {
@@ -165,3 +165,5 @@ export const AioReplacementValuesDisplay = <T extends string | object>({
     </div>
   );
 };
+
+AioReplacementValuesDisplay.displayName = "AioReplacementValuesDisplay";

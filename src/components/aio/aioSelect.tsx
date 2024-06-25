@@ -50,3 +50,5 @@ export const AioSelect = (props: AioSelectProps): JSX.Element => {
     </>
   );
 };
+
+AioSelect.displayName = "AioSelect";
