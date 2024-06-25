@@ -35,7 +35,7 @@ export const AitBorderRow = (props: AitBorderRowProps): JSX.Element => {
                 onClick={() => {
                   if (props.changeColumns) props.changeColumns.addColumn(-1);
                 }}
-                style={{ position: "absolute", top: "-8px", right: "-8px" }}
+                style={{ position: "absolute", top: "0", right: "-8px" }}
               />
             </div>
           </td>
