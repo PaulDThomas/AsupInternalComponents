@@ -23,8 +23,6 @@ interface AitHeaderRowProps<T extends string | object> {
   replacements?: AioReplacement<T>[];
   setReplacements?: (ret: AioReplacement<T>[], location: AitLocation) => void;
   rowGroupWindowTitle?: string;
-  addRowGroup?: (rgi: number, templateName?: string) => void;
-  removeRowGroup?: (rgi: number) => void;
   rowGroupComments?: T;
   updateRowGroupComments?: (ret: T) => void;
   addRow?: (ri: number) => void;
@@ -48,8 +46,6 @@ export const AitHeaderRow = <T extends string | object>({
   replacements,
   setReplacements,
   rowGroupWindowTitle,
-  addRowGroup,
-  removeRowGroup,
   rowGroupComments,
   updateRowGroupComments,
   addRow,
@@ -106,28 +102,9 @@ export const AitHeaderRow = <T extends string | object>({
           >
             {location.row === 0 && !location.rowRepeat ? (
               <>
-                {editable && typeof removeRowGroup === "function" && (
-                  <AioIconButton
-                    id={`${id}-remove-rowgroup`}
-                    tipText={"Remove row group"}
-                    iconName={"aiox-minus"}
-                    onClick={() => removeRowGroup(location.rowGroup)}
-                  />
-                )}
-                {editable && typeof addRowGroup === "function" && (
-                  <AioIconButton
-                    id={`${id}-add-rowgroup`}
-                    tipText={"Add row group"}
-                    iconName={"aiox-plus"}
-                    onClick={(ret) => {
-                      addRowGroup(location.rowGroup, ret);
-                    }}
-                    menuItems={tableSettings.groupTemplateNames}
-                  />
-                )}
                 <AioIconButton
                   id={`${id}-rowgroup-options`}
-                  tipText="Row group options"
+                  tipText="Header options"
                   iconName="aio-button-row-group"
                   onClick={() => {
                     setShowRowGroupOptions(!showRowGroupOptions);
