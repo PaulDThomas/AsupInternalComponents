@@ -81,7 +81,7 @@ export const AioReplacementValuesDisplay = <T extends string | object>({
           style={{
             width: "170px",
             minWidth: "170px",
-            minHeight: "64x",
+            minHeight: "64px",
             marginTop: "4px",
             height: "Calc(100% - 16px)",
             padding: "4px",
