@@ -1,11 +1,17 @@
 import { IEditorV3, EditorV3Styles, EditorV3, EditorV3Align } from "@asup/editor-v3";
 import { AieStyleMap, AsupInternalEditorProps } from "../main";
 import { stringToV3 } from "./stringToV3";
+import { rest } from "lodash";
 
 interface EditorV3WrapperProps extends AsupInternalEditorProps<IEditorV3> {
   customStyleMap?: EditorV3Styles;
   debounceMilliseconds?: number;
   spellCheck?: boolean;
+  allowNewLine?: boolean;
+  noBorder?: boolean;
+  allowWindowView?: boolean;
+  allowMarkdown?: boolean;
+  resize?: boolean;
 }
 
 export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
@@ -24,6 +30,7 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
 
   return (
     <EditorV3
+      {...rest}
       id={props.id}
       className={props.className}
       input={adjustedValue}
@@ -33,10 +40,11 @@ export const EditorV3Wrapper = (props: EditorV3WrapperProps) => {
       textAlignment={props.textAlignment as EditorV3Align}
       style={{ ...props.style }}
       spellCheck={props.spellCheck ?? false}
-      allowNewLine
-      noBorder
-      allowWindowView
-      allowMarkdown
+      debounceMilliseconds={props.debounceMilliseconds ?? null}
+      allowNewLine={props.allowNewLine ?? true}
+      noBorder={props.noBorder ?? true}
+      allowWindowView={props.allowWindowView ?? true}
+      allowMarkdown={props.allowMarkdown ?? true}
       resize={props.resize}
     />
   );
