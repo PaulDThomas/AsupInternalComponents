@@ -1,4 +1,4 @@
-import { getTextFromEditorV3 } from "../v3editor/getTextFromEditorV3";
+import { getTextFromEditorV3 } from "./getTextFromEditorV3";
 import { IEditorV3 } from "@asup/editor-v3";
 import { stringToV3 } from "./stringToV3";
 

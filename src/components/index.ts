@@ -22,9 +22,6 @@ import {
   newReplacementValues,
   newRowGroup,
   toHtml,
-  updateReplToExtl,
-  updateReplacementVersion,
-  updateTableDataVersion,
 } from "./functions";
 
 export {
@@ -46,9 +43,6 @@ export {
   newRowGroup,
   toHtml,
   updateLineDisplayVersion,
-  updateReplToExtl,
-  updateReplacementVersion,
-  updateTableDataVersion,
 };
 export type {
   AieStyleMap,

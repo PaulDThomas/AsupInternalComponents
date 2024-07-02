@@ -71,6 +71,7 @@ describe("Check complex replace rows", () => {
     const repeated = replaceRows(
       rows,
       60,
+      "",
       (s: string) => [s],
       (s: string, o: string, n: string) => s.replace(o, n),
       replacement,

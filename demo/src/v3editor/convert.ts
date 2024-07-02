@@ -7,15 +7,15 @@ import {
   AitRowData,
   AitRowGroupData,
   AitTableData,
-} from "../components/table/interface";
-import { AibBlockLine, AibLineType } from "../components/block/interface";
+} from "../../../src/components/table/interface";
+import { AibBlockLine, AibLineType } from "../../../src/components/block/interface";
 import {
   AioExternalReplacements,
   AioExternalSingle,
   AioReplacement,
   AioReplacementValues,
-} from "../components/aio/interface";
-import { fromHtml } from "../components/functions/tofromHtml";
+} from "../../../src/components/aio/interface";
+import { fromHtml } from "../../../src/components/functions/tofromHtml";
 
 const convertHeaderCell = (cell: AitCellData<string | IEditorV3>): AitCellData<IEditorV3> => ({
   ...cell,

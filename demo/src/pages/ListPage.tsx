@@ -1,14 +1,13 @@
-import { IEditorV3 } from "@asup/editor-v3";
+import { IEditorV3, joinV3intoBlock, splitV3intoLines } from "@asup/editor-v3";
 import { useCallback, useRef, useState } from "react";
 import {
   AieStyleMap,
   AioExternalReplacements,
   AioReplacementDisplay,
   AioString,
-  EditorV3Wrapper,
   newExternalReplacements,
-  updateReplToExtl,
 } from "../../../src/main";
+import { convertExternalReplacements, EditorV3Wrapper, stringToV3 } from "../v3editor";
 
 export const ListPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
@@ -25,9 +24,10 @@ export const ListPage = (): JSX.Element => {
         ta.current.value = window.localStorage.getItem("listContent") ?? "";
       }
       if (ta.current) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const j: any = JSON.parse(ta.current.value?.toString() ?? "[]");
-        setExtRepls(updateReplToExtl(j));
+        const j: AioExternalReplacements<string | IEditorV3>[] = JSON.parse(
+          ta.current.value?.toString() ?? "[]",
+        );
+        setExtRepls(j.map((i) => convertExternalReplacements(i)));
         ta.current.value = JSON.stringify(j, null, 2);
       }
     } catch (e) {
@@ -97,7 +97,7 @@ export const ListPage = (): JSX.Element => {
             className="aiox-button aiox-plus"
             onClick={() => {
               const newRepls = [...extRepls];
-              newRepls.push(newExternalReplacements());
+              newRepls.push(newExternalReplacements(stringToV3("")));
               setExtRepls(newRepls);
               setCurrentL(newRepls.length - 1);
             }}
@@ -130,6 +130,9 @@ export const ListPage = (): JSX.Element => {
                     newE.splice(currentL, 1, e);
                     setExtRepls(newE);
                   }}
+                  blankT={stringToV3("")}
+                  joinTintoBlock={joinV3intoBlock}
+                  splitTintoLines={splitV3intoLines}
                 />
               </div>
             )}

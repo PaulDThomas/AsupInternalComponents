@@ -1,4 +1,8 @@
-import { AioExternalReplacements, AioReplacement, AioReplacementValues } from "../aio";
+import {
+  AioExternalReplacements,
+  AioReplacement,
+  AioReplacementValues,
+} from "../../../src/components/aio";
 
 interface oldReplacementText {
   text: string;

@@ -1,14 +1,13 @@
-import React, { useCallback, useRef, useState } from "react";
+import { IEditorV3 } from "@asup/editor-v3";
+import { useCallback, useRef, useState } from "react";
 import {
   AioString,
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
-  EditorV3Wrapper,
   newRowGroup,
-  stringToV3,
 } from "../../../src/main";
-import { IEditorV3 } from "@asup/editor-v3";
+import { EditorV3Wrapper, stringToV3 } from "../v3editor";
 
 export const RowGroupPage = (): JSX.Element => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

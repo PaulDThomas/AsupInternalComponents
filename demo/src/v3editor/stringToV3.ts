@@ -1,6 +1,6 @@
 import { IEditorV3 } from "@asup/editor-v3";
 import { readV2DivElement } from "./readV2DivElement";
-import { fromHtml } from "../components/functions/tofromHtml";
+import { fromHtml } from "../../../src/components/functions/tofromHtml";
 
 export const stringToV3 = (value: string): IEditorV3 => {
   if (value.match(/^<div.*class/)) {

@@ -1,7 +1,5 @@
 import { IEditorV3, joinV3intoBlock, splitV3intoLines } from "@asup/editor-v3";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getTextFromEditorV3 } from "v3editor/getTextFromEditorV3";
-import { replaceTextInEditorV3 } from "v3editor/replaceTextInEditorV3";
 import {
   AieStyleMap,
   AioExternalReplacements,
@@ -10,10 +8,14 @@ import {
   AitRowGroupData,
   AitTableData,
   AsupInternalTable,
-  convertTable,
-  stringToV3,
 } from "../../../src/main";
-import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
+import {
+  convertTable,
+  EditorV3Wrapper,
+  getTextFromEditorV3,
+  replaceTextInEditorV3,
+  stringToV3,
+} from "../v3editor";
 
 export const TablePage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);

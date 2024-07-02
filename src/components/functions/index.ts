@@ -11,8 +11,6 @@ import { newRowGroup } from "./newRowGroup";
 import { repeatHeaders } from "./repeatHeaders";
 import { repeatRows } from "./repeatRows";
 import { fromHtml, toHtml } from "./tofromHtml";
-import { updateReplacementVersion, updateReplToExtl } from "./updateReplacementVersion";
-import { updateTableDataVersion } from "./updateTableDataVersion";
 
 export {
   fromHtml,
@@ -28,7 +26,4 @@ export {
   repeatHeaders,
   repeatRows,
   toHtml,
-  updateReplacementVersion,
-  updateReplToExtl,
-  updateTableDataVersion,
 };

@@ -50,6 +50,7 @@ export const repeatRows = <T extends string | object>(
       newRows = replaceRows(
         newRows,
         defaultCellWidth,
+        blankT,
         getTextFromT,
         replaceTextInT,
         extReplacements[si],

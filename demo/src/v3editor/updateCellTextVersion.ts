@@ -1,5 +1,5 @@
 import { AitCellData, AitHeaderCellData } from "components/table/interface";
-import { toHtml } from "./tofromHtml";
+import { toHtml } from "../../../src/components/functions/tofromHtml";
 
 export const UpdateCellTextVersion = <
   T extends string | object,

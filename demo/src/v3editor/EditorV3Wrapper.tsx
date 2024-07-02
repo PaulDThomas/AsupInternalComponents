@@ -1,5 +1,5 @@
 import { IEditorV3, EditorV3Styles, EditorV3, EditorV3Align } from "@asup/editor-v3";
-import { AieStyleMap, AsupInternalEditorProps } from "../main";
+import { AieStyleMap, AsupInternalEditorProps } from "../../../src/main";
 import { stringToV3 } from "./stringToV3";
 import { rest } from "lodash";
 

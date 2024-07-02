@@ -1,24 +1,22 @@
 import { IEditorV3 } from "@asup/editor-v3";
 import { useRef, useState } from "react";
+import { replaceTextInEditorV3 } from "../v3editor/replaceTextInEditorV3";
 import {
   AibBlockLine,
   AibLineType,
   AioExternalSingle,
   AioSingleReplacements,
   AsupInternalBlock,
-  convertBlockLine,
-  stringToV3,
-  updateLineDisplayVersion,
 } from "../../../src/main";
-import { EditorV3Wrapper } from "../../../src/v3editor/EditorV3Wrapper";
-import { replaceTextInEditorV3 } from "v3editor/replaceTextInEditorV3";
+import { EditorV3Wrapper } from "../v3editor/EditorV3Wrapper";
+import { stringToV3 } from "../v3editor";
 
 export const BlockPage = () => {
   const ta = useRef<HTMLTextAreaElement | null>(null);
-  const [lines, setLines] = useState<AibBlockLine<string>[]>([
-    { lineType: AibLineType.leftAndRight, left: "One line", canEdit: true },
-  ]);
-  const [externalSingles, setExternalSingles] = useState<AioExternalSingle<string>[]>([]);
+  // const [lines, setLines] = useState<AibBlockLine<string>[]>([
+  //   { lineType: AibLineType.leftAndRight, left: "One line", canEdit: true },
+  // ]);
+  const [externalSingles, setExternalSingles] = useState<AioExternalSingle<IEditorV3>[]>([]);
 
   const [lines2, setLines2] = useState<AibBlockLine<IEditorV3>[]>([
     {
@@ -71,6 +69,7 @@ export const BlockPage = () => {
             Red: { css: { color: "red" }, aieExclude: ["Green", "Blue"] },
           }}
           defaultType={AibLineType.leftOnly}
+          externalSingles={externalSingles}
           Editor={(props) =>
             EditorV3Wrapper({
               ...props,
@@ -144,7 +143,7 @@ export const BlockPage = () => {
         />
       </div> */}
 
-      <div
+      {/* <div
         style={{
           width: "calc(vw - 4rem - 2px)",
           display: "flex",
@@ -172,7 +171,7 @@ export const BlockPage = () => {
           defaultType={AibLineType.leftOnly}
           canChangeType={true}
         />
-      </div>
+      </div> */}
 
       <div style={{ margin: "1rem" }}>
         <AioSingleReplacements
@@ -197,10 +196,10 @@ export const BlockPage = () => {
               if (ta.current.value === "") {
                 ta.current.value = window.localStorage.getItem("blockContent") ?? "";
               }
-              const j = updateLineDisplayVersion(JSON.parse(ta.current.value ?? "[]"));
-              setLines(j);
-              const convert = j.map((l) => convertBlockLine(l));
-              setLines2(convert);
+              const j = JSON.parse(ta.current.value ?? "[]");
+              setLines2(j);
+              // const convert = j.map((l) => convertBlockLine(l));
+              // setLines2(convert);
             } catch (e) {
               console.warn("JSON parse failed");
               console.dir(e);
@@ -212,7 +211,7 @@ export const BlockPage = () => {
         <button
           onClick={() => {
             if (!ta.current) return;
-            ta.current.value = JSON.stringify(lines, null, 2);
+            ta.current.value = JSON.stringify(lines2, null, 2);
             window.localStorage.setItem("blockContent", ta.current.value);
           }}
         >

@@ -1,4 +1,4 @@
-import { AieStyleMap } from "../components/aie/functions/aieInterface";
+import { AieStyleMap } from "../../../src/components/aie/functions/aieInterface";
 import { styleToV3 } from "./styleToV3";
 
 describe("styleToV3", () => {

@@ -13,6 +13,7 @@ import { updateExternals } from "./updateExternals";
 export const replaceRows = <T extends string | object>(
   rows: AitRowData<T>[],
   defaultCellWidth: number,
+  blankT: T,
   getTextFromT: (s: T) => string[],
   replaceTextInT: (s: T, oldPhrase: string, newPhrase: T) => T,
   replacement?: AioReplacement<T>,
@@ -45,7 +46,7 @@ export const replaceRows = <T extends string | object>(
     } else
       for (let ci = 0; ci < rows[ri].cells.length && !found; ci++) {
         const cellTextParts: string[] = getTextFromT(
-          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? "",
+          rows[ri].cells[ci].replacedText ?? rows[ri].cells[ci].text ?? blankT,
         );
         if (
           replacement !== undefined &&
@@ -131,6 +132,7 @@ export const replaceRows = <T extends string | object>(
                   lowerQuad = replaceRows(
                     lowerQuad,
                     defaultCellWidth,
+                    blankT,
                     getTextFromT,
                     replaceTextInT,
                     subLists[si],
